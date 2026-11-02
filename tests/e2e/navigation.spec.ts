@@ -57,3 +57,63 @@ test("keyboard users can skip navigation", async ({ page }) => {
   await page.keyboard.press("Enter");
   await expect(page.getByRole("main")).toBeFocused();
 });
+
+test("navigation uses the right placement and usable touch targets", async ({
+  page,
+}, testInfo) => {
+  await page.goto("/dashboard");
+  const viewport = page.viewportSize();
+  if (!viewport) throw new Error("This check requires a fixed viewport");
+  const sidebar = page.locator(".desktop-sidebar");
+  await expect(sidebar).toHaveCSS("position", "fixed");
+  const bounds = await sidebar.boundingBox();
+  if (!bounds) throw new Error("Navigation must be visible");
+  if (testInfo.project.name === "mobile") {
+    expect(bounds.width).toBe(viewport.width);
+    expect(
+      Math.abs(bounds.y + bounds.height - viewport.height),
+    ).toBeLessThanOrEqual(1);
+    const links = page
+      .getByRole("navigation", { name: "Main navigation" })
+      .getByRole("link");
+    for (const link of await links.all()) {
+      const target = await link.boundingBox();
+      if (!target) throw new Error("Navigation link must be visible");
+      expect(target.width).toBeGreaterThanOrEqual(44);
+      expect(target.height).toBeGreaterThanOrEqual(44);
+    }
+    await page.setViewportSize({ width: 320, height: 568 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+  } else {
+    expect(bounds.x).toBe(0);
+    expect(bounds.y).toBe(0);
+    expect(bounds.height).toBe(viewport.height);
+    expect(bounds.width).toBeLessThan(viewport.width / 2);
+  }
+});
+
+test("theme follows system changes without navigation", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/dashboard");
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(247, 248, 245)",
+  );
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(18, 21, 18)",
+  );
+  await expect(
+    page.getByRole("link", { name: "Explore your workout space" }),
+  ).toHaveCSS("color", "rgb(24, 40, 25)");
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(247, 248, 245)",
+  );
+});

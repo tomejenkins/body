@@ -11,6 +11,7 @@ The dashboard, workout, programs, history, feed, and profile routes are presenta
 ## Local setup
 
 ```sh
+nvm use # optional; .nvmrc selects Node 24 LTS
 npm ci
 cp .env.example .env.local
 npm run dev
@@ -55,3 +56,24 @@ Add future domain modules under `src/features/<feature>` when business logic exi
 System preference controls light and dark themes without client-side theme flashes. Navigation uses a mobile bottom bar and desktop sidebar; links retain visible focus states and a skip link. The layout respects mobile safe areas and reduced motion. No remote fonts or assets are required.
 
 A standalone manifest, SVG icon, viewport metadata, and Apple web-app metadata establish the PWA foundation. Offline support, service worker, raster install icons, update handling, and cross-platform installation validation are intentionally deferred. Do not cache private training data by default. This is not yet a complete installable/offline PWA.
+
+## Foundation requirements audit
+
+All eleven scaffold tasks are implemented. This describes the foundation, not completed workout or backend functionality.
+
+| Requirement                                       | Implementation                                                                                                       |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| 1–4. Inspect and preserve or initialize the stack | The initial repository had no source or commits. The requested stack was initialized; this audit preserves it.       |
+| 5. Scalable folders                               | Thin App Router routes, shared layout/UI components, typed navigation, and separate Supabase integration boundaries. |
+| 6. Lint, format, and test tooling                 | ESLint flat config, Prettier with Tailwind ordering, strict typecheck, Vitest/Testing Library, and Playwright.       |
+| 7. Six placeholder routes                         | `/dashboard`, `/workout`, `/programs`, `/history`, `/feed`, `/profile`; `/` redirects to dashboard.                  |
+| 8. Responsive shell                               | Mobile bottom bar, desktop sidebar, current-page labels, skip link, safe-area spacing, and system light/dark themes. |
+| 9. Configuration example                          | `.env.example` documents the two public Supabase settings without credentials.                                       |
+| 10. Local instructions                            | This README covers Node, dependencies, development, production, checks, and manual Supabase setup.                   |
+| 11. Agent instructions                            | `AGENTS.md` covers architecture, conventions, validation, security boundaries, and product decisions.                |
+
+The shadcn approach uses locally owned component source and `components.json`, rather than a runtime component-library package. The initial Button uses Radix Slot, CVA, and the shared `cn` helper. Supabase is configured as an integration boundary; a hosted project and real authentication/database policies still require separate setup. The webpack build choice is explained above.
+
+Node types track Node 24 to avoid accidentally accepting APIs unavailable in the supported runtime. ESLint 9 is retained for compatibility with the React and accessibility plugins used by Next.js; that major is deprecated upstream. Upgrade when the plugin peer ranges support ESLint 10 rather than forcing incompatible peers.
+
+Browser checks cover all routes, active navigation, desktop/sidebar and mobile/bottom positioning, mobile touch-target dimensions, narrow-screen overflow, system theme changes, primary-action colors, the manifest, and keyboard skip navigation. These checks do not establish a complete accessibility audit or native-device compatibility. Run the commands above to validate future changes.
