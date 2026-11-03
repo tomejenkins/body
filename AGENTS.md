@@ -62,6 +62,16 @@ Profile initialization must use verified user IDs, owner-scoped RLS, permitted I
 
 Do not push this phase or open its PR until branch automation is verified compatible with no remote migration/deployment. Previous branch-specific authorizations do not carry over. No new schema, workout, subscription, social, OAuth or trainer logic belongs in Phase 3.1.
 
+## Phase 4.1 exercise library
+
+Read `docs/exercise-library.md` before exercise/catalog work. Phase 4.1 authorizes additive local forward migrations, curated system data, browsing, private custom edits/favorites and deterministic recommendations; it does not authorize hosted SQL or production deployment. Keep Phase 3.1 authentication intact and email/password-only for MVP. Do not add OAuth, workout logging, programs, social or trainer behavior.
+
+Keep `exercise_type` independent and constrained to compound/isolation/other; require it in the editor and apply requested type as a hard recommendation constraint. Preserve the reviewed primary/secondary movement distinction, muscle roles, conjunctive equipment model, explicit None and machine-specific stations. Never fill a small recommendation pool with incompatible alternatives. Keep ranking weights, exclusions, duplicate rules and stable tie-breaking explicit in UI-independent TypeScript and covered by tests.
+
+All system data belongs in reviewed forward migrations, never runtime seeding. Run `npm run catalog:check` to keep the initial snapshot and SQL in sync before first deployment; freeze them once shared. Future corrections require new migrations, not regenerating an applied file. Preserve user custom records and historical references. Keep SQL in root `supabase/`.
+
+Custom writes verify identity and use the atomic SECURITY INVOKER editor with existing RLS/column grants, no owner parameter or privileged bypass. Never grant system catalog writes. Favorites and preference are independent; do not upsert immutable keys. Archive rather than delete exercises. Read actual owner-scoped history for recents without fabricating activity or persisting browse clicks. Validate forms both client/server and test cross-owner/system denials, atomic failures and archive/history preservation. Run app, database, catalog, browser and Workers checks. Publication must respect confirmed preview safety and explicit no-production-deployment scope.
+
 ## Scope
 
 Keep initial work focused. Review existing code before replacing it, preserve local work, use supported dependencies, and never change package integrity checks to force installation. PWA offline support and platform-specific install validation are separate work.

@@ -18,7 +18,8 @@ insert into public.exercises(id, owner_id, name) values
 (pg_temp.fixture_id('substitute'), null, 'Substitute exercise'),
 (pg_temp.fixture_id('custom_a'), pg_temp.fixture_id('alice'), 'Alice custom'),
 (pg_temp.fixture_id('custom_b'), pg_temp.fixture_id('bob'), 'Bob custom');
-insert into public.exercise_movement_patterns values (pg_temp.fixture_id('system'), pg_temp.fixture_id('pattern'), now());
+select set_config('body_test.system_catalog_count',(select count(*)::text from public.exercises where owner_id is null),true);
+insert into public.exercise_movement_patterns(exercise_id, movement_pattern_id, created_at) values (pg_temp.fixture_id('system'), pg_temp.fixture_id('pattern'), now());
 insert into public.exercise_muscles values (pg_temp.fixture_id('system'), pg_temp.fixture_id('muscle1'), 'primary', now()), (pg_temp.fixture_id('system'), pg_temp.fixture_id('muscle2'), 'secondary', now());
 insert into public.exercise_equipment values (pg_temp.fixture_id('system'), pg_temp.fixture_id('equipment'), now());
 insert into public.user_equipment values (pg_temp.fixture_id('alice'), pg_temp.fixture_id('equipment'), now());
@@ -179,6 +180,6 @@ select ok((select count(*) = 0 from public.exercises where owner_id = pg_temp.fi
 select ok((select count(*) = 1 from public.profiles where id = pg_temp.fixture_id('alice')), 'other accounts survive account deletion');
 select lives_ok($sql$delete from auth.users where id = pg_temp.fixture_id('alice')$sql$, 'full planned history cascades cleanly when its synthetic account is deleted');
 select ok((select count(*) = 0 from public.workout_sets), 'account cascade does not leave orphaned performed sets');
-select ok((select count(*) = 2 from public.exercises where owner_id is null), 'account deletion preserves the system exercise catalog');
+select ok((select count(*) = current_setting('body_test.system_catalog_count')::bigint from public.exercises where owner_id is null), 'account deletion preserves the system exercise catalog');
 select * from finish();
 rollback;

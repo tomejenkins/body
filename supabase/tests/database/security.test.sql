@@ -503,9 +503,9 @@ select ok((select has_table_privilege('authenticated','public.exercises','SELECT
 
 select ok((select has_table_privilege('authenticated','public.exercises','DELETE') = false), 'exercises: DELETE matches reviewed matrix');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.exercises',attname,'INSERT') = (attname = any(array['id','owner_id','name','description','instructions','archived_at']::text[]))) from pg_attribute where attrelid='public.exercises'::regclass and attnum>0 and not attisdropped), 'exercises: exact INSERT column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.exercises',attname,'INSERT') = (attname = any(array['id','owner_id','name','description','instructions','archived_at','exercise_type']::text[]))) from pg_attribute where attrelid='public.exercises'::regclass and attnum>0 and not attisdropped), 'exercises: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.exercises',attname,'UPDATE') = (attname = any(array['name','description','instructions','archived_at']::text[]))) from pg_attribute where attrelid='public.exercises'::regclass and attnum>0 and not attisdropped), 'exercises: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.exercises',attname,'UPDATE') = (attname = any(array['name','description','instructions','archived_at','exercise_type']::text[]))) from pg_attribute where attrelid='public.exercises'::regclass and attnum>0 and not attisdropped), 'exercises: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.user_equipment'::regclass), 'user_equipment: RLS enabled');
 
@@ -1203,7 +1203,7 @@ select ok((select has_table_privilege('authenticated','public.exercise_movement_
 
 select ok((select has_table_privilege('authenticated','public.exercise_movement_patterns','DELETE') = true), 'exercise_movement_patterns: DELETE matches reviewed matrix');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.exercise_movement_patterns',attname,'INSERT') = (attname = any(array['exercise_id','movement_pattern_id']::text[]))) from pg_attribute where attrelid='public.exercise_movement_patterns'::regclass and attnum>0 and not attisdropped), 'exercise_movement_patterns: exact INSERT column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.exercise_movement_patterns',attname,'INSERT') = (attname = any(array['exercise_id','movement_pattern_id','is_primary']::text[]))) from pg_attribute where attrelid='public.exercise_movement_patterns'::regclass and attnum>0 and not attisdropped), 'exercise_movement_patterns: exact INSERT column allowlist');
 
 select ok((select bool_and(has_column_privilege('authenticated','public.exercise_movement_patterns',attname,'UPDATE') = (attname = any(array[]::text[]))) from pg_attribute where attrelid='public.exercise_movement_patterns'::regclass and attnum>0 and not attisdropped), 'exercise_movement_patterns: exact UPDATE column allowlist');
 
@@ -1587,7 +1587,7 @@ select lives_ok($sql$insert into public.exercise_muscles(exercise_id,muscle_grou
 
 select lives_ok($sql$insert into public.exercise_equipment(exercise_id,equipment_type_id) values (md5('custom_carol')::uuid,md5('equipment_types')::uuid)$sql$, 'exercise_equipment: custom classification INSERT succeeds');
 
-select ok((select count(*)=1 from public.movement_patterns), 'movement_patterns: authenticated taxonomy read succeeds');
+select ok((select count(*)=1 from public.movement_patterns where slug='test_catalog'), 'movement_patterns: authenticated taxonomy read succeeds');
 
 select throws_ok($sql$insert into public.movement_patterns(slug,name) values ('forged','Forged')$sql$, '42501', null, 'movement_patterns: client catalog INSERT denied');
 
@@ -1595,7 +1595,7 @@ select throws_ok($sql$update public.movement_patterns set name='Forged'$sql$, '4
 
 select throws_ok($sql$delete from public.movement_patterns$sql$, '42501', null, 'movement_patterns: client catalog DELETE denied');
 
-select ok((select count(*)=1 from public.muscle_groups), 'muscle_groups: authenticated taxonomy read succeeds');
+select ok((select count(*)=1 from public.muscle_groups where slug='test_catalog'), 'muscle_groups: authenticated taxonomy read succeeds');
 
 select throws_ok($sql$insert into public.muscle_groups(slug,name) values ('forged','Forged')$sql$, '42501', null, 'muscle_groups: client catalog INSERT denied');
 
@@ -1603,7 +1603,7 @@ select throws_ok($sql$update public.muscle_groups set name='Forged'$sql$, '42501
 
 select throws_ok($sql$delete from public.muscle_groups$sql$, '42501', null, 'muscle_groups: client catalog DELETE denied');
 
-select ok((select count(*)=1 from public.equipment_types), 'equipment_types: authenticated taxonomy read succeeds');
+select ok((select count(*)=1 from public.equipment_types where slug='test_catalog'), 'equipment_types: authenticated taxonomy read succeeds');
 
 select throws_ok($sql$insert into public.equipment_types(slug,name) values ('forged','Forged')$sql$, '42501', null, 'equipment_types: client catalog INSERT denied');
 

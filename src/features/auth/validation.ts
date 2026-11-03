@@ -30,6 +30,7 @@ const roots = [
   "/history",
   "/feed",
   "/profile",
+  "/exercises",
 ];
 export function isProtectedPath(path: string) {
   return roots.some((root) => path === root || path.startsWith(root + "/"));

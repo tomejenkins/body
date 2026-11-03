@@ -162,3 +162,7 @@ Official security reference: [Supabase RLS guidance](https://supabase.com/docs/g
 | Hosted database, migration push, remote history, production deployment | Not attempted, per local-only scope.                                                                                 |
 
 Docker was available; no required local check remains blocked. The test-runner image initially encountered the environment's ECR denial and the CLI successfully used the official GHCR image with checksum verification. The local SQL test fixtures/grants rolled back, and the local database contains the migration's empty application tables afterward. Neither successful local checks nor this commit authorizes remote application or migration-branch publication.
+
+## Phase 4.1 additive exercise classification
+
+New forward migrations add unique canonical exercise slugs, constrained non-null `exercise_type` (compound/isolation/other), and `exercise_movement_patterns.is_primary` with maximum-one-primary uniqueness. The reviewed system catalog populates the existing normalized tables. Existing IDs, custom records and historical references remain intact; no program/logging tables are duplicated. The invoker editor saves custom classifications atomically. See [exercise-library.md](exercise-library.md) for data strategy, taxonomy, legacy backfill and deployment requirements.
