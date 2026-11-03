@@ -51,6 +51,33 @@ Production builds use Next.js’s supported webpack builder because Turbopack bu
 
 Add future domain modules under `src/features/<feature>` when business logic exists; avoid empty abstraction layers. Keep routes thin and share domain logic independently of web UI for future trainer/native clients.
 
+## Cloudflare Workers and Supabase infrastructure (Phase 1.2)
+
+The existing application, routes, Next.js build, and `src/lib/supabase/` helpers are preserved. Root `supabase/config.toml` was generated with the pinned official CLI; future SQL belongs only in `supabase/migrations/` (currently empty). The config is local-development scaffolding, not a production authentication configuration. No application tables or auth features are included.
+
+Cloudflare support uses the documented OpenNext adapter compatible with Next.js 16.4.4. `wrangler.jsonc` and `open-next.config.ts` define a reproducible local Worker build with Node compatibility and static assets. The Worker name `body` is confirmed by its Cloudflare Workers Builds log. The empty `previews` block supports branch previews without tracking dashboard-managed variables. No production deployment script or GitHub deployment workflow is enabled. Cloudflare Workers Builds should use `npm run cf:build` as its build command and retain `npx wrangler preview` for branch deployment.
+
+```sh
+npm run cf:build    # Builds Next.js, then adapts it for Workers
+npm run cf:check    # Wrangler dry-run; does not upload or deploy
+npm run cf:preview  # Local Workers runtime; requires cf:build first
+npm run supabase -- --version
+npm run db:start   # Docker: local Postgres only
+npm run db:reset   # Destructively recreates LOCAL database from migrations
+npm run db:lint    # Local database checks, warnings fail
+```
+
+See [Phase 1.2 infrastructure guide](docs/infrastructure.md) for the deployment investigation, exact Cloudflare build/runtime variable steps, CLI linking and migration commands, native GitHub migration integration, safeguards, validation evidence, and official references. CLI 3 defaults database commands to local; remote targets require explicit `--remote`. Do not use older CLI examples with the removed `--local` flag.
+
+Manual setup checklist:
+
+- Confirm the existing Worker identity and deployment pipeline; reconcile its routes and bindings with Wrangler before any approved deployment. Do not replace the working deployment based on the local template.
+- Create a dedicated Supabase development project, check its PostgreSQL major version against `supabase/config.toml`, and securely configure the public project URL and publishable key in `.env.local`.
+- In the existing Cloudflare Worker settings, configure both public values under **Build variables and secrets** and runtime **Variables and Secrets**, using the same target project. Rebuild after changing public values.
+- Link the CLI to the development project using personal CLI authentication (not application keys). Remote commands require separate authorization.
+- When ready for database delivery, configure **only** Supabase’s native GitHub integration for `main`, working directory `.`, with reviewed migration checks and protected branches. Do not add an Actions migration deployer alongside it.
+- Obtain explicit approval before any production Worker deployment or database change.
+
 ## Design and PWA status
 
 System preference controls light and dark themes without client-side theme flashes. Navigation uses a mobile bottom bar and desktop sidebar; links retain visible focus states and a skip link. The layout respects mobile safe areas and reduced motion. No remote fonts or assets are required.
