@@ -6,7 +6,7 @@ A mobile-first foundation for a premium workout tracker. The repository was empt
 
 Next.js App Router, React, strict TypeScript, Tailwind CSS v4, shadcn/ui-style local components (Radix Slot, CVA, `cn`), and Supabase SSR/browser adapters. ESLint, Prettier, Vitest, Testing Library, and Playwright provide checks. Node 24 LTS and npm are the validated tools; the npm lockfile pins dependencies.
 
-The dashboard, workout, programs, history, feed, and profile routes are presentation placeholders. No workout logic, database schema, session handling, authentication flow, recommendations, social access controls, or trainer capabilities are implemented. Private-by-default sharing is a product requirement, not a claim of implemented database security.
+The dashboard, workout, programs, history, feed, and profile routes are presentation placeholders. A local-only initial database schema is available in Phase 2.1. No application workout logic, session handling, authentication flow, recommendations, social access controls, or trainer capabilities are implemented. Private-by-default sharing is a product requirement, not a claim of implemented database security.
 
 ## Local setup
 
@@ -53,7 +53,7 @@ Add future domain modules under `src/features/<feature>` when business logic exi
 
 ## Cloudflare Workers and Supabase infrastructure (Phase 1.2)
 
-The existing application, routes, Next.js build, and `src/lib/supabase/` helpers are preserved. Root `supabase/config.toml` was generated with the pinned official CLI; future SQL belongs only in `supabase/migrations/` (currently empty). The config is local-development scaffolding, not a production authentication configuration. No application tables or auth features are included.
+The existing application, routes, Next.js build, and `src/lib/supabase/` helpers are preserved. Root `supabase/config.toml` was generated with the pinned official CLI; SQL belongs only in `supabase/migrations/` (Phase 2.1 now contains its initial local-only schema). The config is local-development scaffolding, not a production authentication configuration. The Phase 1.2 setup did not add tables or auth features; the subsequent Phase 2.1 local migration is described below.
 
 Cloudflare support uses the documented OpenNext adapter compatible with Next.js 16.4.4. `wrangler.jsonc` and `open-next.config.ts` define a reproducible local Worker build with Node compatibility and static assets. The Worker name `body` is confirmed by its Cloudflare Workers Builds log. The empty `previews` block supports branch previews without tracking dashboard-managed variables. No production deployment script or GitHub deployment workflow is enabled. Cloudflare Workers Builds should use `npm run cf:build` as its build command and retain `npx wrangler preview` for branch deployment.
 
@@ -77,6 +77,19 @@ Manual setup checklist:
 - Link the CLI to the development project using personal CLI authentication (not application keys). Remote commands require separate authorization.
 - When ready for database delivery, configure **only** Supabase’s native GitHub integration for `main`, working directory `.`, with reviewed migration checks and protected branches. Do not add an Actions migration deployer alongside it.
 - Obtain explicit approval before any production Worker deployment or database change.
+
+## Initial database schema (Phase 2.1)
+
+[Database design, relationships, security boundaries, and local validation](docs/database-schema.md) document the 18-table initial migration. It separates private preferences, normalized exercise classifications, non-calendar program cycles, and actual workout history. All exposed tables enable RLS with client access denied pending Phase 2.2. No UI, auth flow, remote migration, or deployment is included.
+
+```sh
+npm run db:start
+npm run db:reset # deletes/recreates the disposable LOCAL database only
+npm run db:lint
+npm run db:test
+```
+
+The tests use synthetic fixtures and temporary grants inside a rollback transaction. Keep the migration branch local for review; pushing it could trigger the connected Supabase preview integration and modify a hosted database. Obtain explicit target-specific approval before any remote application or Git push of this migration branch. Hosted migration history remains untouched.
 
 ## Design and PWA status
 

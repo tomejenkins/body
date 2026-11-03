@@ -19,7 +19,8 @@
     "supabase": "supabase",
     "db:start": "supabase db start",
     "db:reset": "supabase db reset",
-    "db:lint": "supabase db lint --fail-on warning"
+    "db:lint": "supabase db lint --schema public,body_private --fail-on warning",
+    "db:test": "supabase test db"
   },
   "repository": {
     "type": "git",

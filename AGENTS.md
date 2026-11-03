@@ -28,13 +28,21 @@ Future exposed user-data tables must enable PostgreSQL row-level security throug
 
 Root `supabase/` is the CLI workspace; `src/lib/supabase/` contains application adapters, never migration SQL. Use the exact CLI version in package-lock.json via `npm run supabase -- ...`. CLI 3 defaults database commands to local; remote access requires `--remote`. Use a dedicated development project, and verify project identity before linking or remote operations. Never run remote reset, repair migration history, or push a migration to production as routine validation.
 
-Create future migrations with `npm run supabase -- migration new <snake_case_description>`. Preserve generated timestamp ordering, review generated SQL, and commit each migration. Once applied to a shared environment, migrations are immutable; use a new forward migration for corrections. Do not commit real seed data, passwords, generated `.temp` files, or tokens. Seeds are disabled in Phase 1.2. Match local PostgreSQL major version to the target project. No application schema or authentication flows should be added during this phase.
+Create future migrations with `npm run supabase -- migration new <snake_case_description>`. Preserve generated timestamp ordering, review generated SQL, and commit each migration. Once applied to a shared environment, migrations are immutable; use a new forward migration for corrections. Do not commit real seed data, passwords, generated `.temp` files, or tokens. Seeds are disabled in Phase 1.2. Match local PostgreSQL major version to the target project. Phase 1.2 added no application schema or authentication flows. Phase 2.1 is authorized to add the initial model and tests locally only; authentication UI remains out of scope.
 
 Before proposed database changes: recreate the disposable local database with `npm run db:reset`, run `npm run db:lint`, and add meaningful database behavior/security tests when tables exist. A schema with no application objects does not validate application authorization. Database changes need PR review and a verified development run. Production changes require explicit approval, target confirmation, backup/PITR readiness, and a forward recovery plan; use expand/contract changes and review locking/destructive operations.
 
 The single recommended migration delivery path is Supabase's native GitHub integration from protected `main`, with working directory `.`. Configure its preview/migration status as a required check. Do not enable a parallel GitHub Actions `db push` deployer. Enabling the integration is an infrastructure action and is not part of local validation. Any fallback to Actions requires first confirming native integration is unavailable and disabling the original deployment mechanism; keep credentials in protected GitHub environments, never source control.
 
 Infrastructure validation includes `npm run cf:build`, `npm run cf:check`, and representative requests against `npm run cf:preview`, in addition to the usual app checks. `cf:check` is dry-run only. Report local Worker compatibility separately from remote deployment, real Supabase connectivity, and migration application.
+
+## Phase 2.1 database model
+
+Read `docs/database-schema.md` before schema changes. The initial 18-table migration remains local and unshared pending explicit approval. Run `npm run db:start`, `npm run db:reset`, `npm run db:lint`, and `npm run db:test` using the pinned CLI; all default to the disposable local target. Lint includes both `public` and internal `body_private` and excludes extension-owned test internals. Do not use `--remote`, hosted credentials, remote history repair, or remote reset as validation.
+
+All new exposed tables currently deny client access: RLS enabled, no policies, explicit grant revocation. Phase 2.2 must add minimal grants and operation-specific owner/parent policies with success and denial tests together. Do not expose profiles, private preferences, catalogs, or security-invoker trigger helpers by accident. Weights are normalized external load in kilograms. Cycle positions are not weekdays. Historical snapshots and actual measurements are independent of mutable plans; derived records must be correctable.
+
+Do not push this migration branch or merge it automatically: the connected Supabase GitHub integration could apply SQL remotely. Obtain explicit approval for the target and Git-triggered remote migration behavior first. Present local migration/tests for review at the end of Phase 2.1.
 
 ## Scope
 
