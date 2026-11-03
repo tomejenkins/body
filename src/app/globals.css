@@ -588,3 +588,138 @@ h1 {
     animation: none !important;
   }
 }
+
+/* Auth uses the same quiet palette and system theme as the training shell. */
+.auth-page {
+  min-height: 100svh;
+  padding: max(24px, env(safe-area-inset-top)) 22px
+    max(28px, env(safe-area-inset-bottom));
+}
+.auth-brand {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.auth-brand a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+}
+.auth-brand span {
+  color: var(--secondary);
+  font-size: 9px;
+  letter-spacing: 1.8px;
+}
+.auth-card {
+  max-width: 440px;
+  padding: 40px 0 0;
+  margin: 50px auto 0;
+}
+.auth-card h1 {
+  font-size: 34px;
+  letter-spacing: -1.3px;
+}
+.auth-form {
+  display: grid;
+  gap: 18px;
+}
+.auth-field {
+  display: grid;
+  gap: 8px;
+}
+.auth-field label {
+  font-size: 13px;
+  font-weight: 500;
+}
+.auth-input {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--foreground);
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 16px;
+}
+.auth-input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+.auth-input:disabled {
+  opacity: 0.6;
+}
+.auth-hint {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--secondary);
+  margin: 0;
+}
+.auth-error,
+.auth-success {
+  font-size: 13px;
+  line-height: 1.7;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 0 0 16px;
+}
+.auth-error {
+  border-color: color-mix(in srgb, #b64040 60%, var(--border));
+}
+.auth-success {
+  background: var(--muted);
+}
+.auth-links {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--secondary);
+}
+.auth-links a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.auth-links p {
+  margin: 4px 0;
+}
+.auth-footer {
+  text-align: center;
+  font-size: 11px;
+  color: var(--secondary);
+  line-height: 1.6;
+  margin: 50px 0 0;
+}
+.signout-form {
+  margin-top: 24px;
+  text-align: center;
+}
+.signout-form .auth-error {
+  margin-top: 12px;
+}
+@media (max-width: 700px) {
+  .auth-brand span {
+    display: none;
+  }
+  .auth-card {
+    padding-top: 24px;
+    margin-top: 24px;
+  }
+  .auth-card h1 {
+    font-size: 30px;
+  }
+  .auth-footer {
+    margin-top: 36px;
+  }
+}

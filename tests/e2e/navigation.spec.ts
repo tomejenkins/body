@@ -1,4 +1,8 @@
 import { expect, test } from "@playwright/test";
+import { loginForNavigation } from "./auth-helpers";
+test.beforeEach(async ({ page }) => {
+  await loginForNavigation(page);
+});
 const routes = [
   ["Dashboard", "Show up for yourself."],
   ["Workout", "Your next rep starts here."],

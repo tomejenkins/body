@@ -1,5 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
 const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
+if (externalBaseURL) {
+  const target = new URL(externalBaseURL);
+  if (
+    target.protocol !== "http:" ||
+    !["127.0.0.1", "localhost"].includes(target.hostname) ||
+    !["3000", "8787"].includes(target.port)
+  )
+    throw new Error(
+      "Browser tests may run only against the local app or Worker preview.",
+    );
+}
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
