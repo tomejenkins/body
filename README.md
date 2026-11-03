@@ -6,7 +6,7 @@ A mobile-first foundation for a premium workout tracker. The repository was empt
 
 Next.js App Router, React, strict TypeScript, Tailwind CSS v4, shadcn/ui-style local components (Radix Slot, CVA, `cn`), and Supabase SSR/browser adapters. ESLint, Prettier, Vitest, Testing Library, and Playwright provide checks. Node 24 LTS and npm are the validated tools; the npm lockfile pins dependencies.
 
-The dashboard, workout, programs, history, feed, and profile routes are presentation placeholders. A local-only initial database schema is available in Phase 2.1. No application workout logic, session handling, authentication flow, recommendations, social access controls, or trainer capabilities are implemented. Private-by-default sharing is a product requirement, not a claim of implemented database security.
+The six existing routes retain the responsive shell and are protected by real Supabase authentication. Phase 3.1 adds email/password signup, confirmation, sign-in/out, recovery and minimal display-name onboarding; workout features remain placeholders. Phase 2.1/2.2 provide the versioned schema and owner-isolation policies. Hosted migration state and live signup readiness require administrator verification; local success is not hosted verification. Recommendations, social features and trainer capabilities remain unimplemented.
 
 ## Local setup
 
@@ -17,7 +17,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-The shell runs without Supabase configuration. Before using the adapters, create a Supabase project and set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` using its project settings. These are public client settings; never add a service-role key to a public variable. No backend calls occur until an adapter is invoked. Configure auth callbacks, session refresh, migrations, and row-level security in a separate feature task before handling user data. The server adapter writes cookies and must be called from a context that permits cookie writes (Server Action or Route Handler); do not use it for session refresh in a Server Component.
+Without configuration, public authentication pages explain the missing settings and protected routes fail closed to login. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and `NEXT_PUBLIC_SITE_URL` in ignored `.env.local`. Never use a service-role key. See [authentication setup](docs/authentication.md) for the disposable local Supabase/Mailpit stack, exact redirect URLs, confirmation/SMTP setup, Workers build/runtime variables, security boundaries and manual smoke tests.
 
 ## Commands
 
@@ -40,7 +40,9 @@ Production builds use Next.js’s supported webpack builder because Turbopack bu
 
 ## Architecture
 
-- `src/app`: route entry points, root layout, theme, and web manifest.
+- `src/app`: public auth routes, protected `(app)` routes, onboarding, root layout, theme and manifest.
+- `src/features/auth`: strict validation, server actions, verified sessions and retry-safe account initialization.
+- `src/components/auth`: shared accessible authentication presentation.
 - `src/components/layout`: responsive application shell and navigation.
 - `src/components/ui`: locally owned shadcn-compatible primitives; `components.json` defines generation aliases.
 - `src/components/section-placeholder.tsx`: shared empty-state presentation.
@@ -80,7 +82,7 @@ Manual setup checklist:
 
 ## Initial database schema (Phase 2.1)
 
-[Database design, relationships, security boundaries, and local validation](docs/database-schema.md) document the 18-table initial migration. It separates private preferences, normalized exercise classifications, non-calendar program cycles, and actual workout history. All exposed tables enable RLS. Phase 2.2 adds narrow authenticated owner/catalog grants and policies; anonymous access remains denied. See [the authorization matrix](docs/database-security.md). No UI, auth flow, remote migration, or deployment is included.
+[Database design, relationships, security boundaries, and local validation](docs/database-schema.md) document the 18-table initial migration. It separates private preferences, normalized exercise classifications, non-calendar program cycles, and actual workout history. All exposed tables enable RLS. Phase 2.2 adds narrow authenticated owner/catalog grants and policies; anonymous access remains denied. See [the authorization matrix](docs/database-security.md). Those database phases introduced no auth UI; Phase 3.1 adds it without changing their migrations.
 
 ```sh
 npm run db:start
@@ -108,12 +110,16 @@ All eleven scaffold tasks are implemented. This describes the foundation, not co
 | 6. Lint, format, and test tooling                 | ESLint flat config, Prettier with Tailwind ordering, strict typecheck, Vitest/Testing Library, and Playwright.       |
 | 7. Six placeholder routes                         | `/dashboard`, `/workout`, `/programs`, `/history`, `/feed`, `/profile`; `/` redirects to dashboard.                  |
 | 8. Responsive shell                               | Mobile bottom bar, desktop sidebar, current-page labels, skip link, safe-area spacing, and system light/dark themes. |
-| 9. Configuration example                          | `.env.example` documents the two public Supabase settings without credentials.                                       |
+| 9. Configuration example                          | `.env.example` documents public Supabase settings and the canonical app origin without credentials.                  |
 | 10. Local instructions                            | This README covers Node, dependencies, development, production, checks, and manual Supabase setup.                   |
 | 11. Agent instructions                            | `AGENTS.md` covers architecture, conventions, validation, security boundaries, and product decisions.                |
 
-The shadcn approach uses locally owned component source and `components.json`, rather than a runtime component-library package. The initial Button uses Radix Slot, CVA, and the shared `cn` helper. Supabase is configured as an integration boundary; a hosted project and real authentication/database policies still require separate setup. The webpack build choice is explained above.
+The shadcn approach uses locally owned component source and `components.json`, rather than a runtime component-library package. The initial Button uses Radix Slot, CVA, and the shared `cn` helper. Supabase Auth and owner database policies are implemented and tested locally; hosted configuration and deployment verification still require manual setup. The webpack build choice is explained above.
 
 Node types track Node 24 to avoid accidentally accepting APIs unavailable in the supported runtime. ESLint 9 is retained for compatibility with the React and accessibility plugins used by Next.js; that major is deprecated upstream. Upgrade when the plugin peer ranges support ESLint 10 rather than forcing incompatible peers.
 
 Browser checks cover all routes, active navigation, desktop/sidebar and mobile/bottom positioning, mobile touch-target dimensions, narrow-screen overflow, system theme changes, primary-action colors, the manifest, and keyboard skip navigation. These checks do not establish a complete accessibility audit or native-device compatibility. Run the commands above to validate future changes.
+
+## Phase 3.1 authentication
+
+Read [the authentication guide](docs/authentication.md) before enabling live signup. It records the read-only code/database preflight, local functional tests, account-deletion boundaries, session/caching behavior, SMTP sender versus inbox distinction, manual Cloudflare/Supabase setup and future OAuth requirements. No hosted data/schema, deployed migrations, production secrets or infrastructure are changed by this phase. Publication remains gated on confirming branch deployment automation will not violate this scope.

@@ -52,6 +52,16 @@ Profile, session and performed-exercise deletion remains denied to avoid cascade
 
 Run the retained invariant suite and the exhaustive role/grant suite after a fresh local reset. A denial test must distinguish permission errors from zero-row RLS results and verify persisted state. No hosted SQL, remote migration, Cloudflare setting, auth UI or logging UI changes. Keep this branch local unless Supabase automatic migration deployment has been disabled specifically for Phase 2.2 and publication is authorized; previous branch exceptions do not carry over.
 
+## Phase 3.1 authentication
+
+Read `docs/authentication.md` before changing authentication. The earlier phase-specific bans on auth UI describe those completed phases; Phase 3.1 authorizes real email/password flows locally. Keep all previously deployed SQL immutable. No hosted database/auth settings or production accounts may be changed for validation.
+
+Use `getUser()` to verify identity in server data loaders and write actions; protected layouts alone do not secure future actions. Never trust `getSession()` or editable metadata for authorization. Keep SSR cookie refresh and SDK cache headers, no-store private data, trusted canonical callback origins, and strict internal redirect validation. Preserve the Edge middleware compatibility choice until the pinned OpenNext adapter supports a verified replacement. Never log passwords, email callback queries, sessions or tokens.
+
+Profile initialization must use verified user IDs, owner-scoped RLS, permitted INSERT columns, duplicate-safe rereads and partial retry. Never upsert immutable owner keys or overwrite existing profiles during initialization. Keep tests for validation, login failures, confirmation, refresh/expiry, sign-out, recovery, account retries, open redirects and cross-owner denials. Browser integration tests may use only disposable local Supabase/Mailpit synthetic users; their helper refuses hosted targets. Run all app, browser, database and Worker checks, reporting hosted verification separately.
+
+Do not push this phase or open its PR until branch automation is verified compatible with no remote migration/deployment. Previous branch-specific authorizations do not carry over. No new schema, workout, subscription, social, OAuth or trainer logic belongs in Phase 3.1.
+
 ## Scope
 
 Keep initial work focused. Review existing code before replacing it, preserve local work, use supported dependencies, and never change package integrity checks to force installation. PWA offline support and platform-specific install validation are separate work.

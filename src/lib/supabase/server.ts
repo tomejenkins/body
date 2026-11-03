@@ -1,19 +1,26 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-export async function createClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key)
-    throw new Error(
-      "Configure the public Supabase URL and publishable key before using Supabase.",
-    );
+import { authCookieOptions, getSupabaseConfig } from "./config";
+// Components read only; middleware persists refreshes. Actions and handlers may write.
+export async function createClient({
+  readOnly = false,
+  responseHeaders,
+}: { readOnly?: boolean; responseHeaders?: Headers } = {}) {
+  const { url, key } = getSupabaseConfig();
   const cookieStore = await cookies();
   return createServerClient(url, key, {
+    cookieOptions: authCookieOptions(),
+    global: {
+      fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }),
+    },
     cookies: {
       getAll: () => cookieStore.getAll(),
-      setAll: (values) => {
+      setAll: (values, cacheHeaders) => {
+        if (readOnly) return; // Request middleware owns refresh cookie/header writes for RSCs.
         for (const { name, value, options } of values)
           cookieStore.set(name, value, options);
+        for (const [name, value] of Object.entries(cacheHeaders))
+          responseHeaders?.set(name, value);
       },
     },
   });
