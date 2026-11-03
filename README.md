@@ -80,7 +80,7 @@ Manual setup checklist:
 
 ## Initial database schema (Phase 2.1)
 
-[Database design, relationships, security boundaries, and local validation](docs/database-schema.md) document the 18-table initial migration. It separates private preferences, normalized exercise classifications, non-calendar program cycles, and actual workout history. All exposed tables enable RLS with client access denied pending Phase 2.2. No UI, auth flow, remote migration, or deployment is included.
+[Database design, relationships, security boundaries, and local validation](docs/database-schema.md) document the 18-table initial migration. It separates private preferences, normalized exercise classifications, non-calendar program cycles, and actual workout history. All exposed tables enable RLS. Phase 2.2 adds narrow authenticated owner/catalog grants and policies; anonymous access remains denied. See [the authorization matrix](docs/database-security.md). No UI, auth flow, remote migration, or deployment is included.
 
 ```sh
 npm run db:start
@@ -89,7 +89,7 @@ npm run db:lint
 npm run db:test
 ```
 
-The tests use synthetic fixtures and temporary grants inside a rollback transaction. Keep the migration branch local for review; pushing it could trigger the connected Supabase preview integration and modify a hosted database. Obtain explicit target-specific approval before any remote application or Git push of this migration branch. Hosted migration history remains untouched.
+The tests use synthetic fixtures and temporary grants inside a rollback transaction. Phase 2.1 is merged into main; its existing migration must remain immutable. The new Phase 2.2 security migration is validated locally only. Confirm preview migration automation is disabled for its new branch before publication; the connected integration could otherwise apply SQL remotely. See [database security](docs/database-security.md) for Phase 3 provisioning and the per-table authorization matrix. No remote SQL or migration-history operation was run by Phase 2.2.
 
 ## Design and PWA status
 
