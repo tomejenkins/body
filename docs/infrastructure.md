@@ -45,7 +45,7 @@ Do not put database passwords, Supabase personal access tokens, or service-role 
 
 ## Supabase CLI workspace
 
-The official `supabase init` command generated `supabase/config.toml` and `supabase/.gitignore`. `supabase/migrations/.gitkeep` retains the empty migration directory. Seeds are disabled because there is no application data or seed file. `project_id = "body"` identifies the local Docker stack, **not** a hosted project reference. Generated `.temp` and branch metadata are ignored. No application SQL, tables, authentication code, or subscription behavior exists in this change.
+The official `supabase init` command generated `supabase/config.toml` and `supabase/.gitignore`. `supabase/migrations/.gitkeep` retains the empty migration directory. Seeds are disabled because there is no application data or seed file. `project_id = "body"` identifies the local Docker stack, **not** a hosted project reference. Generated `.temp` and branch metadata are ignored, along with local `signing_keys.json` private signing material. CLI access tokens belong in the CLI user configuration or a secret manager outside the checkout, never in repository files. No application SQL, tables, authentication code, or subscription behavior exists in this change.
 
 Use the committed CLI 3.0.0 from the repository root:
 
@@ -82,6 +82,8 @@ npm run db:lint
 ```
 
 No application migration should be authored merely to test infrastructure. `.gitkeep` is not SQL and is not a migration. Commit future reviewed migrations, keep applied shared migrations immutable, and correct mistakes with a new forward migration. Review destructive SQL, locks, grants, RLS, and data backfills. Never use production user data for local seeds.
+
+Any remote database modification—including a development project—requires explicit user approval for the target and operation. These documented commands do not grant that approval. Future exposed user-data tables must enable RLS through versioned migrations and include tests for allowed owner access and denied anonymous/cross-user access before application use. No such tables or policies are added in Phase 1.2.
 
 For a separately authorized development deployment, after verifying the linked target:
 
