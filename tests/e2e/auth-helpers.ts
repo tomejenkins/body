@@ -129,6 +129,7 @@ export async function loginForNavigation(page: Page) {
   await page.getByLabel("Password", { exact: true }).fill(account.password);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/dashboard$/);
+  return account;
 }
 // Exercise real refresh without signing tokens or using an administrative key.
 // Only expiry metadata is aged; the legitimate local refresh token still has to validate.

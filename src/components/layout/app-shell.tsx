@@ -36,7 +36,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <nav aria-label="Main navigation" className="navigation">
           {navigation.map((item) => {
             const Icon = icons[item.icon];
-            const active = pathname === item.href;
+            const active =
+              pathname === item.href ||
+              (item.href === "/workout" && pathname.startsWith("/exercises"));
             return (
               <Link
                 key={item.href}

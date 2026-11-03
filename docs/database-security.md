@@ -141,3 +141,9 @@ Official guidance: [Supabase RLS and operation grants](https://supabase.com/docs
 | Git publication / PR                              | Kept local at the user's explicit request for Phase 2.2.                                                               |
 
 Docker and the local test runner were available; no required local check was blocked. These tests exercise database roles/claims and constraints, not the future live HTTP authentication/session-refresh workflow. No live Supabase authorization claim or deployment success is asserted.
+
+## Phase 4.1 additive classification
+
+The Phase 4.1 forward migration adds `exercise_type` to authenticated exercise INSERT/UPDATE allowlists and `is_primary` to pattern-link INSERT. Owner/system RLS remains unchanged; `slug` is readable and database-generated for custom records, with no client INSERT/UPDATE grant. The primary-pattern index permits at most one flagged link. Existing low-level/legacy records may lack a primary until edited.
+
+`public.save_custom_exercise` is an authenticated-only SECURITY INVOKER transaction with empty search path, active taxonomy validation and verified owner checks; it has no owner parameter, privilege bypass or system administration capability. Its underlying operations still require RLS and existing narrow grants. See [exercise-library.md](exercise-library.md) and the retained exact-allowlist plus new role tests. No new DELETE or anonymous/service-role access is granted.

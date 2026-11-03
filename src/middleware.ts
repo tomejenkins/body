@@ -13,6 +13,7 @@ export const config = {
     "/history/:path*",
     "/feed/:path*",
     "/profile/:path*",
+    "/exercises/:path*",
     "/onboarding",
     "/login",
     "/signup",

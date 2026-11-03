@@ -6,7 +6,7 @@ A mobile-first foundation for a premium workout tracker. The repository was empt
 
 Next.js App Router, React, strict TypeScript, Tailwind CSS v4, shadcn/ui-style local components (Radix Slot, CVA, `cn`), and Supabase SSR/browser adapters. ESLint, Prettier, Vitest, Testing Library, and Playwright provide checks. Node 24 LTS and npm are the validated tools; the npm lockfile pins dependencies.
 
-The six existing routes retain the responsive shell and are protected by real Supabase authentication. Phase 3.1 adds email/password signup, confirmation, sign-in/out, recovery and minimal display-name onboarding; workout features remain placeholders. Phase 2.1/2.2 provide the versioned schema and owner-isolation policies. Hosted migration state and live signup readiness require administrator verification; local success is not hosted verification. Recommendations, social features and trainer capabilities remain unimplemented.
+The six existing routes retain the responsive shell and are protected by real Supabase authentication. Phase 3.1 adds email/password signup, confirmation, sign-in/out, recovery and minimal display-name onboarding; workout logging remains a placeholder. Phase 4.1 adds the real exercise library, custom exercises, favorites and deterministic recommendations. Phase 2.1/2.2 provide the versioned schema and owner-isolation policies. Hosted migration state and live signup readiness require administrator verification; local success is not hosted verification. Recommendations, social features and trainer capabilities remain unimplemented.
 
 ## Local setup
 
@@ -123,3 +123,9 @@ Browser checks cover all routes, active navigation, desktop/sidebar and mobile/b
 ## Phase 3.1 authentication
 
 Read [the authentication guide](docs/authentication.md) before enabling live signup. It records the read-only code/database preflight, local functional tests, account-deletion boundaries, session/caching behavior, SMTP sender versus inbox distinction, manual Cloudflare/Supabase setup and future OAuth requirements. No hosted data/schema, deployed migrations, production secrets or infrastructure are changed by this phase. Publication remains gated on confirming branch deployment automation will not violate this scope.
+
+## Phase 4.1 exercise library
+
+Open **Workout → Explore exercise library**. The protected library supports name search, combined movement/muscle/equipment/type filters, details, favorites/preferences and private custom creation/editing/archiving. The initial versioned catalog has 183 exercises (105 compound, 63 isolation, 15 other). Recommendations use explicit hard constraints and deterministic ranking; they do not log workouts or generate programs.
+
+Read [the exercise library guide](docs/exercise-library.md) for taxonomy, machine-specific equipment, migration strategy, atomic invoker writes, local test setup, ranking weights, history behavior and reviewed deployment requirements. Run `npm run catalog:check` alongside app/database checks. The two new migrations require review and explicit approval before hosted application; existing applied migrations are unchanged.
