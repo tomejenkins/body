@@ -1,3 +1,4 @@
+import { ExerciseThumbnail } from "@/components/exercises/exercise-thumbnail";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { loadLibrary } from "@/features/exercises/queries";
@@ -32,6 +33,17 @@ export default async function Page({
             ? "PRIVATE CUSTOM EXERCISE"
             : "BODY EXERCISE LIBRARY"}
         </p>
+        <ExerciseThumbnail
+          size={128}
+          decorative={false}
+          visual={{
+            slug: exercise.slug,
+            ownerId: exercise.ownerId,
+            patternSlug: library.patterns.find(
+              (p) => p.id === exercise.primaryPatternId,
+            )?.slug,
+          }}
+        />
         <h1>{exercise.name}</h1>
         <FavoriteButton
           exercise={exercise}

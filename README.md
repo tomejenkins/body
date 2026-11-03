@@ -6,7 +6,7 @@ A mobile-first foundation for a premium workout tracker. The repository was empt
 
 Next.js App Router, React, strict TypeScript, Tailwind CSS v4, shadcn/ui-style local components (Radix Slot, CVA, `cn`), and Supabase SSR/browser adapters. ESLint, Prettier, Vitest, Testing Library, and Playwright provide checks. Node 24 LTS and npm are the validated tools; the npm lockfile pins dependencies.
 
-The six existing routes retain the responsive shell and are protected by real Supabase authentication. Phase 3.1 adds email/password signup, confirmation, sign-in/out, recovery and minimal display-name onboarding; workout logging remains a placeholder. Phase 4.1 adds the real exercise library, custom exercises, favorites and deterministic recommendations. Phase 2.1/2.2 provide the versioned schema and owner-isolation policies. Hosted migration state and live signup readiness require administrator verification; local success is not hosted verification. Recommendations, social features and trainer capabilities remain unimplemented.
+The six existing routes retain the responsive shell and are protected by real Supabase authentication. Phase 3.1 adds email/password signup, confirmation, sign-in/out, recovery and minimal display-name onboarding; set-by-set logging is not yet implemented. Phase 5.1 supports real ad-hoc session lifecycles and exercise selection management. Phase 4.1 adds the real exercise library, custom exercises, favorites and deterministic recommendations. Phase 2.1/2.2 provide the versioned schema and owner-isolation policies. Hosted migration state and live signup readiness require administrator verification; local success is not hosted verification. Social features, program generation and trainer capabilities remain unimplemented.
 
 ## Local setup
 
@@ -129,3 +129,9 @@ Read [the authentication guide](docs/authentication.md) before enabling live sig
 Open **Workout → Explore exercise library**. The protected library supports name search, combined movement/muscle/equipment/type filters, details, favorites/preferences and private custom creation/editing/archiving. The initial versioned catalog has 183 exercises (105 compound, 63 isolation, 15 other). Recommendations use explicit hard constraints and deterministic ranking; they do not log workouts or generate programs.
 
 Read [the exercise library guide](docs/exercise-library.md) for taxonomy, machine-specific equipment, migration strategy, atomic invoker writes, local test setup, ranking weights, history behavior and reviewed deployment requirements. Run `npm run catalog:check` alongside app/database checks. The two new migrations require review and explicit approval before hosted application; existing applied migrations are unchanged.
+
+## Phase 4.2 / 5.1 visuals and workouts
+
+The Workout page now starts or resumes one ad-hoc session, saves exercise selections, supports adjacent reordering/non-destructive removal and closes by finishing or abandoning. No set logging or program generator is implemented. Finishing without sets stays explicitly unlogged rather than fabricating work.
+
+Local SVG thumbnails cover library cards/details, the shared selector and workout lists: 8 specific mappings, 29 movement-family assets and a generic fallback. Read [exercise visuals](docs/exercise-visuals.md) and [workout lifecycle](docs/workout-lifecycle.md) for architecture, safeguards, tests and manual delivery steps. The single new forward migration requires reviewed application before deploying this version; old migrations and Workers configuration are unchanged.

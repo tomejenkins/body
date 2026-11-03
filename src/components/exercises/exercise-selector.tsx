@@ -12,15 +12,20 @@ import {
   type ExerciseType,
   type Library,
 } from "@/features/exercises/types";
+import { ExerciseThumbnail } from "./exercise-thumbnail";
 import { FavoriteButton } from "./preference-controls";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 export function ExerciseSelector({
   library,
   onSelect,
+  selectedIds = [],
+  selecting = false,
 }: {
   library: Library;
   onSelect?: (exercise: Exercise) => void;
+  selectedIds?: readonly string[];
+  selecting?: boolean;
 }) {
   const [query, setQuery] = useState("");
   const search = useDeferredValue(query);
@@ -62,6 +67,7 @@ export function ExerciseSelector({
       availableEquipmentIds: equipmentFilter ? equipment : undefined,
       preferences: library.preferences,
       recentIds: library.recentIds,
+      currentWorkoutIds: selectedIds,
     },
     noneId,
   );
@@ -288,6 +294,15 @@ export function ExerciseSelector({
           {matches.slice(0, limit).map((exercise) => (
             <article className="exercise-card" key={exercise.id}>
               <div className="exercise-card-heading">
+                <ExerciseThumbnail
+                  visual={{
+                    slug: exercise.slug,
+                    ownerId: exercise.ownerId,
+                    patternSlug: library.patterns.find(
+                      (p) => p.id === exercise.primaryPatternId,
+                    )?.slug,
+                  }}
+                />
                 <h2>
                   <Link href={`/exercises/${exercise.id}`}>
                     {exercise.name}
@@ -320,8 +335,14 @@ export function ExerciseSelector({
                 {exercise.ownerId && <span>Private custom</span>}
               </div>
               {onSelect && (
-                <Button variant="outline" onClick={() => onSelect(exercise)}>
-                  Select exercise
+                <Button
+                  variant="outline"
+                  disabled={selecting || selectedIds.includes(exercise.id)}
+                  onClick={() => onSelect(exercise)}
+                >
+                  {selectedIds.includes(exercise.id)
+                    ? "Already selected"
+                    : "Select exercise"}
                 </Button>
               )}
             </article>

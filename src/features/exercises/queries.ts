@@ -103,6 +103,7 @@ export async function loadLibrary(): Promise<Library> {
       client
         .from("workout_exercises")
         .select("exercise_id")
+        .is("removed_at", null)
         .eq("owner_id", user.id)
         .order("created_at", { ascending: false })
         .order("id")

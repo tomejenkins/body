@@ -1065,7 +1065,7 @@ select ok((select has_table_privilege('authenticated','public.workout_exercises'
 
 select ok((select bool_and(has_column_privilege('authenticated','public.workout_exercises',attname,'INSERT') = (attname = any(array['id','owner_id','workout_session_id','position','source_program_slot_id','exercise_id','prescribed_exercise_id','exercise_name_snapshot','exercise_instructions_snapshot','prescribed_exercise_name_snapshot','status','prescribed_sets','prescribed_rest_seconds','notes']::text[]))) from pg_attribute where attrelid='public.workout_exercises'::regclass and attnum>0 and not attisdropped), 'workout_exercises: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.workout_exercises',attname,'UPDATE') = (attname = any(array['position','exercise_id','prescribed_exercise_id','exercise_name_snapshot','exercise_instructions_snapshot','prescribed_exercise_name_snapshot','status','prescribed_sets','prescribed_rest_seconds','notes']::text[]))) from pg_attribute where attrelid='public.workout_exercises'::regclass and attnum>0 and not attisdropped), 'workout_exercises: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.workout_exercises',attname,'UPDATE') = (attname = any(array['position','exercise_id','prescribed_exercise_id','exercise_name_snapshot','exercise_instructions_snapshot','prescribed_exercise_name_snapshot','status','prescribed_sets','prescribed_rest_seconds','notes','removed_at']::text[]))) from pg_attribute where attrelid='public.workout_exercises'::regclass and attnum>0 and not attisdropped), 'workout_exercises: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.workout_sets'::regclass), 'workout_sets: RLS enabled');
 
@@ -1992,7 +1992,7 @@ select throws_ok($sql$insert into public.workout_sessions(owner_id,name,source_p
 select is(pg_temp.affected($sql$update public.program_assignments set next_cycle_position=10 where id=md5('assignment_carol')::uuid$sql$), 1::bigint, 'owner explicitly selects a tenth-position rest cursor');
 select is(pg_temp.affected($sql$update public.program_assignments set next_cycle_position=1, completed_rotations=1 where id=md5('assignment_carol')::uuid$sql$), 1::bigint, 'owner explicitly wraps a ten-position rotation');
 
-select lives_ok($sql$insert into public.workout_sessions(owner_id,name) values (md5('carol')::uuid,'Ad hoc')$sql$, 'owner creates ad hoc session');
+select throws_ok($sql$insert into public.workout_sessions(owner_id,name) values (md5('carol')::uuid,'Ad hoc')$sql$, '23505', null, 'second active workout is denied by unique index');
 
 select lives_ok($sql$insert into public.workout_sessions(owner_id,name,status,completion_status,finished_at) values (md5('carol')::uuid,'Abandoned','abandoned','partial',now())$sql$, 'owner can record a partial abandoned session');
 

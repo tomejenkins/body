@@ -72,6 +72,14 @@ All system data belongs in reviewed forward migrations, never runtime seeding. R
 
 Custom writes verify identity and use the atomic SECURITY INVOKER editor with existing RLS/column grants, no owner parameter or privileged bypass. Never grant system catalog writes. Favorites and preference are independent; do not upsert immutable keys. Archive rather than delete exercises. Read actual owner-scoped history for recents without fabricating activity or persisting browse clicks. Validate forms both client/server and test cross-owner/system denials, atomic failures and archive/history preservation. Run app, database, catalog, browser and Workers checks. Publication must respect confirmed preview safety and explicit no-production-deployment scope.
 
+## Phase 4.2 / 5.1 workouts and visuals
+
+Read `docs/workout-lifecycle.md` and `docs/exercise-visuals.md`. This phase authorizes local workout lifecycle/selection operations and local visuals, superseding earlier phase-specific bans on building those features. It does not authorize set logging, programs, OAuth, uploads, trainer/social behavior, hosted SQL or production deployment.
+
+Use the authenticated invoker lifecycle RPCs, verified server identity and single-active index; never trust submitted owners or invent performed sets. Finish with completion_status none when no sets were recorded. Keep terminal transitions idempotent, preserve snapshots, and remove only unlogged pending selections through removed_at; never grant hard DELETE on performed exercises. Preserve parent-first lock ordering, unique positions and database role tests. Filter removed selections out of recents and future performed-history views. Test duplicate/concurrent starts, cross-owner writes, reorder/removal, close/retry, recorded-set protection and refresh persistence.
+
+Use allowlisted local visual descriptors, specific > movement > generic fallback and accessible dimensions/alt semantics. Static thumbnail paths must avoid authenticated application route namespaces. Do not import the entire catalog into client bundles for media lookup, fetch stock assets, trust arbitrary media paths or add upload infrastructure. Preserve independent compound/isolation/other classification and reuse the existing selector. Run app, catalog, database, browser and Workers validation; distinguish local results from hosted verification. Publishing must respect confirmed preview safety; no automatic merging.
+
 ## Scope
 
 Keep initial work focused. Review existing code before replacing it, preserve local work, use supported dependencies, and never change package integrity checks to force installation. PWA offline support and platform-specific install validation are separate work.
