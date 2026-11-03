@@ -1,12 +1,12 @@
 # Phase 2.1 database schema
 
-Status: local-only initial migration, not deployed to a hosted project. Application clients and UI are unchanged. This model is not an implemented workout service or an authorization API.
+Phase 2.1 is merged into main; its hosted deployment status was not queried. Phase 2.2 adds a new local-only forward security migration without changing the initial migration. Application clients/UI are unchanged. See [the current authorization matrix and policy reference](database-security.md).
 
 Migration: `supabase/migrations/20261103165311_initial_body_schema.sql` (generated with the official pinned Supabase CLI 3.0.0). All SQL is under root `supabase/`, not `src/lib/`. Catalog data and application seeds are intentionally absent.
 
 ## Table inventory
 
-All 18 tables are in the exposed `public` schema, have RLS enabled, and have all table privileges revoked from `PUBLIC`, `anon`, `authenticated`, and `service_role`. There are no client policies yet. Even the profile presentation table and system exercise catalog are private in this phase.
+All 18 tables are in the exposed `public` schema with RLS enabled. Phase 2.1 revoked every API privilege; Phase 2.2 deliberately adds authenticated owner/catalog policies and narrow column grants. `PUBLIC`, `anon`, and `service_role` remain ungranted. Profiles/preferences and workout data remain private; system catalog reads require a signed-in identity. The exact per-table rules are documented in [database-security.md](database-security.md).
 
 | Table                        | Primary key and relationships                                                 | Purpose                                                                                                                                         |
 | ---------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -63,19 +63,9 @@ erDiagram
 
 All owner columns reference profiles. Composite foreign keys prevent a day from joining another user's program, a slot from joining another user's day, an assignment/session from joining another user's program, an exercise from joining another user's session, and a set from joining another user's performed exercise. Owner columns are immutable. Invoker triggers additionally prevent private custom-exercise references across owners and ensure initial source-slot/day consistency. These are relational integrity rules, not substitutes for RLS.
 
-RLS has **zero policies** and client grants are explicitly revoked on each created table; Supabase's legacy default grants cannot accidentally expose the model. The migration also revokes the newly created tables' service-role grants, so this phase offers no application access path. PostgreSQL administrators can still inspect data. No `SECURITY DEFINER`, auth metadata authorization, permissive views, API RPCs, or service-role client code is introduced. Internal invoker functions live in non-exposed `body_private`, with client schema/function privileges revoked and an empty search path with fully qualified relation names.
+Phase 2.1's default-deny migration remains immutable. The Phase 2.2 forward migration now enables the reviewed owner operations described in [database-security.md](database-security.md). Policies use verified `auth.uid()`, both UPDATE checks, and parent exercise visibility for custom classification links. Column grants deny mutation of ownership/identity/parent keys and server timestamps. No `SECURITY DEFINER`, public views, broadly readable profiles, or service-role API path was introduced.
 
-The test suite checks revoked operation grants for every table/role, then temporarily grants DML in a rolled-back test transaction to prove default-deny RLS independently hides rows and rejects writes under anonymous, Alice, and Bob claims. It does not claim legitimate owners can use the API yet: owners are denied too.
-
-Phase 2.2 must deliberately add:
-
-- Operation-specific `SELECT`, `INSERT`, `UPDATE`, and `DELETE` grants only where needed, never broad `ALL`/TRUNCATE grants.
-- Policies using verified `(select auth.uid())` ownership. UPDATE needs both `USING` and `WITH CHECK`, plus the appropriate SELECT policy; owner reassignment remains forbidden.
-- Parent/child and system/custom-library policies without recursive or privileged bypasses, and narrow system-catalog write administration.
-- Database tests proving owner operations succeed and anonymous/cross-user operations fail, including source references, nested resources, and every exposed operation.
-- Auth/session integration and trustworthy server-side snapshot construction, without user-editable metadata as an authority.
-
-Public-facing profile _shape_ is separate from private account preferences, but publishing any profile data remains an explicit future feature. Do not grant a broad profile SELECT policy for social functionality.
+The relational pgTAP file keeps its existing invariant/history assertions; current role/grant behavior is independently tested in `security.test.sql`. Legacy blanket-denial assertions were replaced because authenticated owner reads/writes are now intentionally enabled. Profile creation will be explicit after a verified signup session in Phase 3; no auth UI or managed auth trigger was added. Profile/session/performed-exercise deletion remains denied to protect cascading history. Hosted databases are untouched by this phase.
 
 ## Important constraints and indexes
 
@@ -106,7 +96,7 @@ Plans are mutable prescriptions; sessions/exercises/sets are separately owned fa
 
 Substitution stores both performed `exercise_id` and optional original `prescribed_exercise_id`, plus their names. The original source slot is nullable provenance, not a live prescription dependency. A slot may represent only a movement pattern; its eventual selection becomes the performed exercise. Multiple target patterns and muscles belong to the normalized exercise library rather than hardcoded names.
 
-Editing/archiving a program, changing a day name, updating targets, or renaming/archiving a catalog exercise does not update snapshot labels, prescriptions, or actual sets. Session source IDs, source position and lap are immutable after creation. Catalog/program/day references protect provenance against destructive deletion; nullable source-slot links may clear without removing history. Historical sets retain stable IDs and can be corrected, with `updated_at` maintained automatically. The authorization and correction/audit UI are future work; owners currently cannot write through the API.
+Editing/archiving a program, changing a day name, updating targets, or renaming/archiving a catalog exercise does not update snapshot labels, prescriptions, or actual sets. Session source IDs, source position and lap are immutable after creation. Catalog/program/day references protect provenance against destructive deletion; nullable source-slot links may clear without removing history. Historical sets retain stable IDs and can be corrected, with `updated_at` maintained automatically. The authorization and correction/audit UI are future work; authorized owners can correct their own permitted fields through the Phase 2.2 policies.
 
 A `revision` and same-owner `derived_from_program_id` allow explicit cloned/template lineage. A revision number is not a retained version store: history preservation relies on performed snapshots, not that counter. Full immutable program versions and phase hierarchies are deliberately deferred.
 
@@ -131,7 +121,7 @@ Previous performance uses stable exercise identity and session/set timestamps. M
 
 Stable program, assignment, session, performed-exercise and set UUIDs allow later trainer relationships, explicit grants/sharing, program versions/phases, adaptive prescriptions, set-linked media and verification to be added as related tables. No trainer flags, unused video tables, social feeds, subscriptions, or speculative permissions are included. Explicit workout publishing should use a separate private-by-default publication relationship, not a globally readable session policy.
 
-Not implemented: auth UI or signup automation, client data grants/policies, real logging APIs, schedule advancement/idempotency, program activation completeness checks, seed catalogs, trainer/client relationships, social access, videos, verification, immutable correction audit, immutable program version store, adaptive multiweek programming, PR materialization, or stats/achievement UI. No changes to Cloudflare deployment configuration are part of this phase.
+Not implemented: auth UI or signup automation, real logging APIs, schedule advancement/idempotency, program activation completeness checks, seed catalogs, trainer/client relationships, social access, videos, verification, immutable correction audit, immutable program version store, adaptive multiweek programming, PR materialization, or stats/achievement UI. No changes to Cloudflare deployment configuration are part of this phase.
 
 ## Local validation and review
 
@@ -158,7 +148,7 @@ Keep this migration local for review: pushing a migration branch may trigger the
 
 Official security reference: [Supabase RLS guidance](https://supabase.com/docs/guides/database/postgres/row-level-security). Phase 2.2 should implement grants, `SELECT`/`INSERT`/`UPDATE`/`DELETE` policy semantics, and tests together rather than adding ad hoc broad permissions.
 
-## Phase 2.1 validation results
+## Historical Phase 2.1 validation results
 
 | Check                                                                  | Outcome                                                                                                              |
 | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |

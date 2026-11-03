@@ -38,11 +38,19 @@ Infrastructure validation includes `npm run cf:build`, `npm run cf:check`, and r
 
 ## Phase 2.1 database model
 
-Read `docs/database-schema.md` before schema changes. The initial 18-table migration remains local and unshared pending explicit approval. Run `npm run db:start`, `npm run db:reset`, `npm run db:lint`, and `npm run db:test` using the pinned CLI; all default to the disposable local target. Lint includes both `public` and internal `body_private` and excludes extension-owned test internals. Do not use `--remote`, hosted credentials, remote history repair, or remote reset as validation.
+Read `docs/database-schema.md` before schema changes. The initial 18-table migration is merged into main and may already be deployed; never edit it. Run `npm run db:start`, `npm run db:reset`, `npm run db:lint`, and `npm run db:test` using the pinned CLI; all default to the disposable local target. Lint includes both `public` and internal `body_private` and excludes extension-owned test internals. Do not use `--remote`, hosted credentials, remote history repair, or remote reset as validation.
 
-All new exposed tables currently deny client access: RLS enabled, no policies, explicit grant revocation. Phase 2.2 must add minimal grants and operation-specific owner/parent policies with success and denial tests together. Do not expose profiles, private preferences, catalogs, or security-invoker trigger helpers by accident. Weights are normalized external load in kilograms. Cycle positions are not weekdays. Historical snapshots and actual measurements are independent of mutable plans; derived records must be correctable.
+Phase 2.1 initially denied all client access. The Phase 2.2 forward migration adds reviewed authenticated owner/catalog policies and column-limited writes. Read `docs/database-security.md` for the current matrix; keep anonymous and service-role grants revoked and test success/denial together. Do not expose profiles, private preferences, catalogs, or security-invoker trigger helpers by accident. Weights are normalized external load in kilograms. Cycle positions are not weekdays. Historical snapshots and actual measurements are independent of mutable plans; derived records must be correctable.
 
-Do not push this migration branch or merge it automatically: the connected Supabase GitHub integration could apply SQL remotely. Obtain explicit approval for the target and Git-triggered remote migration behavior first. Present local migration/tests for review at the end of Phase 2.1.
+Before publishing any new migration branch, confirm that the connected Supabase integration will not violate its local-only scope. Branch-specific exceptions do not authorize other branches or automatic merges. Present migrations/tests for review.
+
+## Phase 2.2 authorization
+
+The Phase 2.1 migration is merged and immutable. All Phase 2.2 changes go in a new forward migration. Use verified `auth.uid()`, explicit `TO authenticated`, both `USING` and `WITH CHECK` on UPDATE, narrow column grants, and the preserved composite owner/parent constraints. Keep identities, ownership, parent references and server timestamps out of client UPDATE grants. No user-metadata authorization, broad catalog writes, recursive policies, public profile/history reads, or privileged RPC shortcuts.
+
+Profile, session and performed-exercise deletion remains denied to avoid cascaded history loss. Custom exercises/programs use archival; individual sets support explicit owner corrections/deletion. Classification writes require an owned custom parent; system catalogs are authenticated-read-only. Invoker exercise reference checks use ordinary SELECT so read-only system records remain usable without broadening write grants. Keep the private helper schema inaccessible and do not add SECURITY DEFINER just to pass tests.
+
+Run the retained invariant suite and the exhaustive role/grant suite after a fresh local reset. A denial test must distinguish permission errors from zero-row RLS results and verify persisted state. No hosted SQL, remote migration, Cloudflare setting, auth UI or logging UI changes. Keep this branch local unless Supabase automatic migration deployment has been disabled specifically for Phase 2.2 and publication is authorized; previous branch exceptions do not carry over.
 
 ## Scope
 
