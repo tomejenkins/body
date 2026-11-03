@@ -8,3 +8,8 @@ test-results/
 !.env.example
 *.tsbuildinfo
 next-env.d.ts
+
+# Local infrastructure and generated adapter output
+.open-next/
+.wrangler/
+.dev.vars*
