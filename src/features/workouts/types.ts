@@ -1,0 +1,24 @@
+import type { VisualInput } from "@/features/exercises/visuals";
+export type WorkoutStatus = "in_progress" | "completed" | "abandoned";
+export type WorkoutItem = {
+  id: string;
+  exerciseId: string;
+  name: string;
+  position: number;
+  visual: VisualInput;
+  canRemove: boolean;
+};
+export type Workout = {
+  id: string;
+  name: string;
+  status: WorkoutStatus;
+  completionStatus: "none" | "partial" | "full";
+  startedAt: string;
+  finishedAt: string | null;
+  items: WorkoutItem[];
+};
+export type WorkoutState = {
+  error?: string;
+  success?: string;
+  itemId?: string;
+};

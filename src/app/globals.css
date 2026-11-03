@@ -1054,3 +1054,148 @@ h1 {
   align-content: center;
   font-size: 0.85rem;
 }
+
+/* Local movement art and workout lifecycle reuse the existing theme and shell. */
+.exercise-thumbnail {
+  flex: none;
+  display: block;
+  border-radius: 14px;
+  object-fit: contain;
+  max-width: 100%;
+  height: auto;
+}
+.thumbnail-placeholder {
+  display: grid;
+  place-items: center;
+  background: var(--muted);
+  color: var(--primary);
+  font-size: 1.8rem;
+}
+.exercise-card-heading h2 {
+  flex: 1;
+  min-width: 0;
+}
+.exercise-card-heading {
+  flex-wrap: wrap;
+}
+.exercise-card-heading .exercise-thumbnail {
+  width: 48px;
+  height: 48px;
+}
+.exercise-card-heading .favorite-form {
+  margin-left: auto;
+}
+.workout-entry {
+  padding: 2rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1.4rem;
+  max-width: 48rem;
+}
+.workout-entry h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+  margin: 1rem 0;
+}
+.workout-entry p,
+.workout-toolbar p,
+.workout-ending p {
+  color: var(--secondary);
+  line-height: 1.7;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+.workout-toolbar {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+.workout-items {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.workout-item {
+  padding: 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 1.2rem;
+  background: var(--card);
+}
+.workout-item-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.workout-item h2 {
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.workout-position {
+  color: var(--secondary);
+  font-size: 0.75rem;
+}
+.workout-item-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+.workout-item-controls form {
+  display: flex;
+  gap: 0.5rem;
+}
+.workout-item-controls p {
+  width: 100%;
+  font-size: 0.8rem;
+  color: var(--secondary);
+}
+.workout-item-controls button {
+  min-width: 44px;
+}
+.workout-ending {
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+}
+.workout-ending-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: start;
+}
+.workout-ending-actions summary {
+  cursor: pointer;
+  min-height: 44px;
+  align-content: center;
+  font-size: 0.9rem;
+}
+.workout-feedback {
+  font-size: 0.8rem;
+  color: var(--secondary);
+}
+.workout-ending h2 {
+  font-size: 1.25rem;
+}
+.workout-ending-actions details {
+  max-width: 24rem;
+}
+.workout-entry button {
+  margin-top: 0.5rem;
+}
+@media (max-width: 700px) {
+  .workout-entry {
+    padding: 1.3rem;
+  }
+  .workout-toolbar {
+    gap: 0.5rem;
+  }
+  .workout-item-heading .exercise-thumbnail {
+    width: 48px;
+    height: 48px;
+  }
+}

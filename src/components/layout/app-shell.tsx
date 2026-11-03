@@ -38,7 +38,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             const Icon = icons[item.icon];
             const active =
               pathname === item.href ||
-              (item.href === "/workout" && pathname.startsWith("/exercises"));
+              (item.href === "/workout" &&
+                (pathname.startsWith("/exercises") ||
+                  pathname.startsWith("/workout/")));
             return (
               <Link
                 key={item.href}
