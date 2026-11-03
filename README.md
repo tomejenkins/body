@@ -55,7 +55,7 @@ Add future domain modules under `src/features/<feature>` when business logic exi
 
 The existing application, routes, Next.js build, and `src/lib/supabase/` helpers are preserved. Root `supabase/config.toml` was generated with the pinned official CLI; future SQL belongs only in `supabase/migrations/` (currently empty). The config is local-development scaffolding, not a production authentication configuration. No application tables or auth features are included.
 
-Cloudflare support uses the documented OpenNext adapter compatible with Next.js 16.4.4. `wrangler.jsonc` and `open-next.config.ts` define a reproducible local Worker build with Node compatibility and static assets. The Worker name `body-local` is deliberately a local-validation identity, **not a verified production Worker name**. No deployment script or deployment workflow is enabled.
+Cloudflare support uses the documented OpenNext adapter compatible with Next.js 16.4.4. `wrangler.jsonc` and `open-next.config.ts` define a reproducible local Worker build with Node compatibility and static assets. The Worker name `body` is confirmed by its Cloudflare Workers Builds log. The empty `previews` block supports branch previews without tracking dashboard-managed variables. No production deployment script or GitHub deployment workflow is enabled. Cloudflare Workers Builds should use `npm run cf:build` as its build command and retain `npx wrangler preview` for branch deployment.
 
 ```sh
 npm run cf:build    # Builds Next.js, then adapts it for Workers

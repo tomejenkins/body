@@ -17,7 +17,7 @@ PLAYWRIGHT_BASE_URL=http://127.0.0.1:8787 npm run test:e2e
 
 The optional base URL disables Playwright's automatic Next.js server; without it, the original test workflow is unchanged.
 
-`cf:preview` is local Workers emulation; `cf:check` is `wrangler deploy --dry-run` and does not upload. Neither establishes remote deployment success. The `body-local` name is a local validation identity, not a production target. No deploy npm script, new GitHub workflow, automatic migration mechanism, resource creation command, or production deployment was enabled.
+`cf:preview` is local Workers emulation; `cf:check` is `wrangler deploy --dry-run` and does not upload. Neither establishes remote deployment success. The initial `body-local` validation identity has now been replaced with `body`, confirmed by the supplied Workers Builds log. No deploy npm script, new GitHub workflow, automatic migration mechanism, resource creation command, or production deployment was enabled.
 
 ## Local and Cloudflare public configuration
 
@@ -137,7 +137,7 @@ Installation retains upstream deprecation warnings for the existing ESLint 9 and
 
 Docker was available. ECR image pulls were denied by network policy; the CLI successfully fell back to official GHCR images without disabling verification. Wrangler could not fetch optional live `Request.cf` metadata and used local defaults; that warning did not prevent local runtime checks. Local services used for validation are stopped after checks; the usual startup commands are needed to run them again.
 
-Local build/runtime compatibility is distinct from a production deployment and from real Supabase access. The production Worker identity, route/binding reconciliation, real public values, and native GitHub integration remain manual setup prerequisites. No hosted integration or deployment has been enabled.
+Local build/runtime compatibility is distinct from a production deployment and from real Supabase access. The supplied log identifies the Worker as `body`; account selection, route/binding reconciliation, real public values, and native GitHub integration still require dashboard review. No hosted integration or deployment has been enabled.
 
 ## Official references
 
@@ -149,3 +149,11 @@ Local build/runtime compatibility is distinct from a production deployment and f
 - [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
 - [Supabase environments and migrations](https://supabase.com/docs/guides/deployment/managing-environments)
 - [Supabase native GitHub integration](https://supabase.com/docs/guides/deployment/branching/github-integration)
+
+## Workers Builds preview failure: corrected configuration
+
+The supplied Cloudflare log shows the Next.js build succeeded, followed by `npx wrangler preview` failing because `previews` was missing. It also confirms the existing Worker is `body`. Wrangler now uses that name and the matching self-reference binding. The empty `previews: {}` explicitly enables branch previews; preview variables remain dashboard-managed. Top-level `keep_vars: true` remains enabled for regular deployments. Do not copy the log's suggested Supabase values into tracked configuration. Preview settings are separate from production settings; check them in the dashboard rather than assuming `keep_vars` configures previews.
+
+In the existing **body** Worker → **Settings → Build**, change the **build command** from `npm run build` to **`npm run cf:build`**. Keep the **non-production/branch deploy command** as **`npx wrangler preview`**. This produces `.open-next/worker.js` and assets before the preview upload. `npm run cf:preview` is a local emulator and must not replace the remote branch deploy command. Keep the existing production deploy command and production routing unchanged; no production deployment is authorized by this fix.
+
+Ensure both public Supabase variables are set in the branch build environment and the dashboard's Preview settings. They must refer to the intended development project. Re-run the failed branch build only after the configuration changes are present. A local dry-run verifies packaging and schema but cannot validate a hosted preview upload or dashboard values without account access.

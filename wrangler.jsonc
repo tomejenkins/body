@@ -1,11 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  // Local validation identity only. Confirm the existing Worker name before deployment.
-  "name": "body-local",
+  // Existing Worker identity confirmed by the Cloudflare Workers Builds log.
+  "name": "body",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat"],
   "keep_vars": true,
+  // Remote branch previews use dashboard-managed Preview settings.
+  // Do not copy public Supabase values or other variables into this block.
+  "previews": {},
   "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
-  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "body-local" }],
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "body" }],
 }
