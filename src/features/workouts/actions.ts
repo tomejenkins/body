@@ -62,7 +62,7 @@ export async function editWorkout(
       p_item: item,
       p_direction: operation === "move" ? Number(direction) : null,
     });
-    if (result.error)
+    if (result.error || result.data === null)
       return {
         error:
           "The selection could not be changed. Refresh and retry. Finished workouts and logged selections are protected.",
@@ -95,7 +95,7 @@ export async function endWorkout(
       p_session: session,
       p_outcome: outcome,
     });
-    if (result.error)
+    if (result.error || result.data === null)
       return {
         error:
           "Your workout could not be closed. Refresh to check its current state, then retry.",
@@ -104,5 +104,5 @@ export async function endWorkout(
     return { error: "Check your connection and sign-in, then retry." };
   }
   refresh();
-  redirect(`/workout?message=${outcome}`);
+  redirect(`/workout?message=${outcome}&finished=${session}`);
 }

@@ -55,7 +55,9 @@ it("uses invoker RPC without an owner argument and hides provider errors", async
     },
     rpc,
   });
-  expect(await mutateSet(command)).toEqual({ rows: [] });
+  expect((await mutateSet(command)).error).toBeTruthy();
+  rpc.mockResolvedValue({ data: [{ id: uuid }], error: null });
+  expect(await mutateSet(command)).toEqual({ rows: [{ id: uuid }] });
   expect(rpc.mock.calls[0][0]).toBe("log_workout_set");
   expect(rpc.mock.calls[0][1]).not.toHaveProperty("owner_id");
   rpc.mockResolvedValue({ error: { message: "private backend detail" } });

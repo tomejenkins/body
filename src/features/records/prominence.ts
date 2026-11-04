@@ -99,3 +99,13 @@ export function recordProfile(exerciseId: string) {
     }),
   };
 }
+export const featuredLifts = [
+  { id: "e8dc24a5-fac6-5190-8366-0426849f3dfb", name: "Barbell bench press" },
+  { id: "c894e1c0-dd77-529b-86d9-3cb07bfcf5c7", name: "Barbell back squat" },
+  { id: "8a050222-28da-5a97-8ec2-88600106046a", name: "Conventional deadlift" },
+] as const;
+export function prioritizedRecordIds() {
+  return Object.keys(profiles).filter(
+    (id) => recordProfile(id).prominence !== "standard",
+  );
+}

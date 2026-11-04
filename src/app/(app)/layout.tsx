@@ -21,5 +21,13 @@ export default async function ProtectedLayout({
     ready = false;
   }
   if (!ready) redirect("/onboarding?next=" + encodeURIComponent(next));
-  return <AppShell>{children}</AppShell>;
+  const client = await createClient({ readOnly: true });
+  const continuity = await client.rpc("workout_continuity");
+  if (continuity.error)
+    throw new Error("Workout status could not be confirmed.");
+  return (
+    <AppShell userId={user.id} initialContinuity={continuity.data}>
+      {children}
+    </AppShell>
+  );
 }

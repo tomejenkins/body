@@ -98,7 +98,9 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/\/workout\?message=completed$/);
+  await expect(page).toHaveURL(
+    /\/workout\?message=completed&finished=[a-f0-9-]{36}$/,
+  );
   await expect(page.locator(".auth-success")).toContainText("Workout finished");
   const result = await account.client
     .from("workout_sessions")
@@ -190,7 +192,9 @@ test("concurrent starts share one session, owner boundaries hold and abandon pre
   await page
     .getByRole("button", { name: "Abandon workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/\/workout\?message=abandoned$/);
+  await expect(page).toHaveURL(
+    /\/workout\?message=abandoned&finished=[a-f0-9-]{36}$/,
+  );
   const session = await account.client
     .from("workout_sessions")
     .select("status,finished_at")

@@ -1,3 +1,6 @@
+import { loadExerciseRecords } from "@/features/records/queries";
+import { RecordCard } from "@/components/records/record-card";
+import { metricLabel, formattedMetric } from "@/features/records/model";
 import { loadWorkoutContext } from "@/features/workouts/context";
 import {
   builderHref,
@@ -30,6 +33,7 @@ export default async function Page({
   const query = await searchParams,
     data = await loadExerciseHistory(id, query.cursor);
   if (!data) notFound();
+  const records = await loadExerciseRecords(id, query.recordsCursor);
   const context = await loadWorkoutContext(query.workoutId, id);
   const filters = contextFilters(query.builder);
   const detail = exerciseHref(id, context?.id, filters);
@@ -83,6 +87,37 @@ export default async function Page({
         )}
         {!exercise.archived_at && <Link href={detail}>Exercise details</Link>}
       </div>
+      {records.record && (
+        <section aria-label="Exercise records" className="exercise-records">
+          <h2>Personal Records</h2>
+          <RecordCard record={records.record} unit={unit} compact />
+          {records.loads.length > 0 && (
+            <details>
+              <summary>Repetition records by load</summary>
+              <ul className="performance-list">
+                {records.loads.map((m) => (
+                  <li key={`${m.category}:${m.load_key}`}>
+                    <span>{metricLabel(m)}</span>
+                    <strong>{formattedMetric(m, unit)}</strong>
+                  </li>
+                ))}
+              </ul>
+              <div className="history-pagination">
+                {query.recordsCursor && (
+                  <Link href={historyPath}>Heaviest loads</Link>
+                )}
+                {records.hasMore && records.loads.at(-1) && (
+                  <Link
+                    href={`${historyPath}${historyPath.includes("?") ? "&" : "?"}${new URLSearchParams({ recordsCursor: `${records.loads.at(-1)?.category}|${records.loads.at(-1)?.load_key}` })}`}
+                  >
+                    More load records →
+                  </Link>
+                )}
+              </div>
+            </details>
+          )}
+        </section>
+      )}
       {history.entries.length ? (
         <ol className="history-list">
           {history.entries.map((w) => (

@@ -993,9 +993,9 @@ select ok((select has_table_privilege('authenticated','public.workout_sessions',
 
 select ok((select has_table_privilege('authenticated','public.workout_sessions','DELETE') = false), 'workout_sessions: DELETE matches reviewed matrix');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.workout_sessions',attname,'INSERT') = (attname = any(array['id','owner_id','source_program_id','source_program_day_id','program_assignment_id','source_cycle_position','source_rotation','program_name_snapshot','day_name_snapshot','name','status','completion_status','started_at','finished_at','notes']::text[]))) from pg_attribute where attrelid='public.workout_sessions'::regclass and attnum>0 and not attisdropped), 'workout_sessions: exact INSERT column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.workout_sessions',attname,'INSERT') = (attname = any(array['id','owner_id','source_program_id','source_program_day_id','program_assignment_id','source_cycle_position','source_rotation','program_name_snapshot','day_name_snapshot','name','notes']::text[]))) from pg_attribute where attrelid='public.workout_sessions'::regclass and attnum>0 and not attisdropped), 'workout_sessions: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.workout_sessions',attname,'UPDATE') = (attname = any(array['name','status','completion_status','started_at','finished_at','notes','program_name_snapshot','day_name_snapshot']::text[]))) from pg_attribute where attrelid='public.workout_sessions'::regclass and attnum>0 and not attisdropped), 'workout_sessions: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.workout_sessions',attname,'UPDATE') = (attname = any(array['continuation_nonce','name','status','notes','program_name_snapshot','day_name_snapshot']::text[]))) from pg_attribute where attrelid='public.workout_sessions'::regclass and attnum>0 and not attisdropped), 'workout_sessions: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.workout_exercises'::regclass), 'workout_exercises: RLS enabled');
 
@@ -1998,9 +1998,9 @@ select is(pg_temp.affected($sql$update public.program_assignments set next_cycle
 
 select throws_ok($sql$insert into public.workout_sessions(owner_id,name) values (md5('carol')::uuid,'Ad hoc')$sql$, '23505', null, 'second active workout is denied by unique index');
 
-select lives_ok($sql$insert into public.workout_sessions(owner_id,name,status,completion_status,finished_at) values (md5('carol')::uuid,'Abandoned','abandoned','partial',now())$sql$, 'owner can record a partial abandoned session');
+select throws_ok($sql$insert into public.workout_sessions(owner_id,name,status,completion_status,finished_at) values (md5('carol')::uuid,'Abandoned','abandoned','partial',now())$sql$, '42501', null, 'owner cannot submit protected closure fields');
 
-select is(pg_temp.affected($sql$update public.workout_sessions set status='completed',completion_status='partial',finished_at=now() where id=md5('session_carol')::uuid$sql$), 1::bigint, 'owner can finish a partially complete session');
+select is(public.end_workout(md5('session_carol')::uuid,'completed'),md5('session_carol')::uuid,'owner can finish through authoritative lifecycle');
 
 set local "request.jwt.claims" = '{"sub":"a9a01980-10a6-073d-b964-34f6cc5f22a8","user_metadata":{"role":"admin","owner_id":"bob"}}';
 

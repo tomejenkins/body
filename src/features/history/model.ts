@@ -19,6 +19,12 @@ export type HistorySummary = {
   working_sets: number;
   warm_up_sets: number;
   incomplete_sets: number;
+  effective_finished_at?: string | null;
+  duration_kind?: import("@/features/continuity/model").Continuity["duration_kind"];
+  closure_reason?: string | null;
+  idle_intervals?: import("@/features/continuity/model").Continuity["idle_intervals"];
+  recognition_enabled?: boolean;
+  achievement_count?: number;
 };
 export type ExerciseHistory = {
   total_sessions: number;

@@ -1,3 +1,10 @@
+import {
+  qualifiedDuration,
+  closureExplanation,
+} from "@/features/continuity/model";
+import { ClosedDrafts } from "@/components/continuity/closed-drafts";
+import { loadAchievements } from "@/features/records/queries";
+import { Achievements } from "@/components/records/achievements";
 import Link from "next/link";
 import type { Workout } from "@/features/workouts/types";
 import {
@@ -9,7 +16,8 @@ import {
 import { setTypes } from "@/features/sets/model";
 import { LocalTime } from "./local-time";
 import { ExerciseThumbnail } from "@/components/exercises/exercise-thumbnail";
-export function WorkoutReview({ workout }: { workout: Workout }) {
+export async function WorkoutReview({ workout }: { workout: Workout }) {
+  const achievements = await loadAchievements(workout.id);
   const sets = workout.items.flatMap((item) =>
     item.sets.filter((s) => !s.deleted_at),
   );
@@ -31,8 +39,11 @@ export function WorkoutReview({ workout }: { workout: Workout }) {
         <h1>{friendlyWorkoutName(workout.name)}</h1>
         <p>
           <LocalTime value={workout.startedAt} />
-          {durationLabel(workout.startedAt, workout.finishedAt) &&
-            ` · ${durationLabel(workout.startedAt, workout.finishedAt)}`}
+          {workout.continuity
+            ? ` · ${qualifiedDuration(workout.continuity)}`
+            : durationLabel(workout.startedAt, workout.finishedAt)
+              ? ` · Elapsed session (legacy): ${durationLabel(workout.startedAt, workout.finishedAt)}`
+              : ""}
         </p>
         {workout.finishedAt && (
           <p>
@@ -45,6 +56,13 @@ export function WorkoutReview({ workout }: { workout: Workout }) {
           <p>Saved workout · Read only</p>
         )}
       </div>
+      {workout.continuity?.closure_reason === "inactivity" && (
+        <p role="status" className="draft-warning">
+          {closureExplanation("inactivity")}
+        </p>
+      )}
+      <ClosedDrafts workout={workout} />
+      <Achievements achievements={achievements} unit={workout.weightUnit} />
       <p className="logging-summary">
         {workout.items.length} exercises · {completed} completed sets ·{" "}
         {pending} pending sets

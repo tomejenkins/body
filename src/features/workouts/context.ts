@@ -20,6 +20,11 @@ export async function loadWorkoutContext(
     return null;
   const user = await requireUser(`/exercises/${exerciseId}`);
   const client = await createClient({ readOnly: true });
+  const continuity = await client.rpc("workout_continuity", {
+    p_session: workoutId,
+  });
+  if (continuity.error)
+    throw new Error("Workout context could not be confirmed.");
   const workout = await client
     .from("workout_sessions")
     .select("id,status")

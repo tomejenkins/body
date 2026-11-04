@@ -1,5 +1,7 @@
 "use client";
+import type { Continuity } from "@/features/continuity/model";
 import Link from "next/link";
+import { ActiveWorkoutBar } from "@/components/continuity/active-workout-bar";
 import { usePathname } from "next/navigation";
 import {
   Activity,
@@ -20,7 +22,15 @@ const icons = {
   feed: Users,
   profile: UserRound,
 };
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  userId,
+  initialContinuity,
+}: {
+  children: React.ReactNode;
+  userId?: string;
+  initialContinuity?: Continuity | null;
+}) {
   const pathname = usePathname();
   return (
     <>
@@ -68,6 +78,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="status-dot" /> Private by design
           </span>
         </header>
+        {userId && (
+          <ActiveWorkoutBar
+            key={userId}
+            userId={userId}
+            initial={initialContinuity}
+          />
+        )}
         <main id="main-content" tabIndex={-1}>
           {children}
         </main>
