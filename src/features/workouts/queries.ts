@@ -1,3 +1,4 @@
+import type { LoggedSet, WeightUnit } from "@/features/sets/model";
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/features/auth/session";
@@ -16,9 +17,12 @@ type ItemRow = {
   exercise_name_snapshot: string;
   position: number;
   status: string;
-  workout_sets: { id: string }[];
+  prescribed_sets: number | null;
+  workout_sets: LoggedSet[];
   exercises: {
     slug: string;
+    exercise_type: string;
+    exercise_equipment: { equipment_types: { slug: string } | null }[];
     owner_id: string | null;
     exercise_movement_patterns: {
       is_primary: boolean;
@@ -43,7 +47,7 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
     const response = await client
       .from("workout_exercises")
       .select(
-        "id,exercise_id,exercise_name_snapshot,position,status,workout_sets(id),exercises:exercises!workout_exercises_exercise_id_fkey(slug,owner_id,exercise_movement_patterns(is_primary,movement_patterns(slug)))",
+        "id,exercise_id,exercise_name_snapshot,position,status,prescribed_sets,workout_sets(*),exercises:exercises!workout_exercises_exercise_id_fkey(slug,owner_id,exercise_type,exercise_equipment(equipment_types(slug)),exercise_movement_patterns(is_primary,movement_patterns(slug)))",
       )
       .eq("owner_id", user.id)
       .eq("workout_session_id", session.id)
@@ -56,7 +60,16 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
     items.push(...response.data);
     if (response.data.length < 500) break;
   }
+  const preference = await client
+    .from("account_preferences")
+    .select("display_weight_unit")
+    .eq("owner_id", user.id)
+    .single<{ display_weight_unit: WeightUnit }>();
+  if (preference.error)
+    throw new Error("Weight preference could not be loaded.");
   return {
+    userId: user.id,
+    weightUnit: preference.data.display_weight_unit,
     id: session.id,
     name: session.name,
     status: session.status,
@@ -69,6 +82,21 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
       name: row.exercise_name_snapshot,
       position: row.position,
       canRemove: row.status === "pending" && row.workout_sets.length === 0,
+      exerciseType: row.exercises?.exercise_type ?? "other",
+      prescribedSets: row.prescribed_sets,
+      sets: row.workout_sets.sort((a, b) => a.position - b.position),
+      bodyweightEligible:
+        !!row.exercises?.exercise_equipment.length &&
+        row.exercises.exercise_equipment.every((e) =>
+          [
+            "none",
+            "pull_up_bar",
+            "neutral_grip_handles",
+            "parallel_bars",
+            "step",
+            "suspension_trainer",
+          ].includes(e.equipment_types?.slug ?? ""),
+        ),
       visual: {
         slug: row.exercises?.slug ?? "",
         ownerId: row.exercises?.owner_id ?? "unavailable",

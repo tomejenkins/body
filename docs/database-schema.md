@@ -170,3 +170,7 @@ New forward migrations add unique canonical exercise slugs, constrained non-null
 ## Phase 5.1 lifecycle extension
 
 The new forward migration adds one-active-workout uniqueness, non-destructive `workout_exercises.removed_at`, deferrable selection ordering and authenticated invoker start/edit/end functions. It permits completed sessions with no logged sets, protects terminal transitions and preserves the existing normalized data model and snapshots. See [workout-lifecycle.md](workout-lifecycle.md) for concurrency, pre-existing duplicate handling and delivery safeguards. No set-logging or program-generation schema is introduced.
+
+## Phase 5.2 extension
+
+See [set logging](set-logging.md) for the forward migration, active-only set write guards, load modes, server revisions, idempotent invoker operations and updated none/partial/full completion rules. The earlier phase descriptions above are historical. Closed set edits/deletion are now denied to ordinary clients; a future explicit correction workflow is required. Prior migrations remain immutable.
