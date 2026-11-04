@@ -56,7 +56,7 @@ select set_config('body_test.logged_item',public.edit_workout(current_setting('b
 insert into public.workout_sets(owner_id,workout_exercise_id,position,status,actual_reps,actual_weight_kg,completed_at) values(auth.uid(),current_setting('body_test.logged_item')::uuid,1,'completed',10,0,now());
 select throws_ok($$select public.edit_workout(current_setting('body_test.logged_session')::uuid,'remove',null,current_setting('body_test.logged_item')::uuid)$$,'23514',null,'any recorded set protects its selected parent');
 select lives_ok($$select public.end_workout(current_setting('body_test.logged_session')::uuid,'completed')$$,'existing recorded sets can be preserved at finish');
-select is((select completion_status from public.workout_sessions where id=current_setting('body_test.logged_session')::uuid),'partial','existing recorded work is preserved without claiming full completion');
+select is((select completion_status from public.workout_sessions where id=current_setting('body_test.logged_session')::uuid),'full','all entered sets are complete and no exercise is missing sets');
 select is((select count(*)::int from public.workout_sets where workout_exercise_id=current_setting('body_test.logged_item')::uuid),1,'logged set remains intact');
 select is((select count(*)::int from public.workout_exercises where workout_session_id=current_setting('body_test.session')::uuid),4,'all prior selections including removed tombstone remain');
 select * from finish();

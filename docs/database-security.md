@@ -151,3 +151,7 @@ The Phase 4.1 forward migration adds `exercise_type` to authenticated exercise I
 ## Phase 5.1 lifecycle extension
 
 The forward lifecycle migration adds only `removed_at` to the authenticated workout-exercise UPDATE allowlist; INSERT of that field and hard DELETE remain denied. New authenticated-only SECURITY INVOKER functions implement start/edit/end with verified-owner session locks and existing RLS. Private triggers guard terminal state, removal and direct authenticated selection writes; no privileged RPC is introduced. A partial index enforces one active session per owner. See [workout-lifecycle.md](workout-lifecycle.md) for concurrency, tombstones, completion-without-sets semantics and migration preflight.
+
+## Phase 5.2 extension
+
+See [set logging](set-logging.md) for the forward migration, active-only set write guards, load modes, server revisions, idempotent invoker operations and updated none/partial/full completion rules. The earlier phase descriptions above are historical. Closed set edits/deletion are now denied to ordinary clients; a future explicit correction workflow is required. Prior migrations remain immutable.

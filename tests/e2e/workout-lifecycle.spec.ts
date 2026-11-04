@@ -93,6 +93,9 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
   await expect(page.locator(".workout-items li")).toHaveCount(1);
   await expect(page.locator(".workout-items li img")).toBeVisible();
   await page
+    .getByRole("checkbox", { name: /Finish without completing all sets/ })
+    .check();
+  await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
   await expect(page).toHaveURL(/\/workout\?message=completed$/);

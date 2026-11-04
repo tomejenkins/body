@@ -1,3 +1,4 @@
+import type { LoggedSet, WeightUnit } from "@/features/sets/model";
 import type { VisualInput } from "@/features/exercises/visuals";
 export type WorkoutStatus = "in_progress" | "completed" | "abandoned";
 export type WorkoutItem = {
@@ -7,6 +8,10 @@ export type WorkoutItem = {
   position: number;
   visual: VisualInput;
   canRemove: boolean;
+  bodyweightEligible: boolean;
+  exerciseType: string;
+  sets: LoggedSet[];
+  prescribedSets?: number | null;
 };
 export type Workout = {
   id: string;
@@ -16,6 +21,8 @@ export type Workout = {
   startedAt: string;
   finishedAt: string | null;
   items: WorkoutItem[];
+  userId: string;
+  weightUnit: WeightUnit;
 };
 export type WorkoutState = {
   error?: string;

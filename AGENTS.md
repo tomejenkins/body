@@ -80,6 +80,12 @@ Use the authenticated invoker lifecycle RPCs, verified server identity and singl
 
 Use allowlisted local visual descriptors, specific > movement > generic fallback and accessible dimensions/alt semantics. Static thumbnail paths must avoid authenticated application route namespaces. Do not import the entire catalog into client bundles for media lookup, fetch stock assets, trust arbitrary media paths or add upload infrastructure. Preserve independent compound/isolation/other classification and reuse the existing selector. Run app, catalog, database, browser and Workers validation; distinguish local results from hosted verification. Publishing must respect confirmed preview safety; no automatic merging.
 
+## Phase 5.2 set logging
+
+Read `docs/set-logging.md` before performance changes. This phase supersedes earlier phase-specific bans on set logging only; no programs, history-based defaults (5.3), PR/volume calculations, timers, OAuth, trainer/social or offline sync. Earlier migrations stay immutable. Use the invoker logging RPC with verified identity, narrow grants, parent-first locks, CAS revisions and stable mutation IDs; never grant client revision or ownership updates. Closed/removed parents reject ordinary writes. Preserve typed actual performance, pending versus completed, bodyweight NULL versus external zero, and canonical kilogram precision. Unit preference changes must not rewrite loads. Keep warm-up/drop/rest-pause canonical and independently queryable.
+
+Never acknowledge Saved before persistence. Keep in-flight edits and failed drafts, explicit conflict resolution, retries with stable IDs, and navigation/finish guards. Copy only the preceding current-session draft when adding a pending normal set. Incomplete finish is allowed deliberately and never completes pending sets. Preserve soft deletion and parent history protection. Run all retained app/database/browser/Workers checks, including fresh local migration replay, denial state checks, fast input, unit drift, conflict/failure and recovery tests. Hosted SQL, merge and production deployment remain unauthorized; publication requires confirmed preview safety.
+
 ## Scope
 
 Keep initial work focused. Review existing code before replacing it, preserve local work, use supported dependencies, and never change package integrity checks to force installation. PWA offline support and platform-specific install validation are separate work.

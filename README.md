@@ -6,7 +6,7 @@ A mobile-first foundation for a premium workout tracker. The repository was empt
 
 Next.js App Router, React, strict TypeScript, Tailwind CSS v4, shadcn/ui-style local components (Radix Slot, CVA, `cn`), and Supabase SSR/browser adapters. ESLint, Prettier, Vitest, Testing Library, and Playwright provide checks. Node 24 LTS and npm are the validated tools; the npm lockfile pins dependencies.
 
-The six existing routes retain the responsive shell and are protected by real Supabase authentication. Phase 3.1 adds email/password signup, confirmation, sign-in/out, recovery and minimal display-name onboarding; set-by-set logging is not yet implemented. Phase 5.1 supports real ad-hoc session lifecycles and exercise selection management. Phase 4.1 adds the real exercise library, custom exercises, favorites and deterministic recommendations. Phase 2.1/2.2 provide the versioned schema and owner-isolation policies. Hosted migration state and live signup readiness require administrator verification; local success is not hosted verification. Social features, program generation and trainer capabilities remain unimplemented.
+The six existing routes retain the responsive shell and are protected by real Supabase authentication. Phase 3.1 adds email/password signup, confirmation, sign-in/out, recovery and minimal display-name onboarding; Phase 5.2 adds actual set logging with canonical kg/lb display, typed sets, reliable saves and intentional incomplete finish. See [set logging](docs/set-logging.md). Phase 5.1 supports real ad-hoc session lifecycles and exercise selection management. Phase 4.1 adds the real exercise library, custom exercises, favorites and deterministic recommendations. Phase 2.1/2.2 provide the versioned schema and owner-isolation policies. Hosted migration state and live signup readiness require administrator verification; local success is not hosted verification. Social features, program generation and trainer capabilities remain unimplemented.
 
 ## Local setup
 
@@ -41,6 +41,7 @@ Production builds use Next.js’s supported webpack builder because Turbopack bu
 ## Architecture
 
 - `src/app`: public auth routes, protected `(app)` routes, onboarding, root layout, theme and manifest.
+- `src/features/sets` and `src/components/sets`: typed performance validation, secure actions and the workout logger.
 - `src/features/auth`: strict validation, server actions, verified sessions and retry-safe account initialization.
 - `src/components/auth`: shared accessible authentication presentation.
 - `src/components/layout`: responsive application shell and navigation.

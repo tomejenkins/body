@@ -7,6 +7,9 @@ const item = (id: string, position: number): WorkoutItem => ({
   exerciseId: id,
   name: id,
   canRemove: true,
+  bodyweightEligible: false,
+  exerciseType: "compound",
+  sets: [],
   visual: { slug: "", ownerId: null },
 });
 it("only allows active workouts to finish or abandon, never reopen", () => {

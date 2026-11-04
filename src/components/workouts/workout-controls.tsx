@@ -38,9 +38,11 @@ export function StartWorkout() {
 export function CloseWorkout({
   sessionId,
   outcome,
+  disabled = false,
 }: {
   sessionId: string;
   outcome: "completed" | "abandoned";
+  disabled?: boolean;
 }) {
   const [state, action, pending] = useActionState(endWorkout, initial);
   return (
@@ -50,7 +52,7 @@ export function CloseWorkout({
       <Button
         variant={outcome === "completed" ? "default" : "outline"}
         type="submit"
-        disabled={pending}
+        disabled={pending || disabled}
         aria-busy={pending}
       >
         {pending

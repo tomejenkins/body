@@ -94,3 +94,7 @@ Phase 3.1 and Phase 4.1 are confirmed merged into fetched GitHub main (`fcaddb8`
 - Mobile light/dark workout screens and the desktop selector were visually reviewed against the local Worker.
 
 The first browser attempt encountered local Auth restart readiness after reset; health and synthetic signup were verified before rerunning. Query validation caught and corrected the selected-versus-prescribed exercise join. No local functional test remains blocked. Hosted database history/security settings, real SMTP, production deployment and physical-device behavior were not inspected/tested. The known Docker proxy health-probe and local `Request.cf` fallback limitations remain documented in the infrastructure/authentication guides.
+
+## Phase 5.2 extension
+
+See [set logging](set-logging.md) for the forward migration, active-only set write guards, load modes, server revisions, idempotent invoker operations and updated none/partial/full completion rules. The earlier phase descriptions above are historical. Closed set edits/deletion are now denied to ordinary clients; a future explicit correction workflow is required. Prior migrations remain immutable.
