@@ -1,6 +1,12 @@
 "use client";
-import { useDeferredValue, useState } from "react";
+import { useDeferredValue, useState, useEffect } from "react";
 import Link from "next/link";
+import {
+  builderHref,
+  exerciseHref,
+  builderFilterQuery,
+  type BuilderFilters,
+} from "@/features/workouts/navigation";
 import {
   filterExercises,
   libraryNoneId,
@@ -21,24 +27,77 @@ export function ExerciseSelector({
   onSelect,
   selectedIds = [],
   selecting = false,
+  workoutId,
+  initialFilters,
 }: {
   library: Library;
   onSelect?: (exercise: Exercise) => void;
   selectedIds?: readonly string[];
   selecting?: boolean;
+  workoutId?: string;
+  initialFilters?: BuilderFilters;
 }) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialFilters?.search ?? "");
   const search = useDeferredValue(query);
-  const [pattern, setPattern] = useState("");
-  const [muscle, setMuscle] = useState("");
-  const [type, setType] = useState<ExerciseType | "">("");
-  const [equipment, setEquipment] = useState(library.availableEquipmentIds);
-  const [equipmentFilter, setEquipmentFilter] = useState(
-    library.availableEquipmentIds.length > 0,
+  const [pattern, setPattern] = useState(initialFilters?.movement ?? "");
+  const [muscle, setMuscle] = useState(initialFilters?.muscle ?? "");
+  const [type, setType] = useState<ExerciseType | "">(
+    initialFilters?.type ?? "",
   );
-  const [favorites, setFavorites] = useState(false);
-  const [custom, setCustom] = useState(false);
+  const [equipment, setEquipment] = useState(
+    initialFilters?.equipment ?? library.availableEquipmentIds,
+  );
+  const [equipmentFilter, setEquipmentFilter] = useState(
+    initialFilters
+      ? initialFilters.equipmentOnly
+      : library.availableEquipmentIds.length > 0,
+  );
+  const [favorites, setFavorites] = useState(
+    initialFilters?.favorites ?? false,
+  );
+  const [custom, setCustom] = useState(initialFilters?.custom ?? false);
   const [limit, setLimit] = useState(24);
+  const [refine, setRefine] = useState(initialFilters?.refine ?? false);
+  const [recents, setRecents] = useState(initialFilters?.recents ?? false);
+  const [suggested, setSuggested] = useState(
+    initialFilters?.suggestions ?? false,
+  );
+  const filters: BuilderFilters = {
+    search: query,
+    movement: pattern,
+    muscle,
+    type,
+    equipment,
+    equipmentOnly: equipmentFilter,
+    favorites,
+    custom,
+    refine,
+    recents,
+    suggestions: suggested,
+  };
+  const encoded = builderFilterQuery(filters).toString();
+  useEffect(() => {
+    if (!workoutId || window.location.pathname !== builderHref(workoutId))
+      return;
+    const added = new URLSearchParams(window.location.search).get("added");
+    const target =
+      builderHref(workoutId) +
+      `?${encoded}` +
+      (added ? `&added=${encodeURIComponent(added)}` : "");
+    window.history.replaceState(null, "", target);
+  }, [workoutId, encoded]);
+  const detailsHref = (id: string) => exerciseHref(id, workoutId, filters);
+  const compactAdd = (exercise: Exercise) =>
+    onSelect ? (
+      <Button
+        variant="outline"
+        disabled={selecting || selectedIds.includes(exercise.id)}
+        onClick={() => onSelect(exercise)}
+        aria-label={`${selectedIds.includes(exercise.id) ? "Already Added" : "Add"} ${exercise.name}${selectedIds.includes(exercise.id) ? "" : " to workout"}`}
+      >
+        {selectedIds.includes(exercise.id) ? "Already Added" : "Add"}
+      </Button>
+    ) : null;
   const noneId = libraryNoneId(library);
   const recentExercises = library.recentIds.flatMap((id) => {
     const exercise = library.exercises.find((e) => e.id === id);
@@ -92,6 +151,7 @@ export function ExerciseSelector({
           <Input
             id="exercise-search"
             type="search"
+            maxLength={workoutId ? 120 : undefined}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -101,7 +161,11 @@ export function ExerciseSelector({
             autoComplete="off"
           />
         </div>
-        <details className="library-refine">
+        <details
+          className="library-refine"
+          open={refine}
+          onToggle={(e) => setRefine(e.currentTarget.open)}
+        >
           <summary>Refine by movement, muscle or equipment</summary>
           <div className="library-filter-grid">
             <div>
@@ -234,7 +298,11 @@ export function ExerciseSelector({
         </details>
       </section>
       {(pattern || muscle) && (
-        <details className="library-suggestions">
+        <details
+          className="library-suggestions"
+          open={suggested}
+          onToggle={(e) => setSuggested(e.currentTarget.open)}
+        >
           <summary>Suggested for this movement</summary>
           <p>
             Ranked by primary movement, preference, favorites and real workout
@@ -244,10 +312,11 @@ export function ExerciseSelector({
             <ol>
               {suggestions.candidates.map((r) => (
                 <li key={r.exercise.id}>
-                  <Link href={`/exercises/${r.exercise.id}`}>
+                  <Link href={detailsHref(r.exercise.id)}>
                     {r.exercise.name}
                   </Link>
                   <span>{r.reasons.join(" · ")}</span>
+                  {compactAdd(r.exercise)}
                 </li>
               ))}
             </ol>
@@ -258,13 +327,18 @@ export function ExerciseSelector({
         </details>
       )}
       {recentExercises.length > 0 ? (
-        <details className="library-recents">
+        <details
+          className="library-recents"
+          open={recents}
+          onToggle={(e) => setRecents(e.currentTarget.open)}
+        >
           <summary>Recently selected in your workouts</summary>
           <div className="recent-links">
             {recentExercises.slice(0, 8).map((exercise) => (
-              <Link href={`/exercises/${exercise.id}`} key={exercise.id}>
-                {exercise.name}
-              </Link>
+              <div className="recent-exercise" key={exercise.id}>
+                <Link href={detailsHref(exercise.id)}>{exercise.name}</Link>
+                {compactAdd(exercise)}
+              </div>
             ))}
           </div>
         </details>
@@ -304,9 +378,7 @@ export function ExerciseSelector({
                   }}
                 />
                 <h2>
-                  <Link href={`/exercises/${exercise.id}`}>
-                    {exercise.name}
-                  </Link>
+                  <Link href={detailsHref(exercise.id)}>{exercise.name}</Link>
                 </h2>
                 <FavoriteButton
                   exercise={exercise}

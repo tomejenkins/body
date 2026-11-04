@@ -2,6 +2,7 @@
 import { LocalTime } from "@/components/history/local-time";
 import { friendlyWorkoutName } from "@/features/history/model";
 import Link from "next/link";
+import { exerciseHref } from "@/features/workouts/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Workout } from "@/features/workouts/types";
@@ -555,7 +556,12 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                   <ExerciseThumbnail visual={item.visual} />
                   <span className="workout-position">{index + 1}</span>
                   <h2>
-                    <Link href={`/exercises/${item.exerciseId}`}>
+                    <Link
+                      href={exerciseHref(
+                        item.exerciseId,
+                        active ? workout.id : undefined,
+                      )}
+                    >
                       {item.name}
                     </Link>
                   </h2>
@@ -573,7 +579,14 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                   </p>
                 )}
                 <p className="auth-links">
-                  <Link href={`/exercises/${item.exerciseId}/history`}>
+                  <Link
+                    href={exerciseHref(
+                      item.exerciseId,
+                      active ? workout.id : undefined,
+                      undefined,
+                      true,
+                    )}
+                  >
                     Look Back
                   </Link>
                 </p>

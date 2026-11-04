@@ -100,6 +100,10 @@ Use browser IANA timezones through hydration-safe LocalTime, UTC storage/cursors
 
 Measurement snapshots are server-assigned with no client grants. Bodyweight is reps-first with optional explicit added load, never body mass. Assistance/time/distance require dedicated contracts: block unsupported completion in UI and SQL, flag legacy measurements conservatively and never report them as valid added resistance. Preserve queue/CAS/nonce/draft/navigation protections. Internal prominence uses exact UUIDs and stays invisible; every canonical exercise remains independently eligible for future records. Rerun all app, database, browser, catalog and Workers checks. Prior migrations are immutable; no hosted SQL, merge or production deployment, no scheduling, OAuth, social/trainer features, timers, uploads or unrestricted corrections.
 
+## Workout navigation context
+
+Builder/detail/Look Back links use the allowlisted helpers in `src/features/workouts/navigation.ts`. Verify context through the owner-scoped server loader, never authorize from query parameters or accept arbitrary return URLs. Reuse `editWorkout` for all selection entry points and retain its SQL locking/idempotency. Restrict native filter URL updates to the current builder pathname; preserve normal library/history navigation. Closed/foreign contexts must expose no add controls, and stale failures must refresh server context.
+
 ## Scope
 
 Keep initial work focused. Review existing code before replacing it, preserve local work, use supported dependencies, and never change package integrity checks to force installation. PWA offline support and platform-specific install validation are separate work.
