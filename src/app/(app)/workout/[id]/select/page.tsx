@@ -1,3 +1,8 @@
+import {
+  parseBuilderFilters,
+  queryParams,
+  type QueryValues,
+} from "@/features/workouts/navigation";
 import { notFound, redirect } from "next/navigation";
 import { loadWorkout } from "@/features/workouts/queries";
 import { loadLibrary } from "@/features/exercises/queries";
@@ -6,8 +11,10 @@ import { WorkoutSelector } from "@/components/workouts/workout-selector";
 export const metadata = { title: "Select exercises" };
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<QueryValues>;
 }) {
   const { id } = await params;
   if (!isUuid(id)) notFound();
@@ -15,5 +22,18 @@ export default async function Page({
   if (!workout) notFound();
   if (workout.status !== "in_progress") redirect(`/workout/${id}`);
   const library = await loadLibrary();
-  return <WorkoutSelector workout={workout} library={library} />;
+  const query = await searchParams;
+  const selectedAdded =
+    typeof query.added === "string" &&
+    workout.items.some((i) => i.exerciseId === query.added);
+  return (
+    <WorkoutSelector
+      workout={workout}
+      library={library}
+      initialFilters={
+        query.view === "1" ? parseBuilderFilters(queryParams(query)) : undefined
+      }
+      added={selectedAdded}
+    />
+  );
 }

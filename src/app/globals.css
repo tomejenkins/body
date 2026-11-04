@@ -1426,3 +1426,17 @@ h1 {
   outline-offset: 2px;
   border-radius: 0.4rem;
 }
+
+.recent-exercise {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+}
+.recent-exercise a {
+  min-width: 0;
+}
+.library-suggestions li > button {
+  margin: 0.5rem 0;
+}

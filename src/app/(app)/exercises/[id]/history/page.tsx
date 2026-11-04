@@ -1,3 +1,9 @@
+import { loadWorkoutContext } from "@/features/workouts/context";
+import {
+  builderHref,
+  exerciseHref,
+  contextFilters,
+} from "@/features/workouts/navigation";
 import { specialMeasurement } from "@/features/history/measurement";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -24,12 +30,35 @@ export default async function Page({
   const query = await searchParams,
     data = await loadExerciseHistory(id, query.cursor);
   if (!data) notFound();
+  const context = await loadWorkoutContext(query.workoutId, id);
+  const filters = contextFilters(query.builder);
+  const detail = exerciseHref(id, context?.id, filters);
+  const historyPath = exerciseHref(id, context?.id, filters, true);
   const { exercise, history, unit, hasMore } = data,
     last = history.entries.at(-1);
   return (
     <>
       <div className="page-heading">
-        <Link href="/history">← History</Link>
+        {context ? (
+          <>
+            <Link href={detail}>← Back to Exercise Details</Link>
+            <div className="library-section">
+              <Link
+                href={
+                  context.status === "in_progress"
+                    ? builderHref(context.id, filters)
+                    : `/workout/${context.id}`
+                }
+              >
+                {context.status === "in_progress"
+                  ? "Back to Workout Builder"
+                  : "Back to Workout"}
+              </Link>
+            </div>
+          </>
+        ) : (
+          <Link href="/history">← History</Link>
+        )}
         <p className="eyebrow">LOOK BACK</p>
         <ExerciseThumbnail
           size={80}
@@ -52,9 +81,7 @@ export default async function Page({
             Last performed <LocalTime value={history.last_performed} />
           </p>
         )}
-        {!exercise.archived_at && (
-          <Link href={`/exercises/${id}`}>Exercise details</Link>
-        )}
+        {!exercise.archived_at && <Link href={detail}>Exercise details</Link>}
       </div>
       {history.entries.length ? (
         <ol className="history-list">
@@ -98,12 +125,10 @@ export default async function Page({
         </section>
       )}
       <div className="history-pagination">
-        {query.cursor && (
-          <Link href={`/exercises/${id}/history`}>Newest performances</Link>
-        )}
+        {query.cursor && <Link href={historyPath}>Newest performances</Link>}
         {hasMore && last && (
           <Link
-            href={`/exercises/${id}/history?${new URLSearchParams({ cursor: cursorFor(last.finished_at, last.id) })}`}
+            href={`${historyPath}${historyPath.includes("?") ? "&" : "?"}${new URLSearchParams({ cursor: cursorFor(last.finished_at, last.id) })}`}
           >
             Older performances →
           </Link>

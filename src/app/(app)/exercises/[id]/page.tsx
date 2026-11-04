@@ -1,3 +1,11 @@
+import { loadWorkoutContext } from "@/features/workouts/context";
+import {
+  builderHref,
+  exerciseHref,
+  contextFilters,
+  type QueryValues,
+} from "@/features/workouts/navigation";
+import { AddFromDetails } from "@/components/workouts/add-from-details";
 import { ExerciseThumbnail } from "@/components/exercises/exercise-thumbnail";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -11,11 +19,16 @@ import {
 export const metadata = { title: "Exercise details" };
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<QueryValues>;
 }) {
   const { id } = await params;
   if (!isUuid(id)) notFound();
+  const query = await searchParams;
+  const context = await loadWorkoutContext(query.workoutId, id);
+  const filters = contextFilters(query.builder);
   const library = await loadLibrary(id);
   const exercise = library.exercises.find((e) => e.id === id);
   if (!exercise) notFound();
@@ -27,7 +40,21 @@ export default async function Page({
   return (
     <>
       <div className="page-heading">
-        <Link href="/exercises">← Exercise library</Link>
+        {context ? (
+          <Link
+            href={
+              context.status === "in_progress"
+                ? builderHref(context.id, filters)
+                : `/workout/${context.id}`
+            }
+          >
+            {context.status === "in_progress"
+              ? "← Back to Workout Builder"
+              : "← Back to Workout"}
+          </Link>
+        ) : (
+          <Link href="/exercises">← Exercise library</Link>
+        )}
         <p className="eyebrow">
           {exercise.ownerId
             ? "PRIVATE CUSTOM EXERCISE"
@@ -54,8 +81,24 @@ export default async function Page({
           />
         )}
       </div>
+      {context?.status === "in_progress" &&
+        (!exercise.archivedAt || context.alreadyAdded) && (
+          <AddFromDetails
+            workoutId={context.id}
+            exerciseId={id}
+            alreadyAdded={context.alreadyAdded}
+            filters={filters}
+          />
+        )}
+      {context && context.status !== "in_progress" && (
+        <p role="status">
+          This workout is closed. Exercises can no longer be added.
+        </p>
+      )}
       <div className="library-section">
-        <Link href={`/exercises/${id}/history`}>Look Back</Link>
+        <Link href={exerciseHref(id, context?.id, filters, true)}>
+          Look Back
+        </Link>
       </div>
       <dl className="exercise-detail">
         <dt>Exercise type</dt>
