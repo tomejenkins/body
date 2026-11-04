@@ -14,6 +14,13 @@ export type LoggedSet = {
   revision: number;
   last_mutation_id: string | null;
   deleted_at: string | null;
+  is_automatic?: boolean;
+  inputs_confirmed?: boolean;
+  prescribed_reps_min?: number | null;
+  prescribed_weight_kg?: number | null;
+  suggested_from_date?: string | null;
+  entered_weight?: number | null;
+  entered_unit?: WeightUnit | null;
 };
 export type SetDraft = {
   weight: string;
@@ -35,6 +42,8 @@ export type SetCommand = {
   mode: LoadMode;
   completed: boolean;
   direction?: -1 | 1;
+  enteredWeight?: string | null;
+  enteredUnit?: WeightUnit | null;
 };
 export type SetResult = {
   rows?: LoggedSet[];
@@ -79,13 +88,24 @@ export function displayWeight(kg: number | null, unit: WeightUnit) {
   if (kg === null) return "";
   const milli = rounded(scaled(String(kg)), 1000n);
   return decimal(
-    unit === "kg" ? milli : rounded(milli * 100000000n, 45359237n),
+    unit === "kg" ? milli : rounded(milli * 10000000n, 45359237n) * 10n,
   );
 }
 export function draftFor(row: LoggedSet, unit: WeightUnit): SetDraft {
+  const load =
+    row.inputs_confirmed === false
+      ? (row.prescribed_weight_kg ?? null)
+      : row.actual_weight_kg;
+  const reps =
+    row.inputs_confirmed === false
+      ? (row.prescribed_reps_min ?? null)
+      : row.actual_reps;
   return {
-    weight: displayWeight(row.actual_weight_kg, unit),
-    reps: row.actual_reps === null ? "" : String(row.actual_reps),
+    weight:
+      row.entered_unit === unit && row.entered_weight != null
+        ? String(row.entered_weight)
+        : displayWeight(load, unit),
+    reps: reps === null ? "" : String(reps),
     type: row.set_type,
     mode: row.load_mode,
     completed: row.status === "completed",
@@ -111,9 +131,15 @@ export function valuesFor(
       ? null
       : draft.weightDirty || !canonical
         ? weightToKg(draft.weight, unit)
-        : canonical.actual_weight_kg === null
+        : (canonical.inputs_confirmed === false
+              ? canonical.prescribed_weight_kg
+              : canonical.actual_weight_kg) == null
           ? null
-          : String(canonical.actual_weight_kg);
+          : String(
+              canonical.inputs_confirmed === false
+                ? canonical.prescribed_weight_kg
+                : canonical.actual_weight_kg,
+            );
   if (
     draft.completed &&
     (reps === null || (draft.mode === "external" && weight === null))
@@ -127,6 +153,20 @@ export function valuesFor(
     type: draft.type,
     mode: draft.mode,
     completed: draft.completed,
+    enteredWeight:
+      draft.mode === "bodyweight" || weight === null
+        ? null
+        : draft.weightDirty
+          ? draft.weight.trim()
+          : canonical?.entered_weight != null
+            ? String(canonical.entered_weight)
+            : null,
+    enteredUnit:
+      draft.mode === "bodyweight" || weight === null
+        ? null
+        : draft.weightDirty
+          ? unit
+          : (canonical?.entered_unit ?? null),
   };
 }
 export function summarizeSets(

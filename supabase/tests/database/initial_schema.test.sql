@@ -171,7 +171,7 @@ select ok((select indisunique from pg_index where indexrelid = 'public.program_a
 select ok((select exists (select 1 from pg_indexes where schemaname = 'public' and indexname = 'workout_exercises_lookup_1' and indexdef like '%owner_id, exercise_id, workout_session_id%')), 'owner exercise performance lookup is indexed');
 select ok((select exists (select 1 from pg_constraint where conrelid = 'public.profiles'::regclass and confrelid = 'auth.users'::regclass and contype = 'f')), 'profiles reference managed auth identity without an auth trigger');
 select ok((select count(*) = 2 from public.exercise_muscles where exercise_id = pg_temp.fixture_id('system')), 'exercise can target distinct primary and secondary muscles');
-select ok((select display_weight_unit = 'kg' and onboarding_completed_at is null from public.account_preferences where owner_id = pg_temp.fixture_id('alice')), 'private preferences have explicit weight units and incomplete onboarding');
+select ok((select display_weight_unit = 'lb' and onboarding_completed_at is null from public.account_preferences where owner_id = pg_temp.fixture_id('alice')), 'private preferences have explicit weight units and incomplete onboarding');
 select ok((select count(*) = 4 from public.workout_sets where workout_exercise_id = pg_temp.fixture_id('we') and set_type in ('warm_up', 'working', 'drop', 'rest_pause')), 'all four prescribed set types are supported');
 
 select lives_ok($sql$delete from auth.users where id = pg_temp.fixture_id('bob')$sql$, 'deleting synthetic auth identity cascades its private account data');

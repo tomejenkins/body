@@ -4,12 +4,16 @@ set local search_path=public,extensions,pg_temp;
 select no_plan();
 insert into auth.users(id) values(md5('sets_a')::uuid),(md5('sets_b')::uuid);
 insert into public.profiles(id,display_name) values(md5('sets_a')::uuid,'Sets A'),(md5('sets_b')::uuid,'Sets B');
-select ok(not has_function_privilege('anon','public.log_workout_set(uuid,uuid,text,integer,uuid,integer,numeric,text,text,boolean,integer)','execute'),'anonymous set RPC denied');
+select ok(not has_function_privilege('anon','public.log_workout_set(uuid,uuid,text,integer,uuid,integer,numeric,text,text,boolean,integer,numeric,text)','execute'),'anonymous set RPC denied');
 select ok(not has_column_privilege('authenticated','public.workout_sets','revision','UPDATE'),'revision is server maintained');
 set local role authenticated;
 select set_config('request.jwt.claims',json_build_object('sub',md5('sets_a')::uuid,'role','authenticated')::text,true);
 select set_config('body_test.session',public.start_ad_hoc_workout()::text,true);
 select set_config('body_test.item',public.edit_workout(current_setting('body_test.session')::uuid,'add',(select id from public.exercises where slug='barbell_bench_press'))::text,true);
+-- Privileged fixture cleanup isolates legacy manual-row RPC tests; initialization is tested separately.
+reset role;
+delete from public.workout_sets where workout_exercise_id=current_setting('body_test.item')::uuid;
+set local role authenticated;
 select lives_ok($$select * from public.log_workout_set(current_setting('body_test.item')::uuid,md5('set1')::uuid,'add',null,md5('add1')::uuid)$$,'create a blank pending set');
 select ok((select status='pending' and actual_reps is null and actual_weight_kg is null and completed_at is null from public.workout_sets where id=md5('set1')::uuid),'blank is not zero or complete');
 select lives_ok($$select * from public.log_workout_set(current_setting('body_test.item')::uuid,md5('set1')::uuid,'add',null,md5('add1')::uuid)$$,'repeated add is idempotent');
@@ -37,6 +41,9 @@ select is((select count(*)::int from public.workout_sets where id=md5('set1')::u
 select throws_ok($$select * from public.log_workout_set(current_setting('body_test.item')::uuid,md5('set1')::uuid,'save',3,md5('forged')::uuid,99,99)$$,'42501',null,'other user cannot edit set');
 select set_config('request.jwt.claims',json_build_object('sub',md5('sets_a')::uuid,'role','authenticated')::text,true);
 select set_config('body_test.bw',public.edit_workout(current_setting('body_test.session')::uuid,'add',(select id from public.exercises where slug='push_up'))::text,true);
+reset role;
+delete from public.workout_sets where workout_exercise_id=current_setting('body_test.bw')::uuid;
+set local role authenticated;
 select lives_ok($$select * from public.log_workout_set(current_setting('body_test.bw')::uuid,md5('bw')::uuid,'add',null,md5('bwadd')::uuid,10,null,'working','bodyweight')$$,'bodyweight pending set keeps load null');
 select lives_ok($$select * from public.log_workout_set(current_setting('body_test.bw')::uuid,md5('bw')::uuid,'save',0,md5('bwcomplete')::uuid,10,null,'working','bodyweight',true)$$,'bodyweight completes without inventing zero load/body mass');
 select ok((select actual_weight_kg is null and status='completed' from public.workout_sets where id=md5('bw')::uuid),'null external load preserved for bodyweight');

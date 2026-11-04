@@ -1,5 +1,6 @@
 import { beforeEach, expect, it, vi } from "vitest";
 const mock = vi.hoisted(() => ({ create: vi.fn() }));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/lib/supabase/server", () => ({ createClient: mock.create }));
 import { mutateSet, readSetRows, saveWeightUnit } from "./actions";
 import type { SetCommand } from "./model";

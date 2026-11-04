@@ -1325,3 +1325,18 @@ h1 {
   height: 48px;
   cursor: pointer;
 }
+
+.weight-unit-settings select {
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 1rem;
+}
+.set-source {
+  color: var(--secondary);
+  font-size: 0.75rem;
+  margin-top: 1rem;
+}

@@ -114,8 +114,18 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
     .eq("workout_session_id", sessionId);
   expect(rows.data).toHaveLength(2);
   expect(rows.data?.filter((r) => r.removed_at)).toHaveLength(1);
-  const sets = await account.client.from("workout_sets").select("id");
-  expect(sets.data).toEqual([]);
+  const sets = await account.client
+    .from("workout_sets")
+    .select("id,status,actual_reps,actual_weight_kg");
+  expect(sets.data).toHaveLength(6);
+  expect(
+    sets.data?.every(
+      (s) =>
+        s.status === "pending" &&
+        s.actual_reps === null &&
+        s.actual_weight_kg === null,
+    ),
+  ).toBe(true);
   await page.goto(path);
   await expect(page.getByText("Finished", { exact: true })).toBeVisible();
   await expect(

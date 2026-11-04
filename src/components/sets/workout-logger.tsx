@@ -5,11 +5,7 @@ import { useRouter } from "next/navigation";
 import type { Workout } from "@/features/workouts/types";
 import { describeStatus } from "@/features/workouts/lifecycle";
 import { isUuid } from "@/features/exercises/validation";
-import {
-  mutateSet,
-  saveWeightUnit,
-  readSetRows,
-} from "@/features/sets/actions";
+import { mutateSet, readSetRows } from "@/features/sets/actions";
 import {
   draftFor,
   newSetDraft,
@@ -64,8 +60,6 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
     ref.current = next;
     setEntries(next);
   }
-  const [unitBusy, setUnitBusy] = useState(false);
-  const [unitError, setUnitError] = useState("");
   const [recovery, setRecovery] = useState("");
   const [leaving, setLeaving] = useState<string | null>(null);
   const [ack, setAck] = useState(false);
@@ -447,6 +441,9 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
       revision: 0,
       last_mutation_id: null,
       deleted_at: null,
+      entered_weight:
+        values.enteredWeight == null ? null : Number(values.enteredWeight),
+      entered_unit: values.enteredUnit,
     };
     update((old) => ({
       ...old,
@@ -469,7 +466,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
   return (
     <div
       onSubmitCapture={(event) => {
-        if (dirty || unitBusy) {
+        if (dirty) {
           event.preventDefault();
           setRecovery(
             "Save or explicitly discard unsaved edits before changing or closing this workout.",
@@ -533,40 +530,6 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
             <Link href={`/workout/${workout.id}/select`}>Add exercises</Link>
           </Button>
         )}
-        <label>
-          Weight unit
-          <select
-            aria-label="Weight unit"
-            value={unit}
-            disabled={!active || dirty || unitBusy}
-            onChange={async (event) => {
-              const value = event.target.value as WeightUnit;
-              setUnitBusy(true);
-              const result = await saveWeightUnit(value);
-              setUnitBusy(false);
-              if (result.error) {
-                setUnitError(result.error);
-                return;
-              }
-              setUnit(value);
-              unitRef.current = value;
-              update((old) =>
-                Object.fromEntries(
-                  Object.entries(old).map(([id, e]) => [
-                    id,
-                    { ...e, draft: draftFor(e.row, value) },
-                  ]),
-                ),
-              );
-              setUnitError("");
-            }}
-          >
-            <option value="kg">kg</option>
-            <option value="lb">lb</option>
-          </select>
-        </label>
-        {unitBusy && <span role="status">Saving preference…</span>}
-        {unitError && <p role="alert">{unitError}</p>}
       </div>
       {!workout.items.length && (
         <section className="empty-state">
@@ -576,7 +539,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
           <p>Choose a movement from your library to get started.</p>
         </section>
       )}
-      <fieldset disabled={unitBusy} className="min-w-0 border-0 p-0">
+      <fieldset className="min-w-0 border-0 p-0">
         <legend className="sr-only">Workout sets</legend>
         <ol className="workout-items" aria-label="Selected exercises">
           {workout.items.map((item, index) => {
@@ -598,9 +561,17 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                   </h2>
                   <span className="set-context">{item.exerciseType}</span>
                 </div>
+                {item.sets.some((s) => s.suggested_from_date) && (
+                  <p className="set-source">
+                    Defaults from previous workout ·{" "}
+                    {item.sets
+                      .find((s) => s.suggested_from_date)
+                      ?.suggested_from_date?.slice(0, 10)}
+                  </p>
+                )}
                 <div className="set-grid set-head" aria-hidden="true">
                   <span>Set</span>
-                  <span>Load ({unit})</span>
+                  <span>{unit === "lb" ? "LBS" : "KG"}</span>
                   <span>Reps</span>
                   <span>Done</span>
                 </div>
@@ -615,7 +586,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                         {entry.draft.type === "warm_up" ? "W" : i + 1}
                       </span>
                       <input
-                        aria-label={`${item.name} set ${i + 1} weight`}
+                        aria-label={`${item.name} set ${i + 1} weight in ${unit === "lb" ? "pounds" : "kilograms"}`}
                         inputMode="decimal"
                         autoComplete="off"
                         value={
@@ -681,9 +652,11 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                           : entry.dirty
                             ? "Unsaved changes"
                             : "Saved"}
-                      {entry.draft.mode === "bodyweight"
-                        ? " · Bodyweight, no external load"
+                      {entry.row.inputs_confirmed === false &&
+                      entry.row.suggested_from_date
+                        ? " · suggested"
                         : ""}
+                      {entry.draft.mode === "bodyweight" ? " · Bodyweight" : ""}
                     </div>
                     {entry.error && (
                       <div className="set-error" role="alert">
@@ -888,7 +861,17 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                     sessionId={workout.id}
                     item={{
                       ...item,
-                      canRemove: item.canRemove && !visible.length,
+                      canRemove:
+                        item.canRemove &&
+                        Object.values(entries)
+                          .filter((e) => e.row.workout_exercise_id === item.id)
+                          .every(
+                            (e) =>
+                              e.row.is_automatic &&
+                              e.row.inputs_confirmed === false &&
+                              !e.dirty &&
+                              !e.pending,
+                          ),
                     }}
                     first={index === 0}
                     last={index === workout.items.length - 1}
@@ -922,14 +905,14 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
             <CloseWorkout
               sessionId={workout.id}
               outcome="completed"
-              disabled={dirty || unitBusy || (incomplete && !ack)}
+              disabled={dirty || (incomplete && !ack)}
             />
             <details>
               <summary>Abandon instead</summary>
               <CloseWorkout
                 sessionId={workout.id}
                 outcome="abandoned"
-                disabled={dirty || unitBusy}
+                disabled={dirty}
               />
             </details>
           </div>
