@@ -35,6 +35,10 @@ type ItemRow = {
 export async function loadWorkout(id?: string): Promise<Workout | null> {
   const user = await requireUser(id ? `/workout/${id}` : "/workout");
   const client = await createClient({ readOnly: true });
+  const continuity = await client.rpc("workout_continuity", {
+    p_session: id ?? null,
+  });
+  if (continuity.error) throw new Error("Workout status could not be loaded.");
   let query = client
     .from("workout_sessions")
     .select("id,name,status,completion_status,started_at,finished_at")
@@ -92,6 +96,8 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
   if (preference.error)
     throw new Error("Weight preference could not be loaded.");
   return {
+    continuity: continuity.data as
+      import("@/features/continuity/model").Continuity | null,
     userId: user.id,
     weightUnit: preference.data.display_weight_unit,
     id: session.id,

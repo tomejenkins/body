@@ -32,7 +32,10 @@ it("requires verified auth and explicitly scopes both lookups to that owner", as
     .fn()
     .mockReturnValueOnce(parent)
     .mockReturnValueOnce(selected);
-  mock.create.mockResolvedValue({ from });
+  mock.create.mockResolvedValue({
+    rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
+    from,
+  });
   expect(await loadWorkoutContext(id, id)).toEqual({
     id,
     status: "in_progress",
@@ -46,7 +49,10 @@ it("requires verified auth and explicitly scopes both lookups to that owner", as
 it("never exposes controls for unavailable or closed workouts", async () => {
   for (const status of ["completed", "abandoned"]) {
     const from = vi.fn().mockReturnValue(chain({ id, status }));
-    mock.create.mockResolvedValue({ from });
+    mock.create.mockResolvedValue({
+      rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
+      from,
+    });
     expect(await loadWorkoutContext(id, id)).toEqual({
       id,
       status,
@@ -54,7 +60,10 @@ it("never exposes controls for unavailable or closed workouts", async () => {
     });
     expect(from).toHaveBeenCalledTimes(1);
   }
-  mock.create.mockResolvedValue({ from: vi.fn().mockReturnValue(chain(null)) });
+  mock.create.mockResolvedValue({
+    rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
+    from: vi.fn().mockReturnValue(chain(null)),
+  });
   expect(await loadWorkoutContext(id, id)).toBeNull();
 });
 it("fails closed on auth or data failures", async () => {
@@ -62,6 +71,7 @@ it("fails closed on auth or data failures", async () => {
   await expect(loadWorkoutContext(id, id)).rejects.toThrow("Sign in");
   expect(mock.create).not.toHaveBeenCalled();
   mock.create.mockResolvedValue({
+    rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
     from: vi.fn().mockReturnValue(chain(null, { message: "Private failure" })),
   });
   await expect(loadWorkoutContext(id, id)).rejects.toThrow(

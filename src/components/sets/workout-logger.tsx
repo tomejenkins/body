@@ -2,6 +2,12 @@
 import { LocalTime } from "@/components/history/local-time";
 import { friendlyWorkoutName } from "@/features/history/model";
 import Link from "next/link";
+import { WorkoutCheckIn } from "@/components/continuity/workout-check-in";
+import { readWorkoutContinuity } from "@/features/continuity/actions";
+import {
+  closureExplanation,
+  type Continuity,
+} from "@/features/continuity/model";
 import { exerciseHref } from "@/features/workouts/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -64,7 +70,15 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
   const [recovery, setRecovery] = useState("");
   const [leaving, setLeaving] = useState<string | null>(null);
   const [ack, setAck] = useState(false);
+  const [continuity, setContinuity] = useState<Continuity | null>(
+    workout.continuity ?? null,
+  );
   const active = workout.status === "in_progress";
+  const [checkInBusy, setCheckInBusy] = useState(false);
+  const canEdit =
+    active &&
+    !checkInBusy &&
+    (!continuity || continuity.status === "in_progress");
   const router = useRouter();
   const chain = useRef(Promise.resolve());
   const pending = Object.values(entries).some((e) => e.pending > 0);
@@ -211,6 +225,23 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
       document.removeEventListener("click", click, true);
     };
   }, []);
+  useEffect(() => {
+    const refresh = async () => {
+      if (document.visibilityState === "hidden" || dirtyRef.current) return;
+      const result = await readWorkoutContinuity(workout.id);
+      if (result.data) {
+        setContinuity(result.data);
+        if (result.data.status !== "in_progress" && !dirtyRef.current)
+          router.refresh();
+      }
+    };
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [workout.id, router]);
   function cacheDraftsNow() {
     try {
       const drafts = Object.fromEntries(
@@ -314,6 +345,9 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
           const latest = next[id];
           if (!latest) return old;
           if (result.error) {
+            void readWorkoutContinuity(workout.id).then((value) => {
+              if (value.data) setContinuity(value.data);
+            });
             next[id] = {
               ...latest,
               pending: Math.max(0, latest.pending - 1),
@@ -328,6 +362,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
             };
             return next;
           }
+          setContinuity(null);
           for (const row of result.rows ?? []) {
             const existing = next[row.id];
             if (!existing) {
@@ -488,6 +523,22 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
           </p>
         )}
       </div>
+      {continuity?.state === "check_in" && !dirty && !pending && (
+        <WorkoutCheckIn
+          workout={continuity}
+          onBusy={setCheckInBusy}
+          onState={setContinuity}
+        />
+      )}
+      {continuity && continuity.status !== "in_progress" && (
+        <section className="draft-warning" role="status">
+          <p>
+            {closureExplanation(continuity.closure_reason) ||
+              "This workout is closed. Your draft inputs remain here for review."}
+          </p>
+          <Link href={`/history/${workout.id}`}>Review saved workout</Link>
+        </section>
+      )}
       <p className="logging-summary" role="status">
         {workout.items.length} exercises · {summary.completed} completed sets ·{" "}
         {summary.pending} pending sets
@@ -637,7 +688,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                           autoComplete="off"
                           value={entry.draft.weight}
                           placeholder="—"
-                          disabled={!active || unsupported || entry.deleting}
+                          disabled={!canEdit || unsupported || entry.deleting}
                           onChange={(e) =>
                             change(entry.row.id, {
                               weight: e.target.value,
@@ -656,7 +707,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                         autoComplete="off"
                         value={entry.draft.reps}
                         placeholder="—"
-                        disabled={!active || unsupported || entry.deleting}
+                        disabled={!canEdit || unsupported || entry.deleting}
                         onChange={(e) =>
                           change(entry.row.id, { reps: e.target.value })
                         }
@@ -670,7 +721,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                           aria-label={`${item.name} set ${i + 1} complete`}
                           type="checkbox"
                           checked={entry.draft.completed}
-                          disabled={!active || unsupported || !!entry.pending}
+                          disabled={!canEdit || unsupported || !!entry.pending}
                           onPointerDown={(e) => e.preventDefault()}
                           onChange={(e) => {
                             change(entry.row.id, {
@@ -769,7 +820,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                         type="button"
                         className="add-resistance"
                         onPointerDown={(event) => event.preventDefault()}
-                        disabled={!!entry.pending}
+                        disabled={!canEdit || !!entry.pending}
                         onClick={() => {
                           change(entry.row.id, {
                             mode:
@@ -833,7 +884,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                         Set type
                         <select
                           aria-label={`${item.name} set ${i + 1} type`}
-                          disabled={!active || unsupported || !!entry.pending}
+                          disabled={!canEdit || unsupported || !!entry.pending}
                           value={entry.draft.type}
                           onChange={(e) => {
                             change(entry.row.id, {
@@ -854,7 +905,9 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                           Load recording
                           <select
                             aria-label={`${item.name} set ${i + 1} load mode`}
-                            disabled={!active || unsupported || !!entry.pending}
+                            disabled={
+                              !canEdit || unsupported || !!entry.pending
+                            }
                             value={entry.draft.mode}
                             onChange={(e) => {
                               change(entry.row.id, {
@@ -878,7 +931,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                         <div className="set-option-actions">
                           <Button
                             variant="outline"
-                            disabled={i === 0 || pending || dirty}
+                            disabled={!canEdit || i === 0 || pending || dirty}
                             onClick={() => enqueue(entry.row.id, "move", -1)}
                             aria-label={`Move ${item.name} set ${i + 1} up`}
                           >
@@ -887,7 +940,10 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                           <Button
                             variant="outline"
                             disabled={
-                              i === visible.length - 1 || pending || dirty
+                              !canEdit ||
+                              i === visible.length - 1 ||
+                              pending ||
+                              dirty
                             }
                             onClick={() => enqueue(entry.row.id, "move", 1)}
                             aria-label={`Move ${item.name} set ${i + 1} down`}
@@ -896,7 +952,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                           </Button>
                           <Button
                             variant="outline"
-                            disabled={!!entry.pending}
+                            disabled={!canEdit || !!entry.pending}
                             onClick={() => enqueue(entry.row.id, "remove")}
                             aria-label={`Delete ${item.name} set ${i + 1}`}
                           >
@@ -910,7 +966,11 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                 {active && (
                   <Button
                     variant="outline"
-                    disabled={unsupported || visible.some((e) => e.localOnly)}
+                    disabled={
+                      !canEdit ||
+                      unsupported ||
+                      visible.some((e) => e.localOnly)
+                    }
                     onClick={() => add(item.id, item.bodyweightEligible)}
                     aria-label={`Add set to ${item.name}`}
                   >
@@ -966,14 +1026,14 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
             <CloseWorkout
               sessionId={workout.id}
               outcome="completed"
-              disabled={dirty || (incomplete && !ack)}
+              disabled={!canEdit || dirty || (incomplete && !ack)}
             />
             <details>
               <summary>Abandon instead</summary>
               <CloseWorkout
                 sessionId={workout.id}
                 outcome="abandoned"
-                disabled={dirty}
+                disabled={!canEdit || dirty}
               />
             </details>
           </div>

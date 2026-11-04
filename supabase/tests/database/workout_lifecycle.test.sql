@@ -45,7 +45,7 @@ select set_config('body_test.finish_time',(select finished_at::text from public.
 select lives_ok($$select public.end_workout(current_setting('body_test.session')::uuid,'completed')$$,'same finish retry succeeds');
 select is((select finished_at::text from public.workout_sessions where id=current_setting('body_test.session')::uuid),current_setting('body_test.finish_time'),'finish retry preserves timestamp');
 select throws_ok($$select public.end_workout(current_setting('body_test.session')::uuid,'abandoned')$$,'23514',null,'finished session cannot be reclassified');
-select throws_ok($$update public.workout_sessions set status='in_progress',finished_at=null where id=current_setting('body_test.session')::uuid$$,'23514',null,'terminal session cannot be reopened through direct writes');
+select throws_ok($$update public.workout_sessions set status='in_progress' where id=current_setting('body_test.session')::uuid$$,'23514',null,'terminal session cannot be reopened through direct writes');
 select throws_ok($$select public.edit_workout(current_setting('body_test.session')::uuid,'move',null,current_setting('body_test.second')::uuid,-1)$$,'23514',null,'finished selections cannot be reordered through lifecycle RPC');
 select throws_ok($$update public.workout_exercises set removed_at=now() where id=current_setting('body_test.second')::uuid$$,'23514',null,'finished selections cannot be soft removed directly');
 select throws_ok($$delete from public.workout_exercises where id=current_setting('body_test.second')::uuid$$,'42501',null,'hard DELETE still denied');

@@ -8,7 +8,7 @@ Use Next.js App Router and strict TypeScript. Default to Server Components; add 
 
 ## Product decisions
 
-Mobile-first, premium and quiet. Follow system light/dark preference, respect reduced motion and safe areas, retain keyboard focus and accessible labels, and keep touch targets usable. Avoid unnecessary modals and navigation. No invented user records or mock production authentication. Workout logging, programs, recommendations, records, trainer support, and social behavior are not implemented in this foundation. Sharing must be private by default when built, enforced with database policies rather than UI labels. Keep business logic reusable for future native clients.
+Mobile-first, premium and quiet. Follow system light/dark preference, respect reduced motion and safe areas, retain keyboard focus and accessible labels, and keep touch targets usable. Avoid unnecessary modals and navigation. No invented user records or mock production authentication. Authentication, exercise recommendations, logging, history and records now live in the feature modules documented below. Programs, trainer support and social behavior remain outside the current scope. Sharing must be private by default when built, enforced with database policies rather than UI labels. Keep business logic reusable for future native clients.
 
 ## Supabase and security
 
@@ -117,3 +117,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Phase 6.2 continuity and Personal Records
+
+Read `docs/workout-continuity.md` and `docs/personal-records.md`. Keep database UTC policy authoritative; passive fetches never count as activity. Evaluate expiry before mutations, preserve stale drafts and all sets, and commit lazy cleanup through NULL/empty RPC rejection rather than throwing away the cleanup transaction. Keep effective endpoint, administrative close, evidence, idle gaps and qualified duration distinct. Never accept client times/duration or expose broad protected-column grants. Preserve parent-first RPC locks, NOWAIT direct-DML guard behavior, retries and PR #11 navigation.
+
+Actual repetition maximums require EXACT rep counts: a heavier five must never update actual three. Test this in SQL and TypeScript. Keep actual 1/3/5, heaviest and separately labeled Epley estimate distinct; no missing-category estimates. Derive owner-only records from eligible completed actuals, excluding abandoned, warm-up, removed/deleted/unconfirmed/unsupported data. Keep bodyweight, added load and external volume separate with no body-mass inference. Source is truth; no mutable record authority. Historical baselines/ties are not celebrations; new finishes recognize at most three diverse deterministic improvements using existing hidden prominence. Test corrections, canonical unit precision, cross-owner/anonymous denials and source exclusions.
+
+Run fresh local replay/lint/pgTAP plus all retained unit/catalog/browser/Next/Worker checks. Browser clock fixtures may access only the disposable local Docker stack; never add a production clock override. Preserve immutable earlier migrations. This phase authorizes local forward SQL, not hosted changes, migration push, production deployment or merge. Stop after Phase 6.2.

@@ -182,3 +182,7 @@ See [smart defaults](smart-set-defaults.md) for the additive provenance/entry me
 ## Phase 6.1 follow-up
 
 See [workout history](workout-history.md) for paginated owner-scoped History/Look Back, read-only review, local-time display, friendly workout naming, measurement-context snapshots and reps-first bodyweight logging. The new forward migration leaves prior snapshots and SQL immutable, and blocks unsupported duration/assistance completion without weakening historical guards. Internal [record prominence](record-prominence.md) remains display metadata only.
+
+## Phase 6.2 forward migrations
+
+`20261104182136_workout_continuity.sql` adds protected session activity/effective-end/duration/closure/continuation/recognition metadata and invoker lifecycle/activity guards, plus extended bounded history summaries. `20261104182137_personal_records.sql` adds owner-only reproducible record/achievement read functions, no record truth table. Existing migrations are unchanged. See [continuity](workout-continuity.md) and [records](personal-records.md) for field semantics, conservative legacy rules, committed expiration rejection and exact-rep calculations.

@@ -11,6 +11,9 @@ import {
 export async function loadHistory(filter: unknown, cursor: unknown) {
   await requireUser("/history");
   const client = await createClient({ readOnly: true });
+  const continuity = await client.rpc("workout_continuity");
+  if (continuity.error)
+    throw new Error("Workout status could not be confirmed.");
   const selected = historyFilter(filter),
     page = pageCursor(cursor);
   const result = await client.rpc("workout_history", {
@@ -22,6 +25,15 @@ export async function loadHistory(filter: unknown, cursor: unknown) {
   if (result.error)
     throw new Error("Workout history could not be loaded. Please retry.");
   const rows = result.data as HistorySummary[];
+  const recognized = rows.filter((w) => w.recognition_enabled).map((w) => w.id);
+  if (recognized.length) {
+    const counts = await client.rpc("history_achievement_counts", {
+      p_sessions: recognized,
+    });
+    if (counts.error)
+      throw new Error("Workout achievement summaries could not be loaded.");
+    for (const row of rows) row.achievement_count = counts.data[row.id] ?? 0;
+  }
   return {
     filter: selected,
     rows: rows.slice(0, 20),

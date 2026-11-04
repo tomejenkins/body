@@ -20,7 +20,7 @@ stateDiagram-v2
 
 Finish/abandon returns to `/workout` with a success message. Saved closed session URLs remain readable but offer no selection editing. The same terminal operation can be retried idempotently without changing its timestamp; conflicting terminal transitions and reopening are rejected. Starting again after closing creates a new session.
 
-A completed **session** does not prove completed sets. The forward migration permits `status='completed', completion_status='none'` so an empty or selection-only workout can finish honestly. No set records are generated. If existing data contains completed sets, closing preserves them and reports `partial`, never guesses full prescription completion. Phase 5.2 must define real logging/completion behavior. UTC is labeled explicitly; user-timezone preferences and a live elapsed timer are future work.
+A completed **session** does not prove completed sets. The forward migration permits `status='completed', completion_status='none'` so an empty or selection-only workout can finish honestly. No set records are generated. Phase 5.2 added real set logging: closure derives none/partial/full from persisted completed sets and expected structure without completing pending sets. Phase 6.1 uses browser timezone presentation over UTC storage. Phase 6.2 adds qualified elapsed/estimated duration with server-owned times; a live timer remains out of scope.
 
 ## Data, ownership and concurrency
 
@@ -120,3 +120,7 @@ Closure in another tab is rechecked on navigation and every mutation, without in
 Navigation hotfix validation — 2026-11-04 (America/Los_Angeles): 126 Vitest tests across 26 files; 1,231 pgTAP assertions across seven suites on a clean disposable local replay; 40 desktop/mobile browser tests on Next.js and 40 on local Workers all passed. Lint, strict typecheck, formatting, catalog consistency, Next build, Workers build and Wrangler no-upload dry-run passed. Mobile light/dark contextual details, Look Back and direct recent Add controls were visually reviewed, including a 44px Add target. No local functional checks remain blocked.
 
 Early checks caught a queued builder URL update affecting outgoing navigation (fixed with an exact pathname guard) and a browser assertion that needed to await client navigation. The first invariant run also encountered accumulated browser fixtures; the clean local replay passed all retained assertions. No new migration, recommendation/history-query change, persistence change, dependency or environment key was introduced. Hosted configuration, real SMTP and physical devices were not verified. Publishing relies on the existing repository-wide Supabase preview-safety confirmation; no merge or production deployment is part of this hotfix.
+
+## Phase 6.2 extension
+
+[Continuity](workout-continuity.md) now owns session timestamps and completion summaries. Client INSERT of status/completion/start/finish and UPDATE of completion/start/finish are revoked; end_workout computes them. Expired lifecycle attempts return NULL (logging returns empty rows) after committing abandonment; clients must retain drafts and not claim Saved. Existing locking/idempotency and one-active uniqueness remain. Explicit continuation nonce is the only new client-updatable continuity column.

@@ -138,3 +138,9 @@ Read [the exercise library guide](docs/exercise-library.md) for taxonomy, machin
 The Workout page now starts or resumes one ad-hoc session, saves exercise selections, supports adjacent reordering/non-destructive removal and closes by finishing or abandoning. No set logging or program generator is implemented. Finishing without sets stays explicitly unlogged rather than fabricating work.
 
 Local SVG thumbnails cover library cards/details, the shared selector and workout lists: 8 specific mappings, 29 movement-family assets and a generic fallback. Read [exercise visuals](docs/exercise-visuals.md) and [workout lifecycle](docs/workout-lifecycle.md) for architecture, safeguards, tests and manual delivery steps. The single new forward migration requires reviewed application before deploying this version; old migrations and Workers configuration are unchanged.
+
+## Phase 6.2 continuity and records
+
+See [workout continuity](docs/workout-continuity.md) and [Personal Records](docs/personal-records.md) for server activity, recovery, expiration, exact rep records and validation. The two new forward migrations must be reviewed/applied in order before this app version is deployed. Local tests use disposable Supabase only; no hosted changes or production deploy are included.
+
+See the [Phase 6.2 validation and release checklist](docs/phase-6-2-validation.md) for executed checks, migration order and known limits.

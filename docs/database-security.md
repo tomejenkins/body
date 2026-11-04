@@ -53,7 +53,7 @@ Unlisted columns cannot be inserted/updated by authenticated clients. Defaults a
 
 - `program_assignments`: INSERT `id, owner_id, program_id, cycle_length, state, next_cycle_position, completed_rotations, started_at, ended_at`. UPDATE `state, next_cycle_position, completed_rotations, ended_at`.
 
-- `workout_sessions`: INSERT `id, owner_id, source_program_id, source_program_day_id, program_assignment_id, source_cycle_position, source_rotation, program_name_snapshot, day_name_snapshot, name, status, completion_status, started_at, finished_at, notes`. UPDATE `name, status, completion_status, started_at, finished_at, notes, program_name_snapshot, day_name_snapshot`.
+- `workout_sessions`: INSERT `id, owner_id, source_program_id, source_program_day_id, program_assignment_id, source_cycle_position, source_rotation, program_name_snapshot, day_name_snapshot, name, notes`. UPDATE `name, status, notes, program_name_snapshot, day_name_snapshot, continuation_nonce`. Session times, completion summary, activity/evidence, effective end, duration provenance, idle context and recognition are server-owned.
 
 - `workout_exercises`: INSERT `id, owner_id, workout_session_id, position, source_program_slot_id, exercise_id, prescribed_exercise_id, exercise_name_snapshot, exercise_instructions_snapshot, prescribed_exercise_name_snapshot, status, prescribed_sets, prescribed_rest_seconds, notes`. UPDATE `position, exercise_id, prescribed_exercise_id, exercise_name_snapshot, exercise_instructions_snapshot, prescribed_exercise_name_snapshot, status, prescribed_sets, prescribed_rest_seconds, notes`.
 
@@ -163,3 +163,11 @@ See [smart defaults](smart-set-defaults.md) for the additive provenance/entry me
 ## Phase 6.1 follow-up
 
 See [workout history](workout-history.md) for paginated owner-scoped History/Look Back, read-only review, local-time display, friendly workout naming, measurement-context snapshots and reps-first bodyweight logging. The new forward migration leaves prior snapshots and SQL immutable, and blocks unsupported duration/assistance completion without weakening historical guards. Internal [record prominence](record-prominence.md) remains display metadata only.
+
+## Phase 6.2 grants and read models
+
+Session authenticated INSERT no longer includes status, completion_status, started_at or finished_at; UPDATE no longer includes completion_status, started_at or finished_at. Only continuation_nonce is newly updatable. All new evidence/effective-end/activity/idle/recognition fields have no write grants. Trigger-controlled status closure computes summary/times and rejects ordinary closed writes. Existing FK historical-reference cleanup does not touch closed activity. Parent-first invoker RPCs check expiry before accepting stale writes; direct child guards use NOWAIT to avoid reversed-lock waits. No SECURITY DEFINER bypass or private-helper execution grant is added.
+
+workout_policy/workout_continuity and record_performances/record_metrics/personal_records/record_load_bests/workout_achievements/history_achievement_counts are authenticated-only, empty-search-path SECURITY INVOKER functions, explicitly scoped to auth.uid() and existing RLS. Anonymous and service-role execution is revoked; array/page bounds protect UI-facing aggregate queries. Read models have no owner argument or mutable record-summary grants. Retained authorization tests plus new local suites prove exact grants, protected timestamps, expiration retention, baselines and cross-owner denials. See [records](personal-records.md) and [continuity](workout-continuity.md).
+
+Set completion timestamps are also server-assigned by the logging trigger. Existing narrow invoker column grants are retained, but submitted completion times are ignored: first completion uses database time, completed corrections keep the original event time, and pending sets clear it. Privileged historical imports remain distinct from ordinary authenticated writes.

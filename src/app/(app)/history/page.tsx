@@ -1,8 +1,8 @@
+import { qualifiedDuration } from "@/features/continuity/model";
 import Link from "next/link";
 import { loadHistory } from "@/features/history/queries";
 import {
   cursorFor,
-  durationLabel,
   friendlyWorkoutName,
   historyStatus,
 } from "@/features/history/model";
@@ -24,6 +24,7 @@ export default async function Page({
       <div className="page-heading">
         <p className="eyebrow">YOUR TRAINING STORY</p>
         <h1>Workout history</h1>
+        <Link href="/history/records">Personal Records →</Link>
         <p className="intro">Look back at the work you put in.</p>
       </div>
       <nav className="history-filters" aria-label="History filters">
@@ -59,8 +60,23 @@ export default async function Page({
                   working sets · {w.warm_up_sets} warm-up sets ·{" "}
                   {w.incomplete_sets} incomplete sets
                 </p>
-                {durationLabel(w.started_at, w.finished_at) && (
-                  <p>{durationLabel(w.started_at, w.finished_at)}</p>
+                <p>
+                  {qualifiedDuration({
+                    started_at: w.started_at,
+                    finished_at: w.finished_at,
+                    effective_finished_at: w.effective_finished_at ?? null,
+                    duration_kind: w.duration_kind ?? "legacy",
+                    idle_intervals: w.idle_intervals ?? [],
+                  })}
+                </p>
+                {w.closure_reason === "inactivity" && (
+                  <p>Closed after inactivity · Saved sets kept</p>
+                )}
+                {!!w.achievement_count && (
+                  <p>
+                    {w.achievement_count} personal best
+                    {w.achievement_count === 1 ? "" : "s"}
+                  </p>
                 )}
                 <span>View workout →</span>
               </Link>

@@ -73,6 +73,11 @@ export async function mutateSet(input: SetCommand): Promise<SetResult> {
           "Set not saved. Check your values and connection; closed or removed selections cannot be edited.",
       };
     }
+    if (!Array.isArray(result.data) || result.data.length === 0)
+      return {
+        error:
+          "This workout closed before the edit could be saved. Your draft is retained for review.",
+      };
     return { rows: result.data as LoggedSet[] };
   } catch {
     return {
