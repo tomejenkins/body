@@ -7,7 +7,7 @@ const routes = [
   ["Dashboard", "Show up for yourself."],
   ["Workout", "Your next rep starts here."],
   ["Programs", "Structure for your ambition."],
-  ["History", "Every effort adds up."],
+  ["History", "Workout history"],
   ["Feed", "Progress is personal."],
   ["Profile", "Your space. Your pace."],
 ];

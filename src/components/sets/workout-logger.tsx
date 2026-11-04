@@ -1,4 +1,6 @@
 "use client";
+import { LocalTime } from "@/components/history/local-time";
+import { friendlyWorkoutName } from "@/features/history/model";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -37,8 +39,6 @@ type Entry = {
   retrySeq?: number;
   deleting?: boolean;
 };
-const timestamp = (s: string) =>
-  new Date(s).toISOString().replace("T", " · ").slice(0, 21) + " UTC";
 export function WorkoutLogger({ workout }: { workout: Workout }) {
   const [unit, setUnit] = useState(workout.weightUnit);
   const unitRef = useRef(unit);
@@ -477,19 +477,13 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
       <div className="page-heading">
         <Link href="/workout">← Workout</Link>
         <p className="eyebrow">{describeStatus(workout.status)}</p>
-        <h1>{workout.name}</h1>
+        <h1>{friendlyWorkoutName(workout.name)}</h1>
         <p className="intro">
-          Started{" "}
-          <time dateTime={workout.startedAt}>
-            {timestamp(workout.startedAt)}
-          </time>
+          Started <LocalTime value={workout.startedAt} />
         </p>
         {workout.finishedAt && (
           <p>
-            Closed{" "}
-            <time dateTime={workout.finishedAt}>
-              {timestamp(workout.finishedAt)}
-            </time>
+            Closed <LocalTime value={workout.finishedAt} />
           </p>
         )}
       </div>
@@ -549,6 +543,12 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                   e.row.workout_exercise_id === item.id && !e.row.deleted_at,
               )
               .sort((a, b) => compareSets(a.row, b.row));
+            const unsupported =
+              item.loggingKind === "duration" ||
+              item.loggingKind === "assisted";
+            const showLoad =
+              !item.bodyweightEligible ||
+              visible.some((e) => e.draft.mode === "external");
             return (
               <li key={item.id} className="workout-item">
                 <div className="workout-item-heading">
@@ -564,14 +564,42 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                 {item.sets.some((s) => s.suggested_from_date) && (
                   <p className="set-source">
                     Defaults from previous workout ·{" "}
-                    {item.sets
-                      .find((s) => s.suggested_from_date)
-                      ?.suggested_from_date?.slice(0, 10)}
+                    <LocalTime
+                      value={
+                        item.sets.find((s) => s.suggested_from_date)
+                          ?.suggested_from_date ?? workout.startedAt
+                      }
+                    />
                   </p>
                 )}
-                <div className="set-grid set-head" aria-hidden="true">
+                <p className="auth-links">
+                  <Link href={`/exercises/${item.exerciseId}/history`}>
+                    Look Back
+                  </Link>
+                </p>
+                {unsupported && (
+                  <p role="note">
+                    {item.loggingKind === "duration"
+                      ? "This movement is tracked by time or distance. Duration tracking is not available yet; no repetitions will be recorded."
+                      : "Assistance reduces resistance. Assistance tracking is not available yet; it will never be recorded as added weight."}
+                  </p>
+                )}
+                {item.bodyweightEligible && !unsupported && (
+                  <p className="set-source">
+                    Bodyweight · Add resistance only when you use it.
+                  </p>
+                )}
+                <div
+                  className={`set-grid set-head ${showLoad ? "" : "reps-first"}`}
+                  aria-hidden="true"
+                >
                   <span>Set</span>
-                  <span>{unit === "lb" ? "LBS" : "KG"}</span>
+                  {showLoad && (
+                    <span>
+                      {item.bodyweightEligible ? "Added " : ""}
+                      {unit === "lb" ? "LBS" : "KG"}
+                    </span>
+                  )}
                   <span>Reps</span>
                   <span>Done</span>
                 </div>
@@ -581,45 +609,41 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                     className={`logged-set ${entry.draft.completed ? "is-complete" : ""}`}
                     data-set-id={entry.row.id}
                   >
-                    <div className="set-grid">
+                    <div className={`set-grid ${showLoad ? "" : "reps-first"}`}>
                       <span className="set-number">
                         {entry.draft.type === "warm_up" ? "W" : i + 1}
                       </span>
-                      <input
-                        aria-label={`${item.name} set ${i + 1} weight in ${unit === "lb" ? "pounds" : "kilograms"}`}
-                        inputMode="decimal"
-                        autoComplete="off"
-                        value={
-                          entry.draft.mode === "bodyweight"
-                            ? ""
-                            : entry.draft.weight
-                        }
-                        placeholder={
-                          entry.draft.mode === "bodyweight" ? "BW" : "—"
-                        }
-                        disabled={
-                          !active ||
-                          entry.deleting ||
-                          entry.draft.mode === "bodyweight"
-                        }
-                        onChange={(e) =>
-                          change(entry.row.id, {
-                            weight: e.target.value,
-                            weightDirty: true,
-                          })
-                        }
-                        onBlur={() => {
-                          if (ref.current[entry.row.id].dirty)
-                            enqueue(entry.row.id);
-                        }}
-                      />
+                      {entry.draft.mode === "bodyweight" ? (
+                        showLoad ? (
+                          <span className="bodyweight-marker">Bodyweight</span>
+                        ) : null
+                      ) : (
+                        <input
+                          aria-label={`${item.name} set ${i + 1} weight in ${unit === "lb" ? "pounds" : "kilograms"}`}
+                          inputMode="decimal"
+                          autoComplete="off"
+                          value={entry.draft.weight}
+                          placeholder="—"
+                          disabled={!active || unsupported || entry.deleting}
+                          onChange={(e) =>
+                            change(entry.row.id, {
+                              weight: e.target.value,
+                              weightDirty: true,
+                            })
+                          }
+                          onBlur={() => {
+                            if (ref.current[entry.row.id].dirty)
+                              enqueue(entry.row.id);
+                          }}
+                        />
+                      )}
                       <input
                         aria-label={`${item.name} set ${i + 1} reps`}
                         inputMode="numeric"
                         autoComplete="off"
                         value={entry.draft.reps}
                         placeholder="—"
-                        disabled={!active || entry.deleting}
+                        disabled={!active || unsupported || entry.deleting}
                         onChange={(e) =>
                           change(entry.row.id, { reps: e.target.value })
                         }
@@ -633,7 +657,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                           aria-label={`${item.name} set ${i + 1} complete`}
                           type="checkbox"
                           checked={entry.draft.completed}
-                          disabled={!active || !!entry.pending}
+                          disabled={!active || unsupported || !!entry.pending}
                           onPointerDown={(e) => e.preventDefault()}
                           onChange={(e) => {
                             change(entry.row.id, {
@@ -727,6 +751,30 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                         )}
                       </div>
                     )}
+                    {active && item.bodyweightEligible && !unsupported && (
+                      <button
+                        type="button"
+                        className="add-resistance"
+                        onPointerDown={(event) => event.preventDefault()}
+                        disabled={!!entry.pending}
+                        onClick={() => {
+                          change(entry.row.id, {
+                            mode:
+                              entry.draft.mode === "bodyweight"
+                                ? "external"
+                                : "bodyweight",
+                            weight: "",
+                            weightDirty: true,
+                            completed: false,
+                          });
+                          enqueue(entry.row.id);
+                        }}
+                      >
+                        {entry.draft.mode === "bodyweight"
+                          ? "+ Add weight"
+                          : "Bodyweight only"}
+                      </button>
+                    )}
                     <details className="set-options">
                       <summary>{setTypes[entry.draft.type]} · Options</summary>
                       {active && (
@@ -772,7 +820,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                         Set type
                         <select
                           aria-label={`${item.name} set ${i + 1} type`}
-                          disabled={!active || !!entry.pending}
+                          disabled={!active || unsupported || !!entry.pending}
                           value={entry.draft.type}
                           onChange={(e) => {
                             change(entry.row.id, {
@@ -793,7 +841,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                           Load recording
                           <select
                             aria-label={`${item.name} set ${i + 1} load mode`}
-                            disabled={!active || !!entry.pending}
+                            disabled={!active || unsupported || !!entry.pending}
                             value={entry.draft.mode}
                             onChange={(e) => {
                               change(entry.row.id, {
@@ -849,7 +897,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                 {active && (
                   <Button
                     variant="outline"
-                    disabled={visible.some((e) => e.localOnly)}
+                    disabled={unsupported || visible.some((e) => e.localOnly)}
                     onClick={() => add(item.id, item.bodyweightEligible)}
                     aria-label={`Add set to ${item.name}`}
                   >

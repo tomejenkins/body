@@ -1340,3 +1340,89 @@ h1 {
   font-size: 0.75rem;
   margin-top: 1rem;
 }
+
+.history-filters,
+.history-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+.history-filters a,
+.history-pagination a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 2rem;
+}
+.history-filters [aria-current] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.history-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  max-width: 54rem;
+}
+.history-list > li {
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+.history-list > li > a {
+  display: block;
+}
+.history-list h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.5rem;
+}
+.history-list p,
+.history-detail p {
+  color: var(--secondary);
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+.performance-list {
+  list-style: none;
+  padding: 0;
+}
+.performance-list li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+.performance-list li > span {
+  color: var(--secondary);
+}
+.performance-list strong {
+  font-weight: 500;
+}
+.set-grid.reps-first {
+  grid-template-columns: 2rem minmax(0, 1fr) 3rem;
+}
+.add-resistance {
+  min-height: 44px;
+  font-size: 0.75rem;
+  color: var(--secondary);
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.bodyweight-marker {
+  font-size: 0.7rem;
+  color: var(--secondary);
+}
+
+.add-resistance:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 0.4rem;
+}

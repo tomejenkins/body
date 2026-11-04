@@ -55,3 +55,7 @@ Validated 2026-11-03 (America/Los_Angeles):
 Early validation corrected a PL/pgSQL CASE-expression parse issue and legacy fixture assumptions about zero initial rows/default kg. The injected-failure assertion uses an actual existing catalog exercise and a rollback-only trigger, rather than relying on an invalid prescribed count that an earlier constraint rejects. Final retained role denials and new behavior pass. No local functional check is blocked. GitHub git transport works, but the GraphQL PR API returns Forbidden, so manual draft PR creation may be necessary.
 
 Hosted security/configuration, SMTP and physical devices are not validated here. Draft recovery is tab-local, not offline synchronization. Timed holds and multipart drop/rest-pause efforts remain future structured-model work. No progressive overload, coaching, analytics, programs, timers, trainer/social features, video uploads or OAuth are included.
+
+## Phase 6.1 follow-up
+
+See [workout history](workout-history.md) for paginated owner-scoped History/Look Back, read-only review, local-time display, friendly workout naming, measurement-context snapshots and reps-first bodyweight logging. The new forward migration leaves prior snapshots and SQL immutable, and blocks unsupported duration/assistance completion without weakening historical guards. Internal [record prominence](record-prominence.md) remains display metadata only.

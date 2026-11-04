@@ -1,3 +1,4 @@
+import { WorkoutReview } from "@/components/history/workout-review";
 import { notFound } from "next/navigation";
 import { loadWorkout } from "@/features/workouts/queries";
 import { isUuid } from "@/features/exercises/validation";
@@ -12,5 +13,7 @@ export default async function Page({
   if (!isUuid(id)) notFound();
   const workout = await loadWorkout(id);
   if (!workout) notFound();
+  if (workout.status !== "in_progress")
+    return <WorkoutReview workout={workout} />;
   return <WorkoutLogger key={workout.id} workout={workout} />;
 }

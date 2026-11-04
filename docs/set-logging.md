@@ -56,3 +56,7 @@ No local functional checks were blocked. Hosted schema/security, real SMTP, prod
 ## Phase 5.3 follow-up
 
 See [smart defaults](smart-set-defaults.md) for transactional initialization, prescribed suggestions versus actual inputs, exact entered-weight metadata, Profile Settings and the forward-only extension. The validation record above describes Phase 5.2.
+
+## Phase 6.1 follow-up
+
+See [workout history](workout-history.md) for paginated owner-scoped History/Look Back, read-only review, local-time display, friendly workout naming, measurement-context snapshots and reps-first bodyweight logging. The new forward migration leaves prior snapshots and SQL immutable, and blocks unsupported duration/assistance completion without weakening historical guards. Internal [record prominence](record-prominence.md) remains display metadata only.

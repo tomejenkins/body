@@ -92,6 +92,14 @@ Read `docs/smart-set-defaults.md`. This phase authorizes automatic pending struc
 
 New accounts default lb; preserve every existing preference. Units belong in Profile Settings. Preserve original entered load/unit metadata validated against canonical kg so practical and meaningful fractional inputs survive reload. Alternate-unit formatting must never rewrite loads or serve as a revision mechanism. Retain queue/CAS/nonce/draft/navigation guarantees and add history, initialization, rollback, concurrency, privacy and exact 50-lb regressions. Earlier migrations remain immutable; no programs, progressive overload, analytics, timers, OAuth, trainer/social or offline sync. No hosted SQL, automatic merge or production deployment.
 
+## Phase 6.1 History and Look Back
+
+Read `docs/workout-history.md` and `docs/record-prominence.md`. This phase adds owner-only bounded/keyset history read models and explicit internal display metadata, not PR calculations or charts. Preserve original snapshots, actual versus suggested data, exact entered-unit metadata and closed-workout guards. History list queries aggregate only a limited session page; Look Back uses exact canonical IDs and completed actuals, counts repeated same-exercise selections once per workout, and never merges families. Use actual set completion for last-performed timestamps. Do not download lifetime sets, add N+1 API calls or invent empty history on failures.
+
+Use browser IANA timezones through hydration-safe LocalTime, UTC storage/cursors and reliable elapsed durations only. Product language is Record Workout / Resume Workout / Workout; legacy friendly display never rewrites custom historical names. Unit preferences apply across review and Look Back. Archived own exercise details are read-only and remain linkable to history.
+
+Measurement snapshots are server-assigned with no client grants. Bodyweight is reps-first with optional explicit added load, never body mass. Assistance/time/distance require dedicated contracts: block unsupported completion in UI and SQL, flag legacy measurements conservatively and never report them as valid added resistance. Preserve queue/CAS/nonce/draft/navigation protections. Internal prominence uses exact UUIDs and stays invisible; every canonical exercise remains independently eligible for future records. Rerun all app, database, browser, catalog and Workers checks. Prior migrations are immutable; no hosted SQL, merge or production deployment, no scheduling, OAuth, social/trainer features, timers, uploads or unrestricted corrections.
+
 ## Scope
 
 Keep initial work focused. Review existing code before replacing it, preserve local work, use supported dependencies, and never change package integrity checks to force installation. PWA offline support and platform-specific install validation are separate work.

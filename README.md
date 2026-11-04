@@ -8,6 +8,8 @@ Next.js App Router, React, strict TypeScript, Tailwind CSS v4, shadcn/ui-style l
 
 The six existing routes retain the responsive shell and are protected by real Supabase authentication. Phase 3.1 adds email/password signup, confirmation, sign-in/out, recovery and minimal display-name onboarding; Phase 5.2 adds actual set logging with canonical kg/lb display, typed sets, reliable saves and intentional incomplete finish. See [set logging](docs/set-logging.md). Phase 5.3 adds automatic pending rows, private historical defaults, exact entered-weight display and Profile Settings for units; see [smart defaults](docs/smart-set-defaults.md). Phase 5.1 supports real ad-hoc session lifecycles and exercise selection management. Phase 4.1 adds the real exercise library, custom exercises, favorites and deterministic recommendations. Phase 2.1/2.2 provide the versioned schema and owner-isolation policies. Hosted migration state and live signup readiness require administrator verification; local success is not hosted verification. Social features, program generation and trainer capabilities remain unimplemented.
 
+Phase 6.1 adds paginated [workout History and exercise Look Back](docs/workout-history.md), reps-first bodyweight logging and an internal [record prominence foundation](docs/record-prominence.md). PR calculations and charts remain future work.
+
 ## Local setup
 
 ```sh

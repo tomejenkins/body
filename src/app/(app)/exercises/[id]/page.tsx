@@ -16,7 +16,7 @@ export default async function Page({
 }) {
   const { id } = await params;
   if (!isUuid(id)) notFound();
-  const library = await loadLibrary();
+  const library = await loadLibrary(id);
   const exercise = library.exercises.find((e) => e.id === id);
   if (!exercise) notFound();
   const names = (ids: string[], items: typeof library.patterns) =>
@@ -45,10 +45,17 @@ export default async function Page({
           }}
         />
         <h1>{exercise.name}</h1>
-        <FavoriteButton
-          exercise={exercise}
-          favorite={preference?.isFavorite ?? false}
-        />
+        {exercise.archivedAt ? (
+          <p>Archived · Read only</p>
+        ) : (
+          <FavoriteButton
+            exercise={exercise}
+            favorite={preference?.isFavorite ?? false}
+          />
+        )}
+      </div>
+      <div className="library-section">
+        <Link href={`/exercises/${id}/history`}>Look Back</Link>
       </div>
       <dl className="exercise-detail">
         <dt>Exercise type</dt>
@@ -75,11 +82,13 @@ export default async function Page({
             "No instructions added. Choose a comfortable range and seek qualified guidance for unfamiliar movements."}
         </p>
       </section>
-      <PreferenceControl
-        exerciseId={id}
-        preference={preference?.preference ?? "neutral"}
-      />
-      {exercise.ownerId === library.userId && (
+      {!exercise.archivedAt && (
+        <PreferenceControl
+          exerciseId={id}
+          preference={preference?.preference ?? "neutral"}
+        />
+      )}
+      {exercise.ownerId === library.userId && !exercise.archivedAt && (
         <>
           <div className="library-section">
             <Link href={`/exercises/${id}/edit`}>Edit custom exercise</Link>

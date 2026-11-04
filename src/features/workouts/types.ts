@@ -9,6 +9,7 @@ export type WorkoutItem = {
   visual: VisualInput;
   canRemove: boolean;
   bodyweightEligible: boolean;
+  loggingKind?: import("@/features/history/model").LoggingKind;
   exerciseType: string;
   sets: LoggedSet[];
   prescribedSets?: number | null;
