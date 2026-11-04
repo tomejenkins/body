@@ -25,9 +25,12 @@ const row: LoggedSet = {
 };
 it("converts exact pounds and kilograms without accumulated round-trip drift", () => {
   expect(weightToKg("135", "lb")).toBe("61.235");
-  expect(displayWeight(100, "lb")).toBe("220.462");
+  expect(displayWeight(100, "lb")).toBe("220.46");
   for (const value of [0, 0.001, 1.234, 84.137, 100, 99999.999]) {
-    expect(weightToKg(displayWeight(value, "lb"), "lb")).toBe(String(value));
+    const canonical = { ...row, actual_weight_kg: value };
+    expect(valuesFor(draftFor(canonical, "lb"), "lb", canonical).weight).toBe(
+      String(value),
+    );
   }
   expect(weightToKg("", "kg")).toBeNull();
   expect(weightToKg("0", "kg")).toBe("0");
@@ -131,4 +134,44 @@ it("orders sets by persisted position rather than identity or creation order", (
     "later",
   ]);
   expect(rows[0].id).toBe("later");
+});
+
+it("preserves exact practical pounds and original fractional precision across reloads", () => {
+  for (const value of ["50", "135", "52.5", "52.125", "0.001234"]) {
+    const kg = weightToKg(value, "lb");
+    const saved = {
+      ...row,
+      actual_weight_kg: Number(kg),
+      entered_weight: Number(value),
+      entered_unit: "lb" as const,
+    };
+    for (let i = 0; i < 20; i++) {
+      expect(draftFor(saved, "lb").weight).toBe(value);
+      expect(valuesFor(draftFor(saved, "kg"), "kg", saved).weight).toBe(kg);
+    }
+  }
+  expect(displayWeight(Number(weightToKg("50", "lb")), "lb")).toBe("50");
+  expect(displayWeight(50, "kg")).toBe("50");
+  expect(displayWeight(50.123, "kg")).toBe("50.123");
+});
+it("loads suggestions without actual performance and stops fallback after confirmation", () => {
+  const suggested = {
+    ...row,
+    inputs_confirmed: false,
+    is_automatic: true,
+    actual_reps: null,
+    actual_weight_kg: null,
+    prescribed_reps_min: 8,
+    prescribed_weight_kg: 50,
+  };
+  const draft = draftFor(suggested, "kg");
+  expect(draft).toMatchObject({ weight: "50", reps: "8", completed: false });
+  expect(valuesFor(draft, "kg", suggested)).toMatchObject({
+    weight: "50",
+    reps: 8,
+    completed: false,
+  });
+  expect(
+    draftFor({ ...suggested, inputs_confirmed: true }, "kg"),
+  ).toMatchObject({ weight: "", reps: "" });
 });

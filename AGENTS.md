@@ -86,6 +86,12 @@ Read `docs/set-logging.md` before performance changes. This phase supersedes ear
 
 Never acknowledge Saved before persistence. Keep in-flight edits and failed drafts, explicit conflict resolution, retries with stable IDs, and navigation/finish guards. Copy only the preceding current-session draft when adding a pending normal set. Incomplete finish is allowed deliberately and never completes pending sets. Preserve soft deletion and parent history protection. Run all retained app/database/browser/Workers checks, including fresh local migration replay, denial state checks, fast input, unit drift, conflict/failure and recovery tests. Hosted SQL, merge and production deployment remain unauthorized; publication requires confirmed preview safety.
 
+## Phase 5.3 smart defaults
+
+Read `docs/smart-set-defaults.md`. This phase authorizes automatic pending structure and owner-only previous-performance defaults, superseding Phase 5.2's history-default exclusion only. Initialize transactionally with selection, serialize on parent session and consider tombstones evidence of initialization. Never reconstruct active work on refresh. Suggestions stay in prescribed fields with unconfirmed provenance, actuals NULL and status pending until user input/confirmation. Use only the caller's latest meaningful completed canonical-exercise history; exclude abandoned/removed/deleted/incomplete data and never silently replace a failed lookup with blanks. Keep warm-up/advanced ordering explicit, configurable fallback counts and untouched automatic-selection removal without weakening recorded history protection.
+
+New accounts default lb; preserve every existing preference. Units belong in Profile Settings. Preserve original entered load/unit metadata validated against canonical kg so practical and meaningful fractional inputs survive reload. Alternate-unit formatting must never rewrite loads or serve as a revision mechanism. Retain queue/CAS/nonce/draft/navigation guarantees and add history, initialization, rollback, concurrency, privacy and exact 50-lb regressions. Earlier migrations remain immutable; no programs, progressive overload, analytics, timers, OAuth, trainer/social or offline sync. No hosted SQL, automatic merge or production deployment.
+
 ## Scope
 
 Keep initial work focused. Review existing code before replacing it, preserve local work, use supported dependencies, and never change package integrity checks to force installation. PWA offline support and platform-specific install validation are separate work.

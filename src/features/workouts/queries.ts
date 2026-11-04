@@ -81,7 +81,11 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
       exerciseId: row.exercise_id,
       name: row.exercise_name_snapshot,
       position: row.position,
-      canRemove: row.status === "pending" && row.workout_sets.length === 0,
+      canRemove:
+        row.status === "pending" &&
+        row.workout_sets.every(
+          (s) => s.is_automatic && s.inputs_confirmed === false,
+        ),
       exerciseType: row.exercises?.exercise_type ?? "other",
       prescribedSets: row.prescribed_sets,
       sets: row.workout_sets.sort((a, b) => a.position - b.position),

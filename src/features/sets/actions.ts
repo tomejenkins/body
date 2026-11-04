@@ -1,4 +1,5 @@
 "use server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isUuid } from "@/features/exercises/validation";
 import {
@@ -24,6 +25,10 @@ export async function mutateSet(input: SetCommand): Promise<SetResult> {
     (input.weight !== null &&
       (!/^\d+(\.\d{1,3})?$/.test(input.weight) ||
         Number(input.weight) > 100000)) ||
+    (input.enteredWeight != null &&
+      (!/^\d{1,6}(\.\d{1,6})?$/.test(input.enteredWeight) ||
+        !["kg", "lb"].includes(String(input.enteredUnit)))) ||
+    (input.enteredWeight == null) !== (input.enteredUnit == null) ||
     (input.operation === "move" && ![-1, 1].includes(Number(input.direction)))
   )
     return { error: "Check set values and retry." };
@@ -44,6 +49,8 @@ export async function mutateSet(input: SetCommand): Promise<SetResult> {
       p_mode: input.mode,
       p_completed: input.completed,
       p_direction: input.direction ?? null,
+      p_entered_weight: input.enteredWeight ?? null,
+      p_entered_unit: input.enteredUnit ?? null,
     });
     if (result.error) {
       if (result.error.code === "40001") {
@@ -87,9 +94,11 @@ export async function saveWeightUnit(
       .update({ display_weight_unit: unit })
       .eq("owner_id", user.data.user.id)
       .select("owner_id");
-    return result.error || result.data.length !== 1
-      ? { error: "Unit preference was not saved. Retry." }
-      : {};
+    if (result.error || result.data.length !== 1)
+      return { error: "Unit preference was not saved. Retry." };
+    revalidatePath("/workout", "layout");
+    revalidatePath("/profile");
+    return {};
   } catch {
     return { error: "Unit preference could not be saved." };
   }

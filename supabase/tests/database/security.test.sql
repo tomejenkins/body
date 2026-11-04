@@ -1133,9 +1133,9 @@ select ok((select has_table_privilege('authenticated','public.workout_sets','SEL
 
 select ok((select has_table_privilege('authenticated','public.workout_sets','DELETE') = true), 'workout_sets: DELETE matches reviewed matrix');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.workout_sets',attname,'INSERT') = (attname = any(array['id','owner_id','workout_exercise_id','position','set_type','status','prescribed_reps_min','prescribed_reps_max','prescribed_weight_kg','actual_reps','actual_weight_kg','completed_at','notes','load_mode','last_mutation_id']::text[]))) from pg_attribute where attrelid='public.workout_sets'::regclass and attnum>0 and not attisdropped), 'workout_sets: exact INSERT column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.workout_sets',attname,'INSERT') = (attname = any(array['id','owner_id','workout_exercise_id','position','set_type','status','prescribed_reps_min','prescribed_reps_max','prescribed_weight_kg','actual_reps','actual_weight_kg','completed_at','notes','load_mode','last_mutation_id','is_automatic','inputs_confirmed','suggested_from_date','entered_weight','entered_unit']::text[]))) from pg_attribute where attrelid='public.workout_sets'::regclass and attnum>0 and not attisdropped), 'workout_sets: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.workout_sets',attname,'UPDATE') = (attname = any(array['position','set_type','status','prescribed_reps_min','prescribed_reps_max','prescribed_weight_kg','actual_reps','actual_weight_kg','completed_at','notes','load_mode','last_mutation_id','deleted_at']::text[]))) from pg_attribute where attrelid='public.workout_sets'::regclass and attnum>0 and not attisdropped), 'workout_sets: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.workout_sets',attname,'UPDATE') = (attname = any(array['position','set_type','status','prescribed_reps_min','prescribed_reps_max','prescribed_weight_kg','actual_reps','actual_weight_kg','completed_at','notes','load_mode','last_mutation_id','deleted_at','entered_weight','entered_unit']::text[]))) from pg_attribute where attrelid='public.workout_sets'::regclass and attnum>0 and not attisdropped), 'workout_sets: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.exercise_movement_patterns'::regclass), 'exercise_movement_patterns: RLS enabled');
 
@@ -1579,6 +1579,10 @@ select lives_ok($sql$insert into public.workout_sessions(id,owner_id,name,source
 
 select lives_ok($sql$insert into public.workout_exercises(id,owner_id,workout_session_id,source_program_slot_id,position,exercise_id,exercise_name_snapshot,prescribed_sets) values (md5('we_carol')::uuid,md5('carol')::uuid,md5('session_carol')::uuid,md5('slot_carol')::uuid,1,md5('system')::uuid,'System exercise',3)$sql$, 'workout_exercises: authenticated own INSERT succeeds');
 
+-- Isolate the original manual-set authorization matrix from new auto templates.
+reset role;
+delete from public.workout_sets where workout_exercise_id=md5('we_carol')::uuid and is_automatic;
+set local role authenticated;
 select lives_ok($sql$insert into public.workout_sets(id,owner_id,workout_exercise_id,position,prescribed_reps_min,prescribed_reps_max,prescribed_weight_kg,status,actual_reps,actual_weight_kg,completed_at) values (md5('set_carol')::uuid,md5('carol')::uuid,md5('we_carol')::uuid,1,8,12,20,'completed',3,30,now())$sql$, 'workout_sets: authenticated own INSERT succeeds');
 
 select lives_ok($sql$insert into public.exercise_movement_patterns(exercise_id,movement_pattern_id) values (md5('custom_carol')::uuid,md5('movement_patterns')::uuid)$sql$, 'exercise_movement_patterns: custom classification INSERT succeeds');

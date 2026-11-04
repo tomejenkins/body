@@ -14,7 +14,7 @@ Machine stack/assistance values remain user-recorded external measurements; no m
 
 ## Units
 
-Use existing `account_preferences.display_weight_unit`, default kg. Inputs accept up to six decimal places; exact integer/rational conversion uses 1 lb = 0.45359237 kg and rounds once to the existing 0.001 kg storage precision. Display uses up to three decimals. Unchanged displayed loads reuse canonical kg when saving other fields, preventing conversion drift. Unit changes persist preference and reformat only; they never update set loads or revisions. Resolve dirty rows before changing units. Cross-device preferences and confirmed performance load from Supabase on revisit.
+Use existing `account_preferences.display_weight_unit`, default lb for new accounts (existing preferences preserved). Inputs accept up to six decimal places; exact integer/rational conversion uses 1 lb = 0.45359237 kg and rounds once to the existing 0.001 kg storage precision. Phase 5.3 retains exact entered-unit metadata; fallback lb display uses two decimals, kg three. Unchanged displayed loads reuse canonical kg when saving other fields, preventing conversion drift. Unit changes persist preference and reformat only; they never update set loads or revisions. Unit selection now lives in Profile Settings, not the active logger. Cross-device preferences and confirmed performance load from Supabase on revisit.
 
 ## Saving, retries and concurrency
 
@@ -30,7 +30,7 @@ Dirty drafts are cached synchronously in per-owner/per-workout tab `sessionStora
 
 The existing `end_workout` transaction now derives an honest summary from nondeleted sets. `none` means no completed sets; `full` requires a completed session, every live set completed, and at least one set for every exercise with any existing prescribed-set count met. All other sessions with completed sets are `partial`. Abandon with completed sets is partial. Pending/skipped rows and their actual drafts remain unchanged; closing never creates reps, loads or completion timestamps. Incomplete finish requires explicit acknowledgement but remains allowed. Exercise status tracks entered live set progress, independently of session closure.
 
-The summary shows selected exercises, completed/pending counts, session/completion status and start/end timestamps. Closed sessions render read-only and reject ordinary database set writes, including DELETE. Historical correction workflows require a future explicit, reviewed contract. Soft-deleted set history still prevents deleting the parent exercise through the existing protective selection controls. PR detection, volume, program/trainer assignment completion and historical defaults can consume stable IDs, canonical units and explicit types later; none are computed here. Phase 5.3 previous-workout preloading is not implemented.
+The summary shows selected exercises, completed/pending counts, session/completion status and start/end timestamps. Closed sessions render read-only and reject ordinary database set writes, including DELETE. Historical correction workflows require a future explicit, reviewed contract. Manual or materially recorded set history protects its parent selection; Phase 5.3 permits removal of untouched automatic suggestions. PR detection, volume, program/trainer assignment completion and historical defaults can consume stable IDs, canonical units and explicit types later; none are computed here. Phase 5.3 adds pending historical defaults; see [smart defaults](smart-set-defaults.md).
 
 ## Local validation and delivery
 
@@ -52,3 +52,7 @@ Validated 2026-11-03 (America/Los_Angeles):
 Early validation caught a fast-entry layout shift (fixed by keeping draft-discard controls inside stable advanced options), a skipped-set constraint selection issue, and test-only text/case mismatches. Final runs pass. The retained Next.js middleware deprecation and local Worker Request.cf/proxy fallbacks are existing documented limitations, not deployment validation.
 
 No local functional checks were blocked. Hosted schema/security, real SMTP, production deployment and physical-device behavior were not inspected/tested. GitHub git transport is reachable, but the GitHub GraphQL PR API returns Forbidden; manual draft PR creation may be required.
+
+## Phase 5.3 follow-up
+
+See [smart defaults](smart-set-defaults.md) for transactional initialization, prescribed suggestions versus actual inputs, exact entered-weight metadata, Profile Settings and the forward-only extension. The validation record above describes Phase 5.2.

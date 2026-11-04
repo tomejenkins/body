@@ -53,6 +53,10 @@ select throws_ok($$update public.workout_exercises set position=20 where id=curr
 select throws_ok($$insert into public.workout_exercises(owner_id,workout_session_id,position,exercise_id,exercise_name_snapshot) select auth.uid(),current_setting('body_test.session')::uuid,20,id,name from public.exercises where slug='push_up'$$,'23514',null,'direct client append cannot modify finished history');
 select set_config('body_test.logged_session',public.start_ad_hoc_workout()::text,true);
 select set_config('body_test.logged_item',public.edit_workout(current_setting('body_test.logged_session')::uuid,'add',(select id from public.exercises where slug='push_up'))::text,true);
+-- Isolate the legacy single-manual-set finish invariant from automatic templates.
+reset role;
+delete from public.workout_sets where workout_exercise_id=current_setting('body_test.logged_item')::uuid;
+set local role authenticated;
 insert into public.workout_sets(owner_id,workout_exercise_id,position,status,actual_reps,actual_weight_kg,completed_at) values(auth.uid(),current_setting('body_test.logged_item')::uuid,1,'completed',10,0,now());
 select throws_ok($$select public.edit_workout(current_setting('body_test.logged_session')::uuid,'remove',null,current_setting('body_test.logged_item')::uuid)$$,'23514',null,'any recorded set protects its selected parent');
 select lives_ok($$select public.end_workout(current_setting('body_test.logged_session')::uuid,'completed')$$,'existing recorded sets can be preserved at finish');

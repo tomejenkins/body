@@ -40,12 +40,11 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     .getByRole("button", { name: "Select exercise", exact: true })
     .click();
   await page.getByRole("link", { name: /^Done · 1 selected$/ }).click();
-  await page
-    .getByRole("button", {
-      name: "Add set to Barbell bench press",
-      exact: true,
-    })
-    .click();
+  await expect(page.locator(".logged-set")).toHaveCount(3);
+  await expect(
+    page.getByRole("combobox", { name: "Weight unit", exact: true }),
+  ).toHaveCount(0);
+  await expect(page.locator(".set-head")).toContainText("LBS");
   await saved(page, 0);
   await row(page, 0)
     .getByRole("textbox", { name: /weight/ })
@@ -54,19 +53,12 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   await row(page, 0).getByRole("checkbox").check();
   await saved(page, 0);
   for (let i = 1; i < 3; i++) {
-    await page
-      .getByRole("button", {
-        name: "Add set to Barbell bench press",
-        exact: true,
-      })
-      .click();
+    await row(page, i)
+      .getByRole("textbox", { name: /weight/ })
+      .fill("135");
+    await row(page, i).getByRole("textbox", { name: /reps/ }).fill("10");
+    await row(page, i).getByRole("textbox", { name: /reps/ }).press("Tab");
     await saved(page, i);
-    await expect(
-      row(page, i).getByRole("textbox", { name: /weight/ }),
-    ).toHaveValue("135");
-    await expect(
-      row(page, i).getByRole("textbox", { name: /reps/ }),
-    ).toHaveValue("10");
     await expect(row(page, i).getByRole("checkbox")).not.toBeChecked();
     if (i === 1) {
       await row(page, i).getByRole("checkbox").check();
@@ -130,14 +122,13 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     .eq("id", firstId)
     .single();
   await page
-    .getByRole("combobox", { name: "Weight unit", exact: true })
-    .selectOption("lb");
-  await expect(
-    page.getByRole("combobox", { name: "Weight unit", exact: true }),
-  ).toBeEnabled();
-  await expect(
-    row(page, 0).getByRole("textbox", { name: /weight/ }),
-  ).not.toHaveValue("140");
+    .getByRole("navigation")
+    .getByRole("link", { name: "Profile", exact: true })
+    .click();
+  await page.getByLabel("Weight Units", { exact: true }).selectOption("kg");
+  await expect(page.getByRole("status")).toContainText("Saved");
+  await page.goto(path);
+  await expect(page.locator(".set-head")).toContainText("KG");
   const after = await account.client
     .from("workout_sets")
     .select("actual_weight_kg,revision")
@@ -145,9 +136,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     .single();
   expect(after.data).toEqual(before.data);
   await page.reload();
-  await expect(
-    page.getByRole("combobox", { name: "Weight unit", exact: true }),
-  ).toHaveValue("lb");
+  await expect(page.locator(".set-head")).toContainText("KG");
   await page
     .getByRole("checkbox", { name: /Finish without completing all sets/ })
     .check();
@@ -184,9 +173,7 @@ test("bodyweight, visible save failure, navigation guard, retained edits and con
   await login(page, account);
   const path = `/workout/${session.data}`;
   await page.goto(path);
-  await page
-    .getByRole("button", { name: "Add set to Push-up", exact: true })
-    .click();
+  await expect(page.locator(".logged-set")).toHaveCount(3);
   await saved(page, 0);
   await expect(
     row(page, 0).getByRole("textbox", { name: /weight/ }),
