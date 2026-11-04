@@ -39,11 +39,11 @@ export default async function Page({
         <p>
           {active
             ? `${active.items.length} exercises selected. Resume your current workout whenever you’re ready.`
-            : "Start an ad-hoc workout and choose your exercises. Set-by-set logging is coming next."}
+            : "Choose your exercises and record your sets at your own pace."}
         </p>
         {active ? (
           <Button asChild>
-            <Link href={`/workout/${active.id}`}>Resume workout</Link>
+            <Link href={`/workout/${active.id}`}>Resume Workout</Link>
           </Button>
         ) : (
           <StartWorkout />

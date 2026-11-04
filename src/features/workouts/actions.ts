@@ -17,6 +17,7 @@ function id(data: FormData, key: string) {
 }
 function refresh() {
   revalidatePath("/workout", "layout");
+  revalidatePath("/history", "layout");
   revalidatePath("/exercises", "layout");
 }
 export async function startWorkout(): Promise<WorkoutState> {

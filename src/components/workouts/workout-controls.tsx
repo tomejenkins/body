@@ -29,7 +29,7 @@ export function StartWorkout() {
   return (
     <form action={action}>
       <Button type="submit" disabled={pending} aria-busy={pending}>
-        {pending ? "Opening workout…" : "Start workout"}
+        {pending ? "Opening workout…" : "Record Workout"}
       </Button>
       <Feedback state={state} />
     </form>

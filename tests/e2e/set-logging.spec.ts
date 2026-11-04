@@ -23,7 +23,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   await login(page, account);
   await page.goto("/workout");
   await page
-    .getByRole("button", { name: "Start workout", exact: true })
+    .getByRole("button", { name: "Record Workout", exact: true })
     .click();
   await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}$/);
   const path = new URL(page.url()).pathname;
@@ -148,9 +148,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   await expect(page.locator(".logging-summary")).toContainText(
     "1 completed sets · 2 pending sets",
   );
-  await expect(
-    row(page, 0).getByRole("textbox", { name: /weight/ }),
-  ).toBeDisabled();
+  await expect(page.getByRole("textbox", { name: /weight/ })).toHaveCount(0);
   await expect(page.getByRole("button", { name: /Add set to/ })).toHaveCount(0);
   expect(
     await page.evaluate(
@@ -175,9 +173,7 @@ test("bodyweight, visible save failure, navigation guard, retained edits and con
   await page.goto(path);
   await expect(page.locator(".logged-set")).toHaveCount(3);
   await saved(page, 0);
-  await expect(
-    row(page, 0).getByRole("textbox", { name: /weight/ }),
-  ).toBeDisabled();
+  await expect(page.getByRole("textbox", { name: /weight/ })).toHaveCount(0);
   await row(page, 0).getByRole("textbox", { name: /reps/ }).fill("12");
   await row(page, 0).getByRole("checkbox").check();
   await saved(page, 0);

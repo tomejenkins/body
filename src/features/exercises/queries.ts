@@ -1,3 +1,4 @@
+import { isUuid } from "./validation";
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/features/auth/session";
@@ -38,7 +39,9 @@ async function allRows<T>(
     if (response.data.length < 500) return result;
   }
 }
-export async function loadLibrary(): Promise<Library> {
+export async function loadLibrary(
+  includeArchivedId?: string,
+): Promise<Library> {
   const user = await requireUser("/exercises");
   const client = await createClient({ readOnly: true });
   const [rows, patterns, muscles, equipment, preferences, available, recents] =
@@ -49,7 +52,11 @@ export async function loadLibrary(): Promise<Library> {
           .select(
             "id,slug,name,owner_id,exercise_type,instructions,archived_at,exercise_movement_patterns(movement_pattern_id,is_primary),exercise_muscles(muscle_group_id,muscle_role),exercise_equipment(equipment_type_id)",
           )
-          .is("archived_at", null)
+          .or(
+            includeArchivedId && isUuid(includeArchivedId)
+              ? `archived_at.is.null,id.eq.${includeArchivedId}`
+              : "archived_at.is.null",
+          )
           .order("id")
           .range(from, to)
           .returns<Row[]>(),

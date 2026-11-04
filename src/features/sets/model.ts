@@ -14,6 +14,7 @@ export type LoggedSet = {
   revision: number;
   last_mutation_id: string | null;
   deleted_at: string | null;
+  logging_kind?: import("@/features/history/model").LoggingKind;
   is_automatic?: boolean;
   inputs_confirmed?: boolean;
   prescribed_reps_min?: number | null;

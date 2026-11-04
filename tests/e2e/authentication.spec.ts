@@ -34,7 +34,7 @@ test("registration, email verification, onboarding, persistent session and logou
   await expect(page).toHaveURL(/\/history\?range=30$/);
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "Every effort adds up." }),
+    page.getByRole("heading", { name: "Workout history" }),
   ).toBeVisible();
   await page.goto("/login");
   await expect(page).toHaveURL(/\/dashboard$/);

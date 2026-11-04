@@ -98,6 +98,8 @@ export async function saveWeightUnit(
       return { error: "Unit preference was not saved. Retry." };
     revalidatePath("/workout", "layout");
     revalidatePath("/profile");
+    revalidatePath("/history", "layout");
+    revalidatePath("/exercises", "layout");
     return {};
   } catch {
     return { error: "Unit preference could not be saved." };

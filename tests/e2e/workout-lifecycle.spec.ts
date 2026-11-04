@@ -29,7 +29,7 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
   await signIn(page, account);
   await page.goto("/workout");
   await page
-    .getByRole("button", { name: "Start workout", exact: true })
+    .getByRole("button", { name: "Record Workout", exact: true })
     .click();
   await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}$/);
   await expect(
@@ -44,7 +44,7 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
     page.getByRole("heading", { name: "No exercises selected yet." }),
   ).toBeVisible();
   await page.goto("/workout");
-  await page.getByRole("link", { name: "Resume workout", exact: true }).click();
+  await page.getByRole("link", { name: "Resume Workout", exact: true }).click();
   await expect(page).toHaveURL(new RegExp(path + "$"));
   await page.getByRole("link", { name: "Add exercises", exact: true }).click();
   await expect(
@@ -127,7 +127,9 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
     ),
   ).toBe(true);
   await page.goto(path);
-  await expect(page.getByText("Finished", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Finished · No completed sets", { exact: true }),
+  ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Add exercises", exact: true }),
   ).toHaveCount(0);
@@ -182,7 +184,7 @@ test("concurrent starts share one session, owner boundaries hold and abandon pre
   ).toEqual([]);
   await signIn(page, account);
   await page.goto("/workout");
-  await page.getByRole("link", { name: "Resume workout", exact: true }).click();
+  await page.getByRole("link", { name: "Resume Workout", exact: true }).click();
   await expect(page.locator(".workout-items li h2")).toHaveText(["Push-up"]);
   await page.getByText("Abandon instead", { exact: true }).click();
   await page
@@ -210,7 +212,7 @@ test("concurrent starts share one session, owner boundaries hold and abandon pre
     .eq("workout_session_id", sessionId);
   expect(records.data).toHaveLength(1);
   await page
-    .getByRole("button", { name: "Start workout", exact: true })
+    .getByRole("button", { name: "Record Workout", exact: true })
     .click();
   await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}$/);
   expect(new URL(page.url()).pathname).not.toBe(`/workout/${sessionId}`);
