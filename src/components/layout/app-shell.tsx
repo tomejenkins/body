@@ -48,6 +48,7 @@ export function AppShell({
             const Icon = icons[item.icon];
             const active =
               pathname === item.href ||
+              (item.href === "/history" && pathname.startsWith("/history/")) ||
               (item.href === "/workout" &&
                 (pathname.startsWith("/exercises") ||
                   pathname.startsWith("/workout/")));

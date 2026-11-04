@@ -1,3 +1,4 @@
+import { ExerciseProgress } from "@/components/progress/exercise-progress";
 import { loadExerciseRecords } from "@/features/records/queries";
 import { RecordCard } from "@/components/records/record-card";
 import { metricLabel, formattedMetric } from "@/features/records/model";
@@ -87,6 +88,7 @@ export default async function Page({
         )}
         {!exercise.archived_at && <Link href={detail}>Exercise details</Link>}
       </div>
+      <ExerciseProgress id={id} />
       {records.record && (
         <section aria-label="Exercise records" className="exercise-records">
           <h2>Personal Records</h2>

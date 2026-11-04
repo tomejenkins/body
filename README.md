@@ -8,7 +8,7 @@ Next.js App Router, React, strict TypeScript, Tailwind CSS v4, shadcn/ui-style l
 
 The six existing routes retain the responsive shell and are protected by real Supabase authentication. Phase 3.1 adds email/password signup, confirmation, sign-in/out, recovery and minimal display-name onboarding; Phase 5.2 adds actual set logging with canonical kg/lb display, typed sets, reliable saves and intentional incomplete finish. See [set logging](docs/set-logging.md). Phase 5.3 adds automatic pending rows, private historical defaults, exact entered-weight display and Profile Settings for units; see [smart defaults](docs/smart-set-defaults.md). Phase 5.1 supports real ad-hoc session lifecycles and exercise selection management. Phase 4.1 adds the real exercise library, custom exercises, favorites and deterministic recommendations. Phase 2.1/2.2 provide the versioned schema and owner-isolation policies. Hosted migration state and live signup readiness require administrator verification; local success is not hosted verification. Social features, program generation and trainer capabilities remain unimplemented.
 
-Phase 6.1 adds paginated [workout History and exercise Look Back](docs/workout-history.md), reps-first bodyweight logging and an internal [record prominence foundation](docs/record-prominence.md). PR calculations and charts remain future work.
+Phase 6.1 adds paginated [workout History and exercise Look Back](docs/workout-history.md), reps-first bodyweight logging and an internal [record prominence foundation](docs/record-prominence.md). Phase 6.2 implements PR calculations; Phase 6.3 adds charts and analytics as documented below.
 
 ## Local setup
 
@@ -144,3 +144,9 @@ Local SVG thumbnails cover library cards/details, the shared selector and workou
 See [workout continuity](docs/workout-continuity.md) and [Personal Records](docs/personal-records.md) for server activity, recovery, expiration, exact rep records and validation. The two new forward migrations must be reviewed/applied in order before this app version is deployed. Local tests use disposable Supabase only; no hosted changes or production deploy are included.
 
 See the [Phase 6.2 validation and release checklist](docs/phase-6-2-validation.md) for executed checks, migration order and known limits.
+
+## Phase 6.3 progress and meaningful recognition
+
+History → Training progress opens the workout overview/calendar, qualified duration averages, weekly sets, per-exercise external volume and separate muscle exposure. Exercise Look Back adds interactive date/metric/load views with accessible point details and tables. Records now use Best Single/Triple/Five-Rep Set terminology and show source dates/workouts. Historical dominance suppresses redundant recognition without changing exact records. Read [progress analytics](docs/progress-analytics.md) and [intelligent PR recognition](docs/intelligent-pr-recognition.md). Two forward migrations require reviewed application in order before deployment. This phase is handed over locally for the user to push and create a PR; no remote database change or production deployment is performed.
+
+See the [Phase 6.3 validation and handoff](docs/phase-6-3-validation.md) for actual check counts, migration prerequisites, limitations and manual push/PR instructions.

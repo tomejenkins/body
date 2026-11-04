@@ -292,14 +292,14 @@ test("exact-rep records, honest empty states and three diverse completed achieve
       exact: true,
     }),
   });
-  await expect(bench).toContainText("Actual 3RM");
+  await expect(bench).toContainText("Best Triple");
   await expect(
     bench
       .locator("dl>div")
-      .filter({ has: page.getByText("Actual 3RM", { exact: true }) }),
+      .filter({ has: page.getByText("Best Triple", { exact: true }) }),
   ).toContainText("220.46 lb");
-  await expect(bench).toContainText("Actual 5RM");
-  await expect(bench).not.toContainText("Actual 1RM");
+  await expect(bench).toContainText("Best Five-Rep Set");
+  await expect(bench).not.toContainText("Best Single");
   await expect(bench).toContainText("Estimated 1RM");
   await expect(
     page.getByRole("heading", { name: "Standing dumbbell curl", exact: true }),
@@ -322,5 +322,5 @@ test("exact-rep records, honest empty states and three diverse completed achieve
   await expect(
     page.getByRole("heading", { name: "Personal Records", exact: true }),
   ).toBeVisible();
-  await expect(page.locator("main")).toContainText("Actual 3RM");
+  await expect(page.locator("main")).toContainText("Best Triple");
 });

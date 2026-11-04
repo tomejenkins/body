@@ -186,3 +186,7 @@ See [workout history](workout-history.md) for paginated owner-scoped History/Loo
 ## Phase 6.2 forward migrations
 
 `20261104182136_workout_continuity.sql` adds protected session activity/effective-end/duration/closure/continuation/recognition metadata and invoker lifecycle/activity guards, plus extended bounded history summaries. `20261104182137_personal_records.sql` adds owner-only reproducible record/achievement read functions, no record truth table. Existing migrations are unchanged. See [continuity](workout-continuity.md) and [records](personal-records.md) for field semantics, conservative legacy rules, committed expiration rejection and exact-rep calculations.
+
+## Phase 6.3 forward read models
+
+`20261104205843_progress_analytics.sql` centralizes existing eligibility/metric calculations behind performance_source/performance_metrics, preserves old wrappers, adds validated progress_window, bounded exercise_progress/training_progress and a completed owner/start/ID index. `20261104205844_intelligent_record_recognition.sql` adds batch achievement_candidates and updates recognition/count wrappers without changing exact record truth. No new application table or materialized record authority is added. See [analytics](progress-analytics.md) and [recognition](intelligent-pr-recognition.md).

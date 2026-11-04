@@ -32,6 +32,7 @@ export type ExerciseRecords = {
 };
 export type Achievement = RecordMetric & {
   previous_value: number;
+  dominated_in_session?: boolean;
   exercise_name: string;
 };
 export function estimatedOneRm(kg: number, reps: number): number | null {
@@ -63,7 +64,9 @@ export function metricLabel(metric: RecordMetric) {
   if (metric.metric === "actual_rm")
     return metric.category === "added"
       ? `Actual ${metric.load_key}-rep Added Load`
-      : `Actual ${metric.load_key}RM`;
+      : ({ 1: "Best Single", 3: "Best Triple", 5: "Best Five-Rep Set" }[
+          metric.load_key
+        ] ?? `Best ${metric.load_key}-Rep Set`);
   return {
     heaviest: "Heaviest Lift",
     added_load: "Heaviest Added Resistance",
@@ -110,7 +113,8 @@ const importance: Record<MetricName, number> = {
 };
 export function selectAchievements(rows: readonly Achievement[]) {
   const score = (a: Achievement) =>
-    importance[a.metric] +
+    importance[a.metric] -
+    (a.dominated_in_session ? 30 : 0) +
     Math.min(((a.value - a.previous_value) / a.previous_value) * 100, 100) *
       0.5 +
     { primary: 10, secondary: 5, standard: 0 }[
@@ -127,11 +131,66 @@ export function selectAchievements(rows: readonly Achievement[]) {
         a.load_key - b.load_key,
     );
   const seen = new Set<string>();
-  return sorted
-    .filter((a) => {
-      if (seen.has(a.exercise_id)) return false;
-      seen.add(a.exercise_id);
-      return true;
-    })
-    .slice(0, 3);
+  const categories = new Set<string>();
+  const chosen: Achievement[] = [];
+  const group = (a: Achievement) =>
+    a.metric === "volume"
+      ? "volume"
+      : a.metric === "estimated_1rm"
+        ? "estimate"
+        : a.metric === "reps_at_load" || a.metric === "bodyweight_reps"
+          ? "reps"
+          : "strength";
+  while (chosen.length < 3) {
+    const next = sorted
+      .filter((a) => !seen.has(a.exercise_id))
+      .toSorted(
+        (a, b) =>
+          score(b) +
+            (categories.has(group(b)) ? 0 : 10) -
+            (score(a) + (categories.has(group(a)) ? 0 : 10)) ||
+          a.exercise_id.localeCompare(b.exercise_id) ||
+          a.metric.localeCompare(b.metric) ||
+          a.category.localeCompare(b.category) ||
+          a.load_key - b.load_key,
+      )[0];
+    if (!next) break;
+    chosen.push(next);
+    seen.add(next.exercise_id);
+    categories.add(group(next));
+  }
+  return chosen;
+}
+export type PerformancePoint = {
+  exercise_id: string;
+  category: RecordCategory;
+  weight_kg: number | null;
+  reps: number;
+};
+export function performanceDominates(a: PerformancePoint, b: PerformancePoint) {
+  if (
+    a.exercise_id !== b.exercise_id ||
+    a.category !== b.category ||
+    !Number.isInteger(a.reps) ||
+    !Number.isInteger(b.reps) ||
+    a.reps <= 0 ||
+    b.reps <= 0 ||
+    a.reps > 1000 ||
+    b.reps > 1000
+  )
+    return false;
+  if (a.category === "bodyweight")
+    return a.weight_kg === null && b.weight_kg === null && a.reps > b.reps;
+  if (
+    a.weight_kg === null ||
+    b.weight_kg === null ||
+    !Number.isFinite(a.weight_kg) ||
+    !Number.isFinite(b.weight_kg) ||
+    a.weight_kg <= 0 ||
+    b.weight_kg <= 0
+  )
+    return false;
+  const ak = Math.round(a.weight_kg * 1000),
+    bk = Math.round(b.weight_kg * 1000);
+  return ak >= bk && a.reps >= b.reps && (ak > bk || a.reps > b.reps);
 }

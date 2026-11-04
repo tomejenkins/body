@@ -1580,3 +1580,252 @@ body:has(.active-workout-bar) main {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.history-destinations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.progress-section {
+  margin: 2rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--card);
+}
+.progress-section h2 {
+  font-size: 1.2rem;
+  margin: 0 0 0.75rem;
+}
+.progress-section p,
+.progress-note {
+  color: var(--secondary);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.progress-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+}
+.progress-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  max-width: 100%;
+  margin: 0.75rem 0;
+}
+.progress-control select {
+  min-height: 44px;
+  max-width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--foreground);
+}
+.progress-chart {
+  margin: 1.5rem 0;
+  min-width: 0;
+}
+.progress-chart figcaption {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.progress-chart svg {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  touch-action: pan-y;
+}
+.chart-grid-line {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+.chart-selection-line {
+  stroke: var(--secondary);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+.chart-point {
+  fill: var(--primary);
+  opacity: 0.65;
+}
+.chart-point.selected {
+  opacity: 1;
+  stroke: var(--card);
+  stroke-width: 2;
+}
+.chart-scale,
+.chart-date-axis {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--secondary);
+}
+.chart-date-axis time {
+  max-width: 48%;
+}
+.chart-date-axis time:last-child {
+  text-align: right;
+}
+.chart-point-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  margin-top: 1rem;
+}
+.chart-point-picker input {
+  min-height: 44px;
+  width: 100%;
+  accent-color: var(--primary);
+}
+.chart-detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: center;
+  padding: 0.75rem 0;
+  font-size: 0.85rem;
+}
+.chart-detail a,
+.progress-history-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.progress-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+  max-height: 28rem;
+}
+.progress-table-scroll table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+.progress-table-scroll td,
+.progress-table-scroll th {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.progress-table-scroll caption {
+  text-align: left;
+  padding: 0.5rem;
+  font-weight: 600;
+}
+.progress-table-scroll a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+}
+.progress-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.progress-stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: var(--card);
+}
+.progress-stats strong {
+  font-size: 1.5rem;
+}
+.progress-stats span,
+.progress-stats small {
+  font-size: 0.8rem;
+  color: var(--secondary);
+}
+.calendar-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.calendar-heading > div {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.calendar-heading button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.training-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  max-width: 34rem;
+  margin: 1rem auto;
+}
+.training-calendar > a,
+.training-calendar > span {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 0.85rem;
+  border-radius: 0.5rem;
+}
+.training-calendar .calendar-weekday {
+  font-size: 0.7rem;
+  color: var(--secondary);
+}
+.calendar-training-day {
+  background: var(--muted);
+  font-weight: 700;
+  color: var(--primary);
+}
+.calendar-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--primary);
+  bottom: 4px;
+}
+.record-card dd small {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--secondary);
+  margin-top: 0.35rem;
+}
+.record-card dd a {
+  font-size: 0.75rem;
+}
+
+.chart-plot {
+  position: relative;
+  padding-left: 4.2rem;
+}
+.chart-plot .chart-scale {
+  position: absolute;
+  left: 0;
+  top: 18%;
+  bottom: 18%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-width: 4rem;
+  font-size: 0.7rem;
+}
+
+.chart-plot .chart-scale.constant {
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}

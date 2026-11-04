@@ -69,3 +69,7 @@ Run fresh local reset, database lint/pgTAP, lint/typecheck/Vitest/format/catalog
 ## Phase 6.2 records and qualified durations
 
 History summaries include effective endpoint, duration provenance, closure reason, idle gaps and recognition flag; the bounded batch achievement-count RPC supplies up to three diverse improvement counts. Lazy continuity runs before the history read. [Continuity](workout-continuity.md) explains elapsed/estimated/legacy/unknown labels and auto-abandonment. [Personal Records](personal-records.md) documents `/history/records`, Look Back summaries/load pages, strict exact-rep records, historical baselines and postfinish recognition. Existing snapshots, timezones, private keyset history and navigation context remain.
+
+## Phase 6.3 Progress
+
+History links to `/history/progress`; Look Back embeds exercise Progress while retaining workout-builder context and existing pagination. Local start date groups activity, actual set times position exercise observations, and reliable elapsed duration is separated from estimates/legacy/gaps. See [progress analytics](progress-analytics.md) for period/window/sample semantics, numeric volume and primary/secondary exposure. Meaningful achievement counts share the [recognition](intelligent-pr-recognition.md) engine with postfinish cards.
