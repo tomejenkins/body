@@ -1,3 +1,4 @@
+import { loadWorkoutMovements } from "@/features/programs/execution-queries";
 import { WorkoutReview } from "@/components/history/workout-review";
 import { notFound } from "next/navigation";
 import { loadWorkout } from "@/features/workouts/queries";
@@ -15,5 +16,15 @@ export default async function Page({
   if (!workout) notFound();
   if (workout.status !== "in_progress")
     return <WorkoutReview workout={workout} />;
-  return <WorkoutLogger key={workout.id} workout={workout} />;
+  const selection = await loadWorkoutMovements(workout);
+  return (
+    <WorkoutLogger
+      key={workout.id}
+      workout={{
+        ...workout,
+        movements: selection.movements,
+        movementFacets: selection.facets,
+      }}
+    />
+  );
 }

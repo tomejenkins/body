@@ -1,3 +1,4 @@
+import { StartProgramWorkout } from "@/components/programs/start-program-workout";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { loadOfficialProgram } from "@/features/programs/library-queries";
@@ -46,8 +47,8 @@ export default async function Page({
         <div>
           <dt>Rotation</dt>
           <dd>
-            {p.cycle_length} ordered positions ·{" "}
-            {d.days.filter((day) => !day.is_rest_day).length} workouts
+            {d.days.filter((day) => !day.is_rest_day).length} workouts ·{" "}
+            {d.days.filter((day) => day.is_rest_day).length} rest breaks
           </dd>
         </div>
         <div>
@@ -72,7 +73,15 @@ export default async function Page({
         ))}
       </div>
       <section aria-label="Program description">
-        <ProgramDescription text={p.description_markdown} />
+        <ProgramDescription
+          text={p.description_markdown
+            .replace(
+              /Following and scheduling programs arrives in Phase 7\.3\./g,
+              "",
+            )
+            .replace(/\bpositions\b/g, "steps")
+            .replace(/\bposition\b/g, "step")}
+        />
       </section>
       <section className="library-section">
         <h2>Equipment</h2>
@@ -86,7 +95,8 @@ export default async function Page({
       <section className="program-workouts">
         <h2>The rotation</h2>
         <p>
-          Follow the order, not weekdays. Extra recovery can extend a rotation.
+          Follow the workout order. Take the rest breaks shown, and add recovery
+          when needed.
         </p>
         <ol className="program-days">
           {d.days.map((day) => (
@@ -97,13 +107,28 @@ export default async function Page({
               }
             >
               <h3>
-                Position {day.cycle_position} · {day.name}
+                {day.is_rest_day
+                  ? "Rest"
+                  : `Workout ${d.days.filter((w) => !w.is_rest_day && w.cycle_position <= day.cycle_position).length}`}{" "}
+                · {day.name}
               </h3>
               {day.is_rest_day ? (
                 <p>Rest day · Recover before the next workout.</p>
               ) : (
                 <>
                   <p>{day.focus}</p>
+                  <StartProgramWorkout
+                    version={loaded.versionId}
+                    day={day.cycle_position}
+                    number={
+                      d.days.filter(
+                        (w) =>
+                          !w.is_rest_day &&
+                          w.cycle_position <= day.cycle_position,
+                      ).length
+                    }
+                    request={crypto.randomUUID()}
+                  />
                   <ol className="program-slots">
                     {day.slots.map((slot) => {
                       const rule = d.rules.find(
@@ -175,11 +200,11 @@ export default async function Page({
         </ol>
       </section>
       <aside className="library-section">
-        <h2>Explore now. Follow later.</h2>
+        <h2>Choose as you train.</h2>
         <p>
           Prescriptions describe planned work, not performance you have
-          completed. Following a program, creating your own copy and scheduling
-          workouts arrive in Phase 7.3.
+          completed. Start a workout above and choose exercises as you train.
+          Calendar scheduling and program editing are separate flows.
         </p>
         <p>
           Published by Body · Original programming · Initial publication{" "}

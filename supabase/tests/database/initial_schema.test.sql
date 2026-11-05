@@ -55,7 +55,7 @@ insert into public.workout_sets(id, owner_id, workout_exercise_id, position, set
 (pg_temp.fixture_id('set3'), pg_temp.fixture_id('alice'), pg_temp.fixture_id('we'), 3, 'drop', 'pending', 8, 12, 20, null, null, null),
 (pg_temp.fixture_id('set4'), pg_temp.fixture_id('alice'), pg_temp.fixture_id('we'), 4, 'rest_pause', 'skipped', null, null, null, null, null, null);
 
-select ok((select count(*) = 34 from pg_tables where schemaname = 'public'), 'all thirty-four model tables exist on fresh database');
+select ok((select count(*) = 35 from pg_tables where schemaname = 'public'), 'all thirty-five model tables exist on fresh database');
 
 select ok((select count(*) = 7 and max(cycle_position) = 7 from public.program_days where program_id = pg_temp.fixture_id('p7')), 'seven-day cycle uses ordered positions');
 
@@ -164,7 +164,7 @@ select ok((select actual_weight_kg = 30 and actual_reps = 3 from public.workout_
 select ok((select updated_at >= created_at from public.workout_sets where id = pg_temp.fixture_id('set1')), 'historical corrections update their timestamp');
 
 select ok((select bool_and(c.convalidated) from pg_constraint c join pg_namespace n on n.oid = c.connamespace where n.nspname = 'public'), 'all model constraints are validated');
-select ok((select count(*) = 34 from pg_constraint c join pg_namespace n on n.oid = c.connamespace where n.nspname = 'public' and c.contype = 'p'), 'every model table has a primary key');
+select ok((select count(*) = 35 from pg_constraint c join pg_namespace n on n.oid = c.connamespace where n.nspname = 'public' and c.contype = 'p'), 'every model table has a primary key');
 select ok((select count(*) > 30 from pg_constraint c join pg_namespace n on n.oid = c.connamespace where n.nspname = 'public' and c.contype = 'f'), 'normalized relationships have validated foreign keys');
 select ok((select pg_get_expr(i.indpred, i.indrelid) like '%completed%' from pg_index i where i.indexrelid = 'public.workout_sets_completed_history'::regclass), 'completed-set history has a partial index');
 select ok((select indisunique from pg_index where indexrelid = 'public.program_assignments_one_active_per_user'::regclass), 'active-assignment uniqueness is indexed');

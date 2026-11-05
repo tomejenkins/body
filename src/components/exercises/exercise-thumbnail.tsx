@@ -11,7 +11,7 @@ export function ExerciseThumbnail({
   decorative = true,
 }: {
   visual: VisualInput;
-  size?: 64 | 80 | 128;
+  size?: 32 | 64 | 80 | 128;
   decorative?: boolean;
 }) {
   const [failed, setFailed] = useState<string[]>([]);

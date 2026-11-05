@@ -198,3 +198,7 @@ See [workout history](workout-history.md) for paginated owner-scoped History/Loo
 ## Phase 7.2 catalog additions
 
 Forward migrations add restricted platform-principal typing, controlled program_media/program_tags/program_tag_links/program_gallery, rich program metadata and protected published pointers/timestamps/badges. Person profiles retain auth FK/cascade through a generated column. The same immutable program_versions holds rich definitions and a protected listing projection; no parallel template store is added. The separate seed migration installs twelve original version-1 programs without actual sessions. Read [program library](program-library.md) for normalized structures, ownership, publication gates and deterministic replay.
+
+## Phase 7.3 movement execution
+
+The single forward migration adds workout_movements (owner/session/ordered immutable slot snapshot), session start retry identity, exercise-to-movement links with protected remaining-prescription snapshots, and protected program_set_number provenance on actual set rows. Nullable actual effort and canonical measurements remain in their existing tables. Invoker start/select/last-choice functions derive ownership, source snapshots and defaults, with no invented unselected exercise IDs. New guards preserve program source and actual identity; FK cleanup never migrates recorded measurements. Read [in-workout selection](in-workout-exercise-selection.md).
