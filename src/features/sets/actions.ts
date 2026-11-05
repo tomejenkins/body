@@ -1,4 +1,5 @@
 "use server";
+import { validEffort, type EffortScale } from "./effort";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isUuid } from "@/features/exercises/validation";
@@ -11,6 +12,9 @@ import {
 } from "./model";
 export async function mutateSet(input: SetCommand): Promise<SetResult> {
   if (
+    (input.effort !== undefined &&
+      (!validEffort(input.effort) ||
+        (input.type === "warm_up" && input.effort.failure))) ||
     !isUuid(input.itemId) ||
     !isUuid(input.id) ||
     !isUuid(input.mutation) ||
@@ -51,6 +55,7 @@ export async function mutateSet(input: SetCommand): Promise<SetResult> {
       p_direction: input.direction ?? null,
       p_entered_weight: input.enteredWeight ?? null,
       p_entered_unit: input.enteredUnit ?? null,
+      p_effort: input.effort ?? null,
     });
     if (result.error) {
       if (result.error.code === "40001") {
@@ -133,5 +138,29 @@ export async function readSetRows(itemId: string): Promise<SetResult> {
       : { rows: result.data };
   } catch {
     return { error: "Saved values could not be loaded. Retry when connected." };
+  }
+}
+
+export async function saveEffortPreference(
+  scale: EffortScale,
+): Promise<{ error?: string }> {
+  if (!["rpe", "rir"].includes(scale)) return { error: "Choose RPE or RIR." };
+  try {
+    const client = await createClient();
+    const identity = await client.auth.getUser();
+    if (identity.error || !identity.data.user)
+      return { error: "Sign in again." };
+    const result = await client
+      .from("account_preferences")
+      .update({ preferred_effort_scale: scale })
+      .eq("owner_id", identity.data.user.id)
+      .select("owner_id");
+    if (result.error || result.data?.length !== 1)
+      return { error: "Effort preference was not saved. Retry." };
+    revalidatePath("/profile");
+    revalidatePath("/workout", "layout");
+    return {};
+  } catch {
+    return { error: "Effort preference could not be saved." };
   }
 }

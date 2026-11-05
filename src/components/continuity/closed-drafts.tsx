@@ -1,9 +1,16 @@
 "use client";
+import { effortSummary } from "@/features/sets/effort";
 import { useEffect, useState } from "react";
 import type { Workout } from "@/features/workouts/types";
 export function ClosedDrafts({ workout }: { workout: Workout }) {
   const [drafts, setDrafts] = useState<
-    { name: string; weight: string; reps: string; unit: string }[]
+    {
+      name: string;
+      weight: string;
+      reps: string;
+      unit: string;
+      advanced: string;
+    }[]
   >([]);
   const [cleared, setCleared] = useState(false);
   const key = `body-set-drafts:${workout.userId}:${workout.id}`;
@@ -16,7 +23,13 @@ export function ClosedDrafts({ workout }: { workout: Workout }) {
         string,
         {
           row: { workout_exercise_id: string };
-          draft: { weight: string; reps: string };
+          draft: {
+            weight: string;
+            reps: string;
+            effortScale?: string;
+            effortValue?: string;
+            toFailure?: boolean;
+          };
         }
       >;
       const recovered = Object.values(entries).flatMap((e) => {
@@ -32,6 +45,13 @@ export function ClosedDrafts({ workout }: { workout: Workout }) {
                 weight: e.draft.weight,
                 reps: e.draft.reps,
                 unit: data.unit === "lb" ? "lb" : "kg",
+                advanced: effortSummary({
+                  effort_scale: e.draft.effortScale,
+                  effort_value: e.draft.effortValue
+                    ? Number(e.draft.effortValue)
+                    : null,
+                  performed_to_failure: e.draft.toFailure,
+                }),
               },
             ]
           : [];
@@ -52,7 +72,8 @@ export function ClosedDrafts({ workout }: { workout: Workout }) {
       <ul>
         {drafts.map((d, i) => (
           <li key={i}>
-            {d.name}: {d.weight || "blank"} {d.unit}, {d.reps || "blank"} reps
+            {d.name}: {d.weight || "blank"} {d.unit}, {d.reps || "blank"} reps{" "}
+            {d.advanced && ` · ${d.advanced}`}
           </li>
         ))}
       </ul>

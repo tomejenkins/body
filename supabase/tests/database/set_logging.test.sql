@@ -4,7 +4,7 @@ set local search_path=public,extensions,pg_temp;
 select no_plan();
 insert into auth.users(id) values(md5('sets_a')::uuid),(md5('sets_b')::uuid);
 insert into public.profiles(id,display_name) values(md5('sets_a')::uuid,'Sets A'),(md5('sets_b')::uuid,'Sets B');
-select ok(not has_function_privilege('anon','public.log_workout_set(uuid,uuid,text,integer,uuid,integer,numeric,text,text,boolean,integer,numeric,text)','execute'),'anonymous set RPC denied');
+select ok(not has_function_privilege('anon','public.log_workout_set(uuid,uuid,text,integer,uuid,integer,numeric,text,text,boolean,integer,numeric,text,jsonb)','execute'),'anonymous set RPC denied');
 select ok(not has_column_privilege('authenticated','public.workout_sets','revision','UPDATE'),'revision is server maintained');
 set local role authenticated;
 select set_config('request.jwt.claims',json_build_object('sub',md5('sets_a')::uuid,'role','authenticated')::text,true);

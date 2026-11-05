@@ -1,4 +1,10 @@
 "use client";
+import {
+  rpeValues,
+  rirValues,
+  effortSummary,
+  type EffortScale,
+} from "@/features/sets/effort";
 import { LocalTime } from "@/components/history/local-time";
 import { friendlyWorkoutName } from "@/features/history/model";
 import Link from "next/link";
@@ -413,7 +419,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
               ...existing,
               row,
               draft: unchanged
-                ? draftFor(row, unitRef.current)
+                ? draftFor(row, unitRef.current, existing.draft.effortScale)
                 : existing.draft,
               dirty: unchanged ? false : existing.dirty,
               pending: own
@@ -840,7 +846,18 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                       </button>
                     )}
                     <details className="set-options">
-                      <summary>{setTypes[entry.draft.type]} · Options</summary>
+                      <summary>
+                        {setTypes[entry.draft.type]}
+                        {effortSummary({
+                          effort_scale: entry.draft.effortScale,
+                          effort_value: entry.draft.effortValue?.trim()
+                            ? Number(entry.draft.effortValue)
+                            : null,
+                          performed_to_failure: entry.draft.toFailure,
+                        }) &&
+                          ` · ${effortSummary({ effort_scale: entry.draft.effortScale, effort_value: entry.draft.effortValue?.trim() ? Number(entry.draft.effortValue) : null, performed_to_failure: entry.draft.toFailure })}`}{" "}
+                        · Options
+                      </summary>
                       {active && (
                         <Button
                           variant="outline"
@@ -894,12 +911,114 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                           }}
                         >
                           {Object.entries(setTypes).map(([value, label]) => (
-                            <option key={value} value={value}>
+                            <option
+                              key={value}
+                              value={value}
+                              disabled={
+                                value === "warm_up" && entry.draft.toFailure
+                              }
+                            >
                               {label}
                             </option>
                           ))}
                         </select>
                       </label>
+                      <div className="advanced-effort-controls">
+                        <label>
+                          <input
+                            type="checkbox"
+                            aria-label={`${item.name} set ${i + 1} To Failure`}
+                            checked={entry.draft.toFailure ?? false}
+                            disabled={
+                              !canEdit ||
+                              unsupported ||
+                              !!entry.pending ||
+                              entry.draft.type === "warm_up"
+                            }
+                            onChange={(e) => {
+                              change(entry.row.id, {
+                                toFailure: e.target.checked,
+                              });
+                              enqueue(entry.row.id);
+                            }}
+                          />{" "}
+                          To Failure
+                        </label>
+                        <small>
+                          Reported inability to complete another rep with
+                          acceptable technique. Clear this flag before choosing
+                          Warm-up.
+                        </small>
+                        <label>
+                          Effort scale
+                          <select
+                            aria-label={`${item.name} set ${i + 1} effort scale`}
+                            value={
+                              entry.draft.effortScale ??
+                              workout.preferredEffortScale ??
+                              "rpe"
+                            }
+                            disabled={
+                              !canEdit || unsupported || !!entry.pending
+                            }
+                            onChange={(e) => {
+                              change(entry.row.id, {
+                                effortScale: e.target.value as EffortScale,
+                                effortValue: "",
+                              });
+                              enqueue(entry.row.id);
+                            }}
+                          >
+                            <option value="rpe">RPE</option>
+                            <option value="rir">RIR</option>
+                          </select>
+                        </label>
+                        <label>
+                          Effort rating · optional
+                          <select
+                            aria-label={`${item.name} set ${i + 1} effort rating`}
+                            value={entry.draft.effortValue ?? ""}
+                            disabled={
+                              !canEdit || unsupported || !!entry.pending
+                            }
+                            onChange={(e) => {
+                              change(entry.row.id, {
+                                effortScale:
+                                  entry.draft.effortScale ??
+                                  workout.preferredEffortScale ??
+                                  "rpe",
+                                effortValue: e.target.value,
+                              });
+                              enqueue(entry.row.id);
+                            }}
+                          >
+                            <option value="">No rating</option>
+                            {(entry.draft.effortScale ??
+                              workout.preferredEffortScale ??
+                              "rpe") === "rpe"
+                              ? rpeValues.map((v) => (
+                                  <option key={v} value={v}>
+                                    {v}
+                                  </option>
+                                ))
+                              : rirValues.map((v) => (
+                                  <option key={v} value={v}>
+                                    {v === 5 ? "5+" : v}
+                                  </option>
+                                ))}
+                          </select>
+                        </label>
+                        <small>
+                          {(entry.draft.effortScale ??
+                            workout.preferredEffortScale ??
+                            "rpe") === "rpe"
+                            ? "RPE 6–10 describes perceived effort; 10 means maximal reported effort."
+                            : "RIR estimates additional reps available; 5+ means at least five."}{" "}
+                          Switching scales clears the rating without conversion.
+                          Failure stays independent. Choose your default in
+                          Profile Settings.
+                        </small>
+                      </div>
                       {item.bodyweightEligible && (
                         <label>
                           Load recording

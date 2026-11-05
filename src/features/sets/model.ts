@@ -1,3 +1,4 @@
+import { validEffort, type EffortScale, type ReportedEffort } from "./effort";
 export type WeightUnit = "kg" | "lb";
 export type SetType = "working" | "warm_up" | "drop" | "rest_pause";
 export type LoadMode = "external" | "bodyweight";
@@ -14,6 +15,12 @@ export type LoggedSet = {
   revision: number;
   last_mutation_id: string | null;
   deleted_at: string | null;
+  prescribed_effort_scale?: EffortScale | null;
+  prescribed_effort_value?: number | null;
+  prescribed_to_failure?: boolean | null;
+  effort_scale?: EffortScale | null;
+  effort_value?: number | null;
+  performed_to_failure?: boolean;
   logging_kind?: import("@/features/history/model").LoggingKind;
   is_automatic?: boolean;
   inputs_confirmed?: boolean;
@@ -30,6 +37,9 @@ export type SetDraft = {
   mode: LoadMode;
   completed: boolean;
   weightDirty: boolean;
+  effortScale?: EffortScale;
+  effortValue?: string;
+  toFailure?: boolean;
 };
 export type SetCommand = {
   itemId: string;
@@ -43,6 +53,7 @@ export type SetCommand = {
   mode: LoadMode;
   completed: boolean;
   direction?: -1 | 1;
+  effort?: ReportedEffort;
   enteredWeight?: string | null;
   enteredUnit?: WeightUnit | null;
 };
@@ -92,7 +103,11 @@ export function displayWeight(kg: number | null, unit: WeightUnit) {
     unit === "kg" ? milli : rounded(milli * 10000000n, 45359237n) * 10n,
   );
 }
-export function draftFor(row: LoggedSet, unit: WeightUnit): SetDraft {
+export function draftFor(
+  row: LoggedSet,
+  unit: WeightUnit,
+  emptyScale?: EffortScale,
+): SetDraft {
   const load =
     row.inputs_confirmed === false
       ? (row.prescribed_weight_kg ?? null)
@@ -111,6 +126,9 @@ export function draftFor(row: LoggedSet, unit: WeightUnit): SetDraft {
     mode: row.load_mode,
     completed: row.status === "completed",
     weightDirty: false,
+    effortScale: row.effort_scale ?? emptyScale,
+    effortValue: row.effort_value == null ? "" : String(row.effort_value),
+    toFailure: row.performed_to_failure ?? false,
   };
 }
 export function valuesFor(
@@ -148,7 +166,17 @@ export function valuesFor(
     throw new Error(
       "Enter actual reps and external load before completing this set.",
     );
+  const effort: ReportedEffort = {
+    scale: draft.effortValue?.trim() ? (draft.effortScale ?? "rpe") : null,
+    value: draft.effortValue?.trim() ? Number(draft.effortValue) : null,
+    failure: draft.toFailure ?? false,
+  };
+  if (!validEffort(effort) || (draft.type === "warm_up" && effort.failure))
+    throw new Error(
+      "Choose RPE 6–10 in half steps or RIR 0–5+. Clear To Failure before choosing Warm-up.",
+    );
   return {
+    effort,
     reps,
     weight,
     type: draft.type,
@@ -197,7 +225,14 @@ export function newSetDraft(
   bodyweight: boolean,
 ): SetDraft {
   return previous
-    ? { ...previous, type: "working", completed: false }
+    ? {
+        ...previous,
+        type: "working",
+        completed: false,
+        effortScale: undefined,
+        effortValue: "",
+        toFailure: false,
+      }
     : {
         weight: "",
         reps: "",

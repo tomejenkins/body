@@ -24,6 +24,7 @@ export type Workout = {
   items: WorkoutItem[];
   userId: string;
   weightUnit: WeightUnit;
+  preferredEffortScale?: import("@/features/sets/effort").EffortScale;
   continuity?: import("@/features/continuity/model").Continuity | null;
 };
 export type WorkoutState = {

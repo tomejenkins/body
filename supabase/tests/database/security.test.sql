@@ -435,7 +435,7 @@ select ok((select has_table_privilege('authenticated','public.account_preference
 
 select ok((select bool_and(has_column_privilege('authenticated','public.account_preferences',attname,'INSERT') = (attname = any(array['owner_id','date_of_birth','onboarding_completed_at','training_goal','preferred_workouts_per_7_days','preferred_split','display_weight_unit']::text[]))) from pg_attribute where attrelid='public.account_preferences'::regclass and attnum>0 and not attisdropped), 'account_preferences: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.account_preferences',attname,'UPDATE') = (attname = any(array['date_of_birth','onboarding_completed_at','training_goal','preferred_workouts_per_7_days','preferred_split','display_weight_unit']::text[]))) from pg_attribute where attrelid='public.account_preferences'::regclass and attnum>0 and not attisdropped), 'account_preferences: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.account_preferences',attname,'UPDATE') = (attname = any(array['preferred_effort_scale','date_of_birth','onboarding_completed_at','training_goal','preferred_workouts_per_7_days','preferred_split','display_weight_unit']::text[]))) from pg_attribute where attrelid='public.account_preferences'::regclass and attnum>0 and not attisdropped), 'account_preferences: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.exercises'::regclass), 'exercises: RLS enabled');
 
@@ -713,9 +713,9 @@ select ok((select has_table_privilege('authenticated','public.programs','SELECT'
 
 select ok((select has_table_privilege('authenticated','public.programs','DELETE') = false), 'programs: DELETE matches reviewed matrix');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.programs',attname,'INSERT') = (attname = any(array['id','owner_id','name','description','is_template','cycle_length','revision','derived_from_program_id','archived_at']::text[]))) from pg_attribute where attrelid='public.programs'::regclass and attnum>0 and not attisdropped), 'programs: exact INSERT column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.programs',attname,'INSERT') = (attname = any(array['objective','experience_level','estimated_sessions_per_week','duration_rotations','visibility','lifecycle_status','source_version_id','clone_request_id','id','owner_id','name','description','is_template','cycle_length','revision','derived_from_program_id','archived_at']::text[]))) from pg_attribute where attrelid='public.programs'::regclass and attnum>0 and not attisdropped), 'programs: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.programs',attname,'UPDATE') = (attname = any(array['name','description','is_template','cycle_length','revision','derived_from_program_id','archived_at']::text[]))) from pg_attribute where attrelid='public.programs'::regclass and attnum>0 and not attisdropped), 'programs: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.programs',attname,'UPDATE') = (attname = any(array['objective','experience_level','estimated_sessions_per_week','duration_rotations','visibility','lifecycle_status','name','description','is_template','cycle_length','revision','derived_from_program_id','archived_at']::text[]))) from pg_attribute where attrelid='public.programs'::regclass and attnum>0 and not attisdropped), 'programs: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.program_days'::regclass), 'program_days: RLS enabled');
 
@@ -783,9 +783,9 @@ select ok((select has_table_privilege('authenticated','public.program_days','SEL
 
 select ok((select has_table_privilege('authenticated','public.program_days','DELETE') = true), 'program_days: DELETE matches reviewed matrix');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.program_days',attname,'INSERT') = (attname = any(array['id','owner_id','program_id','cycle_length','cycle_position','name','is_rest_day','notes']::text[]))) from pg_attribute where attrelid='public.program_days'::regclass and attnum>0 and not attisdropped), 'program_days: exact INSERT column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.program_days',attname,'INSERT') = (attname = any(array['focus','phase_number','minimum_rest_hours','maximum_rest_hours','id','owner_id','program_id','cycle_length','cycle_position','name','is_rest_day','notes']::text[]))) from pg_attribute where attrelid='public.program_days'::regclass and attnum>0 and not attisdropped), 'program_days: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.program_days',attname,'UPDATE') = (attname = any(array['cycle_position','name','is_rest_day','notes']::text[]))) from pg_attribute where attrelid='public.program_days'::regclass and attnum>0 and not attisdropped), 'program_days: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.program_days',attname,'UPDATE') = (attname = any(array['focus','phase_number','minimum_rest_hours','maximum_rest_hours','cycle_position','name','is_rest_day','notes']::text[]))) from pg_attribute where attrelid='public.program_days'::regclass and attnum>0 and not attisdropped), 'program_days: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.program_slots'::regclass), 'program_slots: RLS enabled');
 
@@ -853,9 +853,9 @@ select ok((select has_table_privilege('authenticated','public.program_slots','SE
 
 select ok((select has_table_privilege('authenticated','public.program_slots','DELETE') = true), 'program_slots: DELETE matches reviewed matrix');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.program_slots',attname,'INSERT') = (attname = any(array['id','owner_id','program_day_id','position','movement_pattern_id','exercise_id','target_sets','target_reps_min','target_reps_max','target_weight_kg','rest_seconds','notes']::text[]))) from pg_attribute where attrelid='public.program_slots'::regclass and attnum>0 and not attisdropped), 'program_slots: exact INSERT column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.program_slots',attname,'INSERT') = (attname = any(array['primary_muscle_id','required_exercise_type','exercise_locked','is_optional','rest_seconds_max','progression_rule_id','id','owner_id','program_day_id','position','movement_pattern_id','exercise_id','target_sets','target_reps_min','target_reps_max','target_weight_kg','rest_seconds','notes']::text[]))) from pg_attribute where attrelid='public.program_slots'::regclass and attnum>0 and not attisdropped), 'program_slots: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.program_slots',attname,'UPDATE') = (attname = any(array['position','movement_pattern_id','exercise_id','target_sets','target_reps_min','target_reps_max','target_weight_kg','rest_seconds','notes']::text[]))) from pg_attribute where attrelid='public.program_slots'::regclass and attnum>0 and not attisdropped), 'program_slots: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.program_slots',attname,'UPDATE') = (attname = any(array['primary_muscle_id','required_exercise_type','exercise_locked','is_optional','rest_seconds_max','progression_rule_id','position','movement_pattern_id','exercise_id','target_sets','target_reps_min','target_reps_max','target_weight_kg','rest_seconds','notes']::text[]))) from pg_attribute where attrelid='public.program_slots'::regclass and attnum>0 and not attisdropped), 'program_slots: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.program_assignments'::regclass), 'program_assignments: RLS enabled');
 
@@ -1133,9 +1133,9 @@ select ok((select has_table_privilege('authenticated','public.workout_sets','SEL
 
 select ok((select has_table_privilege('authenticated','public.workout_sets','DELETE') = true), 'workout_sets: DELETE matches reviewed matrix');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.workout_sets',attname,'INSERT') = (attname = any(array['id','owner_id','workout_exercise_id','position','set_type','status','prescribed_reps_min','prescribed_reps_max','prescribed_weight_kg','actual_reps','actual_weight_kg','completed_at','notes','load_mode','last_mutation_id','is_automatic','inputs_confirmed','suggested_from_date','entered_weight','entered_unit']::text[]))) from pg_attribute where attrelid='public.workout_sets'::regclass and attnum>0 and not attisdropped), 'workout_sets: exact INSERT column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.workout_sets',attname,'INSERT') = (attname = any(array['effort_scale','effort_value','performed_to_failure','id','owner_id','workout_exercise_id','position','set_type','status','prescribed_reps_min','prescribed_reps_max','prescribed_weight_kg','actual_reps','actual_weight_kg','completed_at','notes','load_mode','last_mutation_id','is_automatic','inputs_confirmed','suggested_from_date','entered_weight','entered_unit']::text[]))) from pg_attribute where attrelid='public.workout_sets'::regclass and attnum>0 and not attisdropped), 'workout_sets: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.workout_sets',attname,'UPDATE') = (attname = any(array['position','set_type','status','prescribed_reps_min','prescribed_reps_max','prescribed_weight_kg','actual_reps','actual_weight_kg','completed_at','notes','load_mode','last_mutation_id','deleted_at','entered_weight','entered_unit']::text[]))) from pg_attribute where attrelid='public.workout_sets'::regclass and attnum>0 and not attisdropped), 'workout_sets: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.workout_sets',attname,'UPDATE') = (attname = any(array['effort_scale','effort_value','performed_to_failure','position','set_type','status','prescribed_reps_min','prescribed_reps_max','prescribed_weight_kg','actual_reps','actual_weight_kg','completed_at','notes','load_mode','last_mutation_id','deleted_at','entered_weight','entered_unit']::text[]))) from pg_attribute where attrelid='public.workout_sets'::regclass and attnum>0 and not attisdropped), 'workout_sets: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.exercise_movement_patterns'::regclass), 'exercise_movement_patterns: RLS enabled');
 
@@ -1953,9 +1953,9 @@ select lives_ok($sql$insert into public.user_exercise_preferences(owner_id,exerc
 
 select throws_ok($sql$insert into public.programs(owner_id,name,cycle_length) values (md5('bob')::uuid,'Forged',7)$sql$, '42501', null, 'cannot forge program ownership');
 
-select throws_ok($sql$insert into public.program_days(owner_id,program_id,cycle_length,cycle_position,name) values (md5('carol')::uuid,md5('spare_bob')::uuid,7,1,'Forged')$sql$, '23503', null, 'cannot create a day under another user program');
+select throws_ok($sql$insert into public.program_days(owner_id,program_id,cycle_length,cycle_position,name) values (md5('carol')::uuid,md5('spare_bob')::uuid,7,1,'Forged')$sql$, '42501', null, 'cannot create a day under another user program');
 
-select throws_ok($sql$insert into public.program_slots(owner_id,program_day_id,position,exercise_id,target_sets) values (md5('carol')::uuid,md5('bob_day_1')::uuid,2,md5('system')::uuid,1)$sql$, '23503', null, 'cannot create a slot under another user day');
+select throws_ok($sql$insert into public.program_slots(owner_id,program_day_id,position,exercise_id,target_sets) values (md5('carol')::uuid,md5('bob_day_1')::uuid,2,md5('system')::uuid,1)$sql$, '42501', null, 'cannot create a slot under another user day');
 
 select throws_ok($sql$insert into public.program_slots(owner_id,program_day_id,position,exercise_id,target_sets) values (md5('carol')::uuid,md5('carol_day_1')::uuid,2,md5('custom_bob')::uuid,1)$sql$, '23503', null, 'cannot use another private custom exercise in own plan');
 

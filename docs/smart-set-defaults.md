@@ -59,3 +59,7 @@ Hosted security/configuration, SMTP and physical devices are not validated here.
 ## Phase 6.1 follow-up
 
 See [workout history](workout-history.md) for paginated owner-scoped History/Look Back, read-only review, local-time display, friendly workout naming, measurement-context snapshots and reps-first bodyweight logging. The new forward migration leaves prior snapshots and SQL immutable, and blocks unsupported duration/assistance completion without weakening historical guards. Internal [record prominence](record-prominence.md) remains display metadata only.
+
+## Phase 7.1 effort safety
+
+Historical load/reps may suggest structure; previous actual effort/failure never populates new actuals. Add set also clears advanced reports even while retaining useful load/reps. Separate protected prescription-effort snapshots prepare program execution without treating targets as actual user measurements. See [advanced logging](advanced-set-logging.md).

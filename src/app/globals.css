@@ -1829,3 +1829,32 @@ body:has(.active-workout-bar) main {
   bottom: auto;
   transform: translateY(-50%);
 }
+
+.advanced-effort-controls {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.75rem 0;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--border);
+}
+.advanced-effort-controls label {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  min-height: 44px;
+}
+.advanced-effort-controls input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--primary);
+}
+.advanced-effort-controls small {
+  color: var(--secondary);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.advanced-effort-controls select {
+  min-height: 44px;
+  max-width: 100%;
+}

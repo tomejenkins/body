@@ -50,7 +50,9 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     .getByRole("textbox", { name: /weight/ })
     .fill("135");
   await row(page, 0).getByRole("textbox", { name: /reps/ }).fill("10");
-  await row(page, 0).getByRole("checkbox").check();
+  await row(page, 0)
+    .getByRole("checkbox", { name: / complete$/ })
+    .check();
   await saved(page, 0);
   for (let i = 1; i < 3; i++) {
     await row(page, i)
@@ -59,9 +61,13 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     await row(page, i).getByRole("textbox", { name: /reps/ }).fill("10");
     await row(page, i).getByRole("textbox", { name: /reps/ }).press("Tab");
     await saved(page, i);
-    await expect(row(page, i).getByRole("checkbox")).not.toBeChecked();
+    await expect(
+      row(page, i).getByRole("checkbox", { name: / complete$/ }),
+    ).not.toBeChecked();
     if (i === 1) {
-      await row(page, i).getByRole("checkbox").check();
+      await row(page, i)
+        .getByRole("checkbox", { name: / complete$/ })
+        .check();
       await saved(page, i);
     }
   }
@@ -77,7 +83,9 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     .getByRole("textbox", { name: /weight/ })
     .press("Tab");
   await saved(page, 0);
-  await row(page, 1).getByRole("checkbox").uncheck();
+  await row(page, 1)
+    .getByRole("checkbox", { name: / complete$/ })
+    .uncheck();
   await saved(page, 1);
   await row(page, 1).locator("summary").click();
   await row(page, 1)
@@ -175,7 +183,9 @@ test("bodyweight, visible save failure, navigation guard, retained edits and con
   await saved(page, 0);
   await expect(page.getByRole("textbox", { name: /weight/ })).toHaveCount(0);
   await row(page, 0).getByRole("textbox", { name: /reps/ }).fill("12");
-  await row(page, 0).getByRole("checkbox").check();
+  await row(page, 0)
+    .getByRole("checkbox", { name: / complete$/ })
+    .check();
   await saved(page, 0);
   const id = await row(page, 0).getAttribute("data-set-id");
   const existing = await account.client
