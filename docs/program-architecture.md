@@ -72,3 +72,7 @@ Phase 7.2 adds the reviewed Body seed/library release gates; Phase 7.3 adds crea
 All client-facing program RPCs are SECURITY INVOKER with empty search paths, verified auth.uid(), existing owner RLS and no caller owner/publisher argument. New user children have narrow operation/column grants and composite ownership constraints; platform metadata and protected actual-history targets have no client writes. Anonymous/service-role RPC access and private-helper execution remain revoked. Existing system taxonomy/catalog writes remain denied.
 
 The two forward migrations leave all previously applied SQL immutable. Local tests cover rotations/rest, choices, prescription/rule validation, version/copy isolation, idempotence, source-deletion history safety, public-intent nondiscoverability, all platform-table ACLs, and advanced logging privacy/concurrency. Apply reviewed migrations in timestamp order before approved application rollout. No hosted SQL, migration-history repair, production deployment or automatic merge belongs to Phase 7.1 validation.
+
+## Phase 7.2 official library
+
+The [program library](program-library.md) adds a non-login platform principal, controlled rich metadata/media/tags and an explicit RLS-approved immutable official source boundary. It preserves existing owner entities and source/copy isolation. Cards use protected published-version projections; draft changes do not rewrite published content. User publishing, activation, scheduling, progression execution, cardio, billing and creator workflows remain deferred.

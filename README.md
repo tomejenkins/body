@@ -156,3 +156,9 @@ See the [Phase 6.3 validation and handoff](docs/phase-6-3-validation.md) for act
 Existing set options now support independent To Failure and optional RPE/RIR; Profile Settings remembers the input scale. Normal logging is unchanged. The database extends existing program entities with flexible rotations, prescriptions, typed progression config, immutable source versions and independent private copies. Publishing/moderation/creator tables are preparation only; the Programs UI remains a placeholder. See [program architecture](docs/program-architecture.md) and [advanced logging](docs/advanced-set-logging.md). Two reviewed forward migrations must be applied in order before this app release; no hosted migration or production deployment is performed during validation.
 
 See the [Phase 7.1 validation and release checklist](docs/phase-7-1-validation.md) for actual check results, deployment prerequisites and deferred functionality.
+
+## Phase 7.2 original program library
+
+Programs now offers twelve original Body plans with server-side combined search/filters, pagination, safe original covers and read-only immutable workout breakdowns. Run `npm run programs:check` for seed source/migration consistency. Following/activation remains Phase 7.3. Read [program library](docs/program-library.md) for the catalog, platform ownership, publication gates, rendering safety, seed replay and release prerequisites. Apply the two reviewed Phase 7.2 migrations in order before the application rollout; local validation does not apply hosted SQL.
+
+See [Phase 7.2 validation and release](docs/phase-7-2-validation.md) for actual test counts, migration order and manual checks.

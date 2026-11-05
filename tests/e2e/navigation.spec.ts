@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 const routes = [
   ["Dashboard", "Show up for yourself."],
   ["Workout", "Your next rep starts here."],
-  ["Programs", "Structure for your ambition."],
+  ["Programs", "Programs"],
   ["History", "Workout history"],
   ["Feed", "Progress is personal."],
   ["Profile", "Your space. Your pace."],
