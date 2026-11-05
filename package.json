@@ -21,7 +21,8 @@
     "db:reset": "supabase db reset",
     "db:lint": "supabase db lint --schema public,body_private --fail-on warning",
     "db:test": "supabase test db",
-    "catalog:check": "node scripts/generate-exercise-catalog.mjs --check"
+    "catalog:check": "node scripts/generate-exercise-catalog.mjs --check",
+    "programs:check": "node scripts/generate-program-catalog.mjs --check"
   },
   "repository": {
     "type": "git",

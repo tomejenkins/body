@@ -140,10 +140,10 @@ select set_config('body_test.v2',snapshot_program(current_setting('body_test.p3'
 select is((select version from program_versions where id=current_setting('body_test.v2')::uuid),2,'new draft snapshot gets next version');
 select is((select count(*)::int from workout_sessions where owner_id=auth.uid()),0,'program definitions never create actual sessions or effort');
 select set_config('request.jwt.claims',json_build_object('sub',md5('program_b')::uuid,'role','authenticated')::text,true);
-select is((select count(*)::int from programs),0,'public-valued private programs not discoverable to other users');
+select is((select count(*)::int from programs where owner_id<> '6ab9fb82-8aae-5e49-9f9d-535b4a25d302'),0,'public-valued private programs not discoverable to other users');
 select is((select count(*)::int from program_days),0,'foreign rotation children hidden');
 select is((select count(*)::int from program_set_prescriptions),0,'foreign planned effort hidden');
-select is((select count(*)::int from program_versions),0,'foreign source snapshots hidden');
+select is((select count(*)::int from program_versions where owner_id<>'6ab9fb82-8aae-5e49-9f9d-535b4a25d302'),0,'foreign source snapshots hidden');
 select throws_ok($$select clone_program(current_setting('body_test.v1')::uuid,'Stolen',gen_random_uuid())$$,'42501',null,'cross-owner clone denied before community gate exists');
 select throws_ok($$select snapshot_program(current_setting('body_test.p3')::uuid)$$,'42501',null,'cannot snapshot another owner program');
 select throws_ok($$insert into creator_accounts(profile_id,identity_status) values(auth.uid(),'verified')$$,'42501',null,'no self-issued verified status');

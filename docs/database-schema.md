@@ -194,3 +194,7 @@ See [workout history](workout-history.md) for paginated owner-scoped History/Loo
 ## Phase 7.1 model extension
 
 `20261105183319_advanced_set_effort.sql` adds paired optional actual effort, independent reported failure, the input preference and compatible logging RPC. `20261105183320_program_foundation.sql` extends the four existing program entities, adds normalized equipment/choices/set prescriptions/progression rules and immutable versions, protected future execution snapshots, plus inaccessible moderation/creator/IP preparation. The schema now has 30 model tables; no Body programs are seeded. See [program architecture](program-architecture.md) and [advanced logging](advanced-set-logging.md) for columns, bounds, cloning and deferred execution.
+
+## Phase 7.2 catalog additions
+
+Forward migrations add restricted platform-principal typing, controlled program_media/program_tags/program_tag_links/program_gallery, rich program metadata and protected published pointers/timestamps/badges. Person profiles retain auth FK/cascade through a generated column. The same immutable program_versions holds rich definitions and a protected listing projection; no parallel template store is added. The separate seed migration installs twelve original version-1 programs without actual sessions. Read [program library](program-library.md) for normalized structures, ownership, publication gates and deterministic replay.

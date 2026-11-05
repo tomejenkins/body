@@ -1858,3 +1858,206 @@ body:has(.active-workout-bar) main {
   min-height: 44px;
   max-width: 100%;
 }
+
+/* Program discovery uses the existing shell and theme tokens. */
+.program-library,
+.program-detail {
+  max-width: 1120px;
+  margin-inline: auto;
+}
+.program-filters {
+  display: grid;
+  gap: 1rem;
+  margin-block: 2rem;
+}
+.program-filters label {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+.program-filters input,
+.program-filters select {
+  min-height: 44px;
+  max-width: 100%;
+  padding: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: var(--card);
+  color: var(--foreground);
+}
+.program-filters summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: list-item;
+  padding-block: 0.6rem;
+}
+.program-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-block: 1rem;
+}
+.program-filter-actions,
+.program-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+.program-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-block: 1.5rem;
+}
+.program-card {
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  min-width: 0;
+}
+.program-cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8/5;
+  object-fit: cover;
+  display: block;
+}
+.program-card-body {
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+}
+.program-card h2 {
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+.program-card p {
+  margin: 0;
+}
+.program-meta {
+  color: var(--secondary);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.program-tags,
+.program-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.program-tags span,
+.program-badge {
+  border: 1px solid var(--border);
+  border-radius: 2rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+}
+.program-badge {
+  color: var(--primary);
+  background: var(--card);
+}
+.program-view-link {
+  padding-block: 0.5rem;
+  min-height: 44px;
+}
+.program-pagination {
+  justify-content: center;
+  margin-block: 2rem;
+}
+.program-detail > .program-cover {
+  max-height: 420px;
+  border-radius: 1.25rem;
+  margin-block: 1.5rem;
+}
+.program-summary {
+  max-width: 65ch;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+.program-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-block: 2rem;
+}
+.program-overview dt {
+  font-size: 0.8rem;
+  color: var(--secondary);
+  margin-bottom: 0.4rem;
+}
+.program-overview dd {
+  margin: 0;
+  line-height: 1.5;
+}
+.program-prose {
+  max-width: 72ch;
+  line-height: 1.8;
+  margin-block: 2rem;
+}
+.program-prose h3 {
+  margin-top: 1.8rem;
+}
+.program-prose ul,
+.program-prose ol {
+  padding-left: 1.4rem;
+  list-style: revert;
+}
+.program-prose a {
+  text-decoration: underline;
+}
+.program-prose blockquote {
+  border-left: 3px solid var(--border);
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  color: var(--secondary);
+}
+.program-days {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.program-day {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+}
+.program-rest-day {
+  background: var(--card);
+}
+.program-slots {
+  padding-left: 1.25rem;
+  list-style: decimal;
+}
+.program-slots > li {
+  margin-block: 1.4rem;
+}
+.program-prescriptions {
+  list-style: none;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+@media (max-width: 1000px) {
+  .program-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .program-card-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .program-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .program-card-body {
+    padding: 1rem;
+  }
+  .program-day {
+    padding: 1rem;
+  }
+  .program-overview dd {
+    font-size: 0.875rem;
+  }
+}
