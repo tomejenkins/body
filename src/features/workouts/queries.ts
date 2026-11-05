@@ -90,9 +90,12 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
   for (const item of items) item.workout_sets = byItem.get(item.id) ?? [];
   const preference = await client
     .from("account_preferences")
-    .select("display_weight_unit")
+    .select("display_weight_unit,preferred_effort_scale")
     .eq("owner_id", user.id)
-    .single<{ display_weight_unit: WeightUnit }>();
+    .single<{
+      display_weight_unit: WeightUnit;
+      preferred_effort_scale: import("@/features/sets/effort").EffortScale;
+    }>();
   if (preference.error)
     throw new Error("Weight preference could not be loaded.");
   return {
@@ -100,6 +103,7 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
       import("@/features/continuity/model").Continuity | null,
     userId: user.id,
     weightUnit: preference.data.display_weight_unit,
+    preferredEffortScale: preference.data.preferred_effort_scale,
     id: session.id,
     name: session.name,
     status: session.status,

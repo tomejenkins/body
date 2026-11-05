@@ -40,7 +40,9 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
       .getByRole("textbox", { name: /weight/ })
       .fill(weight);
     await row(page, i).getByRole("textbox", { name: /reps/ }).fill("8");
-    await row(page, i).getByRole("checkbox").check();
+    await row(page, i)
+      .getByRole("checkbox", { name: / complete$/ })
+      .check();
     await saved(page, i);
     await page.reload();
     await expect(
@@ -65,7 +67,9 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
   await row(page, 3)
     .getByRole("textbox", { name: /weight/ })
     .fill("52.125");
-  await row(page, 3).getByRole("checkbox").check();
+  await row(page, 3)
+    .getByRole("checkbox", { name: / complete$/ })
+    .check();
   await saved(page, 3);
   await row(page, 3).locator("summary").click();
   await row(page, 3)
@@ -179,7 +183,9 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
     await expect(
       row(page, i).getByRole("textbox", { name: /weight/ }),
     ).toHaveValue(weight);
-    await expect(row(page, i).getByRole("checkbox")).not.toBeChecked();
+    await expect(
+      row(page, i).getByRole("checkbox", { name: / complete$/ }),
+    ).not.toBeChecked();
     await expect(row(page, i).locator(".set-save-state")).toContainText(
       "suggested",
     );
@@ -241,7 +247,9 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
   await expect(row(page, 0).getByRole("textbox", { name: /reps/ })).toHaveValue(
     "9",
   );
-  await expect(row(page, 0).getByRole("checkbox")).not.toBeChecked();
+  await expect(
+    row(page, 0).getByRole("checkbox", { name: / complete$/ }),
+  ).not.toBeChecked();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,

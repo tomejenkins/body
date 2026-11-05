@@ -150,3 +150,9 @@ See the [Phase 6.2 validation and release checklist](docs/phase-6-2-validation.m
 History → Training progress opens the workout overview/calendar, qualified duration averages, weekly sets, per-exercise external volume and separate muscle exposure. Exercise Look Back adds interactive date/metric/load views with accessible point details and tables. Records now use Best Single/Triple/Five-Rep Set terminology and show source dates/workouts. Historical dominance suppresses redundant recognition without changing exact records. Read [progress analytics](docs/progress-analytics.md) and [intelligent PR recognition](docs/intelligent-pr-recognition.md). Two forward migrations require reviewed application in order before deployment. This phase is handed over locally for the user to push and create a PR; no remote database change or production deployment is performed.
 
 See the [Phase 6.3 validation and handoff](docs/phase-6-3-validation.md) for actual check counts, migration prerequisites, limitations and manual push/PR instructions.
+
+## Phase 7.1 program foundation and advanced effort
+
+Existing set options now support independent To Failure and optional RPE/RIR; Profile Settings remembers the input scale. Normal logging is unchanged. The database extends existing program entities with flexible rotations, prescriptions, typed progression config, immutable source versions and independent private copies. Publishing/moderation/creator tables are preparation only; the Programs UI remains a placeholder. See [program architecture](docs/program-architecture.md) and [advanced logging](docs/advanced-set-logging.md). Two reviewed forward migrations must be applied in order before this app release; no hosted migration or production deployment is performed during validation.
+
+See the [Phase 7.1 validation and release checklist](docs/phase-7-1-validation.md) for actual check results, deployment prerequisites and deferred functionality.

@@ -190,3 +190,7 @@ See [workout history](workout-history.md) for paginated owner-scoped History/Loo
 ## Phase 6.3 forward read models
 
 `20261104205843_progress_analytics.sql` centralizes existing eligibility/metric calculations behind performance_source/performance_metrics, preserves old wrappers, adds validated progress_window, bounded exercise_progress/training_progress and a completed owner/start/ID index. `20261104205844_intelligent_record_recognition.sql` adds batch achievement_candidates and updates recognition/count wrappers without changing exact record truth. No new application table or materialized record authority is added. See [analytics](progress-analytics.md) and [recognition](intelligent-pr-recognition.md).
+
+## Phase 7.1 model extension
+
+`20261105183319_advanced_set_effort.sql` adds paired optional actual effort, independent reported failure, the input preference and compatible logging RPC. `20261105183320_program_foundation.sql` extends the four existing program entities, adds normalized equipment/choices/set prescriptions/progression rules and immutable versions, protected future execution snapshots, plus inaccessible moderation/creator/IP preparation. The schema now has 30 model tables; no Body programs are seeded. See [program architecture](program-architecture.md) and [advanced logging](advanced-set-logging.md) for columns, bounds, cloning and deferred execution.

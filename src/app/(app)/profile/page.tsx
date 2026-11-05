@@ -1,3 +1,4 @@
+import { EffortPreferenceSettings } from "@/components/settings/effort-preference-settings";
 import { WeightUnitSettings } from "@/components/settings/weight-unit-settings";
 import type { WeightUnit } from "@/features/sets/model";
 import Link from "next/link";
@@ -12,9 +13,12 @@ export default async function Page() {
   const account = await readAccount(client, user.id);
   const preference = await client
     .from("account_preferences")
-    .select("display_weight_unit")
+    .select("display_weight_unit,preferred_effort_scale")
     .eq("owner_id", user.id)
-    .single<{ display_weight_unit: WeightUnit }>();
+    .single<{
+      display_weight_unit: WeightUnit;
+      preferred_effort_scale: import("@/features/sets/effort").EffortScale;
+    }>();
   if (preference.error)
     throw new Error("Weight preference could not be loaded.");
   return (
@@ -27,6 +31,9 @@ export default async function Page() {
         </p>
       </div>
       <WeightUnitSettings initialUnit={preference.data.display_weight_unit} />
+      <EffortPreferenceSettings
+        initialScale={preference.data.preferred_effort_scale}
+      />
       <section className="empty-state">
         <h2>{account.profile?.display_name}</h2>
         <p>Your account and training history are private.</p>

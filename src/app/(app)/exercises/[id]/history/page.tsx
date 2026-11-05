@@ -1,3 +1,4 @@
+import { effortSummary } from "@/features/sets/effort";
 import { ExerciseProgress } from "@/components/progress/exercise-progress";
 import { loadExerciseRecords } from "@/features/records/queries";
 import { RecordCard } from "@/components/records/record-card";
@@ -134,6 +135,7 @@ export default async function Page({
                     <span>
                       {s.set_type === "warm_up" ? "W" : i + 1} ·{" "}
                       {setTypes[s.set_type]}
+                      {effortSummary(s) && ` · ${effortSummary(s)}`}
                     </span>
                     <strong>
                       {performanceLabel(

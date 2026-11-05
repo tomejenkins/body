@@ -60,3 +60,7 @@ See [smart defaults](smart-set-defaults.md) for transactional initialization, pr
 ## Phase 6.1 follow-up
 
 See [workout history](workout-history.md) for paginated owner-scoped History/Look Back, read-only review, local-time display, friendly workout naming, measurement-context snapshots and reps-first bodyweight logging. The new forward migration leaves prior snapshots and SQL immutable, and blocks unsupported duration/assistance completion without weakening historical guards. Internal [record prominence](record-prominence.md) remains display metadata only.
+
+## Phase 7.1 advanced fields
+
+[Advanced set logging](advanced-set-logging.md) adds an independent failure modifier and paired optional actual RPE/RIR. Saved reports preserve their scale; new rows never inherit actual effort/failure. The existing queue, revision, mutation, expiry, draft and navigation contract remains. Unrated ordinary logging stays a three-field flow, and effort never changes PR eligibility.

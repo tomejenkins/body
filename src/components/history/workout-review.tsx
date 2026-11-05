@@ -1,3 +1,4 @@
+import { effortSummary } from "@/features/sets/effort";
 import {
   qualifiedDuration,
   closureExplanation,
@@ -94,6 +95,7 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
                     <span>
                       {s.set_type === "warm_up" ? "W" : i + 1} ·{" "}
                       {setTypes[s.set_type]}
+                      {effortSummary(s) && ` · ${effortSummary(s)}`}
                     </span>
                     <strong>
                       {performanceLabel(
