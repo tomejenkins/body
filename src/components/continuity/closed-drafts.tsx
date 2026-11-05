@@ -23,6 +23,7 @@ export function ClosedDrafts({ workout }: { workout: Workout }) {
         string,
         {
           row: { workout_exercise_id: string };
+          exerciseName?: string;
           draft: {
             weight: string;
             reps: string;
@@ -36,12 +37,12 @@ export function ClosedDrafts({ workout }: { workout: Workout }) {
         const item = workout.items.find(
           (i) => i.id === e.row?.workout_exercise_id,
         );
-        return item &&
+        return (item || typeof e.exerciseName === "string") &&
           typeof e.draft?.weight === "string" &&
           typeof e.draft?.reps === "string"
           ? [
               {
-                name: item.name,
+                name: item?.name ?? e.exerciseName!.slice(0, 200),
                 weight: e.draft.weight,
                 reps: e.draft.reps,
                 unit: data.unit === "lb" ? "lb" : "kg",

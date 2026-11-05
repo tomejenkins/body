@@ -2061,3 +2061,135 @@ body:has(.active-workout-bar) main {
     font-size: 0.875rem;
   }
 }
+
+.movement-selection {
+  margin-block: 0.75rem 1.25rem;
+  min-width: 0;
+}
+.movement-carousel {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  padding: 0.25rem 0.1rem 0.6rem;
+}
+.movement-tile {
+  display: flex;
+  flex: 0 0 calc((100% - 1rem) / 2.7);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  background: var(--card);
+  color: var(--foreground);
+  text-align: left;
+  scroll-snap-align: start;
+  cursor: pointer;
+}
+.movement-tile[aria-pressed="true"] {
+  border: 2px solid var(--primary);
+  padding: calc(0.6rem - 1px);
+  background: var(--muted);
+}
+.movement-tile:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.movement-match {
+  font-size: 0.65rem;
+  color: var(--secondary);
+}
+.movement-tile.best-match .movement-match {
+  color: var(--primary);
+}
+.movement-exercise-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.movement-tile-context {
+  font-size: 0.6rem;
+  line-height: 1.4;
+  color: var(--secondary);
+}
+.movement-all summary {
+  min-height: 44px;
+  cursor: pointer;
+  padding-block: 0.6rem;
+  font-size: 0.85rem;
+}
+.movement-all form {
+  display: grid;
+  gap: 0.7rem;
+  margin-block: 1rem;
+}
+.movement-all label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+.movement-all label.check-label {
+  display: flex;
+}
+.movement-all input:not([type="checkbox"]),
+.movement-all select {
+  min-height: 44px;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--card);
+  color: var(--foreground);
+  max-width: 100%;
+  min-width: 0;
+}
+.movement-search-filters {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.movement-search-results {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.movement-continuation {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+}
+.movement-continuation button,
+.movement-search-pages button {
+  margin: 0.5rem 0.5rem 0.5rem 0;
+}
+@media (min-width: 700px) {
+  .movement-tile {
+    flex-basis: 150px;
+  }
+  .movement-search-results {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 450px) {
+  .movement-search-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.movement-tile .exercise-thumbnail {
+  width: 32px;
+  height: 32px;
+}
+.workout-items {
+  grid-template-columns: minmax(0, 1fr);
+}
+.workout-item {
+  min-width: 0;
+  width: 100%;
+}
+.movement-carousel {
+  min-width: 0;
+  max-width: 100%;
+}

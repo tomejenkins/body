@@ -25,6 +25,8 @@ export type LoggedSet = {
   is_automatic?: boolean;
   inputs_confirmed?: boolean;
   prescribed_reps_min?: number | null;
+  prescribed_reps_max?: number | null;
+  program_set_number?: number | null;
   prescribed_weight_kg?: number | null;
   suggested_from_date?: string | null;
   entered_weight?: number | null;

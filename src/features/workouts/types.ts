@@ -3,6 +3,7 @@ import type { VisualInput } from "@/features/exercises/visuals";
 export type WorkoutStatus = "in_progress" | "completed" | "abandoned";
 export type WorkoutItem = {
   id: string;
+  programMovementId?: string | null;
   exerciseId: string;
   name: string;
   position: number;
@@ -22,6 +23,8 @@ export type Workout = {
   startedAt: string;
   finishedAt: string | null;
   items: WorkoutItem[];
+  movements?: import("@/features/programs/execution-types").WorkoutMovement[];
+  movementFacets?: import("@/features/programs/execution-types").MovementFacets;
   userId: string;
   weightUnit: WeightUnit;
   preferredEffortScale?: import("@/features/sets/effort").EffortScale;

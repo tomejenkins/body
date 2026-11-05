@@ -33,3 +33,7 @@ History and Look Back display the saved scale/value and failure beside the retai
 The first forward migration adds validated nullable effort fields, the independent failure flag, the private preference, confirmation guard and compatible RPC. The second adds protected future prescription snapshots. Apply both reviewed migrations before deploying this app version. No hosted SQL, remote reset, migration push or production deployment is part of validation.
 
 Tests cover normal/unrated, RPE, RIR, failure alone/combined, drop/rest-pause, explicit clearing, invalid values, old call compatibility, smart defaults, exact load/unit preservation, activity timestamps, cross-owner denial, historical retention, stale revisions, browser refresh, retained failed drafts and input preference. Browser regression tests identify the Complete checkbox by its accessible name now that expanded options contain a separate failure checkbox.
+
+## Program workouts (Phase 7.3)
+
+Program targets now appear separately in the same logger. Prescribed RPE/RIR/failure are protected snapshots, not entered actual effort. Selecting or continuing with another exercise starts actual effort unset/false and uses only that exact exercise's matching set-type history for load suggestions. Program set identities retain correct remaining targets across out-of-order completion and substitutions. No effort or PR rule is inferred from match level. See [in-workout selection](in-workout-exercise-selection.md).

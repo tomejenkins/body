@@ -15,6 +15,7 @@ type SessionRow = {
 type ItemRow = {
   id: string;
   exercise_id: string;
+  program_movement_id: string | null;
   exercise_name_snapshot: string;
   position: number;
   status: string;
@@ -53,7 +54,7 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
     const response = await client
       .from("workout_exercises")
       .select(
-        "id,exercise_id,exercise_name_snapshot,position,status,prescribed_sets,logging_kind,exercises:exercises!workout_exercises_exercise_id_fkey(slug,owner_id,exercise_type,exercise_equipment(equipment_types(slug)),exercise_movement_patterns(is_primary,movement_patterns(slug)))",
+        "id,exercise_id,program_movement_id,exercise_name_snapshot,position,status,prescribed_sets,logging_kind,exercises:exercises!workout_exercises_exercise_id_fkey(slug,owner_id,exercise_type,exercise_equipment(equipment_types(slug)),exercise_movement_patterns(is_primary,movement_patterns(slug)))",
       )
       .eq("owner_id", user.id)
       .eq("workout_session_id", session.id)
@@ -112,6 +113,7 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
     finishedAt: session.finished_at,
     items: items.map((row) => ({
       id: row.id,
+      programMovementId: row.program_movement_id,
       exerciseId: row.exercise_id,
       name: row.exercise_name_snapshot,
       position: row.position,

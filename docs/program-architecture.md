@@ -76,3 +76,7 @@ The two forward migrations leave all previously applied SQL immutable. Local tes
 ## Phase 7.2 official library
 
 The [program library](program-library.md) adds a non-login platform principal, controlled rich metadata/media/tags and an explicit RLS-approved immutable official source boundary. It preserves existing owner entities and source/copy isolation. Cards use protected published-version projections; draft changes do not rewrite published content. User publishing, activation, scheduling, progression execution, cardio, billing and creator workflows remain deferred.
+
+## Phase 7.3 direct execution and in-workout choices
+
+See [in-workout exercise selection](in-workout-exercise-selection.md). Program workouts start directly in the logger with immutable unselected movement snapshots. Actual exercise entries bind only after selection; explicit continuations retain prior performance and exact remaining planned-set identities. Last choice is derived from eligible completed performance for that exact slot, never a global or browse-based preference. This adds the start/execution contract for future scheduled occurrences, not a full calendar/editor/activation manager. Match labels are a presentation/ranking layer; the existing authoring taxonomy and actual PR identity stay unchanged.

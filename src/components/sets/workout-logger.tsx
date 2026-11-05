@@ -1,4 +1,5 @@
 "use client";
+import { MovementSelection } from "@/components/programs/movement-selection";
 import {
   rpeValues,
   rirValues,
@@ -17,7 +18,7 @@ import {
 import { exerciseHref } from "@/features/workouts/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Workout } from "@/features/workouts/types";
+import type { Workout, WorkoutItem } from "@/features/workouts/types";
 import { describeStatus } from "@/features/workouts/lifecycle";
 import { isUuid } from "@/features/exercises/validation";
 import { mutateSet, readSetRows } from "@/features/sets/actions";
@@ -39,7 +40,15 @@ import {
   ItemControls,
 } from "@/components/workouts/workout-controls";
 import { Button } from "@/components/ui/button";
+type LoggerRow = {
+  item: WorkoutItem | null;
+  movement:
+    import("@/features/programs/execution-types").WorkoutMovement | null;
+  showSelection: boolean;
+};
 type Entry = {
+  exerciseName?: string;
+  exerciseId?: string;
   row: LoggedSet;
   draft: SetDraft;
   seq: number;
@@ -61,7 +70,15 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
       workout.items.flatMap((i) =>
         i.sets.map((row) => [
           row.id,
-          { row, draft: draftFor(row, unit), seq: 0, dirty: false, pending: 0 },
+          {
+            row,
+            draft: draftFor(row, unit),
+            seq: 0,
+            dirty: false,
+            pending: 0,
+            exerciseName: i.name,
+            exerciseId: i.exerciseId,
+          },
         ]),
       ),
     ),
@@ -108,6 +125,8 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
           if (!previous)
             next[row.id] = {
               row,
+              exerciseName: item.name,
+              exerciseId: item.exerciseId,
               draft: draftFor(row, unitRef.current),
               seq: 0,
               dirty: false,
@@ -152,16 +171,23 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
         for (const [id, entry] of Object.entries(parsed)) {
           if (
             !isUuid(id) ||
-            !itemsRef.current.some(
+            !isUuid(entry.row?.workout_exercise_id) ||
+            (!itemsRef.current.some(
               (i) => i.id === entry.row?.workout_exercise_id,
-            ) ||
+            ) &&
+              !(
+                typeof entry.exerciseName === "string" &&
+                entry.exerciseName.length <= 200 &&
+                typeof entry.exerciseId === "string" &&
+                isUuid(entry.exerciseId)
+              )) ||
             !entry.draft ||
             typeof entry.draft.weight !== "string" ||
             typeof entry.draft.reps !== "string"
           )
             continue;
           const current = next[id];
-          if (current || entry.localOnly)
+          if (current || entry.localOnly || entry.exerciseName)
             next[id] = {
               ...entry,
               row: entry.row,
@@ -374,6 +400,12 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
             if (!existing) {
               next[row.id] = {
                 row,
+                exerciseName: itemsRef.current.find(
+                  (i) => i.id === row.workout_exercise_id,
+                )?.name,
+                exerciseId: itemsRef.current.find(
+                  (i) => i.id === row.workout_exercise_id,
+                )?.exerciseId,
                 draft: draftFor(row, unitRef.current),
                 seq: 0,
                 dirty: false,
@@ -489,11 +521,25 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
     };
     update((old) => ({
       ...old,
-      [id]: { row, draft, seq: 0, dirty: true, pending: 0, localOnly: true },
+      [id]: {
+        row,
+        draft,
+        seq: 0,
+        dirty: true,
+        pending: 0,
+        localOnly: true,
+        exerciseName: itemsRef.current.find((i) => i.id === itemId)?.name,
+        exerciseId: itemsRef.current.find((i) => i.id === itemId)?.exerciseId,
+      },
     }));
     enqueue(id, "add");
     setAck(false);
   }
+  const orphanedDrafts = Object.entries(entries).filter(
+    ([, e]) =>
+      (e.dirty || e.pending || e.error || e.localOnly) &&
+      !workout.items.some((i) => i.id === e.row.workout_exercise_id),
+  );
   const itemSets = workout.items.map((item) => ({
     ...item,
     sets: Object.values(entries)
@@ -501,9 +547,43 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
       .map((e) => e.row),
   }));
   const summary = summarizeSets(itemSets);
-  const missing = itemSets.filter(
-    (i) => i.sets.length < (i.prescribedSets ?? 1),
-  ).length;
+  const missing =
+    itemSets.filter(
+      (i) => !i.programMovementId && i.sets.length < (i.prescribedSets ?? 1),
+    ).length +
+    (workout.movements?.filter(
+      (m) =>
+        itemSets
+          .filter((i) => i.programMovementId === m.id)
+          .reduce(
+            (n, i) => n + i.sets.filter((s) => s.set_type !== "warm_up").length,
+            0,
+          ) < m.workingSets,
+    ).length ?? 0);
+  const programRows = workout.movements?.length
+    ? workout.movements.flatMap<LoggerRow>((m) => {
+        const items = workout.items.filter((i) => i.programMovementId === m.id);
+        return items.length
+          ? items.map((item) => ({
+              item,
+              movement: m,
+              showSelection: item.id === m.currentItemId,
+            }))
+          : [{ item: null, movement: m, showSelection: true }];
+      })
+    : [];
+  const displayedRows: LoggerRow[] = programRows.length
+    ? [
+        ...programRows,
+        ...workout.items
+          .filter((i) => !i.programMovementId)
+          .map((item) => ({ item, movement: null, showSelection: false })),
+      ]
+    : workout.items.map((item) => ({
+        item,
+        movement: null,
+        showSelection: false,
+      }));
   const incomplete = summary.pending > 0 || missing > 0;
   return (
     <div
@@ -546,9 +626,53 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
         </section>
       )}
       <p className="logging-summary" role="status">
-        {workout.items.length} exercises · {summary.completed} completed sets ·{" "}
-        {summary.pending} pending sets
+        {workout.movements?.length || workout.items.length}{" "}
+        {workout.movements?.length ? "movements" : "exercises"} ·{" "}
+        {summary.completed} completed sets · {summary.pending} pending sets
       </p>
+      {orphanedDrafts.length > 0 && (
+        <section
+          className="draft-warning"
+          aria-label="Drafts for replaced selections"
+        >
+          <h2>Unapplied drafts for replaced selections</h2>
+          <p>
+            Another client removed or replaced the previous selection. These
+            device inputs are not recorded performance and will not be applied
+            to a different exercise. Review or copy them before clearing.
+          </p>
+          <ul>
+            {orphanedDrafts.map(([id, e]) => (
+              <li key={id}>
+                {e.exerciseName ?? "Previous selection"}:{" "}
+                {e.draft.weight || "blank"} {unit}, {e.draft.reps || "blank"}{" "}
+                reps{" "}
+                {effortSummary({
+                  effort_scale: e.draft.effortScale,
+                  effort_value: e.draft.effortValue
+                    ? Number(e.draft.effortValue)
+                    : null,
+                  performed_to_failure: e.draft.toFailure,
+                })}
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={!!e.pending}
+                  onClick={() =>
+                    update((old) => {
+                      const next = { ...old };
+                      delete next[id];
+                      return next;
+                    })
+                  }
+                >
+                  Clear this unapplied draft
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       {recovery && (
         <p className="auth-error" role="status">
           {recovery}
@@ -583,7 +707,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
           </Button>
         )}
       </div>
-      {!workout.items.length && (
+      {!workout.items.length && !workout.movements?.length && (
         <section className="empty-state">
           <h2>
             {active ? "No exercises selected yet." : "No exercises selected."}
@@ -594,7 +718,31 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
       <fieldset className="min-w-0 border-0 p-0">
         <legend className="sr-only">Workout sets</legend>
         <ol className="workout-items" aria-label="Selected exercises">
-          {workout.items.map((item, index) => {
+          {displayedRows.map(({ item, movement, showSelection }, index) => {
+            if (!item && movement)
+              return (
+                <li
+                  key={movement.id}
+                  className="workout-item program-movement"
+                  data-movement-id={movement.id}
+                >
+                  <h2>
+                    Movement {movement.position} · {movement.label}
+                  </h2>
+                  <p className="set-source">
+                    Choose an exercise to reveal your {movement.targetSets}{" "}
+                    planned sets. No performance has been recorded.
+                  </p>
+                  <MovementSelection
+                    movement={movement}
+                    disabled={!canEdit || dirty || pending}
+                    facets={
+                      workout.movementFacets ?? { patterns: [], muscles: [] }
+                    }
+                  />
+                </li>
+              );
+            if (!item) return null;
             const visible = Object.values(entries)
               .filter(
                 (e) =>
@@ -608,10 +756,36 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
               !item.bodyweightEligible ||
               visible.some((e) => e.draft.mode === "external");
             return (
-              <li key={item.id} className="workout-item">
+              <li
+                key={item.id}
+                className="workout-item"
+                data-movement-id={movement?.id}
+              >
+                {movement && (
+                  <>
+                    <p className="eyebrow">
+                      Movement {movement.position} · {movement.label}
+                      {!showSelection ? " · Earlier exercise" : ""}
+                    </p>
+                    {showSelection && (
+                      <MovementSelection
+                        movement={movement}
+                        disabled={!canEdit || dirty || pending}
+                        facets={
+                          workout.movementFacets ?? {
+                            patterns: [],
+                            muscles: [],
+                          }
+                        }
+                      />
+                    )}
+                  </>
+                )}
                 <div className="workout-item-heading">
                   <ExerciseThumbnail visual={item.visual} />
-                  <span className="workout-position">{index + 1}</span>
+                  <span className="workout-position">
+                    {movement?.position ?? index + 1}
+                  </span>
                   <h2>
                     <Link
                       href={exerciseHref(
@@ -626,7 +800,10 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                 </div>
                 {item.sets.some((s) => s.suggested_from_date) && (
                   <p className="set-source">
-                    Defaults from previous workout ·{" "}
+                    {item.programMovementId
+                      ? "Previous performance · Planned reps from program"
+                      : "Defaults from previous workout"}{" "}
+                    ·{" "}
                     <LocalTime
                       value={
                         item.sets.find((s) => s.suggested_from_date)
@@ -679,6 +856,23 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                     className={`logged-set ${entry.draft.completed ? "is-complete" : ""}`}
                     data-set-id={entry.row.id}
                   >
+                    {item.programMovementId &&
+                      entry.row.prescribed_reps_min != null && (
+                        <p className="set-source">
+                          Target{" "}
+                          {entry.row.prescribed_reps_min ===
+                          entry.row.prescribed_reps_max
+                            ? entry.row.prescribed_reps_min
+                            : `${entry.row.prescribed_reps_min}–${entry.row.prescribed_reps_max}`}{" "}
+                          reps
+                          {entry.row.prescribed_effort_scale &&
+                            ` · Target ${entry.row.prescribed_effort_scale.toUpperCase()} ${entry.row.prescribed_effort_value}`}
+                          {entry.row.prescribed_to_failure
+                            ? " · Optional To Failure intent"
+                            : ""}
+                          . Actual effort stays optional.
+                        </p>
+                      )}
                     <div className={`set-grid ${showLoad ? "" : "reps-first"}`}>
                       <span className="set-number">
                         {entry.draft.type === "warm_up" ? "W" : i + 1}
@@ -1096,7 +1290,7 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                     Add set
                   </Button>
                 )}
-                {active && (
+                {active && !movement && (
                   <ItemControls
                     sessionId={workout.id}
                     item={{
@@ -1138,7 +1332,8 @@ export function WorkoutLogger({ workout }: { workout: Workout }) {
                 onChange={(e) => setAck(e.target.checked)}
               />
               Finish without completing all sets ({summary.pending} pending;{" "}
-              {missing} exercises missing sets)
+              {missing} {workout.movements?.length ? "movements" : "exercises"}{" "}
+              missing sets)
             </label>
           )}
           <div className="workout-ending-actions">

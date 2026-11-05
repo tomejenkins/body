@@ -159,6 +159,10 @@ See the [Phase 7.1 validation and release checklist](docs/phase-7-1-validation.m
 
 ## Phase 7.2 original program library
 
-Programs now offers twelve original Body plans with server-side combined search/filters, pagination, safe original covers and read-only immutable workout breakdowns. Run `npm run programs:check` for seed source/migration consistency. Following/activation remains Phase 7.3. Read [program library](docs/program-library.md) for the catalog, platform ownership, publication gates, rendering safety, seed replay and release prerequisites. Apply the two reviewed Phase 7.2 migrations in order before the application rollout; local validation does not apply hosted SQL.
+Programs now offers twelve original Body plans with server-side combined search/filters, pagination, safe original covers and read-only immutable workout breakdowns. Run `npm run programs:check` for seed source/migration consistency. Direct workout execution is described below; calendar scheduling and activation management remain deferred. Read [program library](docs/program-library.md) for the catalog, platform ownership, publication gates, rendering safety, seed replay and release prerequisites. Apply the two reviewed Phase 7.2 migrations in order before the application rollout; local validation does not apply hosted SQL.
 
 See [Phase 7.2 validation and release](docs/phase-7-2-validation.md) for actual test counts, migration order and manual checks.
+
+## Phase 7.3 in-workout exercise selection
+
+Program detail pages now start workouts directly in the active logger. Each movement offers a compact carousel: Program Pick, qualifying slot-specific Last Choice, then deterministic match-ranked alternatives. Four contextual compatibility labels and inline See All search retain broader choices. Selection persists across clients; explicit substitutions preserve logged exercise identities and remaining prescriptions. Read [in-workout selection](docs/in-workout-exercise-selection.md) and [validation results](docs/phase-7-3-validation.md). Calendar scheduling and the full program editor are separate scope. Apply the single reviewed Phase 7.3 forward migration before app rollout; no hosted SQL is run by local validation.

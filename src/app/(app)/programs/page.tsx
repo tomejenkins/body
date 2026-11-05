@@ -97,7 +97,7 @@ export default async function Page({
                   {goalLabel(p.objective)} · {experienceLabel(p.experience)}
                 </p>
                 <p className="program-meta">
-                  {frequencyLabel(p)} · {p.cycleLength}-position rotation
+                  {frequencyLabel(p)} · Flexible rotation
                 </p>
                 <div className="program-tags">
                   {p.tags
@@ -137,8 +137,8 @@ export default async function Page({
         )}
       </nav>
       <p className="muted">
-        Program following, customization and scheduling arrive in the next
-        phase. Browse freely; your current workout stays unchanged.
+        Start a program workout from its details, then choose exercises as you
+        train. Your current workout stays unchanged while browsing.
       </p>
     </div>
   );

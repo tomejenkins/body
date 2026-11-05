@@ -152,6 +152,7 @@ export async function loadOfficialProgram(id: string) {
     throw Error("Program exercise references could not be loaded.");
   return {
     definition,
+    versionId: root.data.published_version_id as string,
     version: version.data.version as number,
     publishedAt: root.data.first_published_at as string,
     featured: root.data.featured as boolean,
