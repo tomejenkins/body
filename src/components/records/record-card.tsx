@@ -1,3 +1,4 @@
+import { LocalTime } from "@/components/history/local-time";
 import Link from "next/link";
 import {
   formattedMetric,
@@ -24,7 +25,27 @@ export function RecordCard({
         {metrics.map((m) => (
           <div key={`${m.category}:${m.metric}:${m.load_key}`}>
             <dt>{metricLabel(m)}</dt>
-            <dd>{formattedMetric(m, unit)}</dd>
+            <dd>
+              {formattedMetric(m, unit)}
+              <small>
+                <LocalTime value={m.performed_at} />
+              </small>
+              <Link href={`/history/${m.session_id}`}>
+                View record workout →
+              </Link>
+              {m.reps !== null &&
+                m.metric !== "bodyweight_reps" &&
+                m.metric !== "reps_at_load" && (
+                  <small>
+                    {m.metric === "estimated_1rm" && m.weight_kg !== null
+                      ? `From ${formattedMetric({ ...m, metric: "heaviest", value: m.weight_kg }, unit)} × ${m.reps}`
+                      : `${m.reps} actual reps`}
+                    {m.metric === "estimated_1rm"
+                      ? " · Estimate, not an actual single"
+                      : ""}
+                  </small>
+                )}
+            </dd>
           </div>
         ))}
       </dl>

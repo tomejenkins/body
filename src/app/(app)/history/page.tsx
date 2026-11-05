@@ -24,7 +24,10 @@ export default async function Page({
       <div className="page-heading">
         <p className="eyebrow">YOUR TRAINING STORY</p>
         <h1>Workout history</h1>
-        <Link href="/history/records">Personal Records →</Link>
+        <div className="history-destinations">
+          <Link href="/history/records">Personal Records →</Link>
+          <Link href="/history/progress">Training progress →</Link>
+        </div>
         <p className="intro">Look back at the work you put in.</p>
       </div>
       <nav className="history-filters" aria-label="History filters">

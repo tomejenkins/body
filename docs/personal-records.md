@@ -47,3 +47,7 @@ Local pgTAP tests cover exact 1/3/5/8, absent records, the heavier-five/actual-t
 Apply the two forward Phase 6.2 migrations in timestamp order only through the reviewed project migration workflow before deploying app code that calls these RPCs. No hosted migration, SQL, history repair or production deployment is part of validation. Phase 6.3 charts, programs, timers, assistance/time tracking and offline sync remain out of scope.
 
 Set completion timestamps are also server-assigned by the logging trigger. Existing narrow invoker column grants are retained, but submitted completion times are ignored: first completion uses database time, completed corrections keep the original event time, and pending sets clear it. Privileged historical imports remain distinct from ordinary authenticated writes.
+
+## Phase 6.3 refinement
+
+User-facing exact-rep names are now Best Single, Best Triple and Best Five-Rep Set, without claiming maximal effort. Exact actual_rm keys and values remain unchanged. [Intelligent recognition](intelligent-pr-recognition.md) separates historical dominance suppression from performance truth and adds deterministic category diversity. Record rows show source date/workout and actual rep context; estimate rows identify their source set. [Progress analytics](progress-analytics.md) reuses the shared metric source for bounded date-filtered charts, never chart-sampled personal bests.

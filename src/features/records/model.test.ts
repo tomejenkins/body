@@ -59,7 +59,7 @@ const metric: RecordMetric = {
   entered_unit: "lb",
 };
 it("labels actual RM, heaviest and estimate distinctly and retains exact entered units", () => {
-  expect(metricLabel(metric)).toBe("Actual 5RM");
+  expect(metricLabel(metric)).toBe("Best Five-Rep Set");
   expect(formattedMetric(metric, "lb")).toBe("235 lb");
   expect(metricLabel({ ...metric, metric: "heaviest" })).toBe("Heaviest Lift");
   expect(metricLabel({ ...metric, metric: "estimated_1rm" })).toBe(

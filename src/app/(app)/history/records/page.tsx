@@ -15,6 +15,7 @@ export default async function Page({
     <>
       <div className="page-heading">
         <Link href="/history">← History</Link>
+        <Link href="/history/progress">Training progress →</Link>
         <p className="eyebrow">YOUR PERSONAL BESTS</p>
         <h1>Personal Records</h1>
         <p className="intro">
