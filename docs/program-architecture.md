@@ -84,3 +84,7 @@ See [in-workout exercise selection](in-workout-exercise-selection.md). Program w
 ## Phase 7.4 execution of progression rules
 
 [Program progression](program-progression.md) now evaluates immutable typed rules against eligible exact-exercise actual history and binds future sessions to existing versioned assignments. Rotation summaries are derived from saved performances, with explicit rest, partial and abandoned semantics. No calendar deadlines, second workout engine or writable derived recommendation store is introduced. See the linked document for formulas, conservative bounds, history windows, correction behavior and release requirements.
+
+## Phase 7.5A adaptive scheduling
+
+[Adaptive program scheduling](adaptive-program-scheduling.md) extends the same assignments, immutable versions and session snapshots with explicit local-date/timezone configuration and a shared server cursor/calendar. It introduces no second execution/history engine or community functionality. Legacy calendars are initialized explicitly; full/partial and out-of-order identities remain tied to actual saved evidence.

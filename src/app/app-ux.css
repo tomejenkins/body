@@ -1333,3 +1333,145 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
   min-height: 44px;
   align-content: center;
 }
+.program-calendar {
+  margin: 16px 0;
+  padding-block: 12px;
+  border-block: 1px solid var(--border);
+}
+.calendar-heading {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.calendar-heading h2 {
+  font-size: 20px;
+  margin: 0;
+}
+.calendar-heading > span,
+.schedule-recommendation {
+  font-size: 14px;
+}
+.program-calendar nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  margin-block: 8px;
+  flex-wrap: wrap;
+}
+.program-calendar nav a,
+.program-calendar summary {
+  min-height: 44px;
+  align-content: center;
+}
+.schedule-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+}
+.schedule-week > li {
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.schedule-week h3 {
+  font-size: 13px;
+  margin: 0 0 6px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.calendar-today {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+.calendar-event {
+  margin-block: 6px;
+  overflow-wrap: anywhere;
+}
+.calendar-event p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.calendar-event > span,
+.calendar-event small {
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.calendar-event a {
+  display: inline-block;
+  min-height: 44px;
+  align-content: center;
+  font-size: 13px;
+}
+.calendar-overdue > span {
+  color: var(--secondary);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.calendar-completed > span {
+  color: var(--primary);
+}
+.calendar-empty {
+  font-size: 13px;
+  color: var(--secondary);
+  margin: 0;
+}
+.schedule-setup form {
+  display: grid;
+  gap: 10px;
+  max-width: 440px;
+}
+.schedule-setup label:not(.check-label) {
+  display: grid;
+  gap: 5px;
+}
+.schedule-setup input:not([type="checkbox"]) {
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 16px;
+}
+@media (max-width: 760px) {
+  .schedule-week {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .schedule-week > li {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 4px 8px;
+    padding: 8px;
+  }
+  .schedule-week h3 {
+    grid-row: 1;
+    align-content: start;
+    margin-top: 4px;
+  }
+  .calendar-event {
+    margin-block: 2px;
+  }
+}
+
+@media (max-width: 760px) {
+  .schedule-week > li {
+    min-height: 52px;
+  }
+  .schedule-week .calendar-event,
+  .schedule-week .calendar-empty {
+    grid-column: 2;
+  }
+}

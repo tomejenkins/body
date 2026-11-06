@@ -56,3 +56,7 @@ Apply the single reviewed migration through the approved process before app roll
 ## Validation and limits
 
 Executed results are recorded in `phase-7-4-validation.md`. Guidance is deliberately conservative and may be unavailable for sparse/stale history, unsupported modalities, very high rep targets or large configured steps. The coarse catalog does not encode every machine increment or biomechanical difference. No claim is made that a completed set was maximal effort. Physical iOS/Safari/device accessibility and hosted deployment still require separate verification.
+
+## Phase 7.5A configured calendars
+
+[Adaptive scheduling](adaptive-program-scheduling.md) now supplies the authoritative next position/rotation for explicitly configured assignments. Partials remain recorded training but hold the required position until a full retry; unscheduled legacy assignments keep the Phase 7.4 behavior above. Existing saved-performance evidence, actuals and progression suggestions remain unchanged.

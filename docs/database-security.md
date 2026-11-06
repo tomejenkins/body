@@ -207,3 +207,7 @@ The forward movement-intent migration adds a narrow immutable suggested_intent I
 ## Focused workout timer
 
 See [focused workout mode](active-workout-mode.md) for the additive manual-pause fields, narrow command grant, owner-scoped invoker RPC, effective-duration rules and retained inactivity protections. No existing migration is edited.
+
+## Adaptive scheduling
+
+See [adaptive program scheduling](adaptive-program-scheduling.md) for the new assignment configuration, validated preference/command grants, protected session due-date snapshot, shared invoker cursor and bounded read-only calendar. Existing owner RLS and immutable program/performance boundaries remain authoritative; no new user table or completion flag is added.
