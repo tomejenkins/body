@@ -6,6 +6,7 @@ import { metricLabel, formattedMetric } from "@/features/records/model";
 import { loadWorkoutContext } from "@/features/workouts/context";
 import {
   builderHref,
+  loggerHref,
   exerciseHref,
   contextFilters,
 } from "@/features/workouts/navigation";
@@ -36,10 +37,26 @@ export default async function Page({
     data = await loadExerciseHistory(id, query.cursor);
   if (!data) notFound();
   const records = await loadExerciseRecords(id, query.recordsCursor);
-  const context = await loadWorkoutContext(query.workoutId, id);
+  const context = await loadWorkoutContext(
+    query.workoutId,
+    id,
+    query.workoutItemId,
+  );
   const filters = contextFilters(query.builder);
-  const detail = exerciseHref(id, context?.id, filters);
-  const historyPath = exerciseHref(id, context?.id, filters, true);
+  const detail = exerciseHref(
+    id,
+    context?.id,
+    filters,
+    false,
+    context?.loggerItemId,
+  );
+  const historyPath = exerciseHref(
+    id,
+    context?.id,
+    filters,
+    true,
+    context?.loggerItemId,
+  );
   const { exercise, history, unit, hasMore } = data,
     last = history.entries.at(-1);
   return (
@@ -51,14 +68,18 @@ export default async function Page({
             <div className="library-section">
               <Link
                 href={
-                  context.status === "in_progress"
-                    ? builderHref(context.id, filters)
-                    : `/workout/${context.id}`
+                  context.loggerItemId
+                    ? loggerHref(context.id, context.loggerItemId)
+                    : context.status === "in_progress"
+                      ? builderHref(context.id, filters)
+                      : `/workout/${context.id}`
                 }
               >
-                {context.status === "in_progress"
-                  ? "Back to Workout Builder"
-                  : "Back to Workout"}
+                {context.loggerItemId
+                  ? "Back to Exercise Logger"
+                  : context.status === "in_progress"
+                    ? "Back to Workout Builder"
+                    : "Back to Workout"}
               </Link>
             </div>
           </>

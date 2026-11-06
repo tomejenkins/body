@@ -9,6 +9,8 @@ export type WorkoutItem = {
   position: number;
   visual: VisualInput;
   canRemove: boolean;
+  status?: "pending" | "partial" | "completed" | "skipped";
+  instructions?: string | null;
   bodyweightEligible: boolean;
   loggingKind?: import("@/features/history/model").LoggingKind;
   exerciseType: string;

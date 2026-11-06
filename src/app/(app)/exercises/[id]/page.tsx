@@ -1,6 +1,7 @@
 import { loadWorkoutContext } from "@/features/workouts/context";
 import {
   builderHref,
+  loggerHref,
   exerciseHref,
   contextFilters,
   type QueryValues,
@@ -27,7 +28,11 @@ export default async function Page({
   const { id } = await params;
   if (!isUuid(id)) notFound();
   const query = await searchParams;
-  const context = await loadWorkoutContext(query.workoutId, id);
+  const context = await loadWorkoutContext(
+    query.workoutId,
+    id,
+    query.workoutItemId,
+  );
   const filters = contextFilters(query.builder);
   const library = await loadLibrary(id);
   const exercise = library.exercises.find((e) => e.id === id);
@@ -43,14 +48,18 @@ export default async function Page({
         {context ? (
           <Link
             href={
-              context.status === "in_progress"
-                ? builderHref(context.id, filters)
-                : `/workout/${context.id}`
+              context.loggerItemId
+                ? loggerHref(context.id, context.loggerItemId)
+                : context.status === "in_progress"
+                  ? builderHref(context.id, filters)
+                  : `/workout/${context.id}`
             }
           >
-            {context.status === "in_progress"
-              ? "← Back to Workout Builder"
-              : "← Back to Workout"}
+            {context.loggerItemId
+              ? "← Back to Exercise Logger"
+              : context.status === "in_progress"
+                ? "← Back to Workout Builder"
+                : "← Back to Workout"}
           </Link>
         ) : (
           <Link href="/exercises">← Exercise library</Link>
@@ -96,7 +105,15 @@ export default async function Page({
         </p>
       )}
       <div className="library-section">
-        <Link href={exerciseHref(id, context?.id, filters, true)}>
+        <Link
+          href={exerciseHref(
+            id,
+            context?.id,
+            filters,
+            true,
+            context?.loggerItemId,
+          )}
+        >
           Look Back
         </Link>
       </div>

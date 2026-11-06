@@ -1,3 +1,4 @@
+import { openExerciseLogger } from "./workout-screen-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
@@ -213,6 +214,7 @@ test("server expiration preserves performance and rejected local drafts remain r
   const w = await start(a);
   await perform(a, w, 100, 3);
   await page.goto(`/workout/${w}`);
+  await openExerciseLogger(page);
   const first = page.locator(".logged-set").first();
   await first.getByRole("textbox", { name: /reps/ }).fill("9");
   age(a, w, 720);

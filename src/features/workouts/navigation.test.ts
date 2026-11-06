@@ -59,3 +59,16 @@ it("keeps normal library URLs free of workout context", () => {
     `/exercises/${exercise}/history`,
   );
 });
+
+it("uses validated exercise selection identities without accepting return URLs", async () => {
+  const { loggerHref } = await import("./navigation");
+  expect(loggerHref(id, exercise)).toBe(`/workout/${id}?exercise=${exercise}`);
+  expect(loggerHref(id, "https://evil.example")).toBe(`/workout/${id}`);
+  expect(loggerHref("invalid", exercise)).toBe("/workout");
+  const link = new URL(
+    exerciseHref(exercise, id, undefined, true, exercise),
+    "https://body.example",
+  );
+  expect(link.searchParams.get("workoutItemId")).toBe(exercise);
+  expect(link.pathname).toBe(`/exercises/${exercise}/history`);
+});

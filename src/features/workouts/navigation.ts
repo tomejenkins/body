@@ -69,11 +69,14 @@ export function exerciseHref(
   workoutId?: string,
   filters?: BuilderFilters,
   history = false,
+  workoutItemId?: string,
 ) {
   if (!isUuid(exerciseId)) return "/exercises";
   const path = `/exercises/${exerciseId}${history ? "/history" : ""}`;
   if (typeof workoutId !== "string" || !isUuid(workoutId)) return path;
   const q = new URLSearchParams({ workoutId });
+  if (workoutItemId && isUuid(workoutItemId))
+    q.set("workoutItemId", workoutItemId);
   if (filters) q.set("builder", builderFilterQuery(filters).toString());
   return `${path}?${q}`;
 }
@@ -81,4 +84,9 @@ export function contextFilters(value: unknown) {
   return typeof value === "string" && value.length <= 6000
     ? parseBuilderFilters(new URLSearchParams(value))
     : undefined;
+}
+
+export function loggerHref(workoutId: string, itemId?: string) {
+  if (!isUuid(workoutId)) return "/workout";
+  return `/workout/${workoutId}${itemId && isUuid(itemId) ? `?exercise=${itemId}` : ""}`;
 }

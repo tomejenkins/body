@@ -24,12 +24,17 @@ async function start(page: Page) {
     .getByRole("button", { name: "Start Workout 1", exact: true })
     .click();
   await expect(page).toHaveURL(/\/workout\/[0-9a-f-]+$/);
-  return page.url().split("/").pop()!;
+  await page
+    .locator(".workout-items > li")
+    .first()
+    .getByRole("button", { name: "Choose exercise", exact: true })
+    .click();
+  return new URL(page.url()).pathname.split("/").pop()!;
 }
 const firstMovement = (page: Page) =>
   page.locator(".workout-items > li").first();
 const carousel = (page: Page) =>
-  firstMovement(page).getByRole("group", {
+  page.getByRole("group", {
     name: "Exercises for Movement 1",
     exact: true,
   });
@@ -74,7 +79,7 @@ test("direct logger, four match levels, touch carousel, persistence and explicit
     });
     expect(widths.viewport / widths.tile).toBeGreaterThanOrEqual(2.5);
     expect(widths.viewport / widths.tile).toBeLessThanOrEqual(3.1);
-    const list = firstMovement(page).locator(".movement-carousel");
+    const list = page.locator(".movement-carousel");
     await list.scrollIntoViewIfNeeded();
     const box = await list.boundingBox();
     if (!box) throw Error("Carousel missing");
@@ -136,34 +141,27 @@ test("direct logger, four match levels, touch carousel, persistence and explicit
     .select("id,actual_weight_kg,actual_reps,workout_exercise_id")
     .eq("status", "completed");
   expect(before.data).toHaveLength(1);
-  await firstMovement(page)
+  await page
     .locator("summary")
     .filter({ hasText: "See All Exercises" })
     .click();
-  const search = firstMovement(page).getByRole("form", {
+  const search = page.getByRole("form", {
     name: "Search exercises for Movement 1",
   });
   await search.getByRole("searchbox").fill("standing cable chest fly");
   await search.getByRole("button", { name: "Search", exact: true }).click();
+  await expect(page.locator(".movement-search-results button")).toHaveCount(1);
+  await page.locator(".movement-search-results button").click();
   await expect(
-    firstMovement(page).locator(".movement-search-results button"),
-  ).toHaveCount(1);
-  await firstMovement(page).locator(".movement-search-results button").click();
-  await expect(
-    firstMovement(page).getByRole("group", {
+    page.getByRole("group", {
       name: "Confirm exercise continuation",
     }),
   ).toBeVisible();
-  await firstMovement(page)
+  await page
     .getByRole("button", { name: "Keep sets and continue", exact: true })
     .click();
-  await expect(page.locator(".workout-items > li")).toHaveCount(6);
-  const current = page.locator(".workout-items > li").filter({
-    has: page.getByRole("group", {
-      name: "Exercises for Movement 1",
-      exact: true,
-    }),
-  });
+  await expect(page.locator(".workout-items > li")).toHaveCount(1);
+  const current = page.locator(".workout-items > li").last();
   await expect(current.locator(".logged-set")).toHaveCount(2);
   await expect(
     current
@@ -198,7 +196,7 @@ test("direct logger, four match levels, touch carousel, persistence and explicit
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    await current.locator(".movement-selection").screenshot({
+    await page.locator(".movement-selection").screenshot({
       path: info.outputPath(`selection-${colorScheme}.png`),
       animations: "disabled",
       caret: "initial",
@@ -268,6 +266,11 @@ test("only completed actual performance updates exact-slot last choice; pick/las
   await other.addCookies(await page.context().cookies());
   const secondPage = await other.newPage();
   await secondPage.goto(`/workout/${second}`);
+  await secondPage
+    .locator(".workout-items > li")
+    .first()
+    .getByRole("button", { name: "Choose or change exercise", exact: true })
+    .click();
   await expect(
     carousel(secondPage).locator('[aria-pressed="true"]'),
   ).toHaveAttribute("data-exercise-id", chosen);
@@ -380,6 +383,10 @@ test("an offline draft remains reviewable if another client replaces its untouch
   await expect(recovery).toContainText("Dumbbell bench press");
   await expect(recovery).toContainText("55 lb");
   await expect(recovery).toContainText("not recorded performance");
+  await page
+    .getByRole("link", { name: "Open exercise logger", exact: true })
+    .first()
+    .click();
   await expect(
     firstMovement(page)
       .locator(".logged-set")

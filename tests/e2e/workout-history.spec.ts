@@ -1,3 +1,7 @@
+import {
+  openExerciseLogger,
+  backToWorkoutHome,
+} from "./workout-screen-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
 import catalog from "../../supabase/catalog/exercises.json" with { type: "json" };
@@ -62,6 +66,7 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
       ).error,
     ).toBeNull();
   await page.reload();
+  await openExerciseLogger(page, "Push-up");
   const push = page.locator(".workout-item").filter({
     has: page.getByRole("heading", { name: "Push-up", exact: true }),
   });
@@ -88,6 +93,8 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
   await second.getByRole("textbox", { name: /reps/ }).fill("8");
   await second.getByRole("checkbox", { name: / complete$/ }).check();
   await expect(second.locator(".set-save-state")).toHaveText(/^Saved/);
+  await backToWorkoutHome(page);
+  await openExerciseLogger(page, "Barbell bench press");
   const warm = bench.locator(".logged-set").first();
   await warm.getByRole("textbox", { name: /weight/ }).fill("50");
   await warm.getByRole("textbox", { name: /reps/ }).fill("10");
@@ -96,6 +103,7 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
   await warm.locator("summary").click();
   await warm.getByRole("combobox", { name: /type/ }).selectOption("warm_up");
   await expect(warm.locator(".set-save-state")).toHaveText(/^Saved/);
+  await backToWorkoutHome(page);
   await page
     .getByRole("checkbox", { name: /Finish without completing all sets/ })
     .check();
@@ -205,9 +213,12 @@ test("unsupported measurements are explicit and archived custom history stays pr
       p_exercise: exercise(slug),
     });
   await page.goto(`/workout/${w.data}`);
+  await openExerciseLogger(page, "Forearm plank");
   await expect(
     page.getByText(/Duration tracking is not available yet/),
   ).toBeVisible();
+  await backToWorkoutHome(page);
+  await openExerciseLogger(page, "Assisted pull-up machine");
   await expect(
     page.getByText(/Assistance tracking is not available yet/),
   ).toBeVisible();

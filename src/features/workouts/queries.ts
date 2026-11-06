@@ -18,7 +18,8 @@ type ItemRow = {
   program_movement_id: string | null;
   exercise_name_snapshot: string;
   position: number;
-  status: string;
+  status: "pending" | "partial" | "completed" | "skipped";
+  exercise_instructions_snapshot: string | null;
   prescribed_sets: number | null;
   logging_kind: import("@/features/history/model").LoggingKind;
   workout_sets: LoggedSet[];
@@ -54,7 +55,7 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
     const response = await client
       .from("workout_exercises")
       .select(
-        "id,exercise_id,program_movement_id,exercise_name_snapshot,position,status,prescribed_sets,logging_kind,exercises:exercises!workout_exercises_exercise_id_fkey(slug,owner_id,exercise_type,exercise_equipment(equipment_types(slug)),exercise_movement_patterns(is_primary,movement_patterns(slug)))",
+        "id,exercise_id,program_movement_id,exercise_name_snapshot,exercise_instructions_snapshot,position,status,prescribed_sets,logging_kind,exercises:exercises!workout_exercises_exercise_id_fkey(slug,owner_id,exercise_type,exercise_equipment(equipment_types(slug)),exercise_movement_patterns(is_primary,movement_patterns(slug)))",
       )
       .eq("owner_id", user.id)
       .eq("workout_session_id", session.id)
@@ -117,6 +118,8 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
       exerciseId: row.exercise_id,
       name: row.exercise_name_snapshot,
       position: row.position,
+      status: row.status,
+      instructions: row.exercise_instructions_snapshot,
       canRemove:
         row.status === "pending" &&
         row.workout_sets.every(
