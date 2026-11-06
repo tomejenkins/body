@@ -1,0 +1,476 @@
+[
+  {
+    "key": "flat_press",
+    "title": "Flat Chest Press",
+    "pattern": "horizontal_push",
+    "muscle": "pectorals",
+    "exerciseType": "compound",
+    "exercises": [
+      "barbell_bench_press",
+      "paused_barbell_bench_press",
+      "dumbbell_bench_press",
+      "neutral_grip_dumbbell_bench_press",
+      "single_arm_dumbbell_bench_press",
+      "seated_machine_chest_press",
+      "plate_loaded_chest_press",
+      "push_up",
+      "knee_push_up",
+      "smith_machine_bench_press"
+    ],
+    "patternId": "e33054bc-391e-503b-97c3-031ce9cbdb52",
+    "muscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2"
+  },
+  {
+    "key": "close_grip_press",
+    "title": "Close-Grip Press",
+    "pattern": "horizontal_push",
+    "muscle": "pectorals",
+    "exerciseType": "compound",
+    "exercises": ["close_grip_barbell_bench_press", "close_grip_push_up"],
+    "patternId": "e33054bc-391e-503b-97c3-031ce9cbdb52",
+    "muscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2"
+  },
+  {
+    "key": "floor_press",
+    "title": "Floor Press",
+    "pattern": "horizontal_push",
+    "muscle": "pectorals",
+    "exerciseType": "compound",
+    "exercises": ["dumbbell_floor_press"],
+    "patternId": "e33054bc-391e-503b-97c3-031ce9cbdb52",
+    "muscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2"
+  },
+  {
+    "key": "dip",
+    "title": "Dip",
+    "pattern": "horizontal_push",
+    "muscle": "pectorals",
+    "exerciseType": "compound",
+    "exercises": ["parallel_bar_dip", "assisted_dip_machine"],
+    "patternId": "e33054bc-391e-503b-97c3-031ce9cbdb52",
+    "muscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2"
+  },
+  {
+    "key": "incline_push_up",
+    "title": "Incline Push-Up",
+    "pattern": "horizontal_push",
+    "muscle": "pectorals",
+    "exerciseType": "compound",
+    "exercises": ["incline_push_up"],
+    "patternId": "e33054bc-391e-503b-97c3-031ce9cbdb52",
+    "muscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2"
+  },
+  {
+    "key": "incline_press",
+    "title": "Incline Chest Press",
+    "pattern": "incline_push",
+    "muscle": "pectorals",
+    "exerciseType": "compound",
+    "exercises": [],
+    "patternId": "3b4daf6a-9e6b-5a6b-a225-208a18c94c2a",
+    "muscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2"
+  },
+  {
+    "key": "chest_fly",
+    "title": "Chest Fly",
+    "pattern": "horizontal_adduction",
+    "muscle": "pectorals",
+    "exerciseType": "isolation",
+    "exercises": [
+      "dumbbell_chest_fly",
+      "standing_cable_chest_fly",
+      "pec_deck_fly"
+    ],
+    "patternId": "a8e4c7bf-2f2b-574f-b3d0-99511f5fdc0d",
+    "muscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2"
+  },
+  {
+    "key": "upper_chest_fly",
+    "title": "Incline / Low-to-High Fly",
+    "pattern": "horizontal_adduction",
+    "muscle": "pectorals",
+    "exerciseType": "isolation",
+    "exercises": ["incline_dumbbell_fly", "low_to_high_cable_chest_fly"],
+    "patternId": "a8e4c7bf-2f2b-574f-b3d0-99511f5fdc0d",
+    "muscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2"
+  },
+  {
+    "key": "lower_chest_fly",
+    "title": "High-to-Low Fly",
+    "pattern": "horizontal_adduction",
+    "muscle": "pectorals",
+    "exerciseType": "isolation",
+    "exercises": ["high_to_low_cable_chest_fly"],
+    "patternId": "a8e4c7bf-2f2b-574f-b3d0-99511f5fdc0d",
+    "muscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2"
+  },
+  {
+    "key": "vertical_pull",
+    "title": "Vertical Pull",
+    "pattern": "vertical_pull",
+    "muscle": "lats",
+    "exerciseType": "compound",
+    "exercises": [],
+    "patternId": "5a8208f7-2cd2-5c63-86e6-21b7edf8054e",
+    "muscleId": "95891341-c8cc-5a87-87b9-c90e1ea47cca"
+  },
+  {
+    "key": "lat_row",
+    "title": "Underhand / Elbow-to-Hip Row",
+    "pattern": "horizontal_pull",
+    "muscle": "lats",
+    "exerciseType": "compound",
+    "exercises": [
+      "underhand_barbell_row",
+      "single_arm_supported_dumbbell_row",
+      "single_arm_cable_row",
+      "single_arm_kettlebell_row"
+    ],
+    "patternId": "ca7204d7-f2ef-591e-bd6b-bd9370dea436",
+    "muscleId": "95891341-c8cc-5a87-87b9-c90e1ea47cca"
+  },
+  {
+    "key": "row",
+    "title": "Horizontal Row",
+    "pattern": "horizontal_pull",
+    "muscle": "upper_back",
+    "exerciseType": "compound",
+    "exercises": [
+      "bent_over_barbell_row",
+      "pendlay_row",
+      "chest_supported_dumbbell_row",
+      "bent_over_dumbbell_row",
+      "seated_cable_row",
+      "standing_cable_row",
+      "chest_supported_plate_loaded_row",
+      "seated_machine_row",
+      "suspension_row",
+      "seated_resistance_band_row"
+    ],
+    "patternId": "ca7204d7-f2ef-591e-bd6b-bd9370dea436",
+    "muscleId": "e6c545b3-3336-5cc8-98c8-c217815d0151"
+  },
+  {
+    "key": "upper_row",
+    "title": "Upper-Back Row / Face Pull",
+    "pattern": "horizontal_pull",
+    "muscle": "upper_back",
+    "exerciseType": "compound",
+    "exercises": ["wide_grip_cable_row", "cable_face_pull"],
+    "patternId": "ca7204d7-f2ef-591e-bd6b-bd9370dea436",
+    "muscleId": "e6c545b3-3336-5cc8-98c8-c217815d0151"
+  },
+  {
+    "key": "pullover",
+    "title": "Straight-Arm Pull",
+    "pattern": "shoulder_extension",
+    "muscle": "lats",
+    "exerciseType": "isolation",
+    "exercises": [],
+    "patternId": "82670cd7-9671-50e2-b6c9-05bac9901f4a",
+    "muscleId": "95891341-c8cc-5a87-87b9-c90e1ea47cca"
+  },
+  {
+    "key": "shrug",
+    "title": "Shrug",
+    "pattern": "shrug",
+    "muscle": "trapezius",
+    "exerciseType": "isolation",
+    "exercises": [],
+    "patternId": "1a1f291f-aade-5652-976d-1d4315a21260",
+    "muscleId": "0a149860-8f2d-5b14-ab35-3a6ee9199324"
+  },
+  {
+    "key": "squat",
+    "title": "Squat / Knee-Dominant",
+    "pattern": "squat",
+    "muscle": "quadriceps",
+    "exerciseType": "compound",
+    "exercises": [],
+    "patternId": "9a7628c3-7f1c-5500-9360-9660b817a5a7",
+    "muscleId": "7c821dfe-1426-5a8c-9d0d-3a40f0f8b49b"
+  },
+  {
+    "key": "hinge",
+    "title": "Hip Hinge",
+    "pattern": "hip_hinge",
+    "muscle": "hamstrings",
+    "exerciseType": "compound",
+    "exercises": [],
+    "patternId": "78b4c9b7-db6d-5fd2-a4c1-8c76bcb3eacd",
+    "muscleId": "33a851d2-c7c2-5be9-8f99-242f4c9cfe5b"
+  },
+  {
+    "key": "single_leg",
+    "title": "Single-Leg Movement",
+    "pattern": "lunge",
+    "muscle": "quadriceps",
+    "exerciseType": "compound",
+    "exercises": [],
+    "patternId": "b1137b81-67d9-5c92-a97f-4119a39e33c8",
+    "muscleId": "7c821dfe-1426-5a8c-9d0d-3a40f0f8b49b"
+  },
+  {
+    "key": "leg_extension",
+    "title": "Leg Extension",
+    "pattern": "knee_extension",
+    "muscle": "quadriceps",
+    "exerciseType": "isolation",
+    "exercises": [],
+    "patternId": "9587d8c8-b54c-5ec5-88d8-da5068bc93eb",
+    "muscleId": "7c821dfe-1426-5a8c-9d0d-3a40f0f8b49b"
+  },
+  {
+    "key": "leg_curl",
+    "title": "Leg Curl",
+    "pattern": "knee_flexion",
+    "muscle": "hamstrings",
+    "exerciseType": "isolation",
+    "exercises": [],
+    "patternId": "5d997f51-120e-5ad2-ad67-12f2f1e12b80",
+    "muscleId": "33a851d2-c7c2-5be9-8f99-242f4c9cfe5b"
+  },
+  {
+    "key": "hip_thrust",
+    "title": "Hip Thrust / Bridge",
+    "pattern": "hip_bridge",
+    "muscle": "glutes",
+    "exerciseType": "compound",
+    "exercises": [],
+    "patternId": "19566249-7c4b-508c-8ee9-3cebc9061805",
+    "muscleId": "7b0a4ff9-fc6d-55c4-af4e-42bc5934deb0"
+  },
+  {
+    "key": "overhead_press",
+    "title": "Overhead Press",
+    "pattern": "vertical_push",
+    "muscle": "anterior_deltoids",
+    "exerciseType": "compound",
+    "exercises": [],
+    "patternId": "7980cd3c-42eb-578a-959f-0f901fe6d9d1",
+    "muscleId": "23a9cdfd-0152-5be9-ae83-00a1adf0adee"
+  },
+  {
+    "key": "lateral_raise",
+    "title": "Lateral Raise",
+    "pattern": "shoulder_abduction",
+    "muscle": "lateral_deltoids",
+    "exerciseType": "isolation",
+    "exercises": [],
+    "patternId": "8dda920b-b977-5e12-8db5-3846ec087187",
+    "muscleId": "ebf23fc3-0efa-58db-8f81-524ea1b8f919"
+  },
+  {
+    "key": "rear_delt",
+    "title": "Rear-Delt Fly",
+    "pattern": "horizontal_abduction",
+    "muscle": "posterior_deltoids",
+    "exerciseType": "isolation",
+    "exercises": [],
+    "patternId": "25c70972-0c15-598d-96c9-9f7e96dd95e3",
+    "muscleId": "b0620f84-d8ba-516b-a6cc-4bdf5d87c284"
+  },
+  {
+    "key": "front_raise",
+    "title": "Front Raise",
+    "pattern": "shoulder_flexion",
+    "muscle": "anterior_deltoids",
+    "exerciseType": "isolation",
+    "exercises": [],
+    "patternId": "67a816ac-29dc-584d-945a-3b7b05535927",
+    "muscleId": "23a9cdfd-0152-5be9-ae83-00a1adf0adee"
+  },
+  {
+    "key": "calf_straight",
+    "title": "Straight-Knee Calf Raise",
+    "pattern": "calf_raise",
+    "muscle": "calves",
+    "exerciseType": "isolation",
+    "exercises": [
+      "standing_dumbbell_calf_raise",
+      "standing_calf_raise_machine",
+      "bodyweight_calf_raise",
+      "single_leg_bodyweight_calf_raise",
+      "smith_machine_calf_raise"
+    ],
+    "patternId": "c5e7b1e5-7239-526f-9eb5-46ea62209180",
+    "muscleId": "132e76e5-f37e-5b6a-a0e4-78dc5c534b6c"
+  },
+  {
+    "key": "calf_bent",
+    "title": "Bent-Knee Calf Raise",
+    "pattern": "calf_raise",
+    "muscle": "calves",
+    "exerciseType": "isolation",
+    "exercises": ["seated_calf_raise_machine"],
+    "patternId": "c5e7b1e5-7239-526f-9eb5-46ea62209180",
+    "muscleId": "132e76e5-f37e-5b6a-a0e4-78dc5c534b6c"
+  },
+  {
+    "key": "standard_curl",
+    "title": "Standard Curl",
+    "pattern": "elbow_flexion",
+    "muscle": "biceps",
+    "exerciseType": "isolation",
+    "exercises": [
+      "standing_dumbbell_curl",
+      "alternating_dumbbell_curl",
+      "straight_bar_cable_curl",
+      "standing_ez_bar_curl",
+      "resistance_band_curl"
+    ],
+    "patternId": "a60b2134-cf9c-5766-95e4-4592856168bd",
+    "muscleId": "f77b2bde-68f0-5811-ae62-79c68313161e"
+  },
+  {
+    "key": "neutral_curl",
+    "title": "Hammer / Neutral-Grip Curl",
+    "pattern": "elbow_flexion",
+    "muscle": "biceps",
+    "exerciseType": "isolation",
+    "exercises": [
+      "dumbbell_hammer_curl",
+      "cross_body_hammer_curl",
+      "rope_hammer_curl"
+    ],
+    "patternId": "a60b2134-cf9c-5766-95e4-4592856168bd",
+    "muscleId": "f77b2bde-68f0-5811-ae62-79c68313161e"
+  },
+  {
+    "key": "lengthened_curl",
+    "title": "Behind-Body Curl",
+    "pattern": "elbow_flexion",
+    "muscle": "biceps",
+    "exerciseType": "isolation",
+    "exercises": ["incline_dumbbell_curl", "single_arm_behind_body_cable_curl"],
+    "patternId": "a60b2134-cf9c-5766-95e4-4592856168bd",
+    "muscleId": "f77b2bde-68f0-5811-ae62-79c68313161e"
+  },
+  {
+    "key": "supported_curl",
+    "title": "Supported / High-Arm Curl",
+    "pattern": "elbow_flexion",
+    "muscle": "biceps",
+    "exerciseType": "isolation",
+    "exercises": [
+      "dumbbell_concentration_curl",
+      "spider_dumbbell_curl",
+      "high_cable_curl"
+    ],
+    "patternId": "a60b2134-cf9c-5766-95e4-4592856168bd",
+    "muscleId": "f77b2bde-68f0-5811-ae62-79c68313161e"
+  },
+  {
+    "key": "pushdown",
+    "title": "Triceps Pushdown",
+    "pattern": "elbow_extension",
+    "muscle": "triceps",
+    "exerciseType": "isolation",
+    "exercises": [
+      "rope_triceps_pushdown",
+      "straight_bar_triceps_pushdown",
+      "single_arm_cable_pushdown"
+    ],
+    "patternId": "9845acb8-7945-518b-90f7-f859e1535dcb",
+    "muscleId": "a25576a2-9233-5e0c-b180-c43b2f1b3ce4"
+  },
+  {
+    "key": "overhead_extension",
+    "title": "Overhead Triceps Extension",
+    "pattern": "elbow_extension",
+    "muscle": "triceps",
+    "exerciseType": "isolation",
+    "exercises": [
+      "standing_overhead_dumbbell_triceps_extension",
+      "overhead_cable_triceps_extension"
+    ],
+    "patternId": "9845acb8-7945-518b-90f7-f859e1535dcb",
+    "muscleId": "a25576a2-9233-5e0c-b180-c43b2f1b3ce4"
+  },
+  {
+    "key": "lying_extension",
+    "title": "Lying Triceps Extension",
+    "pattern": "elbow_extension",
+    "muscle": "triceps",
+    "exerciseType": "isolation",
+    "exercises": [
+      "lying_dumbbell_triceps_extension",
+      "lying_ez_bar_triceps_extension"
+    ],
+    "patternId": "9845acb8-7945-518b-90f7-f859e1535dcb",
+    "muscleId": "a25576a2-9233-5e0c-b180-c43b2f1b3ce4"
+  },
+  {
+    "key": "kickback",
+    "title": "Triceps Kickback / Cross-Body Extension",
+    "pattern": "elbow_extension",
+    "muscle": "triceps",
+    "exerciseType": "isolation",
+    "exercises": [
+      "dumbbell_triceps_kickback",
+      "cross_body_cable_triceps_extension"
+    ],
+    "patternId": "9845acb8-7945-518b-90f7-f859e1535dcb",
+    "muscleId": "a25576a2-9233-5e0c-b180-c43b2f1b3ce4"
+  },
+  {
+    "key": "crunch",
+    "title": "Trunk Curl",
+    "pattern": "spinal_flexion",
+    "muscle": "abdominals",
+    "exerciseType": "isolation",
+    "exercises": ["floor_crunch", "kneeling_cable_crunch"],
+    "patternId": "c1391397-e7dd-577d-a70e-3042d1816402",
+    "muscleId": "b48b4f27-955a-5147-b3b6-3a92667f8d00"
+  },
+  {
+    "key": "reverse_crunch",
+    "title": "Reverse Crunch",
+    "pattern": "spinal_flexion",
+    "muscle": "abdominals",
+    "exerciseType": "isolation",
+    "exercises": ["reverse_crunch"],
+    "patternId": "c1391397-e7dd-577d-a70e-3042d1816402",
+    "muscleId": "b48b4f27-955a-5147-b3b6-3a92667f8d00"
+  },
+  {
+    "key": "bicycle",
+    "title": "Bicycle Crunch",
+    "pattern": "rotation",
+    "muscle": "obliques",
+    "exerciseType": "compound",
+    "exercises": ["bicycle_crunch"],
+    "patternId": "5368df2b-bce2-5fee-bb2e-726ea58e7eac",
+    "muscleId": "2fe7b6cb-1d74-514c-8a4f-0e7957762a83"
+  },
+  {
+    "key": "wood_chop",
+    "title": "Diagonal Wood Chop",
+    "pattern": "rotation",
+    "muscle": "obliques",
+    "exerciseType": "compound",
+    "exercises": ["high_to_low_cable_wood_chop", "low_to_high_cable_wood_chop"],
+    "patternId": "5368df2b-bce2-5fee-bb2e-726ea58e7eac",
+    "muscleId": "2fe7b6cb-1d74-514c-8a4f-0e7957762a83"
+  },
+  {
+    "key": "reverse_curl",
+    "title": "Reverse-Grip Curl",
+    "pattern": "elbow_flexion",
+    "muscle": "biceps",
+    "exerciseType": "isolation",
+    "exercises": ["reverse_grip_ez_bar_curl"],
+    "patternId": "a60b2134-cf9c-5766-95e4-4592856168bd",
+    "muscleId": "f77b2bde-68f0-5811-ae62-79c68313161e"
+  },
+  {
+    "key": "rear_delt_pull",
+    "title": "Rear-Delt Face Pull",
+    "pattern": "horizontal_pull",
+    "muscle": "posterior_deltoids",
+    "exerciseType": "compound",
+    "exercises": ["cable_face_pull"],
+    "patternId": "ca7204d7-f2ef-591e-bd6b-bd9370dea436",
+    "muscleId": "b0620f84-d8ba-516b-a6cc-4bdf5d87c284"
+  }
+]

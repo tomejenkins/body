@@ -1,4 +1,5 @@
 import "server-only";
+import { targetIntentKey } from "@/features/exercises/movement-intents";
 import { allMovementOptions } from "@/features/workouts/suggested-shell";
 import { loadLibrary } from "@/features/exercises/queries";
 import { libraryNoneId } from "@/features/exercises/recommendations";
@@ -50,6 +51,7 @@ export async function loadWorkoutMovements(workout: Workout) {
     throw Error("Previous movement choices could not be loaded.");
   const movements: WorkoutMovement[] = rows.data.map((row, index) => {
     const slot = row.slot_snapshot as {
+      intent?: string;
       origin?: string;
       title?: string;
       exercise_id: string | null;
@@ -68,6 +70,9 @@ export async function loadWorkoutMovements(workout: Workout) {
         slot.required_exercise_type ?? creator?.exerciseType ?? null,
       referenceEquipmentIds: creator?.equipmentIds ?? slot.equipment ?? [],
     };
+    target.intentKey =
+      slot.intent ??
+      targetIntentKey(target.patternId, target.muscleId, creator);
     const current = workout.items
       .filter((i) => i.programMovementId === row.id)
       .sort((a, b) => b.position - a.position)[0];

@@ -62,13 +62,14 @@ test("direct logger, four match levels, touch carousel, persistence and explicit
     nodes.map((n) => n.getAttribute("data-exercise-id")),
   );
   expect(new Set(ids).size).toBe(ids.length);
-  for (const name of ["Close", "Similar", "Same Muscle"])
+  for (const name of ["Close"])
     await expect(
       carousel(page)
         .locator(".movement-match")
         .filter({ hasText: new RegExp(`^${name}$`) })
         .first(),
     ).toBeVisible();
+  await expect(tiles.first().locator(".movement-match")).toHaveCount(0);
   if (info.project.name === "mobile") {
     const widths = await carousel(page).evaluate((el) => {
       const tile = el.querySelector("button")!;
@@ -105,13 +106,19 @@ test("direct logger, four match levels, touch carousel, persistence and explicit
   }
   await carousel(page).getByRole("button").first().click();
   await expect(firstMovement(page).locator(".logged-set")).toHaveCount(3);
-  await carousel(page)
-    .getByRole("button")
-    .filter({
-      has: page.locator(".movement-match").filter({ hasText: /^Similar$/ }),
-    })
-    .first()
+  await page.locator(".movement-all summary").click();
+  const angleSearch = page.getByRole("form", {
+    name: "Search exercises for Movement 1",
+  });
+  await angleSearch.getByRole("searchbox").fill("incline dumbbell press");
+  await angleSearch
+    .getByRole("button", { name: "Search", exact: true })
     .click();
+  const incline = page.locator(
+    `.movement-search-results [data-exercise-id="${exercise("incline_dumbbell_press").id}"]`,
+  );
+  await expect(incline.locator(".movement-match")).toHaveText("Similar");
+  await incline.click();
   await expect(
     carousel(page).locator('[aria-pressed="true"] .movement-match'),
   ).toHaveText("Similar");
@@ -151,6 +158,9 @@ test("direct logger, four match levels, touch carousel, persistence and explicit
   await search.getByRole("searchbox").fill("standing cable chest fly");
   await search.getByRole("button", { name: "Search", exact: true }).click();
   await expect(page.locator(".movement-search-results button")).toHaveCount(1);
+  await expect(
+    page.locator(".movement-search-results .movement-match"),
+  ).toHaveText("Same Muscle");
   await page.locator(".movement-search-results button").click();
   await expect(
     page.getByRole("group", {
@@ -254,6 +264,11 @@ test("only completed actual performance updates exact-slot last choice; pick/las
   const tiles = carousel(page).getByRole("button");
   await expect(tiles.nth(0)).toContainText("Program Pick");
   await expect(tiles.nth(1)).toContainText("Last Used");
+  await expect(tiles.nth(1)).toHaveClass(/last-used/);
+  await page.locator(".movement-selection").screenshot({
+    path: test.info().outputPath("last-used.png"),
+    animations: "disabled",
+  });
   await expect(tiles.nth(1)).toHaveAttribute("data-exercise-id", chosen);
   await tiles.nth(1).click();
   await expect(

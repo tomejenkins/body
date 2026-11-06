@@ -1,10 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
-import catalog from "../../supabase/catalog/exercises.json" with { type: "json" };
 test.setTimeout(120000);
 test.use({ actionTimeout: 15000 });
-const muscle = (slug: string) =>
-  catalog.muscleGroups.find((m) => m.slug === slug)!.id;
 async function login(
   page: Page,
   a: Awaited<ReturnType<typeof verifiedAccount>>,
@@ -16,7 +13,7 @@ async function login(
   await expect(page).toHaveURL(/dashboard$/);
 }
 const cards = (page: Page) => page.locator(".workout-movement-card");
-test("two muscle selections create four unbound movements; logger, back, safe movement change and removal persist", async ({
+test("two focus selections create five unbound movements; logger, back, safe movement change and removal persist", async ({
   page,
 }, info) => {
   const a = await verifiedAccount();
@@ -25,21 +22,17 @@ test("two muscle selections create four unbound movements; logger, back, safe mo
     .getByRole("button", { name: "Record Workout", exact: true })
     .click();
   await expect(page).toHaveURL(/workout\/new$/);
-  await page
-    .getByLabel("Primary Muscle Group", { exact: true })
-    .selectOption(muscle("pectorals"));
-  const secondary = page.getByLabel(/Secondary Muscle Group/);
-  await expect(
-    secondary.locator(`option[value="${muscle("pectorals")}"]`),
-  ).toBeDisabled();
-  await secondary.selectOption(muscle("triceps"));
-  await expect(page.getByRole("status")).toContainText("4 suggested movements");
+  await page.getByLabel("Primary Focus", { exact: true }).selectOption("chest");
+  const secondary = page.getByLabel(/Secondary Focus/);
+  await expect(secondary.locator(`option[value="${"chest"}"]`)).toBeDisabled();
+  await secondary.selectOption("triceps");
+  await expect(page.getByRole("status")).toContainText("5 suggested movements");
   await page
     .getByRole("button", { name: "Start Workout", exact: true })
     .click();
   await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}$/);
   const session = new URL(page.url()).pathname.split("/").pop()!;
-  await expect(cards(page)).toHaveCount(4);
+  await expect(cards(page)).toHaveCount(5);
   await expect(page.locator(".logged-set")).toHaveCount(0);
   expect(
     (
@@ -95,7 +88,7 @@ test("two muscle selections create four unbound movements; logger, back, safe mo
   await form
     .getByRole("button", { name: "Update movement", exact: true })
     .click();
-  await expect(cards(page)).toHaveCount(5);
+  await expect(cards(page)).toHaveCount(6);
   expect(
     (
       await a.client
@@ -110,9 +103,9 @@ test("two muscle selections create four unbound movements; logger, back, safe mo
     .last()
     .getByRole("button", { name: "Update movement", exact: true })
     .click();
-  await expect(cards(page)).toHaveCount(4);
+  await expect(cards(page)).toHaveCount(5);
   await page.reload();
-  await expect(cards(page)).toHaveCount(4);
+  await expect(cards(page)).toHaveCount(5);
   const add = page.locator(".workout-toolbar .suggested-controls");
   await add.locator("summary").click();
   const addChoice = await add
@@ -121,7 +114,7 @@ test("two muscle selections create four unbound movements; logger, back, safe mo
     .getAttribute("value");
   await add.getByRole("combobox").selectOption(addChoice!);
   await add.getByRole("button", { name: "Add movement", exact: true }).click();
-  await expect(cards(page)).toHaveCount(5);
+  await expect(cards(page)).toHaveCount(6);
 });
 test("single muscle, limited catalog and one-tap blank starts remain lightweight", async ({
   page,
@@ -129,14 +122,12 @@ test("single muscle, limited catalog and one-tap blank starts remain lightweight
   const a = await verifiedAccount();
   await login(page, a);
   await page.goto("/workout/new");
-  await page
-    .getByLabel("Primary Muscle Group", { exact: true })
-    .selectOption(muscle("pectorals"));
-  await expect(page.getByRole("status")).toContainText("2 suggested movements");
+  await page.getByLabel("Primary Focus", { exact: true }).selectOption("chest");
+  await expect(page.getByRole("status")).toContainText("4 suggested movements");
   await page
     .getByRole("button", { name: "Start Workout", exact: true })
     .click();
-  await expect(cards(page)).toHaveCount(2);
+  await expect(cards(page)).toHaveCount(4);
   let session = new URL(page.url()).pathname.split("/").pop()!;
   await a.client.rpc("end_workout", {
     p_session: session,
@@ -144,16 +135,14 @@ test("single muscle, limited catalog and one-tap blank starts remain lightweight
   });
   await page.goto("/workout/new");
   await page
-    .getByLabel("Primary Muscle Group", { exact: true })
-    .selectOption(muscle("biceps"));
-  await expect(page.getByRole("status")).toContainText("1 suggested movement");
-  await expect(page.getByRole("status")).toContainText(
-    "Fewer supported movements",
-  );
+    .getByLabel("Primary Focus", { exact: true })
+    .selectOption("biceps");
+  await expect(page.getByRole("status")).toContainText("3 suggested movements");
+
   await page
     .getByRole("button", { name: "Start Workout", exact: true })
     .click();
-  await expect(cards(page)).toHaveCount(1);
+  await expect(cards(page)).toHaveCount(3);
   session = new URL(page.url()).pathname.split("/").pop()!;
   await a.client.rpc("end_workout", {
     p_session: session,
@@ -166,7 +155,75 @@ test("single muscle, limited catalog and one-tap blank starts remain lightweight
   await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}$/);
   await expect(cards(page)).toHaveCount(0);
   await expect(page.locator(".logged-set")).toHaveCount(0);
-  await expect(
-    page.getByLabel("Primary Muscle Group", { exact: true }),
-  ).toHaveCount(0);
+  await expect(page.getByLabel("Primary Focus", { exact: true })).toHaveCount(
+    0,
+  );
+});
+test("emphasis persists distinct intents inside a shared pattern and preserves unbound start", async ({
+  page,
+}, info) => {
+  const a = await verifiedAccount();
+  await login(page, a);
+  await page.goto("/workout/new");
+  await page.getByLabel("Primary Focus", { exact: true }).selectOption("legs");
+  await page.getByLabel(/Emphasis/).selectOption("calves");
+  const startButton = page.getByRole("button", {
+    name: "Start Workout",
+    exact: true,
+  });
+  await expect(startButton).toBeInViewport();
+  if (info.project.name === "mobile") {
+    const buttonBox = await startButton.boundingBox();
+    const navigationBox = await page
+      .getByRole("navigation", { name: "Main navigation", exact: true })
+      .boundingBox();
+    expect(buttonBox!.y + buttonBox!.height).toBeLessThanOrEqual(
+      navigationBox!.y,
+    );
+  }
+  for (const colorScheme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
+    await page.screenshot({
+      path: info.outputPath(`emphasis-setup-${colorScheme}.png`),
+      fullPage: true,
+      animations: "disabled",
+    });
+  }
+  await expect(page.getByRole("status")).toContainText("4 suggested movements");
+  await page
+    .getByRole("button", { name: "Start Workout", exact: true })
+    .click();
+  await expect(cards(page)).toHaveCount(4);
+  const session = new URL(page.url()).pathname.split("/").pop()!;
+  const saved = await a.client
+    .from("workout_movements")
+    .select("slot_snapshot")
+    .eq("workout_session_id", session)
+    .order("position");
+  expect(saved.error).toBeNull();
+  expect(saved.data!.map((m) => m.slot_snapshot.intent)).toEqual([
+    "calf_straight",
+    "calf_bent",
+    "squat",
+    "hinge",
+  ]);
+  expect(saved.data![0].slot_snapshot.movement_pattern_id).toBe(
+    saved.data![1].slot_snapshot.movement_pattern_id,
+  );
+  await expect(cards(page).first()).toContainText("Straight-Knee Calf Raise");
+  await expect(cards(page).nth(1)).toContainText("Bent-Knee Calf Raise");
+  await page.reload();
+  await expect(cards(page)).toHaveCount(4);
+  const actual = await a.client
+    .from("workout_exercises")
+    .select("id")
+    .eq("workout_session_id", session);
+  expect(actual.data).toEqual([]);
+  await cards(page)
+    .nth(1)
+    .getByRole("button", { name: "Choose exercise", exact: true })
+    .click();
+  const tiles = page.locator(".movement-carousel button");
+  await expect(tiles.first()).toContainText("Seated calf raise machine");
+  await expect(tiles.first().locator(".movement-match")).toHaveCount(0);
 });

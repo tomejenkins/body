@@ -62,3 +62,5 @@ These captures use synthetic local accounts and fixtures, not production users. 
 | Workout Home with selector, 390px light | ![Workout Home before](images/mobile-ux/workout-home-before.png) | ![Workout Home after](images/mobile-ux/workout-home-after.png) |
 | Focused logger, 390px light             | ![Logger before](images/mobile-ux/exercise-logger-before.png)    | ![Logger after](images/mobile-ux/exercise-logger-after.png)    |
 | Exercise library, 430px dark            | ![Library before](images/mobile-ux/exercise-library-before.png)  | ![Library after](images/mobile-ux/exercise-library-after.png)  |
+
+The movement-first correction replaces the initial canonical-muscle/two-pattern setup with broad primary/optional secondary focus and catalog-supported emphasis. See [current quick-workout recipes and persistence](movement-matching-smart-workouts.md). The two-screen workout architecture and manual ad-hoc editing remain intact.

@@ -16,9 +16,11 @@ export async function startSuggestedWorkout(
 ): Promise<SuggestionState> {
   const primary = form.get("primary"),
     secondary = form.get("secondary") ?? "",
+    emphasis = form.get("emphasis") ?? "balanced",
     request = form.get("request");
   let id: string;
   if (
+    typeof emphasis !== "string" ||
     typeof primary !== "string" ||
     typeof secondary !== "string" ||
     typeof request !== "string" ||
@@ -36,6 +38,7 @@ export async function startSuggestedWorkout(
       l.exercises,
       l.patterns,
       l.muscles,
+      emphasis,
     );
     if (!slots.length)
       return {
@@ -86,7 +89,7 @@ export async function editSuggestedMovement(
     let slot: SuggestedMovement | null = null;
     if (typeof choice === "string" && choice) {
       const l = await loadLibrary();
-      // All supported pairs may be deliberately added; initial shells use only two.
+      // Manual additions are independent of the automatic shell cap.
       const options = allMovementOptions(l);
       slot = options.find((s) => movementKey(s) === choice) ?? null;
       if (!slot) return { error: "Choose a supported movement." };

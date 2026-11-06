@@ -36,8 +36,8 @@ const target: MovementTarget = {
 };
 it("distinguishes flat press mechanics, equipment changes, incline and fly without equivalence claims", () => {
   expect(exerciseMatch(ex("paused_barbell_bench_press"), target)).toBe(4);
-  expect(exerciseMatch(ex("dumbbell_bench_press"), target)).toBe(3);
-  expect(exerciseMatch(ex("seated_machine_chest_press"), target)).toBe(3);
+  expect(exerciseMatch(ex("dumbbell_bench_press"), target)).toBe(4);
+  expect(exerciseMatch(ex("seated_machine_chest_press"), target)).toBe(4);
   expect(exerciseMatch(ex("incline_dumbbell_press"), target)).toBe(2);
   expect(exerciseMatch(ex("standing_cable_chest_fly"), target)).toBe(1);
   expect(
@@ -81,7 +81,7 @@ it("keeps pick then last choice regardless of match, deduplicates and computes p
   });
   expect(same[0].labels).toEqual(["Program Pick", "Last Used"]);
 });
-it("is deterministic, retains all four levels and filters additional equipment without guessing availability", () => {
+it("is deterministic, ranks movement first and filters equipment only when explicitly requested without guessing availability", () => {
   const input = {
     target,
     programPickId: ex("barbell_bench_press").id,
@@ -92,16 +92,10 @@ it("is deterministic, retains all four levels and filters additional equipment w
     b = rankMovementExercises([...exercises].reverse(), input);
   expect(a.map((c) => c.exercise.id)).toEqual(b.map((c) => c.exercise.id));
   expect(new Set(a.map((c) => c.level))).toEqual(new Set([1, 2, 3, 4]));
-  expect(
-    new Set(
-      rankMovementExercises(exercises, { ...input, limit: 12 }).map(
-        (c) => c.level,
-      ),
-    ),
-  ).toEqual(new Set([1, 2, 3, 4]));
   expect(a.every((c) => c.equipmentAvailable === null)).toBe(true);
   const restricted = rankMovementExercises(exercises, {
     ...input,
+    equipmentOnly: true,
     availableEquipmentIds: [
       id("equipmentTypes", "dumbbell"),
       id("equipmentTypes", "flat_bench"),
@@ -124,8 +118,49 @@ it("retains the current exercise with its independently calculated grade in sort
     selectedId: selected.id,
     limit: 6,
   });
-  expect(result.find((c) => c.exercise.id === selected.id)?.level).toBe(3);
+  expect(result.find((c) => c.exercise.id === selected.id)?.level).toBe(4);
   const levels = result.slice(1).map((c) => c.level!);
   expect(levels).toEqual([...levels].sort((a, b) => b - a));
   expect(result[0].labels).toContain("Program Pick");
+});
+
+it("uses floor ROM, triceps emphasis and pressing path rather than equipment identity", () => {
+  expect(exerciseMatch(ex("barbell_bench_press"), target)).toBe(4);
+  expect(exerciseMatch(ex("dumbbell_floor_press"), target)).toBe(3);
+  expect(exerciseMatch(ex("close_grip_barbell_bench_press"), target)).toBe(3);
+  expect(exerciseMatch(ex("parallel_bar_dip"), target)).toBe(2);
+  for (const equipmentIds of [
+    [],
+    ["unknown"],
+    ex("barbell_bench_press").equipmentIds,
+  ])
+    expect(
+      exerciseMatch({ ...ex("dumbbell_bench_press"), equipmentIds }, target),
+    ).toBe(4);
+});
+it("saved equipment preferences never hide or reorder movement alternatives", () => {
+  const input = { target, programPickId: null, lastChoiceId: null, limit: 30 };
+  const a = rankMovementExercises(exercises, input);
+  const b = rankMovementExercises(exercises, {
+    ...input,
+    availableEquipmentIds: [],
+  });
+  expect(b.map((c) => [c.exercise.id, c.level])).toEqual(
+    a.map((c) => [c.exercise.id, c.level]),
+  );
+  expect(b.some((c) => c.equipmentAvailable === false)).toBe(true);
+});
+it("honors explicit curl intent and never treats custom names as system mechanics", () => {
+  const curl = {
+    patternId: id("movementPatterns", "elbow_flexion"),
+    muscleId: id("muscleGroups", "biceps"),
+    exerciseType: "isolation" as const,
+    referenceEquipmentIds: [],
+    intentKey: "neutral_curl",
+  };
+  expect(exerciseMatch(ex("dumbbell_hammer_curl"), curl)).toBe(4);
+  expect(exerciseMatch(ex("standing_dumbbell_curl"), curl)).toBe(3);
+  expect(
+    exerciseMatch({ ...ex("dumbbell_hammer_curl"), ownerId: "private" }, curl),
+  ).toBe(3);
 });
