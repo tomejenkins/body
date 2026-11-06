@@ -1,4 +1,7 @@
-import { openExerciseLogger } from "./workout-screen-helpers";
+import {
+  openWorkoutEnding,
+  openExerciseLogger,
+} from "./workout-screen-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
@@ -150,9 +153,11 @@ test("persistent bar survives navigation/refresh, hides in logger and leaves aft
   await expect(
     page.getByRole("complementary", { name: "Active workout", exact: true }),
   ).toHaveCount(0);
+  await openWorkoutEnding(page);
   await page
     .getByRole("checkbox", { name: /Finish without completing all sets/ })
     .check();
+  await openWorkoutEnding(page);
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
@@ -280,6 +285,7 @@ test("exact-rep records, honest empty states and three diverse completed achieve
     name: /Finish without completing all sets/,
   });
   if (await incomplete.isVisible()) await incomplete.check();
+  await openWorkoutEnding(page);
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();

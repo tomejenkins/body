@@ -81,7 +81,7 @@ export function rankMovementExercises(
     exercise,
     level: exerciseMatch(exercise, input.target),
     labels: [
-      ...(exercise.id === input.programPickId ? ["Program Pick"] : []),
+      ...(exercise.id === input.programPickId ? ["Program Recommended"] : []),
       ...(exercise.id === input.lastChoiceId ? ["Last Used"] : []),
     ],
     equipmentAvailable:

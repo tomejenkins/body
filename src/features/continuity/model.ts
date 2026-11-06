@@ -1,5 +1,10 @@
+import { secondsExcludingPauses, type PauseInterval } from "./timer";
 import { durationLabel } from "@/features/history/model";
 export type Continuity = {
+  manual_paused_at?: string | null;
+  manual_pause_intervals?: PauseInterval[];
+  timer_revision?: number;
+  effective_elapsed_seconds?: number | null;
   id: string;
   status: "in_progress" | "completed" | "abandoned";
   state: "active" | "quiet" | "check_in" | "expired" | "closed";
@@ -27,24 +32,54 @@ export type DurationData = Pick<
   | "effective_finished_at"
   | "duration_kind"
   | "idle_intervals"
+  | "manual_pause_intervals"
 >;
 export function recoveredDuration(value: Continuity) {
   if (!value.activity_evidence_at || !value.last_activity_at) return null;
-  return durationLabel(value.started_at, value.last_activity_at);
+  const seconds = secondsExcludingPauses(
+    value.started_at,
+    value.last_activity_at,
+    [
+      ...(value.manual_pause_intervals ?? []),
+      ...(value.manual_paused_at &&
+      Date.parse(value.manual_paused_at) < Date.parse(value.last_activity_at)
+        ? [{ from: value.manual_paused_at, to: value.last_activity_at }]
+        : []),
+    ],
+  );
+  return seconds == null
+    ? null
+    : durationLabel(
+        "1970-01-01T00:00:00Z",
+        new Date(seconds * 1000).toISOString(),
+      );
 }
 export function qualifiedDuration(value: DurationData) {
   const end =
     value.duration_kind === "legacy"
       ? value.finished_at
       : value.effective_finished_at;
-  const duration = durationLabel(value.started_at, end);
+  const seconds = secondsExcludingPauses(
+    value.started_at,
+    end,
+    value.manual_pause_intervals,
+  );
+  const duration =
+    seconds == null
+      ? null
+      : durationLabel(
+          "1970-01-01T00:00:00Z",
+          new Date(seconds * 1000).toISOString(),
+        );
   if (!duration) return "Duration unavailable";
   const prefix =
     value.duration_kind === "estimated"
       ? "Estimated workout duration"
       : value.duration_kind === "legacy"
         ? "Elapsed session (legacy)"
-        : "Elapsed session";
+        : value.manual_pause_intervals?.length
+          ? "Effective session"
+          : "Elapsed session";
   return `${prefix}: ${duration}${value.idle_intervals.length ? " · Includes an inactive interval" : ""}`;
 }
 export function closureExplanation(reason: Continuity["closure_reason"]) {

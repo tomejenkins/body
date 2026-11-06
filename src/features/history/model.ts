@@ -25,6 +25,7 @@ export type HistorySummary = {
   idle_intervals?: import("@/features/continuity/model").Continuity["idle_intervals"];
   recognition_enabled?: boolean;
   achievement_count?: number;
+  manual_pause_intervals?: import("@/features/continuity/timer").PauseInterval[];
 };
 export type ExerciseHistory = {
   total_sessions: number;

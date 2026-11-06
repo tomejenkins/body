@@ -1,7 +1,8 @@
 "use client";
 import { SuggestedMovementControls } from "@/components/workouts/suggested-movement-controls";
 import { ExerciseNavigation } from "@/components/workouts/exercise-navigation";
-import { WorkoutDuration } from "@/components/workouts/workout-duration";
+import { newerTimerState } from "@/features/continuity/timer";
+import { WorkoutModeControls } from "@/components/workouts/workout-mode-controls";
 import { workoutProgress } from "@/features/workouts/progress";
 import { MovementSelection } from "@/components/programs/movement-selection";
 import {
@@ -20,7 +21,13 @@ import {
   type Continuity,
 } from "@/features/continuity/model";
 import { exerciseHref, loggerHref } from "@/features/workouts/navigation";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/navigation";
 import type { Workout, WorkoutItem } from "@/features/workouts/types";
 import { isUuid } from "@/features/exercises/validation";
@@ -134,6 +141,13 @@ export function WorkoutLogger({
   const [continuity, setContinuity] = useState<Continuity | null>(
     workout.continuity ?? null,
   );
+  useEffect(() => {
+    const next = workout.continuity;
+    if (next) setContinuity((old) => (newerTimerState(next, old) ? next : old));
+  }, [workout.continuity]);
+  const acceptContinuity = useCallback((next: Continuity) => {
+    setContinuity((old) => (newerTimerState(next, old) ? next : old));
+  }, []);
   const active = workout.status === "in_progress";
   const [checkInBusy, setCheckInBusy] = useState(false);
   const canEdit =
@@ -302,7 +316,7 @@ export function WorkoutLogger({
       if (document.visibilityState === "hidden" || dirtyRef.current) return;
       const result = await readWorkoutContinuity(workout.id);
       if (result.data) {
-        setContinuity(result.data);
+        acceptContinuity(result.data);
         if (result.data.status !== "in_progress" && !dirtyRef.current)
           router.refresh();
       }
@@ -313,7 +327,7 @@ export function WorkoutLogger({
       window.removeEventListener("focus", refresh);
       document.removeEventListener("visibilitychange", refresh);
     };
-  }, [workout.id, router]);
+  }, [workout.id, router, acceptContinuity]);
   function cacheDraftsNow() {
     try {
       const drafts = Object.fromEntries(
@@ -418,7 +432,7 @@ export function WorkoutLogger({
           if (!latest) return old;
           if (result.error) {
             void readWorkoutContinuity(workout.id).then((value) => {
-              if (value.data) setContinuity(value.data);
+              if (value.data) acceptContinuity(value.data);
             });
             next[id] = {
               ...latest,
@@ -434,7 +448,9 @@ export function WorkoutLogger({
             };
             return next;
           }
-          setContinuity(null);
+          void readWorkoutContinuity(workout.id).then((result) => {
+            if (result.data) acceptContinuity(result.data);
+          });
           for (const row of result.rows ?? []) {
             const existing = next[row.id];
             if (!existing) {
@@ -634,7 +650,7 @@ export function WorkoutLogger({
   const incomplete = summary.pending > 0 || missing > 0;
   return (
     <div
-      className={`workout-execution ${home ? "workout-home-screen" : "workout-exercise-screen"}`}
+      className={`workout-execution active-workout-mode ${home ? "workout-home-screen" : "workout-exercise-screen"}`}
       onSubmitCapture={(event) => {
         if (dirty) {
           event.preventDefault();
@@ -645,37 +661,11 @@ export function WorkoutLogger({
       }}
     >
       <div className="page-heading">
-        {home ? (
-          <Link href={workout.isProgram ? "/programs" : "/workout"}>
-            {workout.isProgram ? "← Programs" : "← Workout"}
-          </Link>
-        ) : (
-          <Link href={loggerHref(workout.id)}>← Back to Workout Home</Link>
-        )}
-
         <h1 tabIndex={-1}>
           {home
             ? friendlyWorkoutName(workout.name)
             : (focusedMovement?.label ?? focusedItem.name)}
         </h1>
-        <p className="eyebrow">
-          {home
-            ? "Workout Home"
-            : focusedMovement
-              ? `Movement ${focusedMovement.position}`
-              : "Exercise Logger"}
-        </p>
-        {home && (
-          <WorkoutDuration
-            startedAt={workout.startedAt}
-            serverNow={workout.continuity?.server_now}
-            inactive={
-              !!workout.continuity?.idle_intervals.length ||
-              workout.continuity?.state === "check_in"
-            }
-          />
-        )}
-
         {workout.finishedAt && (
           <p>
             Closed <LocalTime value={workout.finishedAt} />
@@ -686,7 +676,7 @@ export function WorkoutLogger({
         <WorkoutCheckIn
           workout={continuity}
           onBusy={setCheckInBusy}
-          onState={setContinuity}
+          onState={acceptContinuity}
         />
       )}
       {continuity && continuity.status !== "in_progress" && (
@@ -773,23 +763,6 @@ export function WorkoutLogger({
           </Button>
         </div>
       )}
-      {home && (
-        <div className="workout-toolbar">
-          {active && (
-            <Button asChild>
-              <Link href={`/workout/${workout.id}/select`}>Add exercises</Link>
-            </Button>
-          )}
-          {!workout.isProgram && workout.movementOptions && (
-            <SuggestedMovementControls
-              key={`add-${workout.movements?.map((m) => m.id).join(":") ?? "blank"}`}
-              session={workout.id}
-              options={workout.movementOptions}
-              disabled={!canEdit || dirty || pending}
-            />
-          )}
-        </div>
-      )}
       {!workout.items.length && !workout.movements?.length && (
         <section className="empty-state">
           <h2>
@@ -815,7 +788,7 @@ export function WorkoutLogger({
                 group.items.find((i) => i.id === movement?.currentItemId) ??
                 group.items.at(-1);
               const label = movement
-                ? `Movement ${movement.position} · ${movement.label}`
+                ? movement.label
                 : (current?.name ?? `Exercise ${index + 1}`);
               return (
                 <li
@@ -825,20 +798,18 @@ export function WorkoutLogger({
                 >
                   <div className="workout-home-heading">
                     <h2>
-                      {current && (
-                        <ExerciseThumbnail visual={current.visual} size={32} />
-                      )}
                       {movement ? (
                         <button
                           className="movement-row-toggle"
                           type="button"
                           aria-label={
                             expanded === group.id
-                              ? "Hide exercises"
+                              ? `Hide exercises · ${movement.label}`
                               : current
-                                ? "Choose or change exercise"
-                                : "Choose exercise"
+                                ? `Choose or change exercise · ${movement.label}`
+                                : `Choose exercise · ${movement.label}`
                           }
+                          aria-describedby={`movement-status-${group.id}`}
                           aria-expanded={expanded === group.id}
                           aria-controls={`selection-${group.id}`}
                           onClick={() =>
@@ -850,11 +821,16 @@ export function WorkoutLogger({
                             {expanded === group.id ? "−" : "+"}
                           </span>
                         </button>
+                      ) : current ? (
+                        <Link href={loggerHref(workout.id, current.id)}>
+                          {label}
+                        </Link>
                       ) : (
                         label
                       )}
                     </h2>
                     <span
+                      id={`movement-status-${group.id}`}
                       className="movement-status"
                       data-status={group.progress.status}
                     >
@@ -865,7 +841,7 @@ export function WorkoutLogger({
                             ? "◐"
                             : "○"}
                       </span>{" "}
-                      {group.progress.status}
+                      <span className="sr-only">{group.progress.status}</span>
                     </span>
                   </div>
                   {movement && current && (
@@ -877,21 +853,6 @@ export function WorkoutLogger({
                         {current.name} <span aria-hidden="true">→</span>
                       </Link>
                     </p>
-                  )}
-                  <p className="set-source">
-                    {group.progress.completed}
-                    {group.progress.required
-                      ? ` of ${group.progress.required}`
-                      : ""}{" "}
-                    completed working sets
-                  </p>
-                  {movement?.suggested && (
-                    <SuggestedMovementControls
-                      session={workout.id}
-                      movement={movement.id}
-                      options={workout.movementOptions ?? []}
-                      disabled={!canEdit || dirty || pending}
-                    />
                   )}
                   {movement ? (
                     <>
@@ -912,36 +873,18 @@ export function WorkoutLogger({
                           />
                         </div>
                       )}
-                      {group.items
-                        .filter((i) => i.id !== current?.id)
-                        .map((i) => (
-                          <p className="set-source" key={i.id}>
-                            <Link href={loggerHref(workout.id, i.id)}>
-                              Earlier exercise · {i.name}
-                            </Link>
-                          </p>
-                        ))}
+                      {expanded === group.id &&
+                        group.items
+                          .filter((i) => i.id !== current?.id)
+                          .map((i) => (
+                            <p className="set-source" key={i.id}>
+                              <Link href={loggerHref(workout.id, i.id)}>
+                                Earlier exercise · {i.name}
+                              </Link>
+                            </p>
+                          ))}
                     </>
-                  ) : (
-                    current && (
-                      <>
-                        <Button asChild>
-                          <Link href={loggerHref(workout.id, current.id)}>
-                            Log {current.name}
-                          </Link>
-                        </Button>
-                        <ItemControls
-                          sessionId={workout.id}
-                          item={{
-                            ...current,
-                            canRemove: current.canRemove && !dirty && !pending,
-                          }}
-                          first={index === 0}
-                          last={index === progress.length - 1}
-                        />
-                      </>
-                    )
-                  )}
+                  ) : null}
                 </li>
               );
             })}
@@ -992,7 +935,7 @@ export function WorkoutLogger({
           <fieldset className="min-w-0 border-0 p-0">
             <legend className="sr-only">Workout sets</legend>
             <ol className="workout-items" aria-label="Selected exercises">
-              {focusedRows.map(({ item, movement, showSelection }, index) => {
+              {focusedRows.map(({ item, movement }) => {
                 if (!item) return null;
                 const visible = Object.values(entries)
                   .filter(
@@ -1031,34 +974,7 @@ export function WorkoutLogger({
                     data-exercise-id={item.exerciseId}
                     data-movement-id={movement?.id}
                   >
-                    {movement && (
-                      <>
-                        <p className="eyebrow">
-                          Movement {movement.position} · {movement.label}
-                          {!showSelection ? " · Earlier exercise" : ""}
-                        </p>
-                      </>
-                    )}
-                    <div className="workout-item-heading">
-                      <ExerciseThumbnail visual={item.visual} />
-                      <span className="workout-position">
-                        {movement?.position ?? index + 1}
-                      </span>
-                      <h2>
-                        <Link
-                          href={exerciseHref(
-                            item.exerciseId,
-                            active ? workout.id : undefined,
-                            undefined,
-                            false,
-                            item.id,
-                          )}
-                        >
-                          {item.name}
-                        </Link>
-                      </h2>
-                      <span className="set-context">{item.exerciseType}</span>
-                    </div>
+                    <h2 className="sr-only">{item.name}</h2>
                     {unsupported && (
                       <p role="note">
                         {item.loggingKind === "duration"
@@ -1672,41 +1588,76 @@ export function WorkoutLogger({
                         </Link>
                       </p>
                     </div>
-                    {active && !movement && (
-                      <ItemControls
-                        sessionId={workout.id}
-                        item={{
-                          ...item,
-                          canRemove:
-                            item.canRemove &&
-                            Object.values(entries)
-                              .filter(
-                                (e) => e.row.workout_exercise_id === item.id,
-                              )
-                              .every(
-                                (e) =>
-                                  e.row.is_automatic &&
-                                  e.row.inputs_confirmed === false &&
-                                  !e.dirty &&
-                                  !e.pending,
-                              ),
-                        }}
-                        first={workout.items[0]?.id === item.id}
-                        last={workout.items.at(-1)?.id === item.id}
-                      />
-                    )}
                   </li>
                 );
               })}
             </ol>
           </fieldset>
-          <Button variant="outline" asChild>
-            <Link href={loggerHref(workout.id)}>Back to Workout Home</Link>
-          </Button>
         </section>
       )}
-      {home &&
-        (active ? (
+      {home && active && (
+        <details className="workout-management">
+          <summary>Manage Workout</summary>
+          <div className="workout-toolbar">
+            <Button asChild>
+              <Link href={`/workout/${workout.id}/select`}>Add exercises</Link>
+            </Button>
+            {!workout.isProgram && workout.movementOptions && (
+              <SuggestedMovementControls
+                session={workout.id}
+                options={workout.movementOptions}
+                disabled={!canEdit || dirty || pending}
+              />
+            )}
+          </div>
+          {progress.map((group) => (
+            <div className="manage-movement" key={group.id}>
+              {group.movement?.suggested && (
+                <>
+                  <h3>{group.movement.label}</h3>
+                  <SuggestedMovementControls
+                    session={workout.id}
+                    movement={group.movement.id}
+                    options={workout.movementOptions ?? []}
+                    disabled={!canEdit || dirty || pending}
+                  />
+                </>
+              )}
+              {group.items
+                .filter((item) => !item.programMovementId)
+                .map((item) => (
+                  <div key={item.id}>
+                    <h3>{item.name}</h3>
+                    <ItemControls
+                      sessionId={workout.id}
+                      item={{
+                        ...item,
+                        canRemove: item.canRemove && !dirty && !pending,
+                      }}
+                      first={workout.items[0]?.id === item.id}
+                      last={workout.items.at(-1)?.id === item.id}
+                    />
+                  </div>
+                ))}
+            </div>
+          ))}
+        </details>
+      )}
+      {active ? (
+        <WorkoutModeControls
+          session={workout.id}
+          value={continuity ?? workout.continuity ?? null}
+          onState={acceptContinuity}
+          home={home}
+          backHref={
+            home
+              ? workout.isProgram
+                ? "/programs"
+                : "/workout"
+              : loggerHref(workout.id)
+          }
+          disabled={!canEdit || pending}
+        >
           <section className="workout-ending">
             <h2 className="sr-only">Workout actions</h2>
             <p>
@@ -1745,16 +1696,17 @@ export function WorkoutLogger({
               </details>
             </div>
           </section>
-        ) : (
-          <section className="library-section">
-            <p>
-              {workout.completionStatus === "none"
-                ? "No completed sets were recorded. This status describes the workout session only."
-                : `Recorded completion: ${workout.completionStatus}. Saved performance is read-only here.`}
-            </p>
-            <Link href="/workout">Back to workouts</Link>
-          </section>
-        ))}
+        </WorkoutModeControls>
+      ) : (
+        <section className="library-section">
+          <p>
+            {workout.completionStatus === "none"
+              ? "No completed sets were recorded. This status describes the workout session only."
+              : `Recorded completion: ${workout.completionStatus}. Saved performance is read-only here.`}
+          </p>
+          <Link href="/workout">Back to workouts</Link>
+        </section>
+      )}
     </div>
   );
 }

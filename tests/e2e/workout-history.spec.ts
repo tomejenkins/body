@@ -1,4 +1,5 @@
 import {
+  openWorkoutEnding,
   openExerciseLogger,
   backToWorkoutHome,
 } from "./workout-screen-helpers";
@@ -105,9 +106,11 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
   await warm.getByRole("combobox", { name: /type/ }).selectOption("warm_up");
   await expect(warm.locator(".set-save-state")).toHaveText(/^Saved/);
   await backToWorkoutHome(page);
+  await openWorkoutEnding(page);
   await page
     .getByRole("checkbox", { name: /Finish without completing all sets/ })
     .check();
+  await openWorkoutEnding(page);
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();

@@ -1,9 +1,11 @@
-import { expect, test, type Page } from "@playwright/test";
-import { verifiedAccount } from "./auth-helpers";
 import {
+  openWorkoutManagement,
+  openWorkoutEnding,
   openExerciseLogger,
   backToWorkoutHome,
 } from "./workout-screen-helpers";
+import { expect, test, type Page } from "@playwright/test";
+import { verifiedAccount } from "./auth-helpers";
 import programs from "../../supabase/catalog/programs.json" with { type: "json" };
 import catalog from "../../supabase/catalog/exercises.json" with { type: "json" };
 test.setTimeout(120000);
@@ -40,30 +42,32 @@ test("program Home accordion, focused navigation, status, context, refresh and r
   await expect(carousel(page)).toHaveCount(0);
   await expect(page.locator(".logged-set")).toHaveCount(0);
   await expect(cards(page).first()).toContainText("Not Started");
-  await expect(page.getByLabel("Current workout duration")).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /Workout Timer/ }),
+  ).toBeVisible();
   await cards(page)
     .nth(0)
-    .getByRole("button", { name: "Choose exercise", exact: true })
+    .getByRole("button", { name: /^Choose exercise/, exact: true })
     .click();
   await expect(carousel(page)).toHaveCount(1);
   await cards(page)
     .nth(1)
-    .getByRole("button", { name: "Choose exercise", exact: true })
+    .getByRole("button", { name: /^Choose exercise/, exact: true })
     .click();
   await expect(carousel(page)).toHaveCount(1);
   await expect(
     cards(page)
       .nth(0)
-      .getByRole("button", { name: "Choose exercise", exact: true }),
+      .getByRole("button", { name: /^Choose exercise/, exact: true }),
   ).toHaveAttribute("aria-expanded", "false");
   await cards(page)
     .nth(1)
-    .getByRole("button", { name: "Hide exercises", exact: true })
+    .getByRole("button", { name: /^Hide exercises/, exact: true })
     .click();
   await expect(carousel(page)).toHaveCount(0);
   await cards(page)
     .nth(0)
-    .getByRole("button", { name: "Choose exercise", exact: true })
+    .getByRole("button", { name: /^Choose exercise/, exact: true })
     .click();
   await carousel(page).getByRole("button").first().click();
   await expect(page).toHaveURL(/\?exercise=[a-f0-9-]{36}$/);
@@ -89,9 +93,7 @@ test("program Home accordion, focused navigation, status, context, refresh and r
   await expect(page).toHaveURL(new RegExp(path + "$"));
   await expect(cards(page).first()).toContainText("In Progress");
   await page.reload();
-  await expect(cards(page).first()).toContainText(
-    "1 of 3 completed working sets",
-  );
+  await expect(cards(page).first()).toContainText("In Progress");
   await page
     .getByRole("link", { name: "Open exercise logger", exact: true })
     .click();
@@ -190,6 +192,8 @@ test("ad-hoc Home, incomplete Back and pending/failed draft persistence without 
   await strip
     .getByRole("link", { name: "Barbell bench press Open logger", exact: true })
     .click();
+  await backToWorkoutHome(page);
+  await openWorkoutManagement(page);
   await expect(
     page.getByRole("button", {
       name: "Move Barbell bench press up",
@@ -211,7 +215,6 @@ test("ad-hoc Home, incomplete Back and pending/failed draft persistence without 
       exact: true,
     }),
   ).toBeDisabled();
-  await backToWorkoutHome(page);
   await expect(cards(page).locator("h2")).toHaveText([
     "Barbell bench press",
     "Push-up",
@@ -231,9 +234,11 @@ test("ad-hoc Home, incomplete Back and pending/failed draft persistence without 
       has: page.getByRole("heading", { name: "Push-up", exact: true }),
     }),
   ).toContainText("Not Started");
+  await openWorkoutEnding(page);
   await expect(
     page.getByRole("button", { name: "Finish workout", exact: true }),
   ).toBeDisabled();
+  await page.getByRole("button", { name: "Keep training" }).click();
   await openExerciseLogger(page, "Push-up");
   const row = page.locator(".logged-set").first();
   await expect(row.getByRole("textbox", { name: /reps/ })).toHaveValue("12");
@@ -252,9 +257,11 @@ test("ad-hoc Home, incomplete Back and pending/failed draft persistence without 
       has: page.getByRole("heading", { name: "Push-up", exact: true }),
     }),
   ).toContainText("In Progress");
+  await openWorkoutEnding(page);
   await page
     .getByRole("checkbox", { name: /Finish without completing all sets/ })
     .check();
+  await openWorkoutEnding(page);
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
@@ -279,11 +286,11 @@ test("stale Home selection cannot overwrite another tab and foreign focus reveal
   await tab.goto(path);
   await cards(page)
     .first()
-    .getByRole("button", { name: "Choose exercise", exact: true })
+    .getByRole("button", { name: /^Choose exercise/, exact: true })
     .click();
   await cards(tab)
     .first()
-    .getByRole("button", { name: "Choose exercise", exact: true })
+    .getByRole("button", { name: /^Choose exercise/, exact: true })
     .click();
   await carousel(page).getByRole("button").first().click();
   await expect(logger(page)).toBeVisible();

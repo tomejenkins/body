@@ -97,3 +97,41 @@ it("hides provider failures and never reports missing data as resumed", async ()
   expect(result.error).toBeTruthy();
   expect(result.error).not.toContain("private provider detail");
 });
+it("validates pause payload and requires identity before requesting server timer changes", async () => {
+  const { setWorkoutPause } = await import("./actions");
+  expect((await setWorkoutPause("bad", true, 0, id)).error).toBeTruthy();
+  expect((await setWorkoutPause(id, true, -1, id)).error).toBeTruthy();
+  expect(mock.create).not.toHaveBeenCalled();
+  const rpc = vi.fn();
+  mock.create.mockResolvedValue({
+    auth: { getUser: vi.fn().mockResolvedValue({ data: { user: null } }) },
+    rpc,
+  });
+  expect((await setWorkoutPause(id, true, 0, id)).error).toBeTruthy();
+  expect(rpc).not.toHaveBeenCalled();
+});
+it("sends only pause intent, revision and retry identity; reports conflicts and closure honestly", async () => {
+  const { setWorkoutPause } = await import("./actions");
+  const rpc = vi
+    .fn()
+    .mockResolvedValueOnce({
+      data: { id, status: "in_progress", timer_revision: 1 },
+    })
+    .mockResolvedValueOnce({ error: { code: "40001" } })
+    .mockResolvedValueOnce({ data: { status: "abandoned", state: "expired" } });
+  mock.create.mockResolvedValue({
+    auth: {
+      getUser: vi
+        .fn()
+        .mockResolvedValue({ data: { user: { id: "verified" } } }),
+    },
+    rpc,
+  });
+  expect((await setWorkoutPause(id, true, 0, id)).data?.timer_revision).toBe(1);
+  expect(rpc.mock.calls[0]).toEqual([
+    "set_workout_pause",
+    { p_session: id, p_paused: true, p_revision: 0, p_request: id },
+  ]);
+  expect((await setWorkoutPause(id, false, 0, id)).conflict).toBe(true);
+  expect((await setWorkoutPause(id, false, 1, id)).error).toContain("closed");
+});

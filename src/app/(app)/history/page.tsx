@@ -70,6 +70,7 @@ export default async function Page({
                     effective_finished_at: w.effective_finished_at ?? null,
                     duration_kind: w.duration_kind ?? "legacy",
                     idle_intervals: w.idle_intervals ?? [],
+                    manual_pause_intervals: w.manual_pause_intervals,
                   })}
                 </p>
                 {w.closure_reason === "inactivity" && (

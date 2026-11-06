@@ -1,3 +1,4 @@
+import { openWorkoutEnding } from "./workout-screen-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 import { verifiedAccount } from "./auth-helpers";
@@ -110,6 +111,7 @@ test("historical dominance preserves exact records but suppresses redundant reco
     name: /Finish without completing all sets/,
   });
   if (await ack.isVisible()) await ack.check();
+  await openWorkoutEnding(page);
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();

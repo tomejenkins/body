@@ -99,3 +99,52 @@ export async function finishCheckIn(
     };
   }
 }
+
+export async function setWorkoutPause(
+  session: string,
+  paused: boolean,
+  revision: number,
+  request: string,
+): Promise<{ data: Continuity | null; error?: string; conflict?: boolean }> {
+  if (
+    !isUuid(session) ||
+    !isUuid(request) ||
+    typeof paused !== "boolean" ||
+    !Number.isSafeInteger(revision) ||
+    revision < 0
+  )
+    return { data: null, error: "Invalid timer command." };
+  try {
+    const client = await createClient();
+    const user = await client.auth.getUser();
+    if (user.error || !user.data.user)
+      return { data: null, error: "Sign in again." };
+    const result = await client.rpc("set_workout_pause", {
+      p_session: session,
+      p_paused: paused,
+      p_revision: revision,
+      p_request: request,
+    });
+    if (result.error)
+      return {
+        data: null,
+        conflict: result.error.code === "40001",
+        error:
+          result.error.code === "40001"
+            ? "Timer changed on another device. Review its current state."
+            : "Timer change could not be confirmed. Retry the same request.",
+      };
+    const data = result.data as Continuity | null;
+    if (!data || data.status !== "in_progress")
+      return {
+        data,
+        error: "This workout is closed. Saved work is preserved.",
+      };
+    return { data };
+  } catch {
+    return {
+      data: null,
+      error: "Timer change could not be confirmed. Retry when connected.",
+    };
+  }
+}
