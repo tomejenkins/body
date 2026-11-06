@@ -2193,3 +2193,63 @@ body:has(.active-workout-bar) main {
   min-width: 0;
   max-width: 100%;
 }
+
+/* Two intentional workout screens; navigation does not wait for animation. */
+.workout-screen {
+  animation: workout-screen-enter 180ms ease-out;
+}
+.workout-home-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.workout-home-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+}
+.movement-status {
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+.movement-status[data-status="Complete"] {
+  color: var(--success, var(--foreground));
+}
+.workout-movement-card > button,
+.workout-movement-card > a {
+  margin: 0.25rem 0.35rem 0.25rem 0;
+}
+.workout-movement-card .movement-selection {
+  margin-top: 0.75rem;
+}
+.exercise-logger-instructions {
+  margin: 0.75rem 0;
+}
+.exercise-logger-instructions[open] > .exercise-thumbnail {
+  margin-top: 0.75rem;
+}
+@keyframes workout-screen-enter {
+  from {
+    opacity: 0.6;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .workout-screen {
+    animation: none;
+  }
+}
+
+.movement-tile[aria-current="page"] {
+  border-color: var(--foreground);
+}

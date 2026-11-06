@@ -1,3 +1,7 @@
+import {
+  openExerciseLogger,
+  backToWorkoutHome,
+} from "./workout-screen-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
 import catalog from "../../supabase/catalog/exercises.json" with { type: "json" };
@@ -40,6 +44,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     .getByRole("button", { name: "Select exercise", exact: true })
     .click();
   await page.getByRole("link", { name: /^Done · 1 selected$/ }).click();
+  await openExerciseLogger(page);
   await expect(page.locator(".logged-set")).toHaveCount(3);
   await expect(
     page.getByRole("combobox", { name: "Weight unit", exact: true }),
@@ -136,6 +141,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   await page.getByLabel("Weight Units", { exact: true }).selectOption("kg");
   await expect(page.getByRole("status")).toContainText("Saved");
   await page.goto(path);
+  await openExerciseLogger(page);
   await expect(page.locator(".set-head")).toContainText("KG");
   const after = await account.client
     .from("workout_sets")
@@ -145,6 +151,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   expect(after.data).toEqual(before.data);
   await page.reload();
   await expect(page.locator(".set-head")).toContainText("KG");
+  await backToWorkoutHome(page);
   await page
     .getByRole("checkbox", { name: /Finish without completing all sets/ })
     .check();
@@ -179,6 +186,7 @@ test("bodyweight, visible save failure, navigation guard, retained edits and con
   await login(page, account);
   const path = `/workout/${session.data}`;
   await page.goto(path);
+  await openExerciseLogger(page);
   await expect(page.locator(".logged-set")).toHaveCount(3);
   await saved(page, 0);
   await expect(page.getByRole("textbox", { name: /weight/ })).toHaveCount(0);
@@ -232,13 +240,13 @@ test("bodyweight, visible save failure, navigation guard, retained edits and con
   );
   await expect(
     page.getByRole("button", { name: "Finish workout", exact: true }),
-  ).toBeDisabled();
+  ).toHaveCount(0);
   await page
     .getByRole("navigation")
     .getByRole("link", { name: "Profile", exact: true })
     .click();
   await expect(page.locator(".draft-warning")).toBeVisible();
-  await expect(page).toHaveURL(new RegExp(path + "$"));
+  await expect(page).toHaveURL(new RegExp(path + "\\?exercise="));
   await page.getByRole("button", { name: "Stay here", exact: true }).click();
   page.once("dialog", (dialog) => dialog.accept());
   await page.reload();

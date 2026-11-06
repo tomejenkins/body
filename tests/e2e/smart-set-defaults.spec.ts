@@ -1,3 +1,7 @@
+import {
+  openExerciseLogger,
+  backToWorkoutHome,
+} from "./workout-screen-helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
 import catalog from "../../supabase/catalog/exercises.json" with { type: "json" };
@@ -27,6 +31,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
   });
   expect(selection.error).toBeNull();
   await page.goto(`/workout/${first.data}`);
+  await openExerciseLogger(page);
   await expect(page.locator(".logged-set")).toHaveCount(3);
   await expect(page.locator(".set-head")).toContainText("LBS");
   await expect(
@@ -76,6 +81,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
     .getByRole("combobox", { name: /type/ })
     .selectOption("rest_pause");
   await saved(page, 3);
+  await backToWorkoutHome(page);
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
@@ -178,6 +184,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
   ).toEqual([]);
   const path = `/workout/${next.data}`;
   await page.goto(path);
+  await openExerciseLogger(page);
   await expect(page.locator(".logged-set")).toHaveCount(4);
   for (const [i, weight] of ["50", "135", "52.5", "52.125"].entries()) {
     await expect(
@@ -208,6 +215,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
       unit,
     );
     await page.goto(path);
+    await openExerciseLogger(page);
     await expect(page.locator(".set-head")).toContainText(
       unit === "lb" ? "LBS" : "KG",
     );

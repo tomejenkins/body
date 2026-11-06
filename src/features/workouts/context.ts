@@ -7,10 +7,12 @@ export type WorkoutContext = {
   id: string;
   status: WorkoutStatus;
   alreadyAdded: boolean;
+  loggerItemId?: string;
 };
 export async function loadWorkoutContext(
   workoutId: unknown,
   exerciseId: string,
+  workoutItemId?: unknown,
 ): Promise<WorkoutContext | null> {
   if (
     typeof workoutId !== "string" ||
@@ -36,16 +38,27 @@ export async function loadWorkoutContext(
   if (!workout.data) return null;
   if (workout.data.status !== "in_progress")
     return { ...workout.data, alreadyAdded: false };
-  const selection = await client
+  let selectionQuery = client
     .from("workout_exercises")
     .select("id")
     .eq("workout_session_id", workout.data.id)
     .eq("exercise_id", exerciseId)
     .eq("owner_id", user.id)
     .is("removed_at", null)
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
+  if (typeof workoutItemId === "string" && isUuid(workoutItemId))
+    selectionQuery = selectionQuery.eq("id", workoutItemId);
+  const selection = await selectionQuery.maybeSingle();
   if (selection.error)
     throw new Error("Workout selection could not be loaded. Please retry.");
-  return { ...workout.data, alreadyAdded: !!selection.data };
+  return {
+    ...workout.data,
+    alreadyAdded: !!selection.data,
+    loggerItemId:
+      typeof workoutItemId === "string" &&
+      isUuid(workoutItemId) &&
+      selection.data?.id === workoutItemId
+        ? workoutItemId
+        : undefined,
+  };
 }

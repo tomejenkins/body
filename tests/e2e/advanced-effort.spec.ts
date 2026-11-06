@@ -1,3 +1,7 @@
+import {
+  openExerciseLogger,
+  backToWorkoutHome,
+} from "./workout-screen-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
 import catalog from "../../supabase/catalog/exercises.json" with { type: "json" };
@@ -37,6 +41,7 @@ test("optional effort and failure persist independently through queue, refresh, 
 }, testInfo) => {
   const a = await setup(page);
   await page.goto(`/workout/${a.w}`);
+  await openExerciseLogger(page);
   const row = page.locator(".logged-set").first();
   await expect(
     row.getByRole("combobox", { name: /effort rating/ }),
@@ -116,6 +121,7 @@ test("optional effort and failure persist independently through queue, refresh, 
   await expect(
     extra.getByRole("checkbox", { name: /To Failure/ }),
   ).not.toBeChecked();
+  await backToWorkoutHome(page);
   await page
     .getByRole("checkbox", { name: /Finish without completing all sets/ })
     .check();
@@ -139,6 +145,7 @@ test("optional effort and failure persist independently through queue, refresh, 
     p_exercise: a.exercise,
   });
   await page.goto(`/workout/${w.data}`);
+  await openExerciseLogger(page);
   const fresh = page.locator(".logged-set").first();
   await fresh.locator("summary").click();
   await expect(
@@ -166,6 +173,7 @@ test("remembered scale preference, retained failed effort draft, CAS conflict an
     page.getByRole("combobox", { name: "Weight Units" }),
   ).toHaveValue("lb");
   await page.goto(`/workout/${a.w}`);
+  await openExerciseLogger(page);
   const row = page.locator(".logged-set").first();
   await row.locator("summary").click();
   await expect(row.getByRole("combobox", { name: /effort scale/ })).toHaveValue(

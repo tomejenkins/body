@@ -27,10 +27,12 @@ export function MovementSelection({
   movement,
   disabled,
   facets,
+  onSelected,
 }: {
   movement: WorkoutMovement;
   disabled: boolean;
   facets: MovementFacets;
+  onSelected?: (itemId: string) => void;
 }) {
   const router = useRouter(),
     [busy, setBusy] = useState(false),
@@ -107,7 +109,10 @@ export function MovementSelection({
     setProposed(null);
     request.current = null;
     setMessage("Selection saved.");
-    startTransition(() => router.refresh());
+    startTransition(() => {
+      if (result.itemId && onSelected) onSelected(result.itemId);
+      else router.refresh();
+    });
   }
   async function search(next: MovementSearch) {
     const seq = ++searchSeq.current;

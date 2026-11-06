@@ -7,8 +7,10 @@ import { WorkoutLogger } from "@/components/sets/workout-logger";
 export const metadata = { title: "Your workout" };
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ exercise?: string | string[] }>;
 }) {
   const { id } = await params;
   if (!isUuid(id)) notFound();
@@ -17,9 +19,16 @@ export default async function Page({
   if (workout.status !== "in_progress")
     return <WorkoutReview workout={workout} />;
   const selection = await loadWorkoutMovements(workout);
+  const query = await searchParams;
+  const focusedItemId =
+    typeof query.exercise === "string" &&
+    workout.items.some((i) => i.id === query.exercise)
+      ? query.exercise
+      : undefined;
   return (
     <WorkoutLogger
       key={workout.id}
+      focusedItemId={focusedItemId}
       workout={{
         ...workout,
         movements: selection.movements,
