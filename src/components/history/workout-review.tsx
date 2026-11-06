@@ -1,3 +1,8 @@
+import { ProgramProgress } from "@/components/programs/program-progress";
+import {
+  loadProgramOutcomes,
+  loadProgressionSuggestions,
+} from "@/features/programs/progression-queries";
 import { effortSummary } from "@/features/sets/effort";
 import {
   qualifiedDuration,
@@ -18,7 +23,23 @@ import { setTypes } from "@/features/sets/model";
 import { LocalTime } from "./local-time";
 import { ExerciseThumbnail } from "@/components/exercises/exercise-thumbnail";
 export async function WorkoutReview({ workout }: { workout: Workout }) {
-  const achievements = await loadAchievements(workout.id);
+  const [achievements, suggestions, outcomes] = await Promise.all([
+    loadAchievements(workout.id),
+    loadProgressionSuggestions(workout),
+    loadProgramOutcomes(workout),
+  ]);
+  const suggestionItems = workout.items
+    .filter((i) => suggestions[i.id])
+    .sort(
+      (a, b) =>
+        ({ increase: 0, reps: 1, estimate: 2, hold: 3 })[
+          suggestions[a.id].action
+        ] -
+          { increase: 0, reps: 1, estimate: 2, hold: 3 }[
+            suggestions[b.id].action
+          ] || a.position - b.position,
+    )
+    .slice(0, 3);
   const sets = workout.items.flatMap((item) =>
     item.sets.filter((s) => !s.deleted_at),
   );
@@ -64,6 +85,44 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
       )}
       <ClosedDrafts workout={workout} />
       <Achievements achievements={achievements} unit={workout.weightUnit} />
+      {workout.isProgram && workout.status === "completed" && (
+        <>
+          <section aria-label="Next time" className="program-progress">
+            <h2>Next time</h2>
+            <p>
+              {outcomes.filter((m) => m.completed >= m.required).length}/
+              {outcomes.length} movements complete ·{" "}
+              {outcomes.reduce((n, m) => n + m.completed, 0)}/
+              {outcomes.reduce((n, m) => n + m.required, 0)} prescribed sets
+              completed · {outcomes.reduce((n, m) => n + m.repsAchieved, 0)} met
+              the rep target
+            </p>
+            <details>
+              <summary>Movement targets</summary>
+              {outcomes.map((m) => (
+                <p key={m.movement}>
+                  Movement {m.movement}: {m.completed}/{m.required} sets ·{" "}
+                  {m.repsAchieved} met the rep target
+                </p>
+              ))}
+            </details>
+            {suggestionItems.map((i) => (
+              <p key={i.id}>
+                {i.name}: suggested {suggestions[i.id].display}{" "}
+                {workout.weightUnit}
+                {suggestions[i.id].reps
+                  ? ` · ${suggestions[i.id].reps} reps`
+                  : ""}
+                . {suggestions[i.id].basis}
+              </p>
+            ))}
+            {!Object.keys(suggestions).length && (
+              <p>No load suggestion yet. Keep building recorded performance.</p>
+            )}
+          </section>
+          <ProgramProgress session={workout.id} />
+        </>
+      )}
       <p className="logging-summary">
         {workout.items.length} exercises · {completed} completed sets ·{" "}
         {pending} pending sets

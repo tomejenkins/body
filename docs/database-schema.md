@@ -206,3 +206,7 @@ The single forward migration adds workout_movements (owner/session/ordered immut
 ## Mobile-first ad-hoc movement shells
 
 The forward `20261106052342_ad_hoc_movement_shells.sql` migration extends existing sessions with immutable ad_hoc_focus/start nonce and workout_movements with validated suggested taxonomy inputs, a retry nonce and guarded removed_at. No new parallel program, session or performance table is introduced. Server-derived snapshots have no preselected exercise/load/effort. Existing actual exercise bindings, set targets, selection/continuation and performance sources are reused. Removed intent is filtered from active views; recorded intent cannot be removed. See [mobile-first UX](mobile-first-ux.md).
+
+## Phase 7.4 progression evidence
+
+`20261106142736_program_progression_evidence.sql` adds a validated immutable owned source-version reference to program_assignments, binds future program sessions/rotation identity, and indexes assignment history. Owner-scoped invoker read-only functions derive bounded exact-exercise evidence, adherence and prescription outcomes from the existing session/movement/set source. No recommendation truth table or actual-performance rewrite. See [program progression](program-progression.md).

@@ -1,3 +1,4 @@
+import { ProgramProgress } from "@/components/programs/program-progress";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -31,6 +32,7 @@ export default async function Page({
           starting point.
         </p>
       </header>
+      <ProgramProgress />
       <form
         key={catalogURL(f)}
         method="get"

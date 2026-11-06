@@ -964,3 +964,33 @@ summary {
   color: var(--secondary);
   margin: 10px 0;
 }
+
+.load-suggestion,
+.program-progress {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 0.8rem;
+  margin-block: 0.8rem;
+}
+.load-suggestion p,
+.program-progress p {
+  margin-block: 0.4rem;
+}
+.load-suggestion details,
+.program-progress details {
+  font-size: 0.9rem;
+}
+.load-suggestion {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.25rem 0.5rem;
+}
+.load-suggestion > button {
+  grid-column: 2;
+  grid-row: 1;
+}
+.load-suggestion > details {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}

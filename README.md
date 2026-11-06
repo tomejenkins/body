@@ -174,3 +174,9 @@ Home now prioritizes your actual active workout, recording and recent training. 
 Record Workout offers Primary Muscle Group and optional Secondary Muscle Group. Each normally suggests two complementary movements; limited classifications produce fewer honest options. Start Blank Workout remains a direct action. Suggestions contain set/rep guidance only: choose actual exercises as you train, with no selected weights or fabricated performance. Recorded movements are preserved before confirmed changes.
 
 See [mobile-first UX audit, architecture and validation](docs/mobile-first-ux.md). Review/apply the single new ad-hoc movement migration before releasing this revision. No additional dependencies or environment keys are required; local validation does not modify hosted Supabase or deploy production.
+
+## Phase 7.4 progression and adherence
+
+Program loggers now offer optional history-based Suggested loads and conservative typed progression guidance; manual/completed values remain unchanged. Programs shows version-safe rotation progress, real activity and the next training workout without calendar deadlines. Exact carousel matches carry no quality label; alternatives use Close, Similar or Same Muscle with independent Program Pick/Last Used context.
+
+Read [progression rules and security](docs/program-progression.md) and [validation/release](docs/phase-7-4-validation.md). Apply the single reviewed forward migration before app rollout. No new credentials, dependencies or Worker settings are introduced.

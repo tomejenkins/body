@@ -1,3 +1,4 @@
+import { loadProgressionSuggestions } from "@/features/programs/progression-queries";
 import { loadWorkoutMovements } from "@/features/programs/execution-queries";
 import { WorkoutReview } from "@/components/history/workout-review";
 import { notFound } from "next/navigation";
@@ -18,7 +19,10 @@ export default async function Page({
   if (!workout) notFound();
   if (workout.status !== "in_progress")
     return <WorkoutReview workout={workout} />;
-  const selection = await loadWorkoutMovements(workout);
+  const [selection, loadSuggestions] = await Promise.all([
+    loadWorkoutMovements(workout),
+    loadProgressionSuggestions(workout),
+  ]);
   const query = await searchParams;
   const focusedItemId =
     typeof query.exercise === "string" &&
@@ -31,6 +35,7 @@ export default async function Page({
       focusedItemId={focusedItemId}
       workout={{
         ...workout,
+        loadSuggestions,
         movements: selection.movements,
         movementFacets: selection.facets,
         movementOptions: selection.movementOptions,

@@ -51,3 +51,7 @@ Set completion timestamps are also server-assigned by the logging trigger. Exist
 ## Phase 6.3 refinement
 
 User-facing exact-rep names are now Best Single, Best Triple and Best Five-Rep Set, without claiming maximal effort. Exact actual_rm keys and values remain unchanged. [Intelligent recognition](intelligent-pr-recognition.md) separates historical dominance suppression from performance truth and adds deterministic category diversity. Record rows show source date/workout and actual rep context; estimate rows identify their source set. [Progress analytics](progress-analytics.md) reuses the shared metric source for bounded date-filtered charts, never chart-sampled personal bests.
+
+## Phase 7.4 separation
+
+Starting-load and progression suggestions are derived training guidance, never actual records or new achievement categories. Suggested load application saves pending input through the ordinary logger and cannot fabricate completion, infer effort or change exact-rep record eligibility. Existing exact-rep, estimated 1RM, dominance, tie/baseline and top-three recognition behavior remains unchanged.

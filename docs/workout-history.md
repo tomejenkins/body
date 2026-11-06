@@ -73,3 +73,7 @@ History summaries include effective endpoint, duration provenance, closure reaso
 ## Phase 6.3 Progress
 
 History links to `/history/progress`; Look Back embeds exercise Progress while retaining workout-builder context and existing pagination. Local start date groups activity, actual set times position exercise observations, and reliable elapsed duration is separated from estimates/legacy/gaps. See [progress analytics](progress-analytics.md) for period/window/sample semantics, numeric volume and primary/secondary exposure. Meaningful achievement counts share the [recognition](intelligent-pr-recognition.md) engine with postfinish cards.
+
+## Phase 7.4 program feedback
+
+Completed program review now summarizes saved prescribed set/rep outcomes, up to three relevant next-load suggestions and the next training workout/current program progress. Load guidance is not a PR; the existing dominance-aware top-three achievement system remains independent. Historical performance is never rewritten to match a suggestion. See [program progression](program-progression.md).

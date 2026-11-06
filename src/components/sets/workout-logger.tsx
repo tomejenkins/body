@@ -1071,6 +1071,81 @@ export function WorkoutLogger({
                         Bodyweight · Add resistance only when you use it.
                       </p>
                     )}
+                    {workout.loadSuggestions?.[item.id] &&
+                      (() => {
+                        const suggestion = workout.loadSuggestions[item.id];
+                        const eligible = visible.filter(
+                          (e) =>
+                            e.row.status === "pending" &&
+                            e.row.inputs_confirmed === false &&
+                            e.row.is_automatic &&
+                            e.row.set_type === "working" &&
+                            e.row.load_mode === "external" &&
+                            !e.dirty &&
+                            !e.pending &&
+                            !e.error &&
+                            !e.localOnly &&
+                            !e.draft.weightDirty &&
+                            e.seq === 0,
+                        );
+                        return (
+                          <div
+                            className="load-suggestion"
+                            aria-label="Suggested starting weight"
+                          >
+                            <p>
+                              Suggested:{" "}
+                              <strong>
+                                {suggestion.display} {workout.weightUnit}
+                              </strong>
+                              {suggestion.reps
+                                ? ` · aim for ${suggestion.reps} reps`
+                                : ""}
+                            </p>
+                            <details>
+                              <summary>Why this suggestion?</summary>
+                              <p>
+                                {suggestion.basis} Adjust to your needs. This is
+                                guidance, not completed performance.
+                              </p>
+                            </details>
+                            {eligible.length > 0 && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                aria-label="Use suggested weight"
+                                disabled={
+                                  !canEdit || unit !== workout.weightUnit
+                                }
+                                onClick={() => {
+                                  // Explicit user action only, through the existing draft and save queue.
+                                  // Recheck the current ref: an incoming refresh never replaces typing.
+                                  for (const candidate of eligible) {
+                                    const current =
+                                      ref.current[candidate.row.id];
+                                    if (
+                                      !current ||
+                                      current.dirty ||
+                                      current.pending ||
+                                      current.seq !== 0 ||
+                                      current.row.status !== "pending" ||
+                                      current.row.inputs_confirmed !== false
+                                    )
+                                      continue;
+                                    change(current.row.id, {
+                                      weight: suggestion.display,
+                                      weightDirty: true,
+                                    });
+                                    enqueue(current.row.id);
+                                  }
+                                }}
+                              >
+                                Use
+                              </Button>
+                            )}
+                          </div>
+                        );
+                      })()}
                     {uniformTarget && (
                       <div className="common-prescription">
                         <span>
