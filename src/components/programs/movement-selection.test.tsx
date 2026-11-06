@@ -124,3 +124,85 @@ it("requires explicit continuation before retrying a choice with recorded sets",
     requestId: mocks.choose.mock.calls[0][0].requestId,
   });
 });
+it("highlights Last Used independently from compatibility and selected state", () => {
+  const m = {
+    ...movement,
+    currentExerciseId: "e4",
+    candidates: movement.candidates.map((t) => ({
+      ...t,
+      labels: t.id === "e3" ? ["Last Used"] : t.labels,
+    })),
+  };
+  render(
+    <MovementSelection
+      movement={m}
+      facets={{ patterns: [], muscles: [] }}
+      disabled={false}
+    />,
+  );
+  const last = screen.getByRole("button", {
+    name: /Exercise 3, Close, Last Used/,
+  });
+  expect(last).toHaveClass("last-used");
+  expect(last).toHaveAttribute("aria-pressed", "false");
+  expect(screen.getByRole("button", { name: "Exercise 4" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  expect(screen.getByRole("button", { name: "Exercise 4" })).not.toHaveClass(
+    "last-used",
+  );
+});
+it("retains carousel position after selection state refresh", () => {
+  const props = { facets: { patterns: [], muscles: [] }, disabled: false };
+  const view = render(<MovementSelection {...props} movement={movement} />);
+  const group = screen.getByRole("group", { name: "Exercises for Movement 1" });
+  const scrollTo = vi.fn();
+  Object.defineProperty(group, "scrollTo", { value: scrollTo });
+  view.rerender(
+    <MovementSelection
+      {...props}
+      movement={{ ...movement, currentExerciseId: "e1" }}
+    />,
+  );
+  expect(scrollTo).not.toHaveBeenCalled();
+});
+it("See All keeps independent muscle/pattern/equipment filters and explains changed focus", async () => {
+  mocks.search.mockResolvedValue({
+    items: [
+      {
+        ...movement.candidates[0],
+        id: "outside",
+        name: "Different Muscle",
+        level: null,
+      },
+    ],
+    total: 1,
+  });
+  render(
+    <MovementSelection
+      movement={movement}
+      facets={{ patterns: [], muscles: [] }}
+      disabled={false}
+    />,
+  );
+  const details = screen.getByText("See All Exercises").closest("details")!;
+  details.open = true;
+  fireEvent.submit(
+    screen.getByRole("form", {
+      name: "Search exercises for Movement 1",
+      hidden: true,
+    }),
+  );
+  await waitFor(() =>
+    expect(mocks.search).toHaveBeenCalledWith(
+      "m",
+      expect.objectContaining({
+        pattern: "",
+        muscle: "",
+        equipmentOnly: false,
+      }),
+    ),
+  );
+  expect(await screen.findByText("Changes muscle focus")).toBeInTheDocument();
+});

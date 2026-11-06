@@ -199,3 +199,7 @@ Authenticated-only invoker start/edit functions use verified UID, profile/sessio
 ## Phase 7.4 read-only progression
 
 Progression evidence and program outcomes retain authenticated owner RLS and invoker execution. Assignment source-version INSERT is narrowly granted and validated against owned matching immutable versions; UPDATE is not granted. Session assignment/rotation updates are protected. No recommendation-write endpoint, service-role bypass, cross-user cache or remote SQL is introduced. New role/behavior tests cover foreign evidence/adherence/outcomes and assignment identity, along with retained historical/record security tests. See [program progression](program-progression.md).
+
+## Movement intent refinement
+
+The forward movement-intent migration adds a narrow immutable suggested_intent INSERT field and authenticated-only read-only static registry function. Database-derived snapshots validate pattern/muscle/type and actual supported catalog coverage. Automatic starts accept up to six distinct intents, including distinct variations under the same pattern; legacy generic slots still work. Owner RLS, session-first locking, exact payload retries, closed/expiry guards, recorded-work protection and programme immutability retain the existing invoker implementation. No new table, broad grant or hosted write is introduced. See [movement matching and smart quick workouts](movement-matching-smart-workouts.md).

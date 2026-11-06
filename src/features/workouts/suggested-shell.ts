@@ -1,6 +1,12 @@
+import {
+  movementIntents,
+  supportsIntent,
+} from "@/features/exercises/movement-intents";
+import { focusById, quickFocus } from "./quick-focus";
 import { specialMeasurement } from "@/features/history/measurement";
 import type { Exercise, ExerciseType, Taxon } from "@/features/exercises/types";
 export type SuggestedMovement = {
+  intent?: string;
   pattern: string;
   muscle: string;
   exerciseType: ExerciseType;
@@ -8,26 +14,6 @@ export type SuggestedMovement = {
   sets: number;
   repsMin: number;
   repsMax: number;
-};
-const priorities: Record<string, string[]> = {
-  pectorals: ["horizontal_push", "incline_push", "horizontal_adduction"],
-  triceps: ["elbow_extension", "horizontal_push"],
-  lats: ["vertical_pull", "horizontal_pull", "shoulder_extension"],
-  upper_back: ["horizontal_pull"],
-  quadriceps: ["squat", "lunge", "knee_extension"],
-  hamstrings: ["hip_hinge", "knee_flexion"],
-  glutes: ["hip_bridge", "lunge", "hip_hinge"],
-  anterior_deltoids: ["vertical_push", "shoulder_flexion"],
-  lateral_deltoids: ["shoulder_abduction", "vertical_push"],
-  posterior_deltoids: ["horizontal_abduction", "horizontal_pull"],
-  trapezius: ["shrug", "loaded_carry"],
-  abdominals: ["spinal_flexion", "anti_rotation", "anti_extension"],
-  obliques: ["rotation", "anti_rotation", "lateral_core"],
-  biceps: ["elbow_flexion"],
-  calves: ["calf_raise"],
-  hip_abductors: ["hip_abduction"],
-  hip_adductors: ["hip_adduction"],
-  forearms: ["loaded_carry"],
 };
 const titles: Record<string, string> = {
   horizontal_push: "Flat Chest Press",
@@ -58,73 +44,125 @@ export function muscleLabel(m: Taxon) {
     )[m.slug] ?? m.name
   );
 }
-// A lightweight, deterministic taxonomy recipe, not a personalized programme.
-// Distinct primary patterns take priority; missing patterns never get filler.
+// Ordered recipes select supported intent, never actual exercises/performance.
+// Emphasis is primary-only; balanced complements fill gaps in catalog coverage.
 export function suggestedShell(
   primary: string,
   secondary: string,
   exercises: readonly Exercise[],
   patterns: readonly Taxon[],
   muscles: readonly Taxon[],
+  emphasis = "balanced",
 ): SuggestedMovement[] {
-  if (!muscles.some((m) => m.id === primary))
-    throw Error("Choose a primary muscle group.");
-  if (
-    secondary &&
-    (!muscles.some((m) => m.id === secondary) || secondary === primary)
-  )
-    throw Error("Choose two different muscle groups.");
-  return [primary, ...(secondary ? [secondary] : [])].flatMap((muscle) => {
-    const taxon = muscles.find((m) => m.id === muscle)!;
-    const available = exercises.filter(
-      (e) =>
-        !e.archivedAt &&
-        !specialMeasurement(e.id) &&
-        e.primaryMuscleIds.includes(muscle) &&
-        e.exerciseType !== "other",
-    );
-    const ranked = patterns
-      .filter((p) => available.some((e) => e.primaryPatternId === p.id))
-      .sort((a, b) => {
-        const order = priorities[taxon.slug] ?? [];
-        const rank = (slug: string) =>
-          order.includes(slug) ? order.indexOf(slug) : 100;
-        return rank(a.slug) - rank(b.slug) || a.slug.localeCompare(b.slug);
-      });
-    return ranked.slice(0, 2).map((pattern) => {
-      const choices = available.filter(
-        (e) => e.primaryPatternId === pattern.id,
-      );
-      const exerciseType: ExerciseType = choices.some(
-        (e) => e.exerciseType === "compound",
+  const focus = focusById(primary),
+    other = secondary ? focusById(secondary) : undefined;
+  if (!focus) throw Error("Choose a primary focus.");
+  if (secondary && (!other || secondary === primary))
+    throw Error("Choose two different focus groups.");
+  if (emphasis !== "balanced" && !focus.emphasis.some((e) => e.id === emphasis))
+    throw Error("Choose a supported emphasis.");
+  const options = intentMovementOptions({ exercises, patterns, muscles });
+  const selected: SuggestedMovement[] = [];
+  const add = (group: typeof focus, count: number, emphasisId = "balanced") => {
+    const order = [
+      ...(group.emphasis.find((e) => e.id === emphasisId)?.intents ?? []),
+      ...group.balanced,
+    ];
+    let added = 0;
+    for (const key of new Set(order)) {
+      if (added >= count) break;
+      const option = options.find((s) => s.intent === key);
+      if (option && !selected.some((s) => s.intent === key)) {
+        selected.push(option);
+        added++;
+      }
+    }
+  };
+  add(
+    focus,
+    other ? (focus.count === 3 && other.count === 3 ? 2 : 3) : focus.count,
+    emphasis,
+  );
+  if (other) add(other, 2);
+  return selected.slice(0, 6);
+}
+export function intentMovementOptions(l: {
+  exercises: readonly Exercise[];
+  patterns: readonly Taxon[];
+  muscles: readonly Taxon[];
+}): SuggestedMovement[] {
+  return movementIntents
+    .filter((intent) =>
+      l.exercises.some(
+        (e) =>
+          !specialMeasurement(e.id) &&
+          supportsIntent(e, intent, l.patterns, l.muscles),
+      ),
+    )
+    .map((intent) => ({
+      intent: intent.key,
+      pattern: intent.patternId,
+      muscle: intent.muscleId,
+      exerciseType: intent.exerciseType,
+      title: intent.title,
+      sets: 3,
+      repsMin: intent.exerciseType === "compound" ? 8 : 10,
+      repsMax: intent.exerciseType === "compound" ? 12 : 15,
+    }));
+}
+export type SetupFocus = {
+  id: string;
+  label: string;
+  emphasis: { id: string; label: string }[];
+};
+export function workoutSetupOptions(l: {
+  exercises: readonly Exercise[];
+  patterns: readonly Taxon[];
+  muscles: readonly Taxon[];
+}) {
+  const counts: Record<string, number> = {};
+  const supported = new Set(intentMovementOptions(l).map((s) => s.intent));
+  const signature = (primary: string, emphasis: string) =>
+    suggestedShell(primary, "", l.exercises, l.patterns, l.muscles, emphasis)
+      .map(movementKey)
+      .join("|");
+  const focuses: SetupFocus[] = quickFocus.map((focus) => ({
+    id: focus.id,
+    label: focus.label,
+    emphasis: focus.emphasis
+      .filter(
+        (e) =>
+          e.supportedBy.some((key) => supported.has(key)) &&
+          signature(focus.id, e.id) !== signature(focus.id, "balanced"),
       )
-        ? "compound"
-        : "isolation";
-      return {
-        pattern: pattern.id,
-        muscle,
-        exerciseType,
-        title:
-          taxon.slug === "triceps" && pattern.slug === "horizontal_push"
-            ? "Close-Grip Press"
-            : (titles[pattern.slug] ?? pattern.name),
-        sets: 3,
-        repsMin: exerciseType === "compound" ? 8 : 10,
-        repsMax: exerciseType === "compound" ? 12 : 15,
-      };
-    });
-  });
+      .map(({ id, label }) => ({ id, label })),
+  }));
+  for (const focus of focuses)
+    for (const secondary of [
+      "",
+      ...focuses.filter((f) => f.id !== focus.id).map((f) => f.id),
+    ])
+      for (const emphasis of ["balanced", ...focus.emphasis.map((e) => e.id)])
+        counts[`${focus.id}:${secondary}:${emphasis}`] = suggestedShell(
+          focus.id,
+          secondary,
+          l.exercises,
+          l.patterns,
+          l.muscles,
+          emphasis,
+        ).length;
+  return { focuses, counts };
 }
 
 export function movementKey(s: SuggestedMovement) {
-  return `${s.muscle}:${s.pattern}:${s.exerciseType}`;
+  return `${s.muscle}:${s.pattern}:${s.exerciseType}${s.intent ? ":" + s.intent : ""}`;
 }
 export function allMovementOptions(l: {
   exercises: readonly Exercise[];
   patterns: readonly Taxon[];
   muscles: readonly Taxon[];
 }): SuggestedMovement[] {
-  return l.muscles.flatMap((m) =>
+  const broad = l.muscles.flatMap((m) =>
     l.patterns.flatMap((p) => {
       const types = ["compound", "isolation"] as const;
       return types
@@ -149,4 +187,5 @@ export function allMovementOptions(l: {
         }));
     }),
   );
+  return [...intentMovementOptions(l), ...broad];
 }

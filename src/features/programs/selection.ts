@@ -1,5 +1,10 @@
 import { compatibleEquipment } from "@/features/exercises/recommendations";
 import type { Exercise, ExerciseType } from "@/features/exercises/types";
+import {
+  catalogIntent,
+  intentByKey,
+  targetIntentKey,
+} from "@/features/exercises/movement-intents";
 export type MatchLevel = 1 | 2 | 3 | 4;
 export const matchLabels: Record<MatchLevel, string> = {
   4: "",
@@ -12,6 +17,7 @@ export type MovementTarget = {
   muscleId: string | null;
   exerciseType: ExerciseType | null;
   referenceEquipmentIds: readonly string[];
+  intentKey?: string | null;
 };
 export function exerciseMatch(
   exercise: Exercise,
@@ -25,13 +31,25 @@ export function exerciseMatch(
   const sameType =
     !target.exerciseType || exercise.exerciseType === target.exerciseType;
   if (pattern && sameType) {
-    const sameEquipment =
-      target.referenceEquipmentIds.length > 0 &&
-      exercise.equipmentIds.length === target.referenceEquipmentIds.length &&
-      exercise.equipmentIds.every((id) =>
-        target.referenceEquipmentIds.includes(id),
-      );
-    return sameEquipment ? 4 : 3;
+    const intent = intentByKey(
+      target.intentKey ?? targetIntentKey(target.patternId, target.muscleId),
+    );
+    if (!intent) return 4;
+    if (
+      !intent.exercises.length ||
+      (exercise.ownerId === null && intent.exercises.includes(exercise.slug))
+    )
+      return 4;
+    const variation = catalogIntent(exercise);
+    // Dips change the pressing path more substantially than grip or floor ROM.
+    if (
+      intent.key === "dip" ||
+      variation?.key === "dip" ||
+      intent.key === "incline_push_up" ||
+      variation?.key === "incline_push_up"
+    )
+      return 2;
+    return 3;
   }
   if (pattern || sameType) return 2;
   return 1;
@@ -49,6 +67,7 @@ export type SelectionInput = {
   selectedId?: string | null;
   availableEquipmentIds?: readonly string[];
   noneId?: string;
+  equipmentOnly?: boolean;
   limit?: number;
 };
 export function rankMovementExercises(
@@ -80,14 +99,9 @@ export function rankMovementExercises(
       : c.exercise.id === input.lastChoiceId
         ? 1
         : 2;
-  const equipmentOverlap = (c: SelectionCandidate) =>
-    c.exercise.equipmentIds.filter((id) =>
-      input.target.referenceEquipmentIds.includes(id),
-    ).length;
   const compare = (a: SelectionCandidate, b: SelectionCandidate) =>
     priority(a) - priority(b) ||
     (b.level ?? 0) - (a.level ?? 0) ||
-    equipmentOverlap(b) - equipmentOverlap(a) ||
     (a.exercise.slug < b.exercise.slug
       ? -1
       : a.exercise.slug > b.exercise.slug
@@ -98,7 +112,8 @@ export function rankMovementExercises(
       (c) =>
         c.labels.length > 0 ||
         c.exercise.id === input.selectedId ||
-        (c.level !== null && c.equipmentAvailable !== false),
+        (c.level !== null &&
+          (!input.equipmentOnly || c.equipmentAvailable !== false)),
     )
     .sort(compare);
   const chosen = ranked.slice(0, Math.max(2, Math.min(30, input.limit ?? 12)));
@@ -107,20 +122,6 @@ export function rankMovementExercises(
     const replace = chosen.findLastIndex((c) => priority(c) === 2);
     if (replace >= 0) chosen[replace] = selected;
     else chosen.push(selected);
-  }
-  // Keep a representative of each available match level in the compact pool.
-  // The displayed pool still sorts 4→1; See All exposes every eligible exercise.
-  for (const level of [4, 3, 2, 1] as const) {
-    if (chosen.some((c) => c.level === level)) continue;
-    const candidate = ranked.find((c) => c.level === level);
-    if (!candidate) continue;
-    const replace = chosen.findLastIndex(
-      (c) =>
-        priority(c) === 2 &&
-        c.exercise.id !== input.selectedId &&
-        chosen.filter((x) => x.level === c.level).length > 1,
-    );
-    if (replace >= 0) chosen[replace] = candidate;
   }
   return chosen.sort(compare);
 }

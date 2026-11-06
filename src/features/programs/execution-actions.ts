@@ -8,6 +8,7 @@ import {
   filterExercises,
   libraryNoneId,
 } from "@/features/exercises/recommendations";
+import { targetIntentKey } from "@/features/exercises/movement-intents";
 import { exerciseMatch } from "./selection";
 import { movementTile } from "./execution-queries";
 import type { SelectionResult, MovementSearch } from "./execution-types";
@@ -141,6 +142,12 @@ export async function searchMovementExercises(
         slot.required_exercise_type ?? creator?.exerciseType ?? null,
       referenceEquipmentIds: creator?.equipmentIds ?? [],
     };
+    const intended = {
+      ...target,
+      intentKey:
+        slot.intent ??
+        targetIntentKey(target.patternId, target.muscleId, creator),
+    };
     const matches = filterExercises(
       library.exercises,
       {
@@ -164,7 +171,7 @@ export async function searchMovementExercises(
           movementTile(
             {
               exercise,
-              level: exerciseMatch(exercise, target),
+              level: exerciseMatch(exercise, intended),
               labels: [],
               equipmentAvailable: null,
             },

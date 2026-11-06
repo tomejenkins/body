@@ -210,3 +210,7 @@ The forward `20261106052342_ad_hoc_movement_shells.sql` migration extends existi
 ## Phase 7.4 progression evidence
 
 `20261106142736_program_progression_evidence.sql` adds a validated immutable owned source-version reference to program_assignments, binds future program sessions/rotation identity, and indexes assignment history. Owner-scoped invoker read-only functions derive bounded exact-exercise evidence, adherence and prescription outcomes from the existing session/movement/set source. No recommendation truth table or actual-performance rewrite. See [program progression](program-progression.md).
+
+## Movement-intent shell refinement
+
+The forward `20261106163951_movement_intent_shells.sql` migration adds an immutable `workout_movements.suggested_intent` INSERT input and includes it in database-derived ad-hoc snapshots. A static authenticated-only invoker registry refines existing taxonomy without adding exercise or pattern identities. Initial shells allow up to six distinct supported intents, including meaningful variations within one pattern; manual additions retain the existing limit. Existing snapshots, ownership, retry payloads, source protection and actual exercise/set tables remain intact. See [movement matching and smart quick workouts](movement-matching-smart-workouts.md).

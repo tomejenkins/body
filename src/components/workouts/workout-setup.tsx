@@ -2,29 +2,30 @@
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { startSuggestedWorkout } from "@/features/workouts/suggested-actions";
-import type { Taxon } from "@/features/exercises/types";
-import { muscleLabel } from "@/features/workouts/suggested-shell";
+import type { SetupFocus } from "@/features/workouts/suggested-shell";
 import { StartBlankWorkout } from "./workout-controls";
 export function WorkoutSetup({
-  muscles,
+  focuses,
   counts,
   request,
 }: {
-  muscles: Taxon[];
+  focuses: SetupFocus[];
   counts: Record<string, number>;
   request: string;
 }) {
   const [primary, setPrimary] = useState(""),
-    [secondary, setSecondary] = useState("");
+    [secondary, setSecondary] = useState(""),
+    [emphasis, setEmphasis] = useState("balanced");
   const [state, action, busy] = useActionState(startSuggestedWorkout, {});
-  const count = (counts[primary] ?? 0) + (counts[secondary] ?? 0);
+  const focus = focuses.find((f) => f.id === primary);
+  const count = counts[`${primary}:${secondary}:${emphasis}`] ?? 0;
   return (
     <section className="workout-setup" aria-label="Workout setup">
       <p>Pick your focus. Choose exercises as you train.</p>
       <form action={action}>
         <input type="hidden" name="request" value={request} />
         <div className="setup-field">
-          <label htmlFor="primary-muscle">Primary Muscle Group</label>
+          <label htmlFor="primary-muscle">Primary Focus</label>
           <select
             id="primary-muscle"
             name="primary"
@@ -32,21 +33,21 @@ export function WorkoutSetup({
             value={primary}
             onChange={(e) => {
               setPrimary(e.target.value);
+              setEmphasis("balanced");
               if (secondary === e.target.value) setSecondary("");
             }}
           >
-            <option value="">Choose a muscle group</option>
-            {muscles.map((m) => (
+            <option value="">Choose a focus</option>
+            {focuses.map((m) => (
               <option value={m.id} key={m.id}>
-                {muscleLabel(m)}
+                {m.label}
               </option>
             ))}
           </select>
         </div>
         <div className="setup-field">
           <label htmlFor="secondary-muscle">
-            Secondary Muscle Group{" "}
-            <span className="optional-label">Optional</span>
+            Secondary Focus <span className="optional-label">Optional</span>
           </label>
           <select
             id="secondary-muscle"
@@ -55,19 +56,46 @@ export function WorkoutSetup({
             onChange={(e) => setSecondary(e.target.value)}
           >
             <option value="">None</option>
-            {muscles.map((m) => (
+            {focuses.map((m) => (
               <option value={m.id} key={m.id} disabled={m.id === primary}>
-                {muscleLabel(m)}
+                {m.label}
               </option>
             ))}
           </select>
         </div>
+        {focus && focus.emphasis.length > 0 && (
+          <div className="setup-field">
+            <label htmlFor="workout-emphasis">
+              Emphasis <span className="optional-label">Optional</span>
+            </label>
+            <select
+              id="workout-emphasis"
+              name="emphasis"
+              value={emphasis}
+              onChange={(e) => setEmphasis(e.target.value)}
+            >
+              <option value="balanced">Balanced</option>
+              {focus.emphasis.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         {primary && (
           <p className="setup-hint" role="status">
             {count} suggested {count === 1 ? "movement" : "movements"}.{" "}
-            {count < (secondary ? 4 : 2)
+            {count <
+            (secondary
+              ? 4
+              : primary === "biceps" ||
+                  primary === "triceps" ||
+                  primary === "core"
+                ? 3
+                : 4)
               ? "Fewer supported movements are available for this focus."
-              : "Two complementary movements per muscle."}{" "}
+              : ""}{" "}
             Exercises and weights stay unselected.
           </p>
         )}

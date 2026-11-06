@@ -18,20 +18,9 @@ workout_movements is an owner-only immutable session snapshot of each source slo
 
 Each movement uses a native horizontal touch-scroll carousel with about 2.7 tiles visible on phone widths. The shared exercise/movement illustration resolver supplies a small controlled image. Tiles show exercise name, one compact match label, Program Pick / Your Last Choice when applicable, and a distinct persisted selected state. Selected tiles scroll into the carousel's visible area after hydration/refresh without moving the page or changing ranking.
 
-Priority is Program Pick first, latest qualifying choice for this exact slot second when different, then alternatives by match level, equipment overlap, stable slug and canonical ID. Duplicate IDs are removed; a shared program/last exercise carries both labels in one tile. The compact pool retains a representative of each available match level when space allows, then sorts the displayed alternatives. The selected exercise is retained without upgrading its grade. See All exposes broader search rather than fabricating alternatives.
+Priority is Program Pick first, latest qualifying exact-slot Last Used second when different, then alternatives by movement compatibility with stable slug/ID ties. Equipment availability is independent and never lowers a grade or silently filters carousel alternatives. Exact has no quality label; Close, Similar and Same Muscle remain independent of contextual Program Pick, Last Used and Selected labels. Last Used has a restrained theme-green outline; selected state remains distinct.
 
-Match quality is calculated independently from role labels using existing pattern, primary-muscle, equipment and compound/isolation/other metadata:
-
-| Level | Label       | Deterministic interpretation                                                                       |
-| ----- | ----------- | -------------------------------------------------------------------------------------------------- |
-| 4     | Best Match  | Same primary target, primary pattern and type; same classified equipment combination               |
-| 3     | Close Match | Same primary target/pattern/type with different equipment                                          |
-| 2     | Similar     | Same primary target with changed angle/pattern but similar type, or same pattern with changed type |
-| 1     | Same Muscle | Same primary target with substantially different pattern and type                                  |
-
-For a flat barbell press slot: paused flat barbell press can be Best Match, flat dumbbell/machine press Close Match, incline press Similar, and chest fly Same Muscle. Program Pick is not automatically level 4. Level 1 remains selectable. Best Match uses subtle theme green; other labels are neutral text. These are contextual compatibility estimates, not user ratings, absolute exercise quality, effort, or proof of biomechanical equivalence. Coarse catalog metadata cannot infer every grip, angle or individual suitability detail.
-
-See All is inline, searchable and paginated (20 returned options) with optional pattern, muscle, type and account-equipment filters. It does not silently enforce the slot's exact pattern/type on actual user choices. Outside-target/unclassified search choices show Check fit rather than falsely claiming Same Muscle. Unsupported assistance/duration options are not loggable. Known equipment preferences limit additional carousel suggestions; an explicit program/last pick remains visible with Check equipment when necessary. Unconfigured equipment is unknown, not a claim of compatibility. No new taxonomy or heavy dependency is introduced.
+The movement-first correction adds minimal shared catalog intent refinements for meaningful range, grip, angle and arm-position differences. Flat barbell/dumbbell/matching-machine presses are Exact; reduced-range floor pressing and close-grip pressing are Close; incline pressing is Similar; flies are Same Muscle. Full-library search remains inline with deliberate broader muscle/pattern substitutions and an explicit equipment checkbox. See [movement matching and smart quick workouts](movement-matching-smart-workouts.md) for the current scoring, intent coverage, generation rules and forward-migration requirement.
 
 The authoring/recommendation engine's hard prescription constraints remain unchanged. Deliberate actual substitutions do not rewrite creator recommendations or pretend that a fly fulfilled the same mechanics as a press.
 

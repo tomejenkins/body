@@ -7,6 +7,7 @@ import {
   selectProgramExercise,
   searchMovementExercises,
 } from "@/features/programs/execution-actions";
+import { cn } from "@/lib/utils";
 import { matchLabels } from "@/features/programs/selection";
 import type {
   WorkoutMovement,
@@ -48,7 +49,10 @@ export function MovementSelection({
     [searchError, setSearchError] = useState("");
   const searchSeq = useRef(0);
   const carousel = useRef<HTMLDivElement>(null);
+  const initialScrollDone = useRef(false);
   useEffect(() => {
+    if (initialScrollDone.current) return;
+    initialScrollDone.current = true;
     const group = carousel.current;
     if (!group || !movement.currentExerciseId) return;
     const selected = group.querySelector<HTMLButtonElement>(
@@ -134,12 +138,19 @@ export function MovementSelection({
     setTotal(result.total ?? 0);
   }
   function tileButton(tile: MovementTile, inSearch = false) {
-    const label = tile.level ? matchLabels[tile.level] : "Check fit";
+    const label = tile.level
+      ? matchLabels[tile.level]
+      : movement.target.muscleId
+        ? "Changes muscle focus"
+        : "Check fit";
     return (
       <button
         type="button"
         key={tile.id}
-        className={`movement-tile ${tile.level === 4 ? "best-match" : ""}`}
+        className={cn(
+          "movement-tile",
+          tile.labels.includes("Last Used") && "last-used",
+        )}
         aria-pressed={movement.currentExerciseId === tile.id}
         aria-label={`${tile.name}${label ? ", " + label : ""}${tile.labels.length ? ", " + tile.labels.join(", ") : ""}`}
         disabled={disabled || busy || transitioning || !tile.supported}
@@ -150,14 +161,16 @@ export function MovementSelection({
         <ExerciseThumbnail visual={tile.visual} size={32} />
         <span className="movement-exercise-name">{tile.name}</span>
         <span className="movement-tile-context">
-          {tile.labels.join(" · ")}
-          {!tile.supported
-            ? "Time/assistance logging unavailable"
-            : tile.equipmentAvailable === false
-              ? " · Check equipment"
-              : ""}
-          {movement.currentExerciseId === tile.id ? " · Selected" : ""}
-          {inSearch && tile.level === null ? " · Choose deliberately" : ""}
+          {[
+            ...tile.labels,
+            ...(!tile.supported
+              ? ["Time/assistance logging unavailable"]
+              : tile.equipmentAvailable === false
+                ? ["Check equipment"]
+                : []),
+            ...(movement.currentExerciseId === tile.id ? ["Selected"] : []),
+            ...(inSearch && tile.level === null ? ["Choose deliberately"] : []),
+          ].join(" · ")}
         </span>
       </button>
     );
