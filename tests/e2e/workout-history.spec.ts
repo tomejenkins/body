@@ -53,6 +53,10 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
   await page
     .getByRole("button", { name: "Record Workout", exact: true })
     .click();
+  await expect(page).toHaveURL(/\/workout\/new$/);
+  await page
+    .getByRole("button", { name: "Start Blank Workout", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}$/);
   const id = new URL(page.url()).pathname.split("/").at(-1);
   for (const slug of ["push_up", "barbell_bench_press"])
@@ -67,15 +71,12 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
     ).toBeNull();
   await page.reload();
   await openExerciseLogger(page, "Push-up");
-  const push = page.locator(".workout-item").filter({
-    has: page.getByRole("heading", { name: "Push-up", exact: true }),
-  });
-  const bench = page.locator(".workout-item").filter({
-    has: page.getByRole("heading", {
-      name: "Barbell bench press",
-      exact: true,
-    }),
-  });
+  const push = page.locator(
+    `.workout-item[data-exercise-id="${exercise("push_up")}"]`,
+  );
+  const bench = page.locator(
+    `.workout-item[data-exercise-id="${exercise("barbell_bench_press")}"]`,
+  );
   await expect(push.locator(".logged-set")).toHaveCount(3);
   await expect(push.getByRole("textbox", { name: /weight/ })).toHaveCount(0);
   await expect(push.locator(".set-grid.reps-first").first()).toBeVisible();

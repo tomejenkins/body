@@ -25,6 +25,9 @@ export default async function Page({
         <ProgramBadges program={loaded} now={new Date()} />
         <h1>{p.name}</h1>
         <p className="program-summary">{p.summary}</p>
+        <Link className="program-quick-start" href="#program-workouts">
+          View workouts ↓
+        </Link>
       </header>
       <dl className="program-overview">
         <div>
@@ -72,17 +75,20 @@ export default async function Page({
           <span key={t.slug}>{t.name}</span>
         ))}
       </div>
-      <section aria-label="Program description">
-        <ProgramDescription
-          text={p.description_markdown
-            .replace(
-              /Following and scheduling programs arrives in Phase 7\.3\./g,
-              "",
-            )
-            .replace(/\bpositions\b/g, "steps")
-            .replace(/\bposition\b/g, "step")}
-        />
-      </section>
+      <details className="program-about">
+        <summary>About this program</summary>
+        <section aria-label="Program description">
+          <ProgramDescription
+            text={p.description_markdown
+              .replace(
+                /Following and scheduling programs arrives in Phase 7\.3\./g,
+                "",
+              )
+              .replace(/\bpositions\b/g, "steps")
+              .replace(/\bposition\b/g, "step")}
+          />
+        </section>
+      </details>
       <section className="library-section">
         <h2>Equipment</h2>
         <p>
@@ -92,7 +98,7 @@ export default async function Page({
             .join(" · ")}
         </p>
       </section>
-      <section className="program-workouts">
+      <section className="program-workouts" id="program-workouts">
         <h2>The rotation</h2>
         <p>
           Follow the workout order. Take the rest breaks shown, and add recovery
@@ -129,69 +135,73 @@ export default async function Page({
                     }
                     request={crypto.randomUUID()}
                   />
-                  <ol className="program-slots">
-                    {day.slots.map((slot) => {
-                      const rule = d.rules.find(
-                        (r) => r.id === slot.progression_rule_id,
-                      );
-                      return (
-                        <li key={slot.id}>
-                          <h4>
-                            <Link href={`/exercises/${slot.exercise_id}`}>
-                              {exercises.get(slot.exercise_id) ??
-                                "Exercise unavailable"}
-                            </Link>
-                          </h4>
-                          <p className="program-meta">
-                            {patterns.get(slot.movement_pattern_id)} ·{" "}
-                            {slot.target_sets} working sets ·{" "}
-                            {slot.target_reps_min === slot.target_reps_max
-                              ? slot.target_reps_min
-                              : `${slot.target_reps_min}–${slot.target_reps_max}`}{" "}
-                            reps
-                          </p>
-                          <ul className="program-prescriptions">
-                            {slot.sets.map((set) => (
-                              <li key={set.position}>
-                                Set {set.position}:{" "}
-                                {set.reps_min === set.reps_max
-                                  ? set.reps_min
-                                  : `${set.reps_min}–${set.reps_max}`}{" "}
-                                reps
-                                {set.effort_scale &&
-                                  ` · Target ${set.effort_scale.toUpperCase()} ${set.effort_value === 5 && set.effort_scale === "rir" ? "5+" : set.effort_value}`}
-                                {set.intended_to_failure &&
-                                  " · Optional To Failure intent"}
-                              </li>
-                            ))}
-                          </ul>
-                          <p className="program-meta">
-                            Rest guidance: {slot.rest_seconds}–
-                            {slot.rest_seconds_max} seconds; longer when needed.
-                          </p>
-                          {slot.alternatives.length > 0 && (
-                            <p>
-                              Alternatives:{" "}
-                              {slot.alternatives.map((a, i) => (
-                                <span key={a.exercise_id}>
-                                  {i > 0 ? " · " : ""}
-                                  <Link href={`/exercises/${a.exercise_id}`}>
-                                    {exercises.get(a.exercise_id) ??
-                                      "Exercise unavailable"}
-                                  </Link>
-                                </span>
-                              ))}
+                  <details className="program-workout-preview">
+                    <summary>View {day.slots.length} movements</summary>
+                    <ol className="program-slots">
+                      {day.slots.map((slot) => {
+                        const rule = d.rules.find(
+                          (r) => r.id === slot.progression_rule_id,
+                        );
+                        return (
+                          <li key={slot.id}>
+                            <h4>
+                              <Link href={`/exercises/${slot.exercise_id}`}>
+                                {exercises.get(slot.exercise_id) ??
+                                  "Exercise unavailable"}
+                              </Link>
+                            </h4>
+                            <p className="program-meta">
+                              {patterns.get(slot.movement_pattern_id)} ·{" "}
+                              {slot.target_sets} working sets ·{" "}
+                              {slot.target_reps_min === slot.target_reps_max
+                                ? slot.target_reps_min
+                                : `${slot.target_reps_min}–${slot.target_reps_max}`}{" "}
+                              reps
                             </p>
-                          )}
-                          <p className="program-meta">
-                            {rule?.strategy === "linear_load"
-                              ? "Progression: small load steps after controlled completion; repeat load when needed."
-                              : "Progression: build reps within the range before increasing load."}
-                          </p>
-                        </li>
-                      );
-                    })}
-                  </ol>
+                            <ul className="program-prescriptions">
+                              {slot.sets.map((set) => (
+                                <li key={set.position}>
+                                  Set {set.position}:{" "}
+                                  {set.reps_min === set.reps_max
+                                    ? set.reps_min
+                                    : `${set.reps_min}–${set.reps_max}`}{" "}
+                                  reps
+                                  {set.effort_scale &&
+                                    ` · Target ${set.effort_scale.toUpperCase()} ${set.effort_value === 5 && set.effort_scale === "rir" ? "5+" : set.effort_value}`}
+                                  {set.intended_to_failure &&
+                                    " · Optional To Failure intent"}
+                                </li>
+                              ))}
+                            </ul>
+                            <p className="program-meta">
+                              Rest guidance: {slot.rest_seconds}–
+                              {slot.rest_seconds_max} seconds; longer when
+                              needed.
+                            </p>
+                            {slot.alternatives.length > 0 && (
+                              <p>
+                                Alternatives:{" "}
+                                {slot.alternatives.map((a, i) => (
+                                  <span key={a.exercise_id}>
+                                    {i > 0 ? " · " : ""}
+                                    <Link href={`/exercises/${a.exercise_id}`}>
+                                      {exercises.get(a.exercise_id) ??
+                                        "Exercise unavailable"}
+                                    </Link>
+                                  </span>
+                                ))}
+                              </p>
+                            )}
+                            <p className="program-meta">
+                              {rule?.strategy === "linear_load"
+                                ? "Progression: small load steps after controlled completion; repeat load when needed."
+                                : "Progression: build reps within the range before increasing load."}
+                            </p>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  </details>
                 </>
               )}
               <p className="program-meta">{day.notes}</p>

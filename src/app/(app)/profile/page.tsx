@@ -25,16 +25,14 @@ export default async function Page() {
     <>
       <div className="page-heading">
         <p className="eyebrow">MAKE IT YOURS</p>
-        <h1>Your space. Your pace.</h1>
-        <p className="intro">
-          A little space for the person behind the progress.
-        </p>
+        <h1>Profile</h1>
+        <p className="intro">Account and workout preferences.</p>
       </div>
       <WeightUnitSettings initialUnit={preference.data.display_weight_unit} />
       <EffortPreferenceSettings
         initialScale={preference.data.preferred_effort_scale}
       />
-      <section className="empty-state">
+      <section className="account-group">
         <h2>{account.profile?.display_name}</h2>
         <p>Your account and training history are private.</p>
         <div className="auth-links">

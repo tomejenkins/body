@@ -64,7 +64,7 @@ export default async function Page({
         ) : (
           <Link href="/exercises">← Exercise library</Link>
         )}
-        <p className="eyebrow">
+        <p className="exercise-origin">
           {exercise.ownerId
             ? "PRIVATE CUSTOM EXERCISE"
             : "BODY EXERCISE LIBRARY"}

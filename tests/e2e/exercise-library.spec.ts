@@ -21,9 +21,7 @@ test("search, combined filters, hard type constraints and favorites", async ({
   await loginForNavigation(page);
   await page.goto("/workout");
   await page.getByRole("link", { name: "Explore exercise library" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Find your movement." }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Exercises" })).toBeVisible();
   await expect(
     page
       .getByRole("navigation")

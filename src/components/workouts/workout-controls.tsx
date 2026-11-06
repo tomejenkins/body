@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useActionState } from "react";
 import {
   startWorkout,
@@ -25,11 +26,19 @@ function Feedback({ state }: { state: WorkoutState }) {
   );
 }
 export function StartWorkout() {
+  const router = useRouter();
+  return (
+    <Button type="button" onClick={() => router.push("/workout/new")}>
+      Record Workout
+    </Button>
+  );
+}
+export function StartBlankWorkout() {
   const [state, action, pending] = useActionState(startWorkout, initial);
   return (
     <form action={action}>
       <Button type="submit" disabled={pending} aria-busy={pending}>
-        {pending ? "Opening workout…" : "Record Workout"}
+        {pending ? "Opening workout…" : "Start Blank Workout"}
       </Button>
       <Feedback state={state} />
     </form>

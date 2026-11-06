@@ -202,3 +202,7 @@ Forward migrations add restricted platform-principal typing, controlled program_
 ## Phase 7.3 movement execution
 
 The single forward migration adds workout_movements (owner/session/ordered immutable slot snapshot), session start retry identity, exercise-to-movement links with protected remaining-prescription snapshots, and protected program_set_number provenance on actual set rows. Nullable actual effort and canonical measurements remain in their existing tables. Invoker start/select/last-choice functions derive ownership, source snapshots and defaults, with no invented unselected exercise IDs. New guards preserve program source and actual identity; FK cleanup never migrates recorded measurements. Read [in-workout selection](in-workout-exercise-selection.md).
+
+## Mobile-first ad-hoc movement shells
+
+The forward `20261106052342_ad_hoc_movement_shells.sql` migration extends existing sessions with immutable ad_hoc_focus/start nonce and workout_movements with validated suggested taxonomy inputs, a retry nonce and guarded removed_at. No new parallel program, session or performance table is introduced. Server-derived snapshots have no preselected exercise/load/effort. Existing actual exercise bindings, set targets, selection/continuation and performance sources are reused. Removed intent is filtered from active views; recorded intent cannot be removed. See [mobile-first UX](mobile-first-ux.md).

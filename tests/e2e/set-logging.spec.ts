@@ -29,6 +29,10 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   await page
     .getByRole("button", { name: "Record Workout", exact: true })
     .click();
+  await expect(page).toHaveURL(/\/workout\/new$/);
+  await page
+    .getByRole("button", { name: "Start Blank Workout", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}$/);
   const path = new URL(page.url()).pathname;
   await page.getByRole("link", { name: "Add exercises", exact: true }).click();
@@ -134,6 +138,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     .select("actual_weight_kg,revision")
     .eq("id", firstId)
     .single();
+  await backToWorkoutHome(page);
   await page
     .getByRole("navigation")
     .getByRole("link", { name: "Profile", exact: true })
@@ -241,13 +246,15 @@ test("bodyweight, visible save failure, navigation guard, retained edits and con
   await expect(
     page.getByRole("button", { name: "Finish workout", exact: true }),
   ).toHaveCount(0);
+  await backToWorkoutHome(page);
   await page
     .getByRole("navigation")
     .getByRole("link", { name: "Profile", exact: true })
     .click();
   await expect(page.locator(".draft-warning")).toBeVisible();
-  await expect(page).toHaveURL(new RegExp(path + "\\?exercise="));
+  await expect(page).toHaveURL(new RegExp(path + "$"));
   await page.getByRole("button", { name: "Stay here", exact: true }).click();
+  await openExerciseLogger(page);
   page.once("dialog", (dialog) => dialog.accept());
   await page.reload();
   await expect(row(page, 0).getByRole("textbox", { name: /reps/ })).toHaveValue(

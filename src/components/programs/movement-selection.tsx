@@ -175,6 +175,7 @@ export function MovementSelection({
       >
         {movement.candidates.map((t) => tileButton(t))}
       </div>
+      <p className="carousel-hint">Swipe to explore exercises</p>
       {message && (
         <p role="status" className="set-source">
           {message}

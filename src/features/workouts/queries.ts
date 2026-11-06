@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/features/auth/session";
 import type { Workout, WorkoutStatus } from "./types";
 type SessionRow = {
+  source_program_version_id: string | null;
   id: string;
   name: string;
   status: WorkoutStatus;
@@ -43,7 +44,9 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
   if (continuity.error) throw new Error("Workout status could not be loaded.");
   let query = client
     .from("workout_sessions")
-    .select("id,name,status,completion_status,started_at,finished_at")
+    .select(
+      "id,name,status,completion_status,started_at,finished_at,source_program_version_id",
+    )
     .eq("owner_id", user.id);
   query = id ? query.eq("id", id) : query.eq("status", "in_progress");
   const result = await query.maybeSingle<SessionRow>();
@@ -101,6 +104,7 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
   if (preference.error)
     throw new Error("Weight preference could not be loaded.");
   return {
+    isProgram: !!session.source_program_version_id,
     continuity: continuity.data as
       import("@/features/continuity/model").Continuity | null,
     userId: user.id,

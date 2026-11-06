@@ -204,6 +204,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
     revision: r.revision,
   }));
   for (const unit of ["kg", "lb"]) {
+    await backToWorkoutHome(page);
     await page
       .getByRole("navigation")
       .getByRole("link", { name: "Profile", exact: true })

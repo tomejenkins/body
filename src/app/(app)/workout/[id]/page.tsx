@@ -33,6 +33,7 @@ export default async function Page({
         ...workout,
         movements: selection.movements,
         movementFacets: selection.facets,
+        movementOptions: selection.movementOptions,
       }}
     />
   );

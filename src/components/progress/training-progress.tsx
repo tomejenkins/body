@@ -139,11 +139,14 @@ export function TrainingProgress() {
                 </button>
               </div>
             </div>
-            <p>
-              Workouts use their local start date in {zone}. Multiple workouts
-              on one day count as one training day. Calendar month is
-              independent of the summary range.
-            </p>
+            <details className="progress-note">
+              <summary>Calendar and timezone</summary>
+              <p>
+                Workouts use their local start date in {zone}. Multiple workouts
+                on one day count as one training day. Calendar month is
+                independent of the summary range.
+              </p>
+            </details>
             <div
               className="training-calendar"
               role="group"
@@ -184,29 +187,32 @@ export function TrainingProgress() {
               periods. Completed working sets are counted once overall. Unloaded
               bodyweight reps remain separate from external volume.
             </p>
-            <div className="progress-table-scroll">
-              <table>
-                <caption>Completed working-set trends</caption>
-                <thead>
-                  <tr>
-                    <th>Period starting</th>
-                    <th>Working sets</th>
-                    <th>Unloaded bodyweight sets</th>
-                    <th>Bodyweight reps</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.weekly.map((w) => (
-                    <tr key={w.week}>
-                      <td>{w.week}</td>
-                      <td>{w.working_sets}</td>
-                      <td>{w.bodyweight_sets}</td>
-                      <td>{w.bodyweight_reps}</td>
+            <details>
+              <summary>View weekly working sets</summary>
+              <div className="progress-table-scroll">
+                <table>
+                  <caption>Completed working-set trends</caption>
+                  <thead>
+                    <tr>
+                      <th>Period starting</th>
+                      <th>Working sets</th>
+                      <th>Unloaded bodyweight sets</th>
+                      <th>Bodyweight reps</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {data.weekly.map((w) => (
+                      <tr key={w.week}>
+                        <td>{w.week}</td>
+                        <td>{w.working_sets}</td>
+                        <td>{w.bodyweight_sets}</td>
+                        <td>{w.bodyweight_reps}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
           </section>
           <section className="progress-section" aria-label="Exercise volume">
             <h2>External-load volume</h2>

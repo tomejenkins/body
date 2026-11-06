@@ -101,7 +101,7 @@ test("program Home accordion, focused navigation, status, context, refresh and r
     .getByRole("link", { name: "Back to Exercise Logger", exact: true })
     .click();
   await expect(page).toHaveURL(focusedUrl);
-  await page.locator(".workout-item h2 a").first().click();
+  await page.locator(".selected-exercise-title a").first().click();
   await page
     .getByRole("link", { name: "← Back to Exercise Logger", exact: true })
     .click();

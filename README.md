@@ -166,3 +166,11 @@ See [Phase 7.2 validation and release](docs/phase-7-2-validation.md) for actual 
 ## Phase 7.3 in-workout exercise selection
 
 Program detail pages now start workouts in Workout Home. One expanded movement card offers a compact carousel; selecting a tile opens a dedicated exercise logger with safe Back navigation. The carousel orders Program Pick, qualifying slot-specific Last Choice, then deterministic match-ranked alternatives. Four contextual compatibility labels and inline See All search retain broader choices. Selection persists across clients; explicit substitutions preserve logged exercise identities and remaining prescriptions. Read [in-workout selection](docs/in-workout-exercise-selection.md) and [two-screen validation](docs/phase-7-3-two-screen-validation.md). Calendar scheduling and the full program editor are separate scope. Apply the single reviewed Phase 7.3 forward migration before app rollout; no hosted SQL is run by local validation.
+
+## Mobile-first application UX
+
+Home now prioritizes your actual active workout, recording and recent training. A shared native-style presentation layer refines tabs, headers, cards, charts, settings and auth while retaining both themes. The focused mobile logger keeps global tabs out of the way and preserves Back, drafts and saved performance.
+
+Record Workout offers Primary Muscle Group and optional Secondary Muscle Group. Each normally suggests two complementary movements; limited classifications produce fewer honest options. Start Blank Workout remains a direct action. Suggestions contain set/rep guidance only: choose actual exercises as you train, with no selected weights or fabricated performance. Recorded movements are preserved before confirmed changes.
+
+See [mobile-first UX audit, architecture and validation](docs/mobile-first-ux.md). Review/apply the single new ad-hoc movement migration before releasing this revision. No additional dependencies or environment keys are required; local validation does not modify hosted Supabase or deploy production.

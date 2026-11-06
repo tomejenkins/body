@@ -7,6 +7,7 @@ export type MovementTile = Pick<
 > & { id: string; name: string; visual: VisualInput; supported: boolean };
 export type WorkoutMovement = {
   id: string;
+  suggested?: boolean;
   position: number;
   label: string;
   target: MovementTarget;
