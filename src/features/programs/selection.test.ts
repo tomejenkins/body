@@ -50,8 +50,8 @@ it("distinguishes flat press mechanics, equipment changes, incline and fly witho
   expect(Object.values(matchLabels)).toEqual([
     "Same Muscle",
     "Similar",
-    "Close Match",
-    "Best Match",
+    "Close",
+    "",
   ]);
 });
 it("keeps pick then last choice regardless of match, deduplicates and computes pick quality independently", () => {
@@ -71,7 +71,7 @@ it("keeps pick then last choice regardless of match, deduplicates and computes p
   expect(result[1]).toMatchObject({
     exercise: last,
     level: 1,
-    labels: ["Your Last Choice"],
+    labels: ["Last Used"],
   });
   expect(new Set(result.map((c) => c.exercise.id)).size).toBe(result.length);
   const same = rankMovementExercises(exercises, {
@@ -79,7 +79,7 @@ it("keeps pick then last choice regardless of match, deduplicates and computes p
     programPickId: pick.id,
     lastChoiceId: pick.id,
   });
-  expect(same[0].labels).toEqual(["Program Pick", "Your Last Choice"]);
+  expect(same[0].labels).toEqual(["Program Pick", "Last Used"]);
 });
 it("is deterministic, retains all four levels and filters additional equipment without guessing availability", () => {
   const input = {

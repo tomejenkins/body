@@ -923,7 +923,7 @@ select ok((select has_table_privilege('authenticated','public.program_assignment
 
 select ok((select has_table_privilege('authenticated','public.program_assignments','DELETE') = false), 'program_assignments: DELETE matches reviewed matrix');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.program_assignments',attname,'INSERT') = (attname = any(array['id','owner_id','program_id','cycle_length','state','next_cycle_position','completed_rotations','started_at','ended_at']::text[]))) from pg_attribute where attrelid='public.program_assignments'::regclass and attnum>0 and not attisdropped), 'program_assignments: exact INSERT column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.program_assignments',attname,'INSERT') = (attname = any(array['id','owner_id','program_id','cycle_length','state','next_cycle_position','completed_rotations','started_at','ended_at','source_version_id']::text[]))) from pg_attribute where attrelid='public.program_assignments'::regclass and attnum>0 and not attisdropped), 'program_assignments: exact INSERT column allowlist');
 
 select ok((select bool_and(has_column_privilege('authenticated','public.program_assignments',attname,'UPDATE') = (attname = any(array['state','next_cycle_position','completed_rotations','ended_at']::text[]))) from pg_attribute where attrelid='public.program_assignments'::regclass and attnum>0 and not attisdropped), 'program_assignments: exact UPDATE column allowlist');
 

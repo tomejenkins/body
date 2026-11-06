@@ -141,12 +141,12 @@ export function MovementSelection({
         key={tile.id}
         className={`movement-tile ${tile.level === 4 ? "best-match" : ""}`}
         aria-pressed={movement.currentExerciseId === tile.id}
-        aria-label={`${tile.name}, ${label}${tile.labels.length ? ", " + tile.labels.join(", ") : ""}`}
+        aria-label={`${tile.name}${label ? ", " + label : ""}${tile.labels.length ? ", " + tile.labels.join(", ") : ""}`}
         disabled={disabled || busy || transitioning || !tile.supported}
         onClick={() => void choose(tile)}
         data-exercise-id={tile.id}
       >
-        <span className="movement-match">{label}</span>
+        {label && <span className="movement-match">{label}</span>}
         <ExerciseThumbnail visual={tile.visual} size={32} />
         <span className="movement-exercise-name">{tile.name}</span>
         <span className="movement-tile-context">

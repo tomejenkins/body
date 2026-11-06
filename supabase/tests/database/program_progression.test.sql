@@ -1,0 +1,112 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path=public,extensions,pg_temp;
+select no_plan();
+insert into auth.users(id) values(md5('progression_a')::uuid),(md5('progression_b')::uuid);
+insert into profiles(id,display_name) values(md5('progression_a')::uuid,'A'),(md5('progression_b')::uuid,'B');
+insert into account_preferences(owner_id) values(md5('progression_a')::uuid),(md5('progression_b')::uuid);
+create function pg_temp.rotation(n integer) returns uuid language plpgsql security invoker as $$
+declare root uuid;day uuid;
+begin
+ insert into public.programs(owner_id,name,cycle_length,objective,duration_rotations) values(auth.uid(),'Progression rotation '||n,n,'hypertrophy',1) returning id into root;
+ for i in 1..n loop
+ insert into public.program_days(owner_id,program_id,cycle_length,cycle_position,name,is_rest_day) values(auth.uid(),root,n,i,'Workout '||i,i=n) returning id into day;
+ if i<>n then insert into public.program_slots(owner_id,program_day_id,position,movement_pattern_id,exercise_id,target_sets,target_reps_min,target_reps_max,required_exercise_type,primary_muscle_id) values(auth.uid(),day,1,(select id from public.movement_patterns where slug='horizontal_push'),(select id from public.exercises where slug='barbell_bench_press'),2,8,12,'compound',(select id from public.muscle_groups where slug='pectorals'));end if;
+ end loop;return public.snapshot_program(root);
+end $$;
+create function pg_temp.finish_day(v uuid,d int,nonce text) returns uuid language plpgsql security invoker as $$
+declare w uuid;m uuid;e uuid;s public.workout_sets;
+begin
+ w:=public.start_program_workout(v,d,md5(nonce)::uuid);
+ select id into m from public.workout_movements where workout_session_id=w and owner_id=auth.uid() limit 1;
+ e:=public.select_program_exercise(m,(select id from public.exercises where slug='barbell_bench_press'),null,gen_random_uuid());
+ for s in select * from public.workout_sets where workout_exercise_id=e and owner_id=auth.uid() order by position loop
+ perform public.log_workout_set(p_item=>e,p_id=>s.id,p_operation=>'save',p_revision=>s.revision,p_mutation=>gen_random_uuid(),p_reps=>12,p_weight=>50,p_type=>'working',p_completed=>true);
+ end loop;
+ perform public.end_workout(w,'completed');return w;
+end $$;
+select ok(not has_function_privilege('anon','public.program_progression_evidence(uuid)','EXECUTE'),'anonymous evidence denied');
+select ok(not has_function_privilege('anon','public.program_saved_progress(uuid,uuid)','EXECUTE'),'anonymous saved progress denied');
+select ok(not has_function_privilege('service_role','public.program_adherence(uuid)','EXECUTE'),'service-role bypass denied');
+set local role authenticated;
+select set_config('request.jwt.claims',json_build_object('sub',md5('progression_a')::uuid,'role','authenticated')::text,true);
+select is(public.program_adherence(),null::jsonb,'no assignment is honestly empty');
+select set_config('body_test.version',pg_temp.rotation(3)::text,true);
+select set_config('body_test.session',pg_temp.finish_day(current_setting('body_test.version')::uuid,1,'pday1')::text,true);
+select is((program_adherence()->>'completedWorkouts')::int,1,'one actual completed program workout');
+select is((program_adherence()->>'nextPosition')::int,2,'advances to next training position');
+select is((program_adherence()->>'completedRotations')::int,0,'a partial rotation is not a completed rotation');
+select is((program_adherence()->>'completedMovements')::int,1,'saved prescribed movement counted');
+select is((program_workout_outcomes(current_setting('body_test.session')::uuid)->0->>'repsAchieved')::int,2,'actual sets meet the rep prescription');
+select ok((select program_assignment_id is not null and source_rotation=0 from workout_sessions where id=current_setting('body_test.session')::uuid),'source assignment bound atomically');
+select is(jsonb_array_length(program_progression_evidence(current_setting('body_test.session')::uuid)),1,'only selected exercise evidence returned');
+select is(jsonb_array_length(program_progression_evidence(current_setting('body_test.session')::uuid)->0->'history'),2,'eligible actual working sets returned');
+select is(start_program_workout(current_setting('body_test.version')::uuid,1,md5('pday1')::uuid),current_setting('body_test.session')::uuid,'completion retry never duplicates a rotation event');
+select set_config('body_test.last',pg_temp.finish_day(current_setting('body_test.version')::uuid,2,'pday2')::text,true);
+select is((program_adherence()->>'completedRotations')::int,1,'all training workouts complete one rotation');
+select is((program_adherence()->>'programComplete')::boolean,true,'fixed-duration completion requires full rotations');
+select is((program_adherence()->>'nextPosition')::int,1,'planned rest day skipped without a missed day');
+select set_config('body_test.next',start_program_workout(current_setting('body_test.version')::uuid,1,md5('pday3')::uuid)::text,true);
+select is((select source_rotation from workout_sessions where id=current_setting('body_test.next')::uuid),1,'next rotation identity is stable');
+select end_workout(current_setting('body_test.next')::uuid,'abandoned');
+select is((program_adherence()->>'completedWorkouts')::int,2,'abandonment does not count as completion');
+select is((program_adherence()->>'nextPosition')::int,1,'abandonment does not advance rotation');
+select set_config('body_test.v4',pg_temp.rotation(4)::text,true);
+select set_config('body_test.v8',pg_temp.rotation(8)::text,true);
+select set_config('body_test.v10',pg_temp.rotation(10)::text,true);
+select set_config('body_test.w4',pg_temp.finish_day(current_setting('body_test.v4')::uuid,1,'fourday')::text,true);
+select is((program_adherence()->>'trainingDays')::int,3,'four-position routine retains rest');
+select set_config('body_test.w8',pg_temp.finish_day(current_setting('body_test.v8')::uuid,6,'eightday')::text,true);
+select is((program_adherence()->>'nextPosition')::int,7,'eight-day rotation never maps to weekdays');
+select is((program_adherence()->>'completedRotations')::int,0,'skipping ahead does not fabricate a completed rotation');
+select set_config('body_test.w10',pg_temp.finish_day(current_setting('body_test.v10')::uuid,9,'tenday')::text,true);
+select is((program_adherence()->>'nextPosition')::int,1,'ten-day cycle wraps past prescribed rest');
+select is((program_adherence()->>'completedWorkouts')::int,1,'program change separates assignment totals');
+select is((program_adherence(current_setting('body_test.session')::uuid)->>'completedWorkouts')::int,2,'older assignment history remains readable');
+select throws_ok($$update workout_sessions set source_rotation=999 where id=current_setting('body_test.w10')::uuid$$,'42501',null,'client cannot rewrite rotation identity');
+select throws_ok($$update program_assignments set source_version_id=current_setting('body_test.version')::uuid where state='active'$$,'42501',null,'client cannot change immutable assignment version');
+
+select set_config('body_test.partial',start_program_workout(current_setting('body_test.v10')::uuid,1,md5('partial_day')::uuid)::text,true);
+select set_config('body_test.pm',(select id::text from workout_movements where workout_session_id=current_setting('body_test.partial')::uuid),true);
+select set_config('body_test.pi',select_program_exercise(current_setting('body_test.pm')::uuid,(select id from exercises where slug='barbell_bench_press'),null,md5('partial_pick')::uuid)::text,true);
+select log_workout_set(p_item=>current_setting('body_test.pi')::uuid,p_id=>(select id from workout_sets where workout_exercise_id=current_setting('body_test.pi')::uuid order by position limit 1),p_operation=>'save',p_revision=>0,p_mutation=>md5('partial_actual')::uuid,p_reps=>9,p_weight=>50,p_type=>'working',p_completed=>true);
+select end_workout(current_setting('body_test.partial')::uuid,'completed');
+select is((program_adherence()->>'partialMovements')::int,1,'partial movement counted separately');
+select is((program_adherence()->>'completedRotations')::int,0,'partial workout cannot establish full rotation');
+select is((program_workout_outcomes(current_setting('body_test.partial')::uuid)->0->>'completed')::int,1,'pending suggestions do not count toward completion');
+select set_config('body_test.partial_retry',start_program_workout(current_setting('body_test.v10')::uuid,1,md5('partial_retry')::uuid)::text,true);
+select is((select source_rotation from workout_sessions where id=current_setting('body_test.partial_retry')::uuid),(select source_rotation from workout_sessions where id=current_setting('body_test.partial')::uuid),'retrying a partial same-position workout stays in its rotation');
+select end_workout(current_setting('body_test.partial_retry')::uuid,'abandoned');
+reset role;
+-- Historical correction fixture: privileged LOCAL transaction only, never a client correction endpoint.
+update workout_sets set deleted_at=clock_timestamp() where workout_exercise_id=current_setting('body_test.pi')::uuid and status='completed';
+set local role authenticated;
+select is((program_workout_outcomes(current_setting('body_test.partial')::uuid)->0->>'completed')::int,0,'deleted actuals excluded on recomputation');
+select is((select count(*)::int from jsonb_array_elements(program_progression_evidence(current_setting('body_test.partial')::uuid)->0->'history') h where h->>'sessionId'=current_setting('body_test.partial')),0,'deleted performance cannot inform future progression');
+
+
+select set_config('body_test.zero',start_program_workout(current_setting('body_test.v10')::uuid,2,md5('zero_day')::uuid)::text,true);
+select set_config('body_test.zm',(select id::text from workout_movements where workout_session_id=current_setting('body_test.zero')::uuid),true);
+select set_config('body_test.zi',select_program_exercise(current_setting('body_test.zm')::uuid,(select id from exercises where slug='barbell_bench_press'),null,md5('zero_pick')::uuid)::text,true);
+select log_workout_set(p_item=>current_setting('body_test.zi')::uuid,p_id=>id,p_operation=>'save',p_revision=>revision,p_mutation=>gen_random_uuid(),p_reps=>0,p_weight=>50,p_type=>'working',p_completed=>true) from workout_sets where workout_exercise_id=current_setting('body_test.zi')::uuid;
+select end_workout(current_setting('body_test.zero')::uuid,'completed');
+select is((program_workout_outcomes(current_setting('body_test.zero')::uuid)->0->>'completed')::int,0,'zero-rep sets do not count toward movement progress');
+select is((program_adherence()->>'completedWorkouts')::int,1,'deleted and zero-rep-only sessions do not fabricate training activity');
+select is((program_adherence()->>'completedRotations')::int,0,'cached session labels cannot fabricate a full rotation');
+update program_slots set exercise_id=(select id from exercises where slug='pull_up'),movement_pattern_id=(select id from movement_patterns where slug='vertical_pull'),primary_muscle_id=(select id from muscle_groups where slug='lats') where program_day_id in(select id from program_days where program_id=(select program_id from program_versions where id=current_setting('body_test.v10')::uuid));
+select set_config('body_test.bwv',snapshot_program((select program_id from program_versions where id=current_setting('body_test.v10')::uuid))::text,true);
+select set_config('body_test.bw',start_program_workout(current_setting('body_test.bwv')::uuid,1,md5('bw_start')::uuid)::text,true);
+select set_config('body_test.bwm',(select id::text from workout_movements where workout_session_id=current_setting('body_test.bw')::uuid),true);
+select throws_ok($$select select_program_exercise(current_setting('body_test.bwm')::uuid,'0bca06a9-efe1-58e7-876b-32b6284a2094',null,md5('unsupported_pick')::uuid)$$,'22023',null,'assisted measurements cannot enter ordinary progression logging');
+select set_config('body_test.bwi',select_program_exercise(current_setting('body_test.bwm')::uuid,(select id from exercises where slug='pull_up'),null,md5('bw_pick')::uuid)::text,true);
+select log_workout_set(p_item=>current_setting('body_test.bwi')::uuid,p_id=>(select id from workout_sets where workout_exercise_id=current_setting('body_test.bwi')::uuid order by position limit 1),p_operation=>'save',p_revision=>0,p_mutation=>md5('bw_actual')::uuid,p_reps=>10,p_mode=>'bodyweight',p_type=>'working',p_completed=>true);
+select end_workout(current_setting('body_test.bw')::uuid,'completed');
+select is(program_progression_evidence(current_setting('body_test.bw')::uuid)->0->'history','[]'::jsonb,'bodyweight repetitions never become external-load evidence');
+select is((select source_program_version_id from workout_sessions where id=current_setting('body_test.w10')::uuid),current_setting('body_test.v10')::uuid,'new template edition does not rewrite prior execution versions');
+select set_config('request.jwt.claims',json_build_object('sub',md5('progression_b')::uuid,'role','authenticated')::text,true);
+select is(program_adherence(current_setting('body_test.session')::uuid),null::jsonb,'other user cannot inspect assignment progress');
+select throws_ok($$select program_progression_evidence(current_setting('body_test.session')::uuid)$$,'42501',null,'other user cannot inspect load evidence');
+select is(program_workout_outcomes(current_setting('body_test.session')::uuid),'[]'::jsonb,'other user cannot inspect targets');
+select is((select count(*)::int from program_saved_progress(current_setting('body_test.session')::uuid)),0,'other user cannot inspect shared saved progress');
+reset role;
+select * from finish();rollback;

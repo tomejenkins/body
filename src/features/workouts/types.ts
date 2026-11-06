@@ -20,6 +20,10 @@ export type WorkoutItem = {
 export type Workout = {
   id: string;
   isProgram?: boolean;
+  loadSuggestions?: Record<
+    string,
+    import("@/features/programs/progression").LoadSuggestion
+  >;
   movementOptions?: import("./suggested-shell").SuggestedMovement[];
   name: string;
   status: WorkoutStatus;

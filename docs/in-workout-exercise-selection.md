@@ -60,3 +60,7 @@ One forward migration is genuinely required: an unselected movement cannot be re
 The current logger fetches the existing readable catalog once server-side and emits only compact movement candidates/facets, not the catalog or lifetime performance to the client. Last-choice reads use exact-slot owner indexes and reuse source eligibility. Search returns bounded pages; it currently reuses the full server catalog read model. Very large exercise catalogs should move this search to indexed SQL after measurement. Archived/unavailable catalog choices are not fabricated as selectable alternatives. Calendar/editor/activation-management UI, autonomous progression, community, cardio and subscriptions remain separate scope.
 
 Review/apply the single forward migration through the approved mechanism before app rollout. No new environment keys or dependencies are required. See the Phase 7.3 validation report for executed checks and unverified hosted/physical-device items. Keep this feature and the match amendment on the same Phase 7.3 branch and PR.
+
+## Phase 7.4 refinement
+
+Current tiles hide the level-4 quality label and use **Close**, **Similar**, **Same Muscle** for levels 3–1. **Last Used** replaces Your Last Choice; role labels remain independent of scoring. All ordering, selection, continuation and canonical-exercise safeguards remain. [Program progression](program-progression.md) adds explicitly applied history-based load suggestions and derived assignment progress without replacing the two-screen logger.

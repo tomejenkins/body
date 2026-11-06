@@ -62,7 +62,7 @@ test("direct logger, four match levels, touch carousel, persistence and explicit
     nodes.map((n) => n.getAttribute("data-exercise-id")),
   );
   expect(new Set(ids).size).toBe(ids.length);
-  for (const name of ["Best Match", "Close Match", "Similar", "Same Muscle"])
+  for (const name of ["Close", "Similar", "Same Muscle"])
     await expect(
       carousel(page)
         .locator(".movement-match")
@@ -253,7 +253,7 @@ test("only completed actual performance updates exact-slot last choice; pick/las
   const second = await start(page);
   const tiles = carousel(page).getByRole("button");
   await expect(tiles.nth(0)).toContainText("Program Pick");
-  await expect(tiles.nth(1)).toContainText("Your Last Choice");
+  await expect(tiles.nth(1)).toContainText("Last Used");
   await expect(tiles.nth(1)).toHaveAttribute("data-exercise-id", chosen);
   await tiles.nth(1).click();
   await expect(
@@ -285,7 +285,7 @@ test("only completed actual performance updates exact-slot last choice; pick/las
   ).toBeNull();
   const third = await start(page);
   await expect(carousel(page).getByRole("button").nth(1)).toContainText(
-    "Your Last Choice",
+    "Last Used",
   );
   const thirdMovement = await a.client
     .from("workout_movements")
@@ -328,7 +328,7 @@ test("only completed actual performance updates exact-slot last choice; pick/las
   ).toBeNull();
   await start(page);
   await expect(carousel(page).getByRole("button").first()).toContainText(
-    "Program Pick · Your Last Choice",
+    "Program Pick · Last Used",
   );
   expect(
     new Set(

@@ -53,11 +53,18 @@ it("renders all four selectable compatibility levels without upgrading the Progr
   expect(
     screen.getByRole("button", { name: /Exercise 2, Similar, Program Pick/ }),
   ).toBeEnabled();
-  for (const name of ["Best Match", "Close Match", "Similar", "Same Muscle"])
+  for (const name of ["Close", "Similar", "Same Muscle"])
     expect(screen.getByText(name, { exact: true })).toBeInTheDocument();
+  expect(
+    screen
+      .getByRole("button", { name: "Exercise 4" })
+      .querySelector(".movement-match"),
+  ).toBeNull();
   for (const level of [4, 3, 2, 1]) {
     fireEvent.click(
-      screen.getByRole("button", { name: new RegExp(`Exercise ${level},`) }),
+      screen.getByRole("button", {
+        name: new RegExp(`^Exercise ${level}(,|$)`),
+      }),
     );
     await waitFor(() =>
       expect(mocks.choose).toHaveBeenLastCalledWith(
@@ -69,7 +76,9 @@ it("renders all four selectable compatibility levels without upgrading the Progr
     );
     await waitFor(() =>
       expect(
-        screen.getByRole("button", { name: new RegExp(`Exercise ${level},`) }),
+        screen.getByRole("button", {
+          name: new RegExp(`^Exercise ${level}(,|$)`),
+        }),
       ).toBeEnabled(),
     );
   }

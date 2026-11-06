@@ -63,3 +63,7 @@ See [workout history](workout-history.md) for paginated owner-scoped History/Loo
 ## Phase 7.1 effort safety
 
 Historical load/reps may suggest structure; previous actual effort/failure never populates new actuals. Add set also clears advanced reports even while retaining useful load/reps. Separate protected prescription-effort snapshots prepare program execution without treating targets as actual user measurements. See [advanced logging](advanced-set-logging.md).
+
+## Phase 7.4 optional load guidance
+
+[Program progression](program-progression.md) adds a separate explicitly applied Suggested load, evaluated from exact-exercise completed evidence and immutable version rules. Existing default rows and saved actuals are preserved. Applying affects only untouched automatic pending working rows via the existing save queue; manual/recovered/queued/completed work is never overwritten. No recommendation implies completion or fills actual effort.

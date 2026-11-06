@@ -2,8 +2,8 @@ import { compatibleEquipment } from "@/features/exercises/recommendations";
 import type { Exercise, ExerciseType } from "@/features/exercises/types";
 export type MatchLevel = 1 | 2 | 3 | 4;
 export const matchLabels: Record<MatchLevel, string> = {
-  4: "Best Match",
-  3: "Close Match",
+  4: "",
+  3: "Close",
   2: "Similar",
   1: "Same Muscle",
 };
@@ -63,7 +63,7 @@ export function rankMovementExercises(
     level: exerciseMatch(exercise, input.target),
     labels: [
       ...(exercise.id === input.programPickId ? ["Program Pick"] : []),
-      ...(exercise.id === input.lastChoiceId ? ["Your Last Choice"] : []),
+      ...(exercise.id === input.lastChoiceId ? ["Last Used"] : []),
     ],
     equipmentAvailable:
       input.availableEquipmentIds === undefined
