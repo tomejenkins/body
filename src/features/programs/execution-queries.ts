@@ -1,5 +1,9 @@
 import "server-only";
-import { targetIntentKey } from "@/features/exercises/movement-intents";
+import {
+  intentByKey,
+  targetIntentKey,
+  movementIntents,
+} from "@/features/exercises/movement-intents";
 import { allMovementOptions } from "@/features/workouts/suggested-shell";
 import { loadLibrary } from "@/features/exercises/queries";
 import { libraryNoneId } from "@/features/exercises/recommendations";
@@ -113,7 +117,13 @@ export async function loadWorkoutMovements(workout: Workout) {
       label:
         slot.origin === "ad_hoc" && slot.title
           ? slot.title
-          : (library.patterns.find((p) => p.id === target.patternId)?.name ??
+          : (intentByKey(target.intentKey)?.title ??
+            movementIntents.find(
+              (i) =>
+                i.patternId === target.patternId &&
+                i.muscleId === target.muscleId,
+            )?.title ??
+            library.patterns.find((p) => p.id === target.patternId)?.name ??
             "Choose an exercise"),
       target,
       targetSets: slot.target_sets,

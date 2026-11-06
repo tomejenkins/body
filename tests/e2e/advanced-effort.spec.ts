@@ -1,4 +1,5 @@
 import {
+  openWorkoutEnding,
   openExerciseLogger,
   backToWorkoutHome,
 } from "./workout-screen-helpers";
@@ -122,9 +123,11 @@ test("optional effort and failure persist independently through queue, refresh, 
     extra.getByRole("checkbox", { name: /To Failure/ }),
   ).not.toBeChecked();
   await backToWorkoutHome(page);
+  await openWorkoutEnding(page);
   await page
     .getByRole("checkbox", { name: /Finish without completing all sets/ })
     .check();
+  await openWorkoutEnding(page);
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();

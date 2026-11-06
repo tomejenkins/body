@@ -27,7 +27,7 @@ async function start(page: Page) {
   await page
     .locator(".workout-items > li")
     .first()
-    .getByRole("button", { name: "Choose exercise", exact: true })
+    .getByRole("button", { name: /^Choose exercise/, exact: true })
     .click();
   return new URL(page.url()).pathname.split("/").pop()!;
 }
@@ -53,7 +53,7 @@ test("direct logger, four match levels, touch carousel, persistence and explicit
   await expect(page.locator(".logged-set")).toHaveCount(0);
   await expect(page.getByText(/cycle position/i)).toHaveCount(0);
   const tiles = carousel(page).getByRole("button");
-  await expect(tiles.first()).toContainText("Program Pick");
+  await expect(tiles.first()).toContainText("Program Recommended");
   await expect(tiles.first()).toHaveAttribute(
     "data-exercise-id",
     exercise("barbell_bench_press").id,
@@ -262,7 +262,7 @@ test("only completed actual performance updates exact-slot last choice; pick/las
   ).toBeNull();
   const second = await start(page);
   const tiles = carousel(page).getByRole("button");
-  await expect(tiles.nth(0)).toContainText("Program Pick");
+  await expect(tiles.nth(0)).toContainText("Program Recommended");
   await expect(tiles.nth(1)).toContainText("Last Used");
   await expect(tiles.nth(1)).toHaveClass(/last-used/);
   await page.locator(".movement-selection").screenshot({
@@ -284,7 +284,7 @@ test("only completed actual performance updates exact-slot last choice; pick/las
   await secondPage
     .locator(".workout-items > li")
     .first()
-    .getByRole("button", { name: "Choose or change exercise", exact: true })
+    .getByRole("button", { name: /^Choose or change exercise/, exact: true })
     .click();
   await expect(
     carousel(secondPage).locator('[aria-pressed="true"]'),
@@ -343,7 +343,7 @@ test("only completed actual performance updates exact-slot last choice; pick/las
   ).toBeNull();
   await start(page);
   await expect(carousel(page).getByRole("button").first()).toContainText(
-    "Program Pick · Last Used",
+    "Program Recommended · Last Used",
   );
   expect(
     new Set(

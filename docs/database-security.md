@@ -203,3 +203,7 @@ Progression evidence and program outcomes retain authenticated owner RLS and inv
 ## Movement intent refinement
 
 The forward movement-intent migration adds a narrow immutable suggested_intent INSERT field and authenticated-only read-only static registry function. Database-derived snapshots validate pattern/muscle/type and actual supported catalog coverage. Automatic starts accept up to six distinct intents, including distinct variations under the same pattern; legacy generic slots still work. Owner RLS, session-first locking, exact payload retries, closed/expiry guards, recorded-work protection and programme immutability retain the existing invoker implementation. No new table, broad grant or hosted write is introduced. See [movement matching and smart quick workouts](movement-matching-smart-workouts.md).
+
+## Focused workout timer
+
+See [focused workout mode](active-workout-mode.md) for the additive manual-pause fields, narrow command grant, owner-scoped invoker RPC, effective-duration rules and retained inactivity protections. No existing migration is edited.

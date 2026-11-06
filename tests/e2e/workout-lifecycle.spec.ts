@@ -1,3 +1,7 @@
+import {
+  openWorkoutManagement,
+  openWorkoutEnding,
+} from "./workout-screen-helpers";
 import { expect, test, type Page } from "@playwright/test";
 import catalog from "../../supabase/catalog/exercises.json" with { type: "json" };
 import { verifiedAccount } from "./auth-helpers";
@@ -50,6 +54,7 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
   await page.goto("/workout");
   await page.getByRole("link", { name: "Resume Workout", exact: true }).click();
   await expect(page).toHaveURL(new RegExp(path + "$"));
+  await openWorkoutManagement(page);
   await page.getByRole("link", { name: "Add exercises", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Choose your movements." }),
@@ -81,6 +86,7 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
     "Barbell bench press",
     "Dumbbell lateral raise",
   ]);
+  await openWorkoutManagement(page);
   await page
     .getByRole("button", {
       name: "Move Dumbbell lateral raise up",
@@ -95,10 +101,12 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
     .getByRole("button", { name: "Remove Barbell bench press", exact: true })
     .click();
   await expect(page.locator(".workout-items li")).toHaveCount(1);
-  await expect(page.locator(".workout-items li img")).toBeVisible();
+  await expect(page.locator(".workout-items li img")).toHaveCount(0);
+  await openWorkoutEnding(page);
   await page
     .getByRole("checkbox", { name: /Finish without completing all sets/ })
     .check();
+  await openWorkoutEnding(page);
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
@@ -192,6 +200,7 @@ test("concurrent starts share one session, owner boundaries hold and abandon pre
   await page.goto("/workout");
   await page.getByRole("link", { name: "Resume Workout", exact: true }).click();
   await expect(page.locator(".workout-items li h2")).toHaveText(["Push-up"]);
+  await openWorkoutEnding(page);
   await page.getByText("Abandon instead", { exact: true }).click();
   await page
     .getByRole("button", { name: "Abandon workout", exact: true })

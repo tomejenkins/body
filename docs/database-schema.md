@@ -214,3 +214,7 @@ The forward `20261106052342_ad_hoc_movement_shells.sql` migration extends existi
 ## Movement-intent shell refinement
 
 The forward `20261106163951_movement_intent_shells.sql` migration adds an immutable `workout_movements.suggested_intent` INSERT input and includes it in database-derived ad-hoc snapshots. A static authenticated-only invoker registry refines existing taxonomy without adding exercise or pattern identities. Initial shells allow up to six distinct supported intents, including meaningful variations within one pattern; manual additions retain the existing limit. Existing snapshots, ownership, retry payloads, source protection and actual exercise/set tables remain intact. See [movement matching and smart quick workouts](movement-matching-smart-workouts.md).
+
+## Focused workout timer
+
+See [focused workout mode](active-workout-mode.md) for the additive manual-pause fields, narrow command grant, owner-scoped invoker RPC, effective-duration rules and retained inactivity protections. No existing migration is edited.

@@ -1,3 +1,4 @@
+import { openWorkoutManagement } from "./workout-screen-helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
 test.setTimeout(120000);
@@ -44,7 +45,7 @@ test("two focus selections create five unbound movements; logger, back, safe mov
   ).toEqual([]);
   await cards(page)
     .first()
-    .getByRole("button", { name: "Choose exercise", exact: true })
+    .getByRole("button", { name: /^Choose exercise/, exact: true })
     .click();
   await expect(page.locator(".movement-carousel")).toHaveCount(1);
   await page.locator(".movement-carousel button").first().click();
@@ -73,8 +74,15 @@ test("two focus selections create five unbound movements; logger, back, safe mov
     page.getByRole("region", { name: "Workout Home", exact: true }),
   ).toBeVisible();
   await expect(cards(page).first()).toContainText("In Progress");
-  await cards(page).first().locator(".suggested-controls summary").click();
-  const form = cards(page).first().locator(".suggested-controls form");
+  await openWorkoutManagement(page);
+  await page
+    .locator(".manage-movement .suggested-controls")
+    .first()
+    .locator("summary")
+    .click();
+  const form = page
+    .locator(".manage-movement .suggested-controls form")
+    .first();
   const option = await form
     .locator('select option:not([value=""])')
     .first()
@@ -98,14 +106,20 @@ test("two focus selections create five unbound movements; logger, back, safe mov
         .single()
     ).data,
   ).toEqual(before);
-  await cards(page).last().locator(".suggested-controls summary").click();
-  await cards(page)
+  await page
+    .locator(".manage-movement .suggested-controls")
+    .last()
+    .locator("summary")
+    .click();
+  await page
+    .locator(".manage-movement")
     .last()
     .getByRole("button", { name: "Update movement", exact: true })
     .click();
   await expect(cards(page)).toHaveCount(5);
   await page.reload();
   await expect(cards(page)).toHaveCount(5);
+  await openWorkoutManagement(page);
   const add = page.locator(".workout-toolbar .suggested-controls");
   await add.locator("summary").click();
   const addChoice = await add
@@ -221,7 +235,7 @@ test("emphasis persists distinct intents inside a shared pattern and preserves u
   expect(actual.data).toEqual([]);
   await cards(page)
     .nth(1)
-    .getByRole("button", { name: "Choose exercise", exact: true })
+    .getByRole("button", { name: /^Choose exercise/, exact: true })
     .click();
   const tiles = page.locator(".movement-carousel button");
   await expect(tiles.first()).toContainText("Seated calf raise machine");

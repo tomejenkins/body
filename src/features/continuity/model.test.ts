@@ -60,3 +60,27 @@ it("explains automatic closure and retained performance", () => {
   expect(closureExplanation("inactivity")).toContain("pending sets were kept");
   expect(closureExplanation("finished")).toBe("");
 });
+it("keeps historical timestamps while labeling pause-adjusted effective duration", () => {
+  expect(
+    qualifiedDuration({
+      ...workout,
+      duration_kind: "elapsed",
+      effective_finished_at: workout.finished_at,
+      manual_pause_intervals: [
+        { from: "2026-11-01T08:15:00Z", to: "2026-11-01T08:45:00Z" },
+      ],
+    }),
+  ).toBe("Effective session: 1 hr 30 min");
+});
+
+it("recovery preview excludes manual pauses using the saved-activity endpoint", () => {
+  expect(
+    recoveredDuration({
+      ...workout,
+      manual_pause_intervals: [
+        { from: "2026-11-01T08:15:00Z", to: "2026-11-01T08:45:00Z" },
+      ],
+      manual_paused_at: "2026-11-01T09:30:00Z",
+    }),
+  ).toBe("30 min");
+});

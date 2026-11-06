@@ -118,7 +118,7 @@ for (const [width, height] of sizes)
       await page
         .locator(".workout-movement-card")
         .first()
-        .getByRole("button", { name: "Choose exercise", exact: true })
+        .getByRole("button", { name: /^Choose exercise/, exact: true })
         .click();
       await shot("movement-selection");
       await page.locator(".movement-carousel button").first().click();

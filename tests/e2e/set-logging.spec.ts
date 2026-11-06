@@ -1,4 +1,6 @@
 import {
+  openWorkoutManagement,
+  openWorkoutEnding,
   openExerciseLogger,
   backToWorkoutHome,
 } from "./workout-screen-helpers";
@@ -35,6 +37,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     .click();
   await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}$/);
   const path = new URL(page.url()).pathname;
+  await openWorkoutManagement(page);
   await page.getByRole("link", { name: "Add exercises", exact: true }).click();
   await page.getByRole("searchbox").fill("Barbell bench press");
   await page
@@ -139,10 +142,8 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     .eq("id", firstId)
     .single();
   await backToWorkoutHome(page);
-  await page
-    .getByRole("navigation")
-    .getByRole("link", { name: "Profile", exact: true })
-    .click();
+  await page.getByRole("link", { name: "Back to app", exact: true }).click();
+  await page.goto("/profile");
   await page.getByLabel("Weight Units", { exact: true }).selectOption("kg");
   await expect(page.getByRole("status")).toContainText("Saved");
   await page.goto(path);
@@ -157,9 +158,11 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   await page.reload();
   await expect(page.locator(".set-head")).toContainText("KG");
   await backToWorkoutHome(page);
+  await openWorkoutEnding(page);
   await page
     .getByRole("checkbox", { name: /Finish without completing all sets/ })
     .check();
+  await openWorkoutEnding(page);
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
@@ -247,10 +250,7 @@ test("bodyweight, visible save failure, navigation guard, retained edits and con
     page.getByRole("button", { name: "Finish workout", exact: true }),
   ).toHaveCount(0);
   await backToWorkoutHome(page);
-  await page
-    .getByRole("navigation")
-    .getByRole("link", { name: "Profile", exact: true })
-    .click();
+  await page.getByRole("link", { name: "Back to app", exact: true }).click();
   await expect(page.locator(".draft-warning")).toBeVisible();
   await expect(page).toHaveURL(new RegExp(path + "$"));
   await page.getByRole("button", { name: "Stay here", exact: true }).click();

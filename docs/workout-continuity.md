@@ -17,6 +17,10 @@ New sessions start with a server timestamp but no activity evidence. Successful 
 
 Explicit Resume uses an opaque UUID nonce, updates last_activity_at and continuation_count, and records a structured idle interval when appropriate. It does not invent an actual performance or activity_evidence_at. Retry with the same nonce has no effect. A successful saved action after a stale interval also records that gap. These are continuation context, not verified active-duration measurements.
 
+## Manual pause refinement
+
+The focused workout mode adds an explicit server-owned manual pause, separate from inactivity/check-in. Pause commands never extend inactivity or evidence. Effective duration excludes only manual pause intervals; historical timestamps and classifications stay intact. Qualifying saved work auto-resumes, passive navigation does not. Untracked legacy sessions require existing continuation/saved activity before using pause. See [focused workout mode](active-workout-mode.md) for commands, concurrency and display semantics.
+
 ## Endpoints and duration
 
 - started_at: server-created start; no client INSERT/UPDATE grant.

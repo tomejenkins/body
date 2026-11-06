@@ -32,7 +32,7 @@ const movement: WorkoutMovement = {
     id: `e${level}`,
     name: `Exercise ${level}`,
     level,
-    labels: level === 2 ? ["Program Pick"] : [],
+    labels: level === 2 ? ["Program Recommended"] : [],
     equipmentAvailable: true,
     supported: true,
     visual: { slug: "", ownerId: null },
@@ -42,7 +42,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   mocks.choose.mockResolvedValue({ itemId: "saved" });
 });
-it("renders all four selectable compatibility levels without upgrading the Program Pick", async () => {
+it("renders all four selectable compatibility levels without upgrading the Program Recommended", async () => {
   render(
     <MovementSelection
       movement={movement}
@@ -51,7 +51,9 @@ it("renders all four selectable compatibility levels without upgrading the Progr
     />,
   );
   expect(
-    screen.getByRole("button", { name: /Exercise 2, Similar, Program Pick/ }),
+    screen.getByRole("button", {
+      name: /Exercise 2, Similar, Program Recommended/,
+    }),
   ).toBeEnabled();
   for (const name of ["Close", "Similar", "Same Muscle"])
     expect(screen.getByText(name, { exact: true })).toBeInTheDocument();

@@ -176,7 +176,7 @@ test("exact-exercise progression is optional, preserves manual input, survives r
   ).toHaveValue("77");
   await expect(page.locator(".load-suggestion")).toContainText("225 lb");
   await page
-    .getByRole("link", { name: "← Back to Workout Home", exact: true })
+    .getByRole("link", { name: "Back to Workout Home", exact: true })
     .click();
   await expect(page).not.toHaveURL(/exercise=/);
   await page.goto(`/workout/${previous}`);

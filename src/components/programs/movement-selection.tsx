@@ -157,12 +157,16 @@ export function MovementSelection({
         onClick={() => void choose(tile)}
         data-exercise-id={tile.id}
       >
+        {!!tile.labels.length && (
+          <span className="movement-context-heading">
+            {tile.labels.join(" · ")}
+          </span>
+        )}
         {label && <span className="movement-match">{label}</span>}
         <ExerciseThumbnail visual={tile.visual} size={32} />
         <span className="movement-exercise-name">{tile.name}</span>
         <span className="movement-tile-context">
           {[
-            ...tile.labels,
             ...(!tile.supported
               ? ["Time/assistance logging unavailable"]
               : tile.equipmentAvailable === false

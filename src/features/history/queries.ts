@@ -9,7 +9,7 @@ import {
   type ExerciseHistory,
 } from "./model";
 export async function loadHistory(filter: unknown, cursor: unknown) {
-  await requireUser("/history");
+  const user = await requireUser("/history");
   const client = await createClient({ readOnly: true });
   const continuity = await client.rpc("workout_continuity");
   if (continuity.error)
@@ -25,6 +25,20 @@ export async function loadHistory(filter: unknown, cursor: unknown) {
   if (result.error)
     throw new Error("Workout history could not be loaded. Please retry.");
   const rows = result.data as HistorySummary[];
+  if (rows.length) {
+    const pauses = await client
+      .from("workout_sessions")
+      .select("id,manual_pause_intervals")
+      .in(
+        "id",
+        rows.map((r) => r.id),
+      )
+      .eq("owner_id", user.id);
+    if (pauses.error) throw new Error("Workout timing could not be loaded.");
+    for (const row of rows)
+      row.manual_pause_intervals =
+        pauses.data.find((p) => p.id === row.id)?.manual_pause_intervals ?? [];
+  }
   const recognized = rows.filter((w) => w.recognition_enabled).map((w) => w.id);
   if (recognized.length) {
     const counts = await client.rpc("history_achievement_counts", {

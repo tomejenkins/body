@@ -1,4 +1,5 @@
 import {
+  openWorkoutEnding,
   openExerciseLogger,
   backToWorkoutHome,
 } from "./workout-screen-helpers";
@@ -82,6 +83,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
     .selectOption("rest_pause");
   await saved(page, 3);
   await backToWorkoutHome(page);
+  await openWorkoutEnding(page);
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
@@ -205,10 +207,8 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
   }));
   for (const unit of ["kg", "lb"]) {
     await backToWorkoutHome(page);
-    await page
-      .getByRole("navigation")
-      .getByRole("link", { name: "Profile", exact: true })
-      .click();
+    await page.getByRole("link", { name: "Back to app", exact: true }).click();
+    await page.goto("/profile");
     await page.getByLabel("Weight Units", { exact: true }).selectOption(unit);
     await expect(page.getByRole("status")).toContainText("Saved");
     await page.reload();

@@ -66,7 +66,7 @@ it("keeps pick then last choice regardless of match, deduplicates and computes p
   expect(result[0]).toMatchObject({
     exercise: pick,
     level: 2,
-    labels: ["Program Pick"],
+    labels: ["Program Recommended"],
   });
   expect(result[1]).toMatchObject({
     exercise: last,
@@ -79,7 +79,7 @@ it("keeps pick then last choice regardless of match, deduplicates and computes p
     programPickId: pick.id,
     lastChoiceId: pick.id,
   });
-  expect(same[0].labels).toEqual(["Program Pick", "Last Used"]);
+  expect(same[0].labels).toEqual(["Program Recommended", "Last Used"]);
 });
 it("is deterministic, ranks movement first and filters equipment only when explicitly requested without guessing availability", () => {
   const input = {
@@ -102,7 +102,7 @@ it("is deterministic, ranks movement first and filters equipment only when expli
       id("equipmentTypes", "adjustable_bench"),
     ],
   });
-  expect(restricted[0].labels).toEqual(["Program Pick"]);
+  expect(restricted[0].labels).toEqual(["Program Recommended"]);
   expect(restricted[0].equipmentAvailable).toBe(false);
   expect(restricted.slice(1).every((c) => c.equipmentAvailable === true)).toBe(
     true,
@@ -121,7 +121,7 @@ it("retains the current exercise with its independently calculated grade in sort
   expect(result.find((c) => c.exercise.id === selected.id)?.level).toBe(4);
   const levels = result.slice(1).map((c) => c.level!);
   expect(levels).toEqual([...levels].sort((a, b) => b - a));
-  expect(result[0].labels).toContain("Program Pick");
+  expect(result[0].labels).toContain("Program Recommended");
 });
 
 it("uses floor ROM, triceps emphasis and pressing path rather than equipment identity", () => {
