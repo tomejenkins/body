@@ -31,6 +31,10 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
   await page
     .getByRole("button", { name: "Record Workout", exact: true })
     .click();
+  await expect(page).toHaveURL(/\/workout\/new$/);
+  await page
+    .getByRole("button", { name: "Start Blank Workout", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}$/);
   await expect(
     page
@@ -217,6 +221,10 @@ test("concurrent starts share one session, owner boundaries hold and abandon pre
   expect(records.data).toHaveLength(1);
   await page
     .getByRole("button", { name: "Record Workout", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/workout\/new$/);
+  await page
+    .getByRole("button", { name: "Start Blank Workout", exact: true })
     .click();
   await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}$/);
   expect(new URL(page.url()).pathname).not.toBe(`/workout/${sessionId}`);

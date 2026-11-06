@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./app-ux.css";
 export const metadata: Metadata = {
   title: { default: "Body · Your training space", template: "%s · Body" },
   description:
@@ -11,8 +12,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f8f5" },
-    { media: "(prefers-color-scheme: dark)", color: "#121512" },
+    { media: "(prefers-color-scheme: light)", color: "#f8f9f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#111612" },
   ],
 };
 export default function RootLayout({

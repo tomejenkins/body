@@ -5,7 +5,10 @@ import { requireUser } from "@/features/auth/session";
 import type { WeightUnit } from "@/features/sets/model";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { StartWorkout } from "@/components/workouts/workout-controls";
+import {
+  StartWorkout,
+  StartBlankWorkout,
+} from "@/components/workouts/workout-controls";
 import { loadWorkout } from "@/features/workouts/queries";
 export const metadata = { title: "Workout" };
 export default async function Page({
@@ -35,8 +38,8 @@ export default async function Page({
     <>
       <div className="page-heading">
         <p className="eyebrow">TRAIN WITH INTENTION</p>
-        <h1>Your next rep starts here.</h1>
-        <p className="intro">A little preparation. A clear place to begin.</p>
+        <h1>Workout</h1>
+        <p className="intro">Choose a focus or start blank.</p>
       </div>
       {params.message === "completed" && (
         <p role="status" className="auth-success">
@@ -68,7 +71,10 @@ export default async function Page({
             <Link href={`/workout/${active.id}`}>Resume Workout</Link>
           </Button>
         ) : (
-          <StartWorkout />
+          <div className="entry-actions">
+            <StartWorkout />
+            <StartBlankWorkout />
+          </div>
         )}
       </section>
       <div className="library-section">

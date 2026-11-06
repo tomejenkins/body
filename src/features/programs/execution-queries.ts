@@ -1,4 +1,5 @@
 import "server-only";
+import { allMovementOptions } from "@/features/workouts/suggested-shell";
 import { loadLibrary } from "@/features/exercises/queries";
 import { libraryNoneId } from "@/features/exercises/recommendations";
 import { createClient } from "@/lib/supabase/server";
@@ -37,21 +38,20 @@ export async function loadWorkoutMovements(workout: Workout) {
     .select("id,position,slot_snapshot")
     .eq("owner_id", workout.userId)
     .eq("workout_session_id", workout.id)
+    .is("removed_at", null)
     .order("position");
   if (rows.error) throw Error("Program movements could not be loaded.");
-  if (!rows.data?.length)
-    return {
-      movements: [] as WorkoutMovement[],
-      facets: { patterns: [], muscles: [] },
-    };
+
   const [library, history] = await Promise.all([
     loadLibrary(),
     client.rpc("program_last_choices", { p_session: workout.id }),
   ]);
   if (history.error)
     throw Error("Previous movement choices could not be loaded.");
-  const movements: WorkoutMovement[] = rows.data.map((row) => {
+  const movements: WorkoutMovement[] = rows.data.map((row, index) => {
     const slot = row.slot_snapshot as {
+      origin?: string;
+      title?: string;
       exercise_id: string | null;
       movement_pattern_id: string | null;
       primary_muscle_id: string | null;
@@ -75,16 +75,19 @@ export async function loadWorkoutMovements(workout: Workout) {
       history.data?.find(
         (h: { movement_id: string }) => h.movement_id === row.id,
       )?.exercise_id ?? null;
-    const candidates = rankMovementExercises(library.exercises, {
-      target,
-      programPickId: slot.exercise_id,
-      lastChoiceId: last,
-      selectedId: current?.exerciseId,
-      availableEquipmentIds: library.availableEquipmentIds.length
-        ? library.availableEquipmentIds
-        : undefined,
-      noneId: libraryNoneId(library),
-    });
+    const candidates = rankMovementExercises(
+      library.exercises.filter((e) => !specialMeasurement(e.id)),
+      {
+        target,
+        programPickId: slot.exercise_id,
+        lastChoiceId: last,
+        selectedId: current?.exerciseId,
+        availableEquipmentIds: library.availableEquipmentIds.length
+          ? library.availableEquipmentIds
+          : undefined,
+        noneId: libraryNoneId(library),
+      },
+    );
     if (
       current &&
       !candidates.some((c) => c.exercise.id === current.exerciseId)
@@ -100,10 +103,13 @@ export async function loadWorkoutMovements(workout: Workout) {
     }
     return {
       id: row.id,
-      position: row.position,
+      suggested: slot.origin === "ad_hoc",
+      position: index + 1,
       label:
-        library.patterns.find((p) => p.id === target.patternId)?.name ??
-        "Choose an exercise",
+        slot.origin === "ad_hoc" && slot.title
+          ? slot.title
+          : (library.patterns.find((p) => p.id === target.patternId)?.name ??
+            "Choose an exercise"),
       target,
       targetSets: slot.target_sets,
       workingSets: slot.sets?.length
@@ -117,5 +123,6 @@ export async function loadWorkoutMovements(workout: Workout) {
   return {
     movements,
     facets: { patterns: library.patterns, muscles: library.muscles },
+    movementOptions: workout.isProgram ? [] : allMovementOptions(library),
   };
 }

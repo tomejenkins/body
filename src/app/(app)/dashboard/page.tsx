@@ -1,106 +1,84 @@
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  ArrowRight,
-  Dumbbell,
-  CalendarDays,
-  ChartNoAxesCombined,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-export const metadata = { title: "Dashboard" };
-const destinations = [
-  {
-    href: "/programs",
-    icon: CalendarDays,
-    number: "01",
-    title: "Find your rhythm",
-    description: "A plan that meets you where you are.",
-    label: "Explore programs",
-  },
-  {
-    href: "/history",
-    icon: ChartNoAxesCombined,
-    number: "02",
-    title: "See the bigger picture",
-    description: "Small efforts. Meaningful progress.",
-    label: "View your history",
-  },
-];
-export default function Dashboard() {
+import {
+  StartWorkout,
+  StartBlankWorkout,
+} from "@/components/workouts/workout-controls";
+import { loadWorkout } from "@/features/workouts/queries";
+import { loadHistory } from "@/features/history/queries";
+import { friendlyWorkoutName } from "@/features/history/model";
+import { LocalTime } from "@/components/history/local-time";
+export const metadata = { title: "Home" };
+export default async function Dashboard() {
+  const [active, history] = await Promise.all([
+    loadWorkout(),
+    loadHistory("completed", undefined),
+  ]);
   return (
-    <>
-      <div className="page-heading">
-        <p className="eyebrow">YOUR DAILY FOUNDATION</p>
-        <h1>Show up for yourself.</h1>
-        <p className="intro">
-          Less friction. More focus. A little progress, every day.
+    <div className="home-screen">
+      <header className="page-heading">
+        <p className="eyebrow">BODY</p>
+        <h1>Your training.</h1>
+        <p className="intro">A little stronger, every session.</p>
+      </header>
+      <section className="home-primary" aria-label="Your workout">
+        <p className="eyebrow">
+          {active ? "IN PROGRESS" : "READY WHEN YOU ARE"}
         </p>
-      </div>
-      <section className="hero">
-        <div className="hero-copy">
-          <span className="hero-badge">
-            <span className="status-dot" /> BUILT FOR YOUR NEXT CHAPTER
-          </span>
-          <h2>
-            Good things
-            <br />
-            start with
-            <br />
-            <span>one rep.</span>
-          </h2>
-          <p>
-            Your training deserves a space that feels as intentional as the
-            effort you put in.
-          </p>
+        <h2>
+          {active
+            ? friendlyWorkoutName(active.name)
+            : "Make time for your next rep."}
+        </h2>
+        {active ? (
           <Button asChild>
-            <Link href="/workout">
-              Explore your workout space{" "}
-              <ArrowRight size={16} aria-hidden="true" />
-            </Link>
+            <Link href={`/workout/${active.id}`}>Resume Workout</Link>
           </Button>
-          <span className="hero-note">
-            Your journey starts here. Logging is coming soon.
-          </span>
-        </div>
-        <div className="hero-art" aria-hidden="true">
-          <div className="orbit orbit-one" />
-          <div className="orbit orbit-two" />
-          <div className="orbit orbit-three" />
-          <div className="art-center">
-            <Dumbbell size={64} strokeWidth={1.2} />
+        ) : (
+          <div className="entry-actions">
+            <StartWorkout />
+            <StartBlankWorkout />
           </div>
-          <span className="art-label">CONSISTENCY OVER EVERYTHING</span>
-        </div>
+        )}
       </section>
-      <div className="section-title">
-        <h2>A little intention goes a long way.</h2>
-        <span>YOUR TOOLKIT</span>
-      </div>
-      <div className="toolkit">
-        {destinations.map((item) => (
-          <Link className="tool-card" href={item.href} key={item.href}>
-            <div className="tool-top">
-              <item.icon size={24} strokeWidth={1.5} aria-hidden="true" />
-              <span>{item.number}</span>
-            </div>
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-            <div className="tool-link">
-              {item.label}
-              <ArrowUpRight size={18} aria-hidden="true" />
-            </div>
-          </Link>
-        ))}
-      </div>
-      <div className="quiet-note">
-        <span className="status-dot" />
-        <p>
-          Just you and your progress.{" "}
-          <span>
-            Your training is personal. Sharing will always be your choice.
-          </span>
-        </p>
-      </div>
-    </>
+      <nav className="home-shortcuts" aria-label="Training shortcuts">
+        <Link href="/programs">
+          Programs <ArrowUpRight size={16} aria-hidden="true" />
+        </Link>
+        <Link href="/exercises">
+          Exercises <ArrowUpRight size={16} aria-hidden="true" />
+        </Link>
+        <Link href="/history/progress">
+          Progress <ArrowUpRight size={16} aria-hidden="true" />
+        </Link>
+      </nav>
+      <section className="home-recent">
+        <div className="section-title">
+          <h2>Recent training</h2>
+          <Link href="/history">View all →</Link>
+        </div>
+        {history.rows.length ? (
+          <ol className="history-list">
+            {history.rows.slice(0, 3).map((w) => (
+              <li key={w.id}>
+                <Link href={`/history/${w.id}`}>
+                  <h3>{friendlyWorkoutName(w.name)}</h3>
+                  <p>
+                    <LocalTime value={w.started_at} /> · {w.working_sets}{" "}
+                    working sets
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p className="empty-copy">
+            Your completed workouts will appear here. Start with what feels
+            right today.
+          </p>
+        )}
+      </section>
+    </div>
   );
 }

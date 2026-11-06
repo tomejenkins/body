@@ -14,10 +14,8 @@ export default async function Page({
     <>
       <div className="page-heading">
         <p className="eyebrow">MOVE WITH INTENTION</p>
-        <h1>Find your movement.</h1>
-        <p className="intro">
-          A considered library. A stronger starting point.
-        </p>
+        <h1>Exercises</h1>
+        <p className="intro">Find an exercise. Make it yours.</p>
         <div className="library-heading-actions">
           <Link href="/workout">← Workout</Link>
           <Button asChild variant="outline">

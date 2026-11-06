@@ -19,6 +19,8 @@ export type WorkoutItem = {
 };
 export type Workout = {
   id: string;
+  isProgram?: boolean;
+  movementOptions?: import("./suggested-shell").SuggestedMovement[];
   name: string;
   status: WorkoutStatus;
   completionStatus: "none" | "partial" | "full";

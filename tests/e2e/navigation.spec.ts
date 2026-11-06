@@ -4,12 +4,12 @@ test.beforeEach(async ({ page }) => {
   await loginForNavigation(page);
 });
 const routes = [
-  ["Dashboard", "Show up for yourself."],
-  ["Workout", "Your next rep starts here."],
+  ["Dashboard", "Your training."],
+  ["Workout", "Workout"],
   ["Programs", "Programs"],
   ["History", "Workout history"],
   ["Feed", "Progress is personal."],
-  ["Profile", "Your space. Your pace."],
+  ["Profile", "Profile"],
 ];
 test("all destinations render, navigation tracks the route, and layouts fit", async ({
   page,
@@ -17,7 +17,14 @@ test("all destinations render, navigation tracks the route, and layouts fit", as
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
   await expect(
-    page.getByRole("link", { name: "Explore your workout space" }),
+    page
+      .getByRole("region", { name: "Your workout", exact: true })
+      .getByRole("button", { name: "Record Workout", exact: true })
+      .or(
+        page
+          .getByRole("region", { name: "Your workout", exact: true })
+          .getByRole("link", { name: "Resume Workout", exact: true }),
+      ),
   ).toHaveCSS("color", "rgb(255, 255, 255)");
   await expect(page).toHaveURL(/\/dashboard$/);
   const nav = page.getByRole("navigation", { name: "Main navigation" });
@@ -43,7 +50,7 @@ test("system dark mode and PWA manifest are available", async ({
   await page.goto("/dashboard");
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
-    "rgb(18, 21, 18)",
+    "rgb(17, 22, 18)",
   );
   const response = await request.get("/manifest.webmanifest");
   expect(response.ok()).toBe(true);
@@ -105,19 +112,26 @@ test("theme follows system changes without navigation", async ({ page }) => {
   await page.goto("/dashboard");
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
-    "rgb(247, 248, 245)",
+    "rgb(248, 249, 247)",
   );
   await page.emulateMedia({ colorScheme: "dark" });
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
-    "rgb(18, 21, 18)",
+    "rgb(17, 22, 18)",
   );
   await expect(
-    page.getByRole("link", { name: "Explore your workout space" }),
-  ).toHaveCSS("color", "rgb(24, 40, 25)");
+    page
+      .getByRole("region", { name: "Your workout", exact: true })
+      .getByRole("button", { name: "Record Workout", exact: true })
+      .or(
+        page
+          .getByRole("region", { name: "Your workout", exact: true })
+          .getByRole("link", { name: "Resume Workout", exact: true }),
+      ),
+  ).toHaveCSS("color", "rgb(20, 36, 26)");
   await page.emulateMedia({ colorScheme: "light" });
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
-    "rgb(247, 248, 245)",
+    "rgb(248, 249, 247)",
   );
 });

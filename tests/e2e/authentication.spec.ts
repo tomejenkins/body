@@ -93,7 +93,7 @@ test("failed login, partial profile retry, RLS isolation and unsafe destination 
   await ageSession(page);
   const refreshed = await page.reload();
   await expect(
-    page.getByRole("heading", { name: "Show up for yourself." }),
+    page.getByRole("heading", { name: "Your training." }),
   ).toBeVisible();
   expect(refreshed?.headers()["cache-control"]).toContain("no-store");
   await ageSession(page, true);
@@ -136,7 +136,7 @@ test("invalid callbacks fail safely and auth pages follow system theme", async (
   await page.emulateMedia({ colorScheme: "dark" });
   await expect(page.locator("body")).toHaveCSS(
     "background-color",
-    "rgb(18, 21, 18)",
+    "rgb(17, 22, 18)",
   );
   await page.goto("/signup");
   expect(

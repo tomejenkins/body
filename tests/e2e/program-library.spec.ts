@@ -123,6 +123,7 @@ test("official discovery, combined filters, pagination, immutable detail and the
   await expect(
     page.getByRole("heading", { name: "Push / Pull / Legs", exact: true }),
   ).toBeVisible();
+  await page.getByText("About this program", { exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Who it suits" }),
   ).toBeVisible();

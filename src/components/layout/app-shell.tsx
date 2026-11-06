@@ -57,10 +57,23 @@ export function AppShell({
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
+                aria-label={item.label}
                 className={cn("nav-link", active && "active")}
               >
                 <Icon aria-hidden="true" size={20} />
-                <span>{item.label}</span>
+                <span className="desktop-tab-label">{item.label}</span>
+                <span className="mobile-tab-label">
+                  {
+                    {
+                      Dashboard: "Home",
+                      Workout: "Workout",
+                      Programs: "Plans",
+                      History: "History",
+                      Feed: "Feed",
+                      Profile: "You",
+                    }[item.label]
+                  }
+                </span>
               </Link>
             );
           })}
@@ -74,7 +87,7 @@ export function AppShell({
           <Link href="/dashboard" className="mobile-brand">
             body.
           </Link>
-          <span className="topbar-label">A SPACE TO BUILD YOURSELF</span>
+          <span className="topbar-label">Body · Your training</span>
           <span className="private-label">
             <span className="status-dot" /> Private by design
           </span>

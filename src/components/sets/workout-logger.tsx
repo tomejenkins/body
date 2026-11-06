@@ -1,4 +1,5 @@
 "use client";
+import { SuggestedMovementControls } from "@/components/workouts/suggested-movement-controls";
 import { ExerciseNavigation } from "@/components/workouts/exercise-navigation";
 import { WorkoutDuration } from "@/components/workouts/workout-duration";
 import { workoutProgress } from "@/features/workouts/progress";
@@ -22,7 +23,6 @@ import { exerciseHref, loggerHref } from "@/features/workouts/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Workout, WorkoutItem } from "@/features/workouts/types";
-import { describeStatus } from "@/features/workouts/lifecycle";
 import { isUuid } from "@/features/exercises/validation";
 import { mutateSet, readSetRows } from "@/features/sets/actions";
 import {
@@ -64,6 +64,20 @@ type Entry = {
   retrySeq?: number;
   deleting?: boolean;
 };
+function PrescribedTarget({ row }: { row: LoggedSet }) {
+  return (
+    <p className="set-source">
+      Target{" "}
+      {row.prescribed_reps_min === row.prescribed_reps_max
+        ? row.prescribed_reps_min
+        : `${row.prescribed_reps_min}–${row.prescribed_reps_max}`}{" "}
+      reps
+      {row.prescribed_effort_scale &&
+        ` · Target ${row.prescribed_effort_scale.toUpperCase()} ${row.prescribed_effort_value}`}
+      {row.prescribed_to_failure ? " · Optional To Failure intent" : ""}
+    </p>
+  );
+}
 export function WorkoutLogger({
   workout,
   focusedItemId,
@@ -620,6 +634,7 @@ export function WorkoutLogger({
   const incomplete = summary.pending > 0 || missing > 0;
   return (
     <div
+      className={`workout-execution ${home ? "workout-home-screen" : "workout-exercise-screen"}`}
       onSubmitCapture={(event) => {
         if (dirty) {
           event.preventDefault();
@@ -631,32 +646,36 @@ export function WorkoutLogger({
     >
       <div className="page-heading">
         {home ? (
-          <Link href="/workout">← Workout</Link>
+          <Link href={workout.isProgram ? "/programs" : "/workout"}>
+            {workout.isProgram ? "← Programs" : "← Workout"}
+          </Link>
         ) : (
           <Link href={loggerHref(workout.id)}>← Back to Workout Home</Link>
         )}
-        <p className="eyebrow">{describeStatus(workout.status)}</p>
+
         <h1 tabIndex={-1}>
-          {home ? friendlyWorkoutName(workout.name) : focusedItem.name}
+          {home
+            ? friendlyWorkoutName(workout.name)
+            : (focusedMovement?.label ?? focusedItem.name)}
         </h1>
         <p className="eyebrow">
           {home
             ? "Workout Home"
             : focusedMovement
-              ? `Movement ${focusedMovement.position} · ${focusedMovement.label}`
+              ? `Movement ${focusedMovement.position}`
               : "Exercise Logger"}
         </p>
-        <WorkoutDuration
-          startedAt={workout.startedAt}
-          serverNow={workout.continuity?.server_now}
-          inactive={
-            !!workout.continuity?.idle_intervals.length ||
-            workout.continuity?.state === "check_in"
-          }
-        />
-        <p className="intro">
-          Started <LocalTime value={workout.startedAt} />
-        </p>
+        {home && (
+          <WorkoutDuration
+            startedAt={workout.startedAt}
+            serverNow={workout.continuity?.server_now}
+            inactive={
+              !!workout.continuity?.idle_intervals.length ||
+              workout.continuity?.state === "check_in"
+            }
+          />
+        )}
+
         {workout.finishedAt && (
           <p>
             Closed <LocalTime value={workout.finishedAt} />
@@ -679,7 +698,7 @@ export function WorkoutLogger({
           <Link href={`/history/${workout.id}`}>Review saved workout</Link>
         </section>
       )}
-      <p className="logging-summary" role="status">
+      <p className="logging-summary sr-only" role="status">
         {workout.movements?.length || workout.items.length}{" "}
         {workout.movements?.length ? "movements" : "exercises"} ·{" "}
         {summary.completed} completed sets · {summary.pending} pending sets
@@ -761,6 +780,14 @@ export function WorkoutLogger({
               <Link href={`/workout/${workout.id}/select`}>Add exercises</Link>
             </Button>
           )}
+          {!workout.isProgram && workout.movementOptions && (
+            <SuggestedMovementControls
+              key={`add-${workout.movements?.map((m) => m.id).join(":") ?? "blank"}`}
+              session={workout.id}
+              options={workout.movementOptions}
+              disabled={!canEdit || dirty || pending}
+            />
+          )}
         </div>
       )}
       {!workout.items.length && !workout.movements?.length && (
@@ -801,7 +828,31 @@ export function WorkoutLogger({
                       {current && (
                         <ExerciseThumbnail visual={current.visual} size={32} />
                       )}
-                      {label}
+                      {movement ? (
+                        <button
+                          className="movement-row-toggle"
+                          type="button"
+                          aria-label={
+                            expanded === group.id
+                              ? "Hide exercises"
+                              : current
+                                ? "Choose or change exercise"
+                                : "Choose exercise"
+                          }
+                          aria-expanded={expanded === group.id}
+                          aria-controls={`selection-${group.id}`}
+                          onClick={() =>
+                            setExpanded(expanded === group.id ? null : group.id)
+                          }
+                        >
+                          {label}
+                          <span aria-hidden="true">
+                            {expanded === group.id ? "−" : "+"}
+                          </span>
+                        </button>
+                      ) : (
+                        label
+                      )}
                     </h2>
                     <span
                       className="movement-status"
@@ -817,7 +868,16 @@ export function WorkoutLogger({
                       {group.progress.status}
                     </span>
                   </div>
-                  {movement && current && <p>{current.name}</p>}
+                  {movement && current && (
+                    <p>
+                      <Link
+                        aria-label="Open exercise logger"
+                        href={loggerHref(workout.id, current.id)}
+                      >
+                        {current.name} <span aria-hidden="true">→</span>
+                      </Link>
+                    </p>
+                  )}
                   <p className="set-source">
                     {group.progress.completed}
                     {group.progress.required
@@ -825,23 +885,16 @@ export function WorkoutLogger({
                       : ""}{" "}
                     completed working sets
                   </p>
+                  {movement?.suggested && (
+                    <SuggestedMovementControls
+                      session={workout.id}
+                      movement={movement.id}
+                      options={workout.movementOptions ?? []}
+                      disabled={!canEdit || dirty || pending}
+                    />
+                  )}
                   {movement ? (
                     <>
-                      <Button
-                        variant="outline"
-                        type="button"
-                        aria-expanded={expanded === group.id}
-                        aria-controls={`selection-${group.id}`}
-                        onClick={() =>
-                          setExpanded(expanded === group.id ? null : group.id)
-                        }
-                      >
-                        {expanded === group.id
-                          ? "Hide exercises"
-                          : current
-                            ? "Choose or change exercise"
-                            : "Choose exercise"}
-                      </Button>
                       {expanded === group.id && (
                         <div id={`selection-${group.id}`}>
                           <MovementSelection
@@ -858,13 +911,6 @@ export function WorkoutLogger({
                             }
                           />
                         </div>
-                      )}
-                      {current && (
-                        <Button variant="outline" asChild>
-                          <Link href={loggerHref(workout.id, current.id)}>
-                            Open exercise logger
-                          </Link>
-                        </Button>
                       )}
                       {group.items
                         .filter((i) => i.id !== current?.id)
@@ -928,6 +974,21 @@ export function WorkoutLogger({
               selectedId={focusedItem.id}
             />
           )}
+          {focusedMovement && (
+            <h2 className="selected-exercise-title">
+              <Link
+                href={exerciseHref(
+                  focusedItem.exerciseId,
+                  workout.id,
+                  undefined,
+                  false,
+                  focusedItem.id,
+                )}
+              >
+                {focusedItem.name}
+              </Link>
+            </h2>
+          )}
           <fieldset className="min-w-0 border-0 p-0">
             <legend className="sr-only">Workout sets</legend>
             <ol className="workout-items" aria-label="Selected exercises">
@@ -943,6 +1004,23 @@ export function WorkoutLogger({
                 const unsupported =
                   item.loggingKind === "duration" ||
                   item.loggingKind === "assisted";
+                const uniformTarget =
+                  !!item.programMovementId &&
+                  visible.length > 0 &&
+                  visible[0].row.prescribed_reps_min != null &&
+                  visible.every((e) =>
+                    [
+                      "prescribed_reps_min",
+                      "prescribed_reps_max",
+                      "prescribed_effort_scale",
+                      "prescribed_effort_value",
+                      "prescribed_to_failure",
+                    ].every(
+                      (k) =>
+                        e.row[k as keyof LoggedSet] ===
+                        visible[0].row[k as keyof LoggedSet],
+                    ),
+                  );
                 const showLoad =
                   !item.bodyweightEligible ||
                   visible.some((e) => e.draft.mode === "external");
@@ -950,6 +1028,7 @@ export function WorkoutLogger({
                   <li
                     key={item.id}
                     className="workout-item"
+                    data-exercise-id={item.exerciseId}
                     data-movement-id={movement?.id}
                   >
                     {movement && (
@@ -980,45 +1059,6 @@ export function WorkoutLogger({
                       </h2>
                       <span className="set-context">{item.exerciseType}</span>
                     </div>
-                    <details className="exercise-logger-instructions">
-                      <summary>Exercise instructions</summary>
-                      <ExerciseThumbnail
-                        visual={item.visual}
-                        size={128}
-                        decorative={false}
-                      />
-                      <p className="exercise-instructions">
-                        {item.instructions ||
-                          "No instructions available. Use a comfortable range and seek qualified guidance for unfamiliar movements."}
-                      </p>
-                    </details>
-                    {item.sets.some((s) => s.suggested_from_date) && (
-                      <p className="set-source">
-                        {item.programMovementId
-                          ? "Previous performance · Planned reps from program"
-                          : "Defaults from previous workout"}{" "}
-                        ·{" "}
-                        <LocalTime
-                          value={
-                            item.sets.find((s) => s.suggested_from_date)
-                              ?.suggested_from_date ?? workout.startedAt
-                          }
-                        />
-                      </p>
-                    )}
-                    <p className="auth-links">
-                      <Link
-                        href={exerciseHref(
-                          item.exerciseId,
-                          active ? workout.id : undefined,
-                          undefined,
-                          true,
-                          item.id,
-                        )}
-                      >
-                        Look Back
-                      </Link>
-                    </p>
                     {unsupported && (
                       <p role="note">
                         {item.loggingKind === "duration"
@@ -1030,6 +1070,15 @@ export function WorkoutLogger({
                       <p className="set-source">
                         Bodyweight · Add resistance only when you use it.
                       </p>
+                    )}
+                    {uniformTarget && (
+                      <div className="common-prescription">
+                        <span>
+                          {visible.length}{" "}
+                          {movement?.suggested ? "suggested" : "planned"} sets
+                        </span>
+                        <PrescribedTarget row={visible[0].row} />
+                      </div>
                     )}
                     <div
                       className={`set-grid set-head ${showLoad ? "" : "reps-first"}`}
@@ -1052,21 +1101,9 @@ export function WorkoutLogger({
                         data-set-id={entry.row.id}
                       >
                         {item.programMovementId &&
+                          !uniformTarget &&
                           entry.row.prescribed_reps_min != null && (
-                            <p className="set-source">
-                              Target{" "}
-                              {entry.row.prescribed_reps_min ===
-                              entry.row.prescribed_reps_max
-                                ? entry.row.prescribed_reps_min
-                                : `${entry.row.prescribed_reps_min}–${entry.row.prescribed_reps_max}`}{" "}
-                              reps
-                              {entry.row.prescribed_effort_scale &&
-                                ` · Target ${entry.row.prescribed_effort_scale.toUpperCase()} ${entry.row.prescribed_effort_value}`}
-                              {entry.row.prescribed_to_failure
-                                ? " · Optional To Failure intent"
-                                : ""}
-                              . Actual effort stays optional.
-                            </p>
+                            <PrescribedTarget row={entry.row} />
                           )}
                         <div
                           className={`set-grid ${showLoad ? "" : "reps-first"}`}
@@ -1505,6 +1542,61 @@ export function WorkoutLogger({
                         Add set
                       </Button>
                     )}
+                    <div className="exercise-resources">
+                      {" "}
+                      <details className="exercise-logger-instructions">
+                        <summary>Exercise instructions</summary>
+                        <Link
+                          href={exerciseHref(
+                            item.exerciseId,
+                            workout.id,
+                            undefined,
+                            false,
+                            item.id,
+                          )}
+                        >
+                          Exercise details →
+                        </Link>
+                        <ExerciseThumbnail
+                          visual={item.visual}
+                          size={128}
+                          decorative={false}
+                        />
+                        <p className="exercise-instructions">
+                          {item.instructions ||
+                            "No instructions available. Use a comfortable range and seek qualified guidance for unfamiliar movements."}
+                        </p>
+                      </details>
+                      {item.sets.some((s) => s.suggested_from_date) && (
+                        <p className="set-source">
+                          {movement?.suggested
+                            ? "Defaults from previous workout · Suggested reps"
+                            : item.programMovementId
+                              ? "Previous performance · Planned reps from program"
+                              : "Defaults from previous workout"}{" "}
+                          ·{" "}
+                          <LocalTime
+                            value={
+                              item.sets.find((s) => s.suggested_from_date)
+                                ?.suggested_from_date ?? workout.startedAt
+                            }
+                          />
+                        </p>
+                      )}
+                      <p className="auth-links">
+                        <Link
+                          href={exerciseHref(
+                            item.exerciseId,
+                            active ? workout.id : undefined,
+                            undefined,
+                            true,
+                            item.id,
+                          )}
+                        >
+                          Look Back
+                        </Link>
+                      </p>
+                    </div>
                     {active && !movement && (
                       <ItemControls
                         sessionId={workout.id}
@@ -1541,7 +1633,7 @@ export function WorkoutLogger({
       {home &&
         (active ? (
           <section className="workout-ending">
-            <h2>Ready to close?</h2>
+            <h2 className="sr-only">Workout actions</h2>
             <p>
               Completed and pending sets will be preserved exactly as saved.
               Pending sets will not be marked complete.

@@ -34,7 +34,7 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
     <>
       <div className="page-heading">
         <Link href="/history">← History</Link>
-        <p className="eyebrow">
+        <p className="workout-history-status">
           {historyStatus(workout.status, workout.completionStatus)}
         </p>
         <h1>{friendlyWorkoutName(workout.name)}</h1>
