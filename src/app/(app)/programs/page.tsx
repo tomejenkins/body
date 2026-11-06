@@ -1,3 +1,4 @@
+import { ProgramCalendar } from "@/components/programs/program-calendar";
 import { ProgramProgress } from "@/components/programs/program-progress";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -19,7 +20,8 @@ export default async function Page({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const f = catalogFilters(await searchParams),
+  const params = await searchParams;
+  const f = catalogFilters(params),
     catalog = await loadProgramCatalog(f),
     now = new Date();
   return (
@@ -32,6 +34,7 @@ export default async function Page({
           starting point.
         </p>
       </header>
+      <ProgramCalendar week={params.week} baseHref={catalogURL(f)} />
       <ProgramProgress />
       <form
         key={catalogURL(f)}

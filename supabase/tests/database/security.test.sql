@@ -435,7 +435,7 @@ select ok((select has_table_privilege('authenticated','public.account_preference
 
 select ok((select bool_and(has_column_privilege('authenticated','public.account_preferences',attname,'INSERT') = (attname = any(array['owner_id','date_of_birth','onboarding_completed_at','training_goal','preferred_workouts_per_7_days','preferred_split','display_weight_unit']::text[]))) from pg_attribute where attrelid='public.account_preferences'::regclass and attnum>0 and not attisdropped), 'account_preferences: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.account_preferences',attname,'UPDATE') = (attname = any(array['preferred_effort_scale','date_of_birth','onboarding_completed_at','training_goal','preferred_workouts_per_7_days','preferred_split','display_weight_unit']::text[]))) from pg_attribute where attrelid='public.account_preferences'::regclass and attnum>0 and not attisdropped), 'account_preferences: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.account_preferences',attname,'UPDATE') = (attname = any(array['scheduling_timezone','preferred_effort_scale','date_of_birth','onboarding_completed_at','training_goal','preferred_workouts_per_7_days','preferred_split','display_weight_unit']::text[]))) from pg_attribute where attrelid='public.account_preferences'::regclass and attnum>0 and not attisdropped), 'account_preferences: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.exercises'::regclass), 'exercises: RLS enabled');
 
@@ -925,7 +925,7 @@ select ok((select has_table_privilege('authenticated','public.program_assignment
 
 select ok((select bool_and(has_column_privilege('authenticated','public.program_assignments',attname,'INSERT') = (attname = any(array['id','owner_id','program_id','cycle_length','state','next_cycle_position','completed_rotations','started_at','ended_at','source_version_id']::text[]))) from pg_attribute where attrelid='public.program_assignments'::regclass and attnum>0 and not attisdropped), 'program_assignments: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.program_assignments',attname,'UPDATE') = (attname = any(array['state','next_cycle_position','completed_rotations','ended_at']::text[]))) from pg_attribute where attrelid='public.program_assignments'::regclass and attnum>0 and not attisdropped), 'program_assignments: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.program_assignments',attname,'UPDATE') = (attname = any(array['schedule_command','state','next_cycle_position','completed_rotations','ended_at']::text[]))) from pg_attribute where attrelid='public.program_assignments'::regclass and attnum>0 and not attisdropped), 'program_assignments: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.workout_sessions'::regclass), 'workout_sessions: RLS enabled');
 
