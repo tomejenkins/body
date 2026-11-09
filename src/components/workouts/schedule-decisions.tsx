@@ -5,9 +5,11 @@ import { SelectionForm } from "./selection-form";
 export function ScheduleDecisions({
   assignment: a,
   disabled = false,
+  open = false,
 }: {
   assignment: AssignedChoices;
   disabled?: boolean;
+  open?: boolean;
 }) {
   const c = a.cursor,
     next = a.days.find((d) => d.id === c.dayId);
@@ -21,7 +23,7 @@ export function ScheduleDecisions({
     revision: c.decisionRevision,
   };
   return (
-    <details className="schedule-decisions">
+    <details className="schedule-decisions" id="schedule-decisions" open={open}>
       <summary>Plan next workout</summary>
       <p>
         {next.name} · Rotation {c.rotation + 1} · {a.timezone}

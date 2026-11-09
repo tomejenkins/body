@@ -6,6 +6,7 @@ import type { WeightUnit } from "@/features/sets/model";
 import { featuredLifts, prioritizedRecordIds } from "./prominence";
 import {
   selectAchievements,
+  rankedAchievements,
   type ExerciseRecords,
   type RecordMetric,
   type Achievement,
@@ -79,12 +80,32 @@ export async function loadExerciseRecords(id: string, cursor: unknown) {
     hasMore: rows.length > 10,
   };
 }
-export async function loadAchievements(id: unknown) {
+async function loadAchievementCandidates(id: unknown) {
   if (typeof id !== "string" || !isUuid(id)) return [];
   await requireUser("/history");
   const client = await createClient({ readOnly: true });
   const result = await client.rpc("workout_achievements", { p_session: id });
   if (result.error)
     throw new Error("Workout achievements could not be loaded. Please retry.");
-  return selectAchievements(result.data as Achievement[]);
+  return result.data as Achievement[];
+}
+
+export async function loadAchievements(id: unknown) {
+  return selectAchievements(await loadAchievementCandidates(id));
+}
+export async function loadAchievementSummary(id: unknown) {
+  const all = rankedAchievements(await loadAchievementCandidates(id)),
+    featured = selectAchievements(all);
+  const keys = new Set(
+    featured.map(
+      (a) => `${a.exercise_id}:${a.category}:${a.metric}:${a.load_key}`,
+    ),
+  );
+  return {
+    featured,
+    additional: all.filter(
+      (a) =>
+        !keys.has(`${a.exercise_id}:${a.category}:${a.metric}:${a.load_key}`),
+    ),
+  };
 }

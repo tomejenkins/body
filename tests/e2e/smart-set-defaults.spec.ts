@@ -87,7 +87,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/message=completed/);
+  await expect(page).toHaveURL(/\/complete$/);
   // A newer completed-but-unperformed session and abandoned actual work must not displace the source.
   const empty = await account.client.rpc("start_ad_hoc_workout");
   await account.client.rpc("edit_workout", {

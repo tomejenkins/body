@@ -271,7 +271,7 @@ test("server timer pauses across refresh/devices, rejects races, and saved loggi
   await ending
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/workout\?message=completed/);
+  await expect(page).toHaveURL(/\/complete$/);
   expect(
     (
       await a.client

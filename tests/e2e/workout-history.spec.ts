@@ -115,7 +115,7 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/message=completed/);
+  await expect(page).toHaveURL(/\/complete$/);
   await page.goto(`/history/${id}`);
   await expect(
     page.getByText("Saved workout · Read only", { exact: true }),

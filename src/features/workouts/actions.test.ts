@@ -69,3 +69,16 @@ it("rejects arbitrary terminal transitions", async () => {
   expect((await endWorkout({}, data)).error).toBeTruthy();
   expect(mock.create).not.toHaveBeenCalled();
 });
+it("adding an exercise accepts its actual selection ID while closing requires the session receipt", async () => {
+  const selection = "12345678-1234-1234-1234-123456789099";
+  const rpc = vi.fn().mockResolvedValue({ data: selection, error: null });
+  mock.create.mockResolvedValue(verified(rpc));
+  const f = new FormData();
+  f.set("sessionId", uuid);
+  f.set("operation", "add");
+  f.set("exerciseId", selection);
+  expect((await editWorkout({}, f)).success).toBe("Exercise selected.");
+  f.set("outcome", "completed");
+  expect((await endWorkout({}, f)).error).toBeTruthy();
+  expect(mock.redirect).not.toHaveBeenCalled();
+});

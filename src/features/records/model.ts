@@ -111,25 +111,32 @@ const importance: Record<MetricName, number> = {
   reps_at_load: 30,
   volume: 20,
 };
-export function selectAchievements(rows: readonly Achievement[]) {
-  const score = (a: Achievement) =>
+function achievementScore(a: Achievement) {
+  return (
     importance[a.metric] -
     (a.dominated_in_session ? 30 : 0) +
     Math.min(((a.value - a.previous_value) / a.previous_value) * 100, 100) *
       0.5 +
     { primary: 10, secondary: 5, standard: 0 }[
       recordProfile(a.exercise_id).prominence
-    ];
-  const sorted = rows
+    ]
+  );
+}
+export function rankedAchievements(rows: readonly Achievement[]) {
+  return rows
     .filter((a) => a.previous_value > 0 && a.value > a.previous_value)
     .toSorted(
       (a, b) =>
-        score(b) - score(a) ||
+        achievementScore(b) - achievementScore(a) ||
         a.exercise_id.localeCompare(b.exercise_id) ||
         a.metric.localeCompare(b.metric) ||
         a.category.localeCompare(b.category) ||
         a.load_key - b.load_key,
     );
+}
+export function selectAchievements(rows: readonly Achievement[]) {
+  const score = achievementScore;
+  const sorted = rankedAchievements(rows);
   const seen = new Set<string>();
   const categories = new Set<string>();
   const chosen: Achievement[] = [];

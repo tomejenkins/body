@@ -18,6 +18,7 @@ export type WorkoutItem = {
   prescribedSets?: number | null;
 };
 export type Workout = {
+  favoriteId?: string | null;
   sourceVersionId?: string | null;
   sourceDayId?: string | null;
   favoriteAttribution?: {

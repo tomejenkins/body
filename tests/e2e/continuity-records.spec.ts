@@ -161,7 +161,7 @@ test("persistent bar survives navigation/refresh, hides in logger and leaves aft
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/message=completed&finished=/);
+  await expect(page).toHaveURL(/\/complete$/);
   await expect(
     page.getByRole("complementary", { name: "Active workout", exact: true }),
   ).toHaveCount(0);
@@ -196,7 +196,7 @@ test("inactive check-in estimates saved endpoint; resume keeps structured gap wi
   await check
     .getByRole("button", { name: "Finish Workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/message=completed&finished=/);
+  await expect(page).toHaveURL(/\/complete$/);
   await page.goto(`/history/${w}`);
   await expect(page.locator("main")).toContainText(
     "Estimated workout duration:",
@@ -289,7 +289,7 @@ test("exact-rep records, honest empty states and three diverse completed achieve
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/message=completed/);
+  await expect(page).toHaveURL(/\/complete$/);
   await expect(page.locator(".achievement-card")).toHaveCount(3);
   await page.reload();
   await expect(page.locator(".achievement-card")).toHaveCount(3);

@@ -1,3 +1,5 @@
+import { loadTrainingSummary } from "@/features/completion/statistics";
+import { progressionFeedback } from "@/features/programs/progression-feedback";
 import { SaveFavorite } from "@/components/workouts/save-favorite";
 import { ProgramProgress } from "@/components/programs/program-progress";
 import {
@@ -24,23 +26,15 @@ import { setTypes } from "@/features/sets/model";
 import { LocalTime } from "./local-time";
 import { ExerciseThumbnail } from "@/components/exercises/exercise-thumbnail";
 export async function WorkoutReview({ workout }: { workout: Workout }) {
-  const [achievements, suggestions, outcomes] = await Promise.all([
+  const [achievements, suggestions, outcomes, statistics] = await Promise.all([
     loadAchievements(workout.id),
     loadProgressionSuggestions(workout),
     loadProgramOutcomes(workout),
+    workout.status === "completed"
+      ? loadTrainingSummary(workout.id)
+      : Promise.resolve(null),
   ]);
-  const suggestionItems = workout.items
-    .filter((i) => suggestions[i.id])
-    .sort(
-      (a, b) =>
-        ({ increase: 0, reps: 1, estimate: 2, hold: 3 })[
-          suggestions[a.id].action
-        ] -
-          { increase: 0, reps: 1, estimate: 2, hold: 3 }[
-            suggestions[b.id].action
-          ] || a.position - b.position,
-    )
-    .slice(0, 3);
+  const suggestionItems = progressionFeedback(workout.items, suggestions);
   const sets = workout.items.flatMap((item) =>
     item.sets.filter((s) => !s.deleted_at),
   );
@@ -76,7 +70,14 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
         {workout.status === "in_progress" ? (
           <Link href={`/workout/${workout.id}`}>Resume Workout</Link>
         ) : (
-          <p>Saved workout · Read only</p>
+          <>
+            <p>Saved workout · Read only</p>
+            {workout.status === "completed" && (
+              <Link href={`/workout/${workout.id}/complete`}>
+                Workout Summary
+              </Link>
+            )}
+          </>
         )}
       </div>
       {workout.continuity?.closure_reason === "inactivity" && (
@@ -137,12 +138,9 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
             </details>
             {suggestionItems.map((i) => (
               <p key={i.id}>
-                {i.name}: suggested {suggestions[i.id].display}{" "}
-                {workout.weightUnit}
-                {suggestions[i.id].reps
-                  ? ` · ${suggestions[i.id].reps} reps`
-                  : ""}
-                . {suggestions[i.id].basis}
+                {i.name}: suggested {i.suggestion.display} {workout.weightUnit}
+                {i.suggestion.reps ? ` · ${i.suggestion.reps} reps` : ""}.{" "}
+                {i.suggestion.basis}
               </p>
             ))}
             {!Object.keys(suggestions).length && (
@@ -152,9 +150,15 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
           <ProgramProgress session={workout.id} />
         </>
       )}
+      {statistics && (
+        <p className="qualifying-training-summary">
+          {statistics.working_sets} qualifying working sets ·{" "}
+          {statistics.exercises_performed} exercises performed
+        </p>
+      )}
       <p className="logging-summary">
-        {workout.items.length} exercises · {completed} completed sets ·{" "}
-        {pending} pending sets
+        {workout.items.length} exercises selected · {completed} total completed
+        sets · {pending} pending sets
       </p>
       {completed === 0 && <p>No completed sets were recorded.</p>}
       <ol

@@ -113,3 +113,16 @@ it("first baselines and ties cannot be celebrated", () => {
     ]),
   ).toEqual([]);
 });
+it("full achievement ordering preserves featured diversity without dropping additional records", () => {
+  const rows: Achievement[] = Array.from({ length: 4 }, (_, i) => ({
+    ...metric,
+    exercise_id: `exercise${i}`,
+    exercise_name: `Exercise ${i}`,
+    previous_value: 50,
+    value: 100,
+  }));
+  const featured = selectAchievements(rows);
+  expect(featured).toHaveLength(3);
+  expect(new Set(featured.map((a) => a.exercise_id)).size).toBe(3);
+  expect(selectAchievements([...rows].reverse())).toEqual(featured);
+});
