@@ -60,3 +60,7 @@ Executed results are recorded in `phase-7-4-validation.md`. Guidance is delibera
 ## Phase 7.5A configured calendars
 
 [Adaptive scheduling](adaptive-program-scheduling.md) now supplies the authoritative next position/rotation for explicitly configured assignments. Partials remain recorded training but hold the required position until a full retry; unscheduled legacy assignments keep the Phase 7.4 behavior above. Existing saved-performance evidence, actuals and progression suggestions remain unchanged.
+
+## Phase 7.5B closed-session audit
+
+The existing start-timestamp cutoff already includes a closed current session at `started_at + 1 microsecond`. Real browser regressions verify current 3 × 12 increase feedback, 12/10/9 hold and prior-only active-session evidence. No cutoff SQL change was needed. Scheduling resolution through accepted partials or skips does not create fully completed training rotations. See [selection contracts](workout-selection-and-favorites.md).

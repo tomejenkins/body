@@ -1,3 +1,4 @@
+import { SaveFavorite } from "@/components/workouts/save-favorite";
 import { StartProgramWorkout } from "@/components/programs/start-program-workout";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -134,6 +135,12 @@ export default async function Page({
                       ).length
                     }
                     request={crypto.randomUUID()}
+                  />
+                  <SaveFavorite
+                    type="program_day"
+                    source={loaded.versionId}
+                    day={day.id}
+                    name={day.name}
                   />
                   <details className="program-workout-preview">
                     <summary>View {day.slots.length} movements</summary>

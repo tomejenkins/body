@@ -1,3 +1,4 @@
+import { WorkoutSelection } from "@/components/workouts/workout-selection";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { loadWorkout } from "@/features/workouts/queries";
@@ -16,6 +17,7 @@ export default async function Page() {
         <Link href="/workout">← Workout</Link>
         <h1>What are we training?</h1>
       </header>
+      <WorkoutSelection hideEmpty />
       <WorkoutSetup
         focuses={setup.focuses}
         counts={setup.counts}

@@ -211,3 +211,7 @@ See [focused workout mode](active-workout-mode.md) for the additive manual-pause
 ## Adaptive scheduling
 
 See [adaptive program scheduling](adaptive-program-scheduling.md) for the new assignment configuration, validated preference/command grants, protected session due-date snapshot, shared invoker cursor and bounded read-only calendar. Existing owner RLS and immutable program/performance boundaries remain authoritative; no new user table or completion flag is added.
+
+## Phase 7.5B boundary
+
+Both new tables enable owner RLS and explicit narrow column grants. Clients cannot edit schedule audit evidence or Favorite definitions/attribution. Invoker RPCs and input triggers verify owned immutable versions, exact day/rotation/current cursor, typed intent, revision and payload-bound retries under existing profile/assignment locks. A partial acceptance requires matching eligible partial training and never changes its classification. Favorite starts reject all program execution links; actual set initialization remains empty/unrated. Owner, anonymous, service-role, snapshot-write and cross-device regression assertions are included in `workout_selection.test.sql`. See [architecture](workout-selection-and-favorites.md).

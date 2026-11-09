@@ -90,6 +90,7 @@ export async function ProgramCalendar({
                       <p>{e.name}</p>
                       <span>
                         {scheduleStatus[e.status]}
+                        {e.targetDate ? ` · Until ${e.targetDate}` : ""}
                         {e.recommended ? " · Recommended next" : ""}
                       </span>
                       {e.sessionId && e.status !== "overdue" && (

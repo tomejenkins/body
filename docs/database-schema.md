@@ -222,3 +222,7 @@ See [focused workout mode](active-workout-mode.md) for the additive manual-pause
 ## Adaptive scheduling
 
 See [adaptive program scheduling](adaptive-program-scheduling.md) for the new assignment configuration, validated preference/command grants, protected session due-date snapshot, shared invoker cursor and bounded read-only calendar. Existing owner RLS and immutable program/performance boundaries remain authoritative; no new user table or completion flag is added.
+
+## Phase 7.5B scheduling decisions and Favorites
+
+`20261109155417_workout_selection_decisions_favorites.sql` adds owner-private `program_schedule_decisions` (immutable typed intent, original due date, cursor revision and request identity) and `favorite_workouts` (source-aware immutable single-workout structure, rename and soft archive). Favorite sessions retain protected independent structure/attribution snapshots and an idempotent start nonce. They have no assignment execution identity. Explicit scheduling resolutions extend the existing derived cursor; actual completion and fully completed rotations still derive from qualifying sessions. See [contracts](workout-selection-and-favorites.md).

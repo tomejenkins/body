@@ -1475,3 +1475,91 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
     grid-column: 2;
   }
 }
+.workout-selection {
+  display: grid;
+  gap: 16px;
+  margin-block: 16px;
+}
+.recommended-workout {
+  border: 1px solid var(--primary);
+  border-radius: 12px;
+  padding: 14px;
+}
+.recommended-workout h2 {
+  margin: 4px 0;
+  font-size: 21px;
+}
+.selection-context {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+}
+.selection-form {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  margin-block: 8px;
+}
+.selection-form label:not(.check-label) {
+  display: grid;
+  gap: 4px;
+  width: min(100%, 400px);
+}
+.selection-form input:not([type="checkbox"]):not([type="hidden"]) {
+  min-height: 44px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 16px;
+}
+.workout-selection h3 {
+  font-size: 16px;
+  margin: 4px 0;
+}
+.workout-selection summary,
+.save-favorite summary {
+  min-height: 44px;
+  align-content: center;
+  cursor: pointer;
+}
+.program-workout-options ul,
+.favorite-workouts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.program-workout-options li,
+.favorite-workouts li {
+  border-top: 1px solid var(--border);
+  padding-block: 10px;
+}
+.favorite-workouts ul {
+  max-height: 420px;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+.favorite-workouts li p {
+  font-size: 13px;
+  margin: 4px 0;
+}
+.favorite-workouts h2 {
+  font-size: 20px;
+}
+.schedule-decisions {
+  padding: 8px 0;
+  border-block: 1px solid var(--border);
+}
+.schedule-decisions p,
+.save-favorite p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.calendar-skipped > span,
+.calendar-deferred > span,
+.calendar-accepted_partial > span {
+  color: var(--secondary);
+  font-weight: 600;
+}

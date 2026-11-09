@@ -18,6 +18,14 @@ export type WorkoutItem = {
   prescribedSets?: number | null;
 };
 export type Workout = {
+  sourceVersionId?: string | null;
+  sourceDayId?: string | null;
+  favoriteAttribution?: {
+    favorite?: string;
+    program?: string;
+    day?: string;
+    workout?: string;
+  } | null;
   id: string;
   isProgram?: boolean;
   loadSuggestions?: Record<
