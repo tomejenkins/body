@@ -38,5 +38,6 @@ export async function startExerciseWorkout(
     return { error: "Start could not be confirmed. Retry the same request." };
   }
   revalidatePath("/workout", "layout");
+  revalidatePath("/dashboard");
   redirect(`/workout/${id}`);
 }

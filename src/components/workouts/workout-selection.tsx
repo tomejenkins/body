@@ -8,9 +8,11 @@ import { ScheduleDecisions } from "./schedule-decisions";
 export async function WorkoutSelection({
   activeSession,
   hideEmpty = false,
+  showAlternatives = false,
 }: {
   activeSession?: string;
   hideEmpty?: boolean;
+  showAlternatives?: boolean;
 }) {
   const options = await loadStartOptions(),
     a = options.assignment,
@@ -81,7 +83,11 @@ export async function WorkoutSelection({
               rotation.
             </p>
           )}
-          <details className="program-workout-options">
+          <details
+            className="program-workout-options"
+            id="program-workout-options"
+            open={showAlternatives}
+          >
             <summary>Choose a different program workout</summary>
             {a.days.every((d) => d.recommended) && (
               <p>No other training days in this program.</p>

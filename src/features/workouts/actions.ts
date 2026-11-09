@@ -16,6 +16,8 @@ function id(data: FormData, key: string) {
   return typeof value === "string" && isUuid(value) ? value : null;
 }
 function refresh() {
+  revalidatePath("/dashboard");
+  revalidatePath("/programs");
   revalidatePath("/workout", "layout");
   revalidatePath("/history", "layout");
   revalidatePath("/exercises", "layout");

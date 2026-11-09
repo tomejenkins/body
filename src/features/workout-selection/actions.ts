@@ -22,7 +22,7 @@ async function verified() {
   return { c, user: u.data.user };
 }
 function refresh() {
-  for (const path of ["/workout", "/programs", "/history"])
+  for (const path of ["/workout", "/programs", "/history", "/dashboard"])
     revalidatePath(path, "layout");
 }
 const failed =

@@ -52,6 +52,7 @@ export async function startProgramWorkout(
   }
   revalidatePath("/workout", "layout");
   revalidatePath("/programs", "layout");
+  revalidatePath("/dashboard");
   redirect(`/workout/${session}`);
 }
 export async function selectProgramExercise(input: {

@@ -51,6 +51,7 @@ export type Schedule = {
     position: number;
     rotation: number;
     workIndex: number;
+    decisionRevision: number;
     completedRotations: number;
     complete: boolean;
     lastTrainingOn: string | null;

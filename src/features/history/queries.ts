@@ -49,6 +49,11 @@ export async function loadHistory(filter: unknown, cursor: unknown) {
     for (const row of rows) row.achievement_count = counts.data[row.id] ?? 0;
   }
   return {
+    activeSession:
+      continuity.data?.status === "in_progress" &&
+      continuity.data?.state !== "expired"
+        ? (continuity.data.id as string)
+        : null,
     filter: selected,
     rows: rows.slice(0, 20),
     hasMore: rows.length > 20,

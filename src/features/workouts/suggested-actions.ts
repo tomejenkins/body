@@ -64,6 +64,7 @@ export async function startSuggestedWorkout(
     };
   }
   revalidatePath("/workout", "layout");
+  revalidatePath("/dashboard");
   redirect(`/workout/${id}`);
 }
 export async function editSuggestedMovement(
