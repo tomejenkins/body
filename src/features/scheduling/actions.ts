@@ -60,5 +60,7 @@ export async function configureSchedule(
     };
   }
   revalidatePath("/programs");
+  revalidatePath("/dashboard");
+  revalidatePath("/workout");
   return { saved: true };
 }

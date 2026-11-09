@@ -57,7 +57,10 @@ export default async function Page({
           </Button>
         </section>
       )}
-      <WorkoutSelection activeSession={active?.id} />
+      <WorkoutSelection
+        activeSession={active?.id}
+        showAlternatives={params.choices === "program"}
+      />
       <div className="library-section">
         <Button variant="outline" asChild>
           <Link href="/exercises">Explore exercise library</Link>

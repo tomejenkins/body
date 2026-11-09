@@ -1704,3 +1704,183 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
   overscroll-behavior: contain;
   padding: 2px;
 }
+
+/* Dashboard calendar: seven real dates, one selected detail surface. */
+.training-week {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  background: var(--card);
+  margin-bottom: 18px;
+}
+.training-week-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.training-week-heading h2 {
+  font-size: 19px;
+  letter-spacing: -0.3px;
+}
+.training-week-heading > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 12px;
+  text-align: right;
+}
+.training-active {
+  font-size: 14px;
+  padding-block: 6px;
+  color: var(--secondary);
+}
+.training-week-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.training-week-navigation a {
+  display: inline-flex;
+  width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+.training-week-navigation span {
+  font-size: 12px;
+  text-align: center;
+  color: var(--secondary);
+}
+.training-week-strip {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0;
+}
+.training-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 76px;
+  min-width: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 4px 0;
+  color: var(--foreground);
+  cursor: pointer;
+}
+.training-weekday {
+  font-size: 11px;
+  color: var(--secondary);
+}
+.training-date time {
+  font-size: 17px;
+  line-height: 26px;
+  min-width: 26px;
+  border-radius: 50%;
+}
+.training-date[aria-pressed="true"] {
+  background: var(--muted);
+  border-color: var(--primary);
+}
+.training-date[aria-current="date"] time {
+  outline: 1px solid var(--primary);
+  outline-offset: 1px;
+  font-weight: 700;
+}
+.training-date:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+.training-date-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 18px;
+  min-height: 18px;
+}
+.training-date-indicator small {
+  font-size: 10px;
+  margin-left: 2px;
+}
+.training-completed .training-date-indicator {
+  color: var(--status-complete);
+}
+.training-overdue .training-date-indicator {
+  color: var(--status-progress);
+  font-weight: 700;
+}
+.training-day-details {
+  margin-block: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  max-height: 200px;
+  overflow-y: auto;
+}
+.training-detail-date {
+  font-size: 12px;
+  color: var(--secondary);
+  margin-bottom: 6px;
+}
+.training-day-details ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.training-day-details h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.training-day-details li > p,
+.training-week-empty > p {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--secondary);
+}
+.training-day-details li > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+}
+.training-week-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: stretch;
+}
+.training-week-actions .selection-form button {
+  width: 100%;
+}
+.training-week-actions > a:not([class*="bg-"]) {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  font-size: 14px;
+}
+.training-week-note {
+  margin-top: 8px;
+  color: var(--secondary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+.training-week-empty {
+  padding-block: 8px;
+}
+.training-week-empty > p {
+  margin-bottom: 12px;
+}
+@media (min-width: 768px) {
+  .training-week {
+    max-width: 720px;
+  }
+  .training-week-strip {
+    gap: 6px;
+  }
+}

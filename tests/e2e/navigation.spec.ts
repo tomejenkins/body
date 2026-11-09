@@ -18,11 +18,11 @@ test("all destinations render, navigation tracks the route, and layouts fit", as
   await page.goto("/");
   await expect(
     page
-      .getByRole("region", { name: "Your workout", exact: true })
+      .getByRole("region", { name: "Your Training Week", exact: true })
       .getByRole("link", { name: "Start Other Workout", exact: true })
       .or(
         page
-          .getByRole("region", { name: "Your workout", exact: true })
+          .getByRole("region", { name: "Your Training Week", exact: true })
           .getByRole("link", { name: "Resume Workout", exact: true }),
       ),
   ).toHaveCSS("color", "rgb(255, 255, 255)");
@@ -121,11 +121,11 @@ test("theme follows system changes without navigation", async ({ page }) => {
   );
   await expect(
     page
-      .getByRole("region", { name: "Your workout", exact: true })
+      .getByRole("region", { name: "Your Training Week", exact: true })
       .getByRole("link", { name: "Start Other Workout", exact: true })
       .or(
         page
-          .getByRole("region", { name: "Your workout", exact: true })
+          .getByRole("region", { name: "Your Training Week", exact: true })
           .getByRole("link", { name: "Resume Workout", exact: true }),
       ),
   ).toHaveCSS("color", "rgb(20, 36, 26)");

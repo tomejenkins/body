@@ -13,15 +13,17 @@ export async function selectionProgram(
   n = 7,
   sets = 2,
   double = false,
+  configured = true,
 ) {
-  expect(
-    (
-      await a.client
-        .from("account_preferences")
-        .update({ scheduling_timezone: "UTC" })
-        .eq("owner_id", a.userId)
-    ).error,
-  ).toBeNull();
+  if (configured)
+    expect(
+      (
+        await a.client
+          .from("account_preferences")
+          .update({ scheduling_timezone: "UTC" })
+          .eq("owner_id", a.userId)
+      ).error,
+    ).toBeNull();
   const p = await a.client
     .from("programs")
     .insert({

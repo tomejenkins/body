@@ -101,3 +101,7 @@ In-place timezone revisions, explicit override decisions, partial acceptance, Fa
 ## Phase 7.5B integration
 
 Explicit partial acceptance, skip, defer/replacement/cancellation and source-aware independent Favorites now extend this same cursor. See [workout selection and Favorites](workout-selection-and-favorites.md) for authoritative decision records, concurrency and calendar statuses. Original due dates remain visible alongside deliberate deferral events; overdue describes the original uncompleted schedule, not a training failure.
+
+## Phase 7.5C Dashboard view
+
+The Dashboard now presents the same owner-scoped schedule and cursor through an interactive Training Week widget, with validated one-tap starts and separately labeled independent training. It introduces no scheduling calculation or migration. See [Dashboard training calendar](dashboard-training-calendar.md).
