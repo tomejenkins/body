@@ -184,6 +184,12 @@ export function MovementSelection({
       className="movement-selection"
       aria-label={`Movement ${movement.position} exercise selection`}
     >
+      {movement.defaultUnavailable && (
+        <p className="set-source">
+          The saved default is unavailable. Choose another supported exercise;
+          your Favorite stays unchanged.
+        </p>
+      )}
       <div
         ref={carousel}
         className="movement-carousel"

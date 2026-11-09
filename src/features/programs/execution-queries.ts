@@ -113,9 +113,11 @@ export async function loadWorkoutMovements(workout: Workout) {
     return {
       id: row.id,
       suggested: slot.origin === "ad_hoc",
+      defaultUnavailable:
+        slot.origin === "favorite" && !!slot.exercise_id && !creator,
       position: index + 1,
       label:
-        slot.origin === "ad_hoc" && slot.title
+        ["ad_hoc", "favorite"].includes(slot.origin ?? "") && slot.title
           ? slot.title
           : (intentByKey(target.intentKey)?.title ??
             movementIntents.find(
@@ -132,7 +134,19 @@ export async function loadWorkoutMovements(workout: Workout) {
         : slot.target_sets,
       currentItemId: current?.id ?? null,
       currentExerciseId: current?.exerciseId ?? null,
-      candidates: candidates.map((c) => movementTile(c, library.patterns)),
+      candidates: candidates.map((c) =>
+        movementTile(
+          slot.origin === "favorite"
+            ? {
+                ...c,
+                labels: c.labels.map((l) =>
+                  l === "Program Recommended" ? "Favorite default" : l,
+                ),
+              }
+            : c,
+          library.patterns,
+        ),
+      ),
     };
   });
   return {

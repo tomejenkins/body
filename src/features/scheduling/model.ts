@@ -7,6 +7,10 @@ export type ScheduleEvent = {
   sessionId?: string;
   kind: "rest" | "workout";
   status:
+    | "skipped"
+    | "accepted_partial"
+    | "deferred"
+    | "defer_cancelled"
     | "completed"
     | "recorded_partial"
     | "overdue"
@@ -16,6 +20,7 @@ export type ScheduleEvent = {
     | "due";
   name: string;
   recommended: boolean;
+  targetDate?: string;
   originalDueOn?: string;
   carried?: boolean;
 };
@@ -86,6 +91,10 @@ export function localDate(zone: string, now = new Date()) {
   return `${parts.find((p) => p.type === "year")?.value}-${parts.find((p) => p.type === "month")?.value}-${parts.find((p) => p.type === "day")?.value}`;
 }
 export const scheduleStatus = {
+  skipped: "Skipped",
+  accepted_partial: "Partial accepted · scheduling only",
+  deferred: "Deferred",
+  defer_cancelled: "Deferral cancelled",
   completed: "Completed",
   recorded_partial: "Partial training recorded",
   overdue: "Overdue · carried forward",

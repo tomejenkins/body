@@ -1,3 +1,4 @@
+import { SaveFavorite } from "@/components/workouts/save-favorite";
 import { ProgramProgress } from "@/components/programs/program-progress";
 import {
   loadProgramOutcomes,
@@ -82,6 +83,34 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
         <p role="status" className="draft-warning">
           {closureExplanation("inactivity")}
         </p>
+      )}
+      {workout.favoriteAttribution && (
+        <p className="set-source">
+          Independent Favorite · {workout.favoriteAttribution.favorite}
+          {workout.favoriteAttribution.program
+            ? ` · ${workout.favoriteAttribution.program} · ${workout.favoriteAttribution.day}`
+            : ""}
+        </p>
+      )}
+      {workout.status === "completed" && (
+        <SaveFavorite
+          type={
+            workout.sourceVersionId && workout.sourceDayId
+              ? "program_day"
+              : "completed_ad_hoc"
+          }
+          source={
+            workout.sourceVersionId && workout.sourceDayId
+              ? workout.sourceVersionId
+              : workout.id
+          }
+          day={
+            workout.sourceVersionId
+              ? (workout.sourceDayId ?? undefined)
+              : undefined
+          }
+          name={workout.name}
+        />
       )}
       <ClosedDrafts workout={workout} />
       <Achievements achievements={achievements} unit={workout.weightUnit} />

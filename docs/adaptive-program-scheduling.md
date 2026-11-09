@@ -97,3 +97,7 @@ Configuration and assignment starts serialize on the existing profile lock and a
 7.5C can use the same next/programComplete/progress/events contract for Dashboard tiles and one-tap starts. 7.5D can read the same preserved completion/session references; no Feed entry or publication is created now. No paid service, dependency, secret, builder, billing or admin functionality is introduced.
 
 In-place timezone revisions, explicit override decisions, partial acceptance, Favorites and polished post-workout/Dashboard interactions are deferred. Physical iOS/Safari and hosted-provider behavior require separate device/deployment verification. Apply the new forward migration through the approved existing process before sharing this app revision; no hosted SQL, infrastructure change, deployment or merge is authorized by this work.
+
+## Phase 7.5B integration
+
+Explicit partial acceptance, skip, defer/replacement/cancellation and source-aware independent Favorites now extend this same cursor. See [workout selection and Favorites](workout-selection-and-favorites.md) for authoritative decision records, concurrency and calendar statuses. Original due dates remain visible alongside deliberate deferral events; overdue describes the original uncompleted schedule, not a training failure.
