@@ -111,10 +111,10 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(
-    /\/workout\?message=completed&finished=[a-f0-9-]{36}$/,
-  );
-  await expect(page.locator(".auth-success")).toContainText("Workout finished");
+  await expect(page).toHaveURL(/\/workout\/[a-f0-9-]{36}\/complete$/);
+  await expect(
+    page.getByRole("heading", { name: "Workout Complete!", exact: true }),
+  ).toBeVisible();
   const result = await account.client
     .from("workout_sessions")
     .select("status,completion_status,started_at,finished_at")

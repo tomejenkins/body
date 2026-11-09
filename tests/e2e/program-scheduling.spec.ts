@@ -209,7 +209,7 @@ test("weekly calendar carries missed training, preserves actual completion and s
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/message=completed/);
+  await expect(page).toHaveURL(/\/complete$/);
   const closed = await a.client
     .from("workout_sessions")
     .select("finished_at")

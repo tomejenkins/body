@@ -311,7 +311,7 @@ test("program and completed ad-hoc favorites launch independently with clean log
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/message=completed/);
+  await expect(page).toHaveURL(/\/complete$/);
   await page.goto(`/history/${session}`);
   await expect(page.getByText(/Independent Favorite/)).toBeVisible();
   await open(page.locator(".save-favorite"));

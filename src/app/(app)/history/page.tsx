@@ -59,8 +59,8 @@ export default async function Page({
                 </div>
                 <p>{historyStatus(w.status, w.completion_status)}</p>
                 <p>
-                  {w.exercise_count} exercises · {w.working_sets} completed
-                  working sets · {w.warm_up_sets} warm-up sets ·{" "}
+                  {w.exercise_count} exercises selected · {w.working_sets}{" "}
+                  completed working sets · {w.warm_up_sets} warm-up sets ·{" "}
                   {w.incomplete_sets} incomplete sets
                 </p>
                 <p>

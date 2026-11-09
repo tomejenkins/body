@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/features/auth/session";
 import type { Workout, WorkoutStatus } from "./types";
 type SessionRow = {
+  favorite_workout_id?: string | null;
   source_program_day_id?: string | null;
   favorite_attribution?: Workout["favoriteAttribution"];
   source_program_version_id: string | null;
@@ -47,7 +48,7 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
   let query = client
     .from("workout_sessions")
     .select(
-      "id,name,status,completion_status,started_at,finished_at,source_program_version_id,source_program_day_id,favorite_attribution",
+      "id,name,status,completion_status,started_at,finished_at,source_program_version_id,source_program_day_id,favorite_attribution,favorite_workout_id",
     )
     .eq("owner_id", user.id);
   query = id ? query.eq("id", id) : query.eq("status", "in_progress");
@@ -115,6 +116,7 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
     sourceVersionId: session.source_program_version_id,
     sourceDayId: session.source_program_day_id,
     favoriteAttribution: session.favorite_attribution,
+    favoriteId: session.favorite_workout_id,
     id: session.id,
     name: session.name,
     status: session.status,

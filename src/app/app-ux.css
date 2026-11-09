@@ -1884,3 +1884,138 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
     gap: 6px;
   }
 }
+
+/* A private, concise finish surface using existing authoritative facts. */
+.workout-completion {
+  max-width: 620px;
+  margin-inline: auto;
+}
+.completion-heading {
+  margin-bottom: 18px;
+}
+.completion-heading > svg {
+  color: var(--status-complete);
+  margin-bottom: 10px;
+}
+.completion-heading h1 {
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+.completion-heading h2 {
+  font-size: 19px;
+  overflow-wrap: anywhere;
+  margin-bottom: 6px;
+}
+.completion-heading > p {
+  color: var(--secondary);
+  font-size: 13px;
+}
+.completion-private {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+}
+.completion-statistics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.completion-statistics > div {
+  background: var(--muted);
+  border-radius: 12px;
+  padding: 12px 6px;
+  text-align: center;
+}
+.completion-statistics dt {
+  font-size: 12px;
+  color: var(--secondary);
+}
+.completion-statistics dd {
+  font-size: 21px;
+  font-weight: 600;
+  margin-block: 6px;
+}
+.completion-statistics small {
+  display: block;
+  color: var(--secondary);
+  font-size: 11px;
+}
+.workout-completion .workout-achievements h2,
+.completion-program h2,
+.completion-next h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.workout-completion .records-grid {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.workout-completion .record-card {
+  padding: 12px;
+  background: var(--muted);
+  border: 0;
+}
+.workout-completion .record-card h3 {
+  overflow-wrap: anywhere;
+  font-size: 15px;
+}
+.workout-completion .record-card strong {
+  font-size: 18px;
+}
+.completion-program,
+.completion-next,
+.completion-favorite,
+.completion-more {
+  margin-block: 18px;
+}
+.completion-program > p,
+.completion-next > p {
+  font-size: 14px;
+  margin-block: 8px;
+}
+.completion-program > a,
+.completion-favorite > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+}
+.completion-favorite .save-favorite {
+  margin: 0;
+}
+.completion-more > summary {
+  min-height: 44px;
+  padding-block: 12px;
+}
+.completion-share {
+  width: 100%;
+  white-space: normal;
+}
+.completion-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding-block: 12px;
+  margin-top: 12px;
+  background: var(--background);
+}
+.completion-actions > a:last-child {
+  display: inline-flex;
+  min-height: 44px;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+.completion-saved {
+  font-size: 15px;
+  margin-block: 14px;
+}
+.completion-more > a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  font-size: 14px;
+}

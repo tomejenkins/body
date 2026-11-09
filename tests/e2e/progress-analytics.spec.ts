@@ -87,6 +87,12 @@ test("historical dominance preserves exact records but suppresses redundant reco
   await save(a, current.item, 0, 3, 225);
   await close(a, current.workout);
   await page.goto(`/workout?message=completed&finished=${current.workout}`);
+  await expect(page).toHaveURL(
+    new RegExp(`/workout/${current.workout}/complete$`),
+  );
+  await expect(
+    page.getByRole("heading", { name: "Workout Complete!" }),
+  ).toBeVisible();
   await expect(page.locator(".achievement-card")).toHaveCount(0);
   await page.goto("/history/records");
   const bench = page.locator(".record-card").filter({
@@ -115,7 +121,7 @@ test("historical dominance preserves exact records but suppresses redundant reco
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/message=completed/);
+  await expect(page).toHaveURL(/\/complete$/);
   await expect(page.locator(".achievement-card")).toHaveCount(1);
   await expect(page.locator(".achievement-card")).toContainText("235 lb");
   await page.reload();

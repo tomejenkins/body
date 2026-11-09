@@ -97,7 +97,7 @@ export async function endWorkout(
       p_session: session,
       p_outcome: outcome,
     });
-    if (result.error || result.data === null)
+    if (result.error || result.data !== session)
       return {
         error:
           "Your workout could not be closed. Refresh to check its current state, then retry.",
@@ -106,5 +106,9 @@ export async function endWorkout(
     return { error: "Check your connection and sign-in, then retry." };
   }
   refresh();
-  redirect(`/workout?message=${outcome}&finished=${session}`);
+  redirect(
+    outcome === "completed"
+      ? `/workout/${session}/complete`
+      : `/workout?message=abandoned&finished=${session}`,
+  );
 }

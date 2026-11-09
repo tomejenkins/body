@@ -9,10 +9,12 @@ export async function WorkoutSelection({
   activeSession,
   hideEmpty = false,
   showAlternatives = false,
+  showDecisions = false,
 }: {
   activeSession?: string;
   hideEmpty?: boolean;
   showAlternatives?: boolean;
+  showDecisions?: boolean;
 }) {
   const options = await loadStartOptions(),
     a = options.assignment,
@@ -128,7 +130,11 @@ export async function WorkoutSelection({
                 ))}
             </ul>
           </details>
-          <ScheduleDecisions assignment={a} disabled={!!active} />
+          <ScheduleDecisions
+            assignment={a}
+            disabled={!!active}
+            open={showDecisions}
+          />
         </>
       ) : (
         <Link className="selection-browse" href="/programs">
@@ -140,7 +146,11 @@ export async function WorkoutSelection({
           <Link href="/workout/new">Start Other Workout</Link>
         </Button>
       )}
-      <section className="favorite-workouts" aria-label="Your Favorites">
+      <section
+        id="favorites"
+        className="favorite-workouts"
+        aria-label="Your Favorites"
+      >
         <h2>Your Favorites</h2>
         <p className="set-source">
           Reusable, independent workouts. They do not resolve assigned program

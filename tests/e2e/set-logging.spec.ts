@@ -167,10 +167,10 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   await page
     .getByRole("button", { name: "Finish workout", exact: true })
     .click();
-  await expect(page).toHaveURL(/message=completed/);
+  await expect(page).toHaveURL(/\/complete$/);
   await page.goto(path);
   await expect(page.locator(".logging-summary")).toContainText(
-    "1 completed sets · 2 pending sets",
+    "1 total completed sets · 2 pending sets",
   );
   await expect(page.getByRole("textbox", { name: /weight/ })).toHaveCount(0);
   await expect(page.getByRole("button", { name: /Add set to/ })).toHaveCount(0);
