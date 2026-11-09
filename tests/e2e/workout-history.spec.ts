@@ -52,9 +52,10 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
     page.getByRole("button", { name: /Scheduled Workout/ }),
   ).toHaveCount(0);
   await page
-    .getByRole("button", { name: "Record Workout", exact: true })
+    .getByRole("link", { name: "Start Other Workout", exact: true })
     .click();
   await expect(page).toHaveURL(/\/workout\/new$/);
+  await page.getByText("More options", { exact: true }).click();
   await page
     .getByRole("button", { name: "Start Blank Workout", exact: true })
     .click();

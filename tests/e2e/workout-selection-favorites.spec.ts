@@ -30,7 +30,7 @@ test("authoritative recommended and alternative choices keep source day, pending
     exact: true,
   });
   await expect(rec).toContainText("Training 1");
-  await expect(rec.getByText("Recommended · Current Program")).toBeVisible();
+  await expect(rec.getByText("UP NEXT IN YOUR PROGRAM")).toBeVisible();
   await page.setViewportSize({ width: 390, height: 844 });
   const rect = await rec.boundingBox();
   expect(rect!.y + rect!.height).toBeLessThan(770);

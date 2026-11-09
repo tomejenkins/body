@@ -15,6 +15,14 @@ export type SuggestedMovement = {
   repsMin: number;
   repsMax: number;
 };
+// Each category chooses its first supported intent. Missing categories stay absent.
+export const fullBodyRecipe = [
+  ["squat", "single_leg", "leg_extension"],
+  ["hinge", "hip_thrust", "leg_curl"],
+  ["flat_press", "incline_press", "overhead_press"],
+  ["row", "vertical_pull", "lat_row"],
+  ["crunch", "reverse_crunch", "bicycle", "wood_chop"],
+] as const;
 const titles: Record<string, string> = {
   horizontal_push: "Flat Chest Press",
   incline_push: "Incline Chest Press",
@@ -54,6 +62,17 @@ export function suggestedShell(
   muscles: readonly Taxon[],
   emphasis = "balanced",
 ): SuggestedMovement[] {
+  if (primary === "full_body") {
+    if (secondary || emphasis !== "balanced")
+      throw Error("Choose Full Body without a secondary focus or emphasis.");
+    const options = intentMovementOptions({ exercises, patterns, muscles });
+    return fullBodyRecipe.flatMap((keys) => {
+      const option = keys
+        .map((key) => options.find((s) => s.intent === key))
+        .find(Boolean);
+      return option ? [option] : [];
+    });
+  }
   const focus = focusById(primary),
     other = secondary ? focusById(secondary) : undefined;
   if (!focus) throw Error("Choose a primary focus.");
@@ -151,6 +170,13 @@ export function workoutSetupOptions(l: {
           l.muscles,
           emphasis,
         ).length;
+  counts["full_body::balanced"] = suggestedShell(
+    "full_body",
+    "",
+    l.exercises,
+    l.patterns,
+    l.muscles,
+  ).length;
   return { focuses, counts };
 }
 

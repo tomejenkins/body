@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useActionState } from "react";
 import {
   startWorkout,
@@ -26,10 +26,9 @@ function Feedback({ state }: { state: WorkoutState }) {
   );
 }
 export function StartWorkout() {
-  const router = useRouter();
   return (
-    <Button type="button" onClick={() => router.push("/workout/new")}>
-      Record Workout
+    <Button asChild>
+      <Link href="/workout/new">Start Other Workout</Link>
     </Button>
   );
 }

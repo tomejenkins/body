@@ -244,7 +244,7 @@ test("server expiration preserves performance and rejected local drafts remain r
   expect(state.data.total).toBe(3);
   await page.goto("/workout");
   await expect(
-    page.getByRole("button", { name: "Record Workout", exact: true }),
+    page.getByRole("link", { name: "Start Other Workout", exact: true }),
   ).toBeVisible();
 });
 test("exact-rep records, honest empty states and three diverse completed achievements", async ({

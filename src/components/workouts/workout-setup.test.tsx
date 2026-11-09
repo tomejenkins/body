@@ -19,8 +19,12 @@ it("requires primary focus, keeps blank separate and resets emphasis/duplicate s
   render(
     <WorkoutSetup
       request="request"
+      exercises={[]}
+      recentIds={[]}
+      exerciseRequest="exercise-request"
       focuses={focuses}
       counts={{
+        "full_body::balanced": 5,
         "chest::balanced": 4,
         "chest::upper_chest": 4,
         "chest:triceps:balanced": 5,
@@ -30,11 +34,9 @@ it("requires primary focus, keeps blank separate and resets emphasis/duplicate s
   );
   expect(screen.getByRole("button", { name: "Start Workout" })).toBeDisabled();
   expect(
-    screen.getByRole("button", { name: "Start Blank Workout" }).closest("form"),
-  ).toBeNull();
-  fireEvent.change(screen.getByLabelText("Primary Focus"), {
-    target: { value: "chest" },
-  });
+    screen.getByText("More options").closest("details"),
+  ).not.toHaveAttribute("open");
+  fireEvent.click(screen.getByRole("radio", { name: "Chest" }));
   expect(screen.getByRole("status")).toHaveTextContent("4 suggested movements");
   expect(screen.getByLabelText(/Emphasis/)).toHaveValue("balanced");
   fireEvent.change(screen.getByLabelText(/Emphasis/), {
@@ -43,11 +45,15 @@ it("requires primary focus, keeps blank separate and resets emphasis/duplicate s
   fireEvent.change(screen.getByLabelText(/Secondary Focus/), {
     target: { value: "triceps" },
   });
-  fireEvent.change(screen.getByLabelText("Primary Focus"), {
-    target: { value: "triceps" },
-  });
+  fireEvent.click(screen.getByRole("radio", { name: "Triceps" }));
   expect(screen.getByLabelText(/Secondary Focus/)).toHaveValue("");
   expect(screen.queryByLabelText(/Emphasis/)).toBeNull();
   expect(screen.getByRole("status")).toHaveTextContent("3 suggested movements");
-  expect(screen.queryByText(/choose exercises before/i)).toBeNull();
+  fireEvent.click(screen.getByRole("radio", { name: "Full Body" }));
+  expect(screen.queryByLabelText(/Secondary Focus/)).toBeNull();
+  expect(screen.queryByLabelText(/Emphasis/)).toBeNull();
+  expect(screen.getByRole("status")).toHaveTextContent("5 suggested movements");
+  fireEvent.click(screen.getByRole("radio", { name: "Chest" }));
+  expect(screen.getByLabelText(/Secondary Focus/)).toHaveValue("");
+  expect(screen.getByLabelText(/Emphasis/)).toHaveValue("balanced");
 });
