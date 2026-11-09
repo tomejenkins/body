@@ -226,3 +226,7 @@ See [adaptive program scheduling](adaptive-program-scheduling.md) for the new as
 ## Phase 7.5B scheduling decisions and Favorites
 
 `20261109155417_workout_selection_decisions_favorites.sql` adds owner-private `program_schedule_decisions` (immutable typed intent, original due date, cursor revision and request identity) and `favorite_workouts` (source-aware immutable single-workout structure, rename and soft archive). Favorite sessions retain protected independent structure/attribution snapshots and an idempotent start nonce. They have no assignment execution identity. Explicit scheduling resolutions extend the existing derived cursor; actual completion and fully completed rotations still derive from qualifying sessions. See [contracts](workout-selection-and-favorites.md).
+
+## Phase 7.5B.1 exercise-first entry
+
+`20261109185258_exercise_first_workout_entry.sql` adds no tables or client-writable columns. Validated canonical exercise IDs extend the existing immutable ad-hoc focus snapshot and normal movement/selection initializer. Three explicitly granted invoker functions provide catalog-derived slots, atomic idempotent starts and six qualifying owner recents. Ordinary duplicate-intent validation remains intact. See [entry contracts](workout-entry-refinement.md).

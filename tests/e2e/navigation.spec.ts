@@ -19,7 +19,7 @@ test("all destinations render, navigation tracks the route, and layouts fit", as
   await expect(
     page
       .getByRole("region", { name: "Your workout", exact: true })
-      .getByRole("button", { name: "Record Workout", exact: true })
+      .getByRole("link", { name: "Start Other Workout", exact: true })
       .or(
         page
           .getByRole("region", { name: "Your workout", exact: true })
@@ -122,7 +122,7 @@ test("theme follows system changes without navigation", async ({ page }) => {
   await expect(
     page
       .getByRole("region", { name: "Your workout", exact: true })
-      .getByRole("button", { name: "Record Workout", exact: true })
+      .getByRole("link", { name: "Start Other Workout", exact: true })
       .or(
         page
           .getByRole("region", { name: "Your workout", exact: true })

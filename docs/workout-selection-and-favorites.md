@@ -4,7 +4,7 @@
 
 Base: latest merged main `9537aa9` (Phase 7.5A). The immutable program version, assignment, source day/rotation, actual performance and existing shared scheduling cursor remain authoritative. No second workout, scheduling or performance engine is introduced.
 
-The Workout entry and Quick Workout setup show the configured assignment's recommendation first, then a disclosed list of other training days and Your Favorites. The existing Quick/Blank paths remain available. Active sessions prioritize Resume, disable new selection starts and keep all existing single-active/profile-lock, nonce, continuity, pause, draft and logging safeguards. This phase does not redesign Dashboard or add its weekly tile.
+The Workout entry shows the configured assignment's recommendation first, then a disclosed list of other training days and Your Favorites. Phase 7.5B.1 consolidates the Other entry into a dedicated focus/exercise setup without repeating program selection; blank start remains secondary within setup. See [workout entry refinement](workout-entry-refinement.md). Active sessions prioritize Resume, disable new selection starts and keep all existing single-active/profile-lock, nonce, continuity, pause, draft and logging safeguards. This phase does not redesign Dashboard or add its weekly tile.
 
 `workout_start_options()` returns one bounded owner-scoped aggregation: active session, active configured assignment/cursor, immutable training-day UUIDs and at most 100 active Favorite summaries. Rest days are excluded. Repeated names do not define identity. No browser reconstruction of progression or lifetime set download is required.
 

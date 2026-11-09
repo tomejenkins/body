@@ -20,10 +20,10 @@ test("two focus selections create five unbound movements; logger, back, safe mov
   const a = await verifiedAccount();
   await login(page, a);
   await page
-    .getByRole("button", { name: "Record Workout", exact: true })
+    .getByRole("link", { name: "Start Other Workout", exact: true })
     .click();
   await expect(page).toHaveURL(/workout\/new$/);
-  await page.getByLabel("Primary Focus", { exact: true }).selectOption("chest");
+  await page.getByRole("radio", { name: "Chest", exact: true }).check();
   const secondary = page.getByLabel(/Secondary Focus/);
   await expect(secondary.locator(`option[value="${"chest"}"]`)).toBeDisabled();
   await secondary.selectOption("triceps");
@@ -136,7 +136,7 @@ test("single muscle, limited catalog and one-tap blank starts remain lightweight
   const a = await verifiedAccount();
   await login(page, a);
   await page.goto("/workout/new");
-  await page.getByLabel("Primary Focus", { exact: true }).selectOption("chest");
+  await page.getByRole("radio", { name: "Chest", exact: true }).check();
   await expect(page.getByRole("status")).toContainText("4 suggested movements");
   await page
     .getByRole("button", { name: "Start Workout", exact: true })
@@ -148,9 +148,7 @@ test("single muscle, limited catalog and one-tap blank starts remain lightweight
     p_outcome: "abandoned",
   });
   await page.goto("/workout/new");
-  await page
-    .getByLabel("Primary Focus", { exact: true })
-    .selectOption("biceps");
+  await page.getByRole("radio", { name: "Biceps", exact: true }).check();
   await expect(page.getByRole("status")).toContainText("3 suggested movements");
 
   await page
@@ -162,7 +160,8 @@ test("single muscle, limited catalog and one-tap blank starts remain lightweight
     p_session: session,
     p_outcome: "abandoned",
   });
-  await page.goto("/workout");
+  await page.goto("/workout/new");
+  await page.getByText("More options", { exact: true }).click();
   await page
     .getByRole("button", { name: "Start Blank Workout", exact: true })
     .click();
@@ -179,7 +178,7 @@ test("emphasis persists distinct intents inside a shared pattern and preserves u
   const a = await verifiedAccount();
   await login(page, a);
   await page.goto("/workout/new");
-  await page.getByLabel("Primary Focus", { exact: true }).selectOption("legs");
+  await page.getByRole("radio", { name: "Legs", exact: true }).check();
   await page.getByLabel(/Emphasis/).selectOption("calves");
   const startButton = page.getByRole("button", {
     name: "Start Workout",

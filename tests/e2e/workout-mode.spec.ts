@@ -288,9 +288,7 @@ test("blank and generated ad-hoc management stays available without fabricated t
   const a = await verifiedAccount();
   await login(page, a);
   await page.goto("/workout/new");
-  await page
-    .getByLabel("Primary Focus", { exact: true })
-    .selectOption("biceps");
+  await page.getByRole("radio", { name: "Biceps", exact: true }).check();
   await page.getByLabel(/Secondary Focus/).selectOption("triceps");
   await page
     .getByRole("button", { name: "Start Workout", exact: true })

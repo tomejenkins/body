@@ -6,10 +6,6 @@ import { requireUser } from "@/features/auth/session";
 import type { WeightUnit } from "@/features/sets/model";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  StartWorkout,
-  StartBlankWorkout,
-} from "@/components/workouts/workout-controls";
 import { loadWorkout } from "@/features/workouts/queries";
 export const metadata = { title: "Workout" };
 export default async function Page({
@@ -40,7 +36,6 @@ export default async function Page({
       <div className="page-heading">
         <p className="eyebrow">TRAIN WITH INTENTION</p>
         <h1>Workout</h1>
-        <p className="intro">Choose a focus or start blank.</p>
       </div>
       {params.message === "completed" && (
         <p role="status" className="auth-success">
@@ -55,41 +50,14 @@ export default async function Page({
       <Achievements achievements={achievements} unit={unit} />
       {active && (
         <section className="workout-entry">
-          <span className="eyebrow">
-            {active ? "IN PROGRESS" : "YOUR TRAINING SPACE"}
-          </span>
-          <h2>
-            {active
-              ? "Pick up where you left off."
-              : "Make a little room for movement."}
-          </h2>
-          <p>
-            {active
-              ? `${active.items.length} exercises selected. Resume your current workout whenever you’re ready.`
-              : "Choose your exercises and record your sets at your own pace."}
-          </p>
-          {active ? (
-            <Button asChild>
-              <Link href={`/workout/${active.id}`}>Resume Workout</Link>
-            </Button>
-          ) : (
-            <div className="entry-actions">
-              <StartWorkout />
-              <StartBlankWorkout />
-            </div>
-          )}
+          <span className="eyebrow">IN PROGRESS</span>
+          <h2>Pick up where you left off.</h2>
+          <Button asChild>
+            <Link href={`/workout/${active.id}`}>Resume Workout</Link>
+          </Button>
         </section>
       )}
       <WorkoutSelection activeSession={active?.id} />
-      {!active && (
-        <section aria-label="Other workouts">
-          <h2>Other workouts</h2>
-          <div className="entry-actions">
-            <StartWorkout />
-            <StartBlankWorkout />
-          </div>
-        </section>
-      )}
       <div className="library-section">
         <Button variant="outline" asChild>
           <Link href="/exercises">Explore exercise library</Link>

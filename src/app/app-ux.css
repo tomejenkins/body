@@ -1563,3 +1563,144 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
   color: var(--secondary);
   font-weight: 600;
 }
+
+/* One setup surface; primary focus remains the fastest path. */
+.setup-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.focus-tiles {
+  border: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.focus-tiles legend {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+.focus-tiles label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.focus-tiles label:has(:checked) {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.focus-tiles label:has(:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.focus-tiles input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: currentColor;
+}
+.setup-exercise-options,
+.setup-selected {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+  margin-block: 0.75rem;
+}
+.setup-exercise-options button {
+  width: 100%;
+  min-height: 48px;
+  justify-content: space-between;
+  white-space: normal;
+  text-align: left;
+}
+.setup-selected li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-block: 0.25rem;
+}
+.setup-selected li > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.setup-selected li > div {
+  display: flex;
+  flex-shrink: 0;
+}
+.setup-selected button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.4rem;
+}
+.exercise-setup h2,
+.exercise-setup h3 {
+  margin-block: 0.75rem 0.5rem;
+}
+.selection-browse {
+  display: block;
+  font-size: 0.9rem;
+  margin-block: 0.5rem;
+}
+.workout-selection > a {
+  margin-block: 0.75rem;
+}
+.workout-setup-heading {
+  margin-bottom: 12px;
+}
+.workout-setup-heading h1 {
+  font-size: 26px;
+}
+.setup-mode-toggle {
+  min-height: 44px;
+  font-size: 14px;
+  padding: 0.4rem 0.65rem;
+  background: transparent;
+}
+.focus-tiles {
+  margin-bottom: 0;
+}
+.workout-setup .setup-hint {
+  font-size: 14px;
+}
+.workout-setup form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.workout-setup form > :not(.setup-field) {
+  grid-column: 1 / -1;
+}
+.workout-setup .setup-field label {
+  font-size: 14px;
+  gap: 0.2rem;
+}
+.workout-setup .setup-field .optional-label {
+  font-size: 12px;
+}
+.workout-setup .setup-field select {
+  padding: 8px;
+  min-height: 44px;
+}
+.exercise-setup input[type="search"] {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--foreground);
+}
+.exercise-setup .setup-exercise-options {
+  max-height: 240px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 2px;
+}

@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { randomUUID } from "node:crypto";
 import { loadStartOptions } from "@/features/workout-selection/queries";
@@ -26,12 +27,6 @@ export async function WorkoutSelection({
   const recommended = a?.days.find((d) => d.recommended);
   return (
     <div className="workout-selection" aria-label="Workout selection">
-      {active && (
-        <p className="selection-resume">
-          Your active workout takes priority. Resume above; your saved work and
-          drafts stay available.
-        </p>
-      )}
       {a ? (
         <>
           {recommended && (
@@ -39,12 +34,11 @@ export async function WorkoutSelection({
               className="recommended-workout"
               aria-label="Recommended workout"
             >
-              <span className="selection-context">
-                Recommended · Current Program
-              </span>
+              <span className="selection-context">UP NEXT IN YOUR PROGRAM</span>
               <h2>
-                Workout {recommended.number} · {recommended.name}
+                Workout {recommended.number} — {recommended.name}
               </h2>
+              <span className="set-source">Recommended</span>
               {recommended.partialSession && (
                 <p className="set-source">
                   Partial training recorded. Retry, or open Plan next workout to
@@ -70,7 +64,7 @@ export async function WorkoutSelection({
                   day: recommended.id,
                   request: randomUUID(),
                 }}
-                label="Start recommended workout"
+                label="Start Workout"
                 disabled={!!active}
               />
               <SaveFavorite
@@ -88,7 +82,7 @@ export async function WorkoutSelection({
             </p>
           )}
           <details className="program-workout-options">
-            <summary>Other Program Workouts</summary>
+            <summary>Choose a different program workout</summary>
             {a.days.every((d) => d.recommended) && (
               <p>No other training days in this program.</p>
             )}
@@ -131,12 +125,14 @@ export async function WorkoutSelection({
           <ScheduleDecisions assignment={a} disabled={!!active} />
         </>
       ) : (
-        <p className="set-source">
-          <Link href="/programs">
-            Choose a program or initialize its calendar
-          </Link>{" "}
-          to see your next prescribed workout here.
-        </p>
+        <Link className="selection-browse" href="/programs">
+          Browse Programs
+        </Link>
+      )}
+      {!active && (
+        <Button variant={a ? "outline" : "default"} asChild>
+          <Link href="/workout/new">Start Other Workout</Link>
+        </Button>
       )}
       <section className="favorite-workouts" aria-label="Your Favorites">
         <h2>Your Favorites</h2>
@@ -151,7 +147,8 @@ export async function WorkoutSelection({
                 <div>
                   <h3>{f.name}</h3>
                   <p>
-                    {f.movements} movements ·{" "}
+                    {f.movements} {f.movements === 1 ? "movement" : "movements"}{" "}
+                    ·{" "}
                     {f.sourceType === "program_day"
                       ? `${f.attribution.program} · ${f.attribution.day}`
                       : `From ${f.attribution.workout}`}

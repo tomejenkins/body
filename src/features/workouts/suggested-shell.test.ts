@@ -254,3 +254,25 @@ describe("intent registry consistency", () => {
     expect(JSON.parse(sql.split("$registry$")[1])).toEqual(intents);
   });
 });
+
+it("Full Body spans five distinct curated categories and ignores no stale muscle state", () => {
+  const slots = shell("full_body");
+  expect(slots.map((s) => s.intent)).toEqual([
+    "squat",
+    "hinge",
+    "flat_press",
+    "row",
+    "crunch",
+  ]);
+  expect(new Set(slots.map(movementKey)).size).toBe(5);
+  expect(() => shell("full_body", "chest")).toThrow(/without/);
+  expect(() => shell("full_body", "", "upper_chest")).toThrow(/without/);
+  const noSquat = exercises.filter(
+    (e) => e.primaryPatternId !== patterns.find((p) => p.slug === "squat")!.id,
+  );
+  expect(shell("full_body", "", "balanced", noSquat)[0].intent).toBe(
+    "single_leg",
+  );
+  expect(shell("full_body", "", "balanced", [])).toEqual([]);
+  expect(workoutSetupOptions(library).counts["full_body::balanced"]).toBe(5);
+});

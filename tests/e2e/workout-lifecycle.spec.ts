@@ -33,9 +33,10 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
   await signIn(page, account);
   await page.goto("/workout");
   await page
-    .getByRole("button", { name: "Record Workout", exact: true })
+    .getByRole("link", { name: "Start Other Workout", exact: true })
     .click();
   await expect(page).toHaveURL(/\/workout\/new$/);
+  await page.getByText("More options", { exact: true }).click();
   await page
     .getByRole("button", { name: "Start Blank Workout", exact: true })
     .click();
@@ -229,9 +230,10 @@ test("concurrent starts share one session, owner boundaries hold and abandon pre
     .eq("workout_session_id", sessionId);
   expect(records.data).toHaveLength(1);
   await page
-    .getByRole("button", { name: "Record Workout", exact: true })
+    .getByRole("link", { name: "Start Other Workout", exact: true })
     .click();
   await expect(page).toHaveURL(/\/workout\/new$/);
+  await page.getByText("More options", { exact: true }).click();
   await page
     .getByRole("button", { name: "Start Blank Workout", exact: true })
     .click();
