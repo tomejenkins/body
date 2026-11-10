@@ -1,3 +1,4 @@
+import { enrollFromDetail } from "./enrollment-helpers";
 import { displayWeight } from "../../src/features/sets/model";
 import { test, expect, type Page } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
@@ -20,6 +21,7 @@ async function login(
 async function start(page: Page) {
   const p = programs.find((p) => p.slug === "upper-lower-strength-size")!;
   await page.goto(`/programs/${p.id}`);
+  await enrollFromDetail(page, `/programs/${p.id}`);
   await page
     .getByRole("button", { name: "Start Workout 1", exact: true })
     .click();

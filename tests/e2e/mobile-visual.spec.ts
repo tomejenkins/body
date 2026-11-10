@@ -107,6 +107,10 @@ for (const [width, height] of sizes)
         .select("published_version_id")
         .eq("id", p.id)
         .single();
+      await a.client
+        .from("account_preferences")
+        .update({ scheduling_timezone: "UTC" })
+        .eq("owner_id", a.userId);
       const started = await a.client.rpc("start_program_workout", {
         p_version: version.data!.published_version_id,
         p_workout: 1,

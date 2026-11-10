@@ -1,5 +1,5 @@
 import { ProgramCalendar } from "@/components/programs/program-calendar";
-import { ProgramProgress } from "@/components/programs/program-progress";
+import { CurrentProgram } from "@/components/programs/current-program";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -34,8 +34,13 @@ export default async function Page({
           starting point.
         </p>
       </header>
+      <CurrentProgram />
       <ProgramCalendar week={params.week} baseHref={catalogURL(f)} />
-      <ProgramProgress />
+      {params.switch === "1" && (
+        <p role="status">
+          Choose a replacement program. Your existing history will be preserved.
+        </p>
+      )}
       <form
         key={catalogURL(f)}
         method="get"
@@ -86,7 +91,7 @@ export default async function Page({
         {catalog.total} {catalog.total === 1 ? "program" : "programs"} found
       </p>
       {catalog.items.length ? (
-        <div className="program-card-grid">
+        <div className="program-card-grid" id="program-library-results">
           {catalog.items.map((p) => (
             <article className="program-card" key={p.id}>
               <Link href={`/programs/${p.id}`} aria-label={`View ${p.name}`}>

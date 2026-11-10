@@ -1,7 +1,7 @@
 "use client";
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { configureSchedule } from "@/features/scheduling/actions";
-import { localDate } from "@/features/scheduling/model";
+import { SchedulingFields } from "./scheduling-fields";
 import { Button } from "@/components/ui/button";
 export function ScheduleSetup({
   assignment,
@@ -14,8 +14,6 @@ export function ScheduleSetup({
   request: string;
   fallbackDate: string;
 }) {
-  const [zone, setZone] = useState(timezone ?? "UTC"),
-    [date, setDate] = useState(fallbackDate);
   const [state, action, pending] = useActionState(configureSchedule, {});
   return (
     <details className="schedule-setup" open={!!assignment}>
@@ -27,44 +25,11 @@ export function ScheduleSetup({
           <input type="hidden" name="assignment" value={assignment} />
         )}
         <input type="hidden" name="request" value={request} />
-        <label>
-          Scheduling timezone
-          <input
-            name="timezone"
-            value={zone}
-            onChange={(e) => setZone(e.target.value)}
-            maxLength={100}
-            required
-            placeholder="Europe/London"
-          />
-        </label>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            const device = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            setZone(device);
-            setDate(localDate(device));
-          }}
-        >
-          Use device timezone
-        </Button>
-        {assignment && (
-          <label>
-            Local start date
-            <input
-              type="date"
-              name="start"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              required
-            />
-          </label>
-        )}
-        <label className="check-label">
-          <input type="checkbox" name="confirmed" value="yes" required />
-          Use this timezone for scheduling
-        </label>
+        <SchedulingFields
+          timezone={timezone}
+          fallbackDate={fallbackDate}
+          includeStart={!!assignment}
+        />
         <p className="set-source">
           {assignment
             ? "Scheduling starts from this date without inventing past attendance. "

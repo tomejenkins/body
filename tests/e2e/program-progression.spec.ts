@@ -78,6 +78,10 @@ test("exact-exercise progression is optional, preserves manual input, survives r
   expect(slots.error).toBeNull();
   const version = await client.rpc("snapshot_program", { p_program: program });
   expect(version.error).toBeNull();
+  await client
+    .from("account_preferences")
+    .update({ scheduling_timezone: "UTC" })
+    .eq("owner_id", user.id);
   const start = async () => {
     const r = await client.rpc("start_program_workout", {
       p_version: version.data,
@@ -187,9 +191,11 @@ test("exact-exercise progression is optional, preserves manual input, survives r
     "3 met the rep target",
   );
   await page.goto("/programs");
-  const progress = page.getByRole("region", { name: "Program progress" });
-  await expect(progress).toContainText("1 completed workouts");
-  await expect(progress).toContainText("Next: Workout 2 of 2");
+  const progress = page.getByRole("article", { name: "Current program" });
+  await expect(progress).toContainText("1 workouts completed");
+  await expect(
+    page.getByRole("region", { name: "Program calendar" }),
+  ).toContainText("Next: Training 2");
   // No fixed carousel/logging overlay competes with navigation at either viewport.
   expect(
     await page.evaluate(

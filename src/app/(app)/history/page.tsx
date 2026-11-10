@@ -1,3 +1,4 @@
+import { HistoryViewSelector } from "@/components/history/history-view-selector";
 import { qualifiedDuration } from "@/features/continuity/model";
 import Link from "next/link";
 import { loadHistory } from "@/features/history/queries";
@@ -21,6 +22,7 @@ export default async function Page({
   const last = rows.at(-1);
   return (
     <>
+      <HistoryViewSelector current="workouts" />
       <div className="page-heading">
         <p className="eyebrow">YOUR TRAINING STORY</p>
         <h1>Workout history</h1>

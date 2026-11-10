@@ -4,7 +4,7 @@ set local search_path=public,extensions,pg_temp;
 select no_plan();
 insert into auth.users(id) values(md5('progression_a')::uuid),(md5('progression_b')::uuid);
 insert into profiles(id,display_name) values(md5('progression_a')::uuid,'A'),(md5('progression_b')::uuid,'B');
-insert into account_preferences(owner_id) values(md5('progression_a')::uuid),(md5('progression_b')::uuid);
+insert into account_preferences(owner_id,scheduling_timezone) values(md5('progression_a')::uuid,'UTC'),(md5('progression_b')::uuid,'UTC');
 create function pg_temp.rotation(n integer) returns uuid language plpgsql security invoker as $$
 declare root uuid;day uuid;
 begin
@@ -28,6 +28,14 @@ end $$;
 select ok(not has_function_privilege('anon','public.program_progression_evidence(uuid)','EXECUTE'),'anonymous evidence denied');
 select ok(not has_function_privilege('anon','public.program_saved_progress(uuid,uuid)','EXECUTE'),'anonymous saved progress denied');
 select ok(not has_function_privilege('service_role','public.program_adherence(uuid)','EXECUTE'),'service-role bypass denied');
+
+create function pg_temp.enroll(v uuid) returns void language plpgsql security invoker as $$
+declare a public.program_assignments;begin
+ select * into a from public.program_assignments where owner_id=auth.uid() and state='active';
+ if a.id is null then perform public.program_lifecycle('start',gen_random_uuid(),null,0,v,current_date,'UTC');
+ elsif a.source_version_id<>v then perform public.program_lifecycle('switch',gen_random_uuid(),a.id,a.lifecycle_revision,v,current_date,'UTC');end if;
+end $$;
+
 set local role authenticated;
 select set_config('request.jwt.claims',json_build_object('sub',md5('progression_a')::uuid,'role','authenticated')::text,true);
 select is(public.program_adherence(),null::jsonb,'no assignment is honestly empty');
@@ -43,22 +51,26 @@ select is(jsonb_array_length(program_progression_evidence(current_setting('body_
 select is(jsonb_array_length(program_progression_evidence(current_setting('body_test.session')::uuid)->0->'history'),2,'eligible actual working sets returned');
 select is(start_program_workout(current_setting('body_test.version')::uuid,1,md5('pday1')::uuid),current_setting('body_test.session')::uuid,'completion retry never duplicates a rotation event');
 select set_config('body_test.last',pg_temp.finish_day(current_setting('body_test.version')::uuid,2,'pday2')::text,true);
-select is((program_adherence()->>'completedRotations')::int,1,'all training workouts complete one rotation');
-select is((program_adherence()->>'programComplete')::boolean,true,'fixed-duration completion requires full rotations');
-select is((program_adherence()->>'nextPosition')::int,1,'planned rest day skipped without a missed day');
+select is((program_adherence(current_setting('body_test.last')::uuid)->>'completedRotations')::int,1,'all training workouts complete one rotation');
+select is((program_adherence(current_setting('body_test.last')::uuid)->>'programComplete')::boolean,true,'fixed-duration completion requires full rotations');
+select is((program_adherence(current_setting('body_test.last')::uuid)->>'nextPosition')::int,1,'planned rest day skipped without a missed day');
+select pg_temp.enroll(current_setting('body_test.version')::uuid);
 select set_config('body_test.next',start_program_workout(current_setting('body_test.version')::uuid,1,md5('pday3')::uuid)::text,true);
-select is((select source_rotation from workout_sessions where id=current_setting('body_test.next')::uuid),1,'next rotation identity is stable');
+select is((select source_rotation from workout_sessions where id=current_setting('body_test.next')::uuid),0,'explicit new enrollment starts its own rotation');
 select end_workout(current_setting('body_test.next')::uuid,'abandoned');
-select is((program_adherence()->>'completedWorkouts')::int,2,'abandonment does not count as completion');
+select is((program_adherence(current_setting('body_test.last')::uuid)->>'completedWorkouts')::int,2,'abandonment does not count as completion');
 select is((program_adherence()->>'nextPosition')::int,1,'abandonment does not advance rotation');
 select set_config('body_test.v4',pg_temp.rotation(4)::text,true);
 select set_config('body_test.v8',pg_temp.rotation(8)::text,true);
 select set_config('body_test.v10',pg_temp.rotation(10)::text,true);
+select pg_temp.enroll(current_setting('body_test.v4')::uuid);
 select set_config('body_test.w4',pg_temp.finish_day(current_setting('body_test.v4')::uuid,1,'fourday')::text,true);
 select is((program_adherence()->>'trainingDays')::int,3,'four-position routine retains rest');
+select pg_temp.enroll(current_setting('body_test.v8')::uuid);
 select set_config('body_test.w8',pg_temp.finish_day(current_setting('body_test.v8')::uuid,6,'eightday')::text,true);
-select is((program_adherence()->>'nextPosition')::int,7,'eight-day rotation never maps to weekdays');
+select is((program_adherence()->>'nextPosition')::int,1,'eight-day scheduling keeps the first outstanding required position');
 select is((program_adherence()->>'completedRotations')::int,0,'skipping ahead does not fabricate a completed rotation');
+select pg_temp.enroll(current_setting('body_test.v10')::uuid);
 select set_config('body_test.w10',pg_temp.finish_day(current_setting('body_test.v10')::uuid,9,'tenday')::text,true);
 select is((program_adherence()->>'nextPosition')::int,1,'ten-day cycle wraps past prescribed rest');
 select is((program_adherence()->>'completedWorkouts')::int,1,'program change separates assignment totals');
@@ -95,6 +107,7 @@ select is((program_adherence()->>'completedWorkouts')::int,1,'deleted and zero-r
 select is((program_adherence()->>'completedRotations')::int,0,'cached session labels cannot fabricate a full rotation');
 update program_slots set exercise_id=(select id from exercises where slug='pull_up'),movement_pattern_id=(select id from movement_patterns where slug='vertical_pull'),primary_muscle_id=(select id from muscle_groups where slug='lats') where program_day_id in(select id from program_days where program_id=(select program_id from program_versions where id=current_setting('body_test.v10')::uuid));
 select set_config('body_test.bwv',snapshot_program((select program_id from program_versions where id=current_setting('body_test.v10')::uuid))::text,true);
+select pg_temp.enroll(current_setting('body_test.bwv')::uuid);
 select set_config('body_test.bw',start_program_workout(current_setting('body_test.bwv')::uuid,1,md5('bw_start')::uuid)::text,true);
 select set_config('body_test.bwm',(select id::text from workout_movements where workout_session_id=current_setting('body_test.bw')::uuid),true);
 select throws_ok($$select select_program_exercise(current_setting('body_test.bwm')::uuid,'0bca06a9-efe1-58e7-876b-32b6284a2094',null,md5('unsupported_pick')::uuid)$$,'22023',null,'assisted measurements cannot enter ordinary progression logging');

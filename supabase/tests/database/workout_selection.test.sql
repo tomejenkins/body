@@ -32,6 +32,14 @@ begin
  select id,source_version_id into a,v from program_assignments where owner_id=auth.uid() and state='active';c:=program_schedule_cursor(a);
  return decide_program_schedule(a,v,(c->>'dayId')::uuid,(c->>'rotation')::int,(c->>'workIndex')::bigint,(c->>'decisionRevision')::bigint,k,md5(nonce)::uuid,s,target);
 end $$;
+
+create function pg_temp.enroll(v uuid) returns void language plpgsql security invoker as $$
+declare a public.program_assignments;begin
+ select * into a from public.program_assignments where owner_id=auth.uid() and state='active';
+ if a.id is null then perform public.program_lifecycle('start',gen_random_uuid(),null,0,v,current_date,'UTC');
+ elsif a.source_version_id<>v then perform public.program_lifecycle('switch',gen_random_uuid(),a.id,a.lifecycle_revision,v,current_date,'UTC');end if;
+end $$;
+
 set local role authenticated;
 select set_config('request.jwt.claims',json_build_object('sub',md5('selection_a')::uuid,'role','authenticated')::text,true);
 select set_config('body_test.v',pg_temp.rotation(7)::text,true);
@@ -149,15 +157,18 @@ set local role authenticated;
 select is((select source_session_id from favorite_workouts where id=current_setting('body_test.af')::uuid),null::uuid,'source deletion clears the optional pointer without deleting favorite');
 select is((select jsonb_array_length(definition) from favorite_workouts where id=current_setting('body_test.af')::uuid),1,'source deletion preserves immutable saved structure');
 select set_config('body_test.v8',pg_temp.rotation(8)::text,true);
+select pg_temp.enroll(current_setting('body_test.v8')::uuid);
 select set_config('body_test.w8',start_program_workout(current_setting('body_test.v8')::uuid,1,md5('options_8')::uuid)::text,true);
 select is(jsonb_array_length(workout_start_options()->'assignment'->'days'),4,'eight-position choices exclude rest');
 select end_workout(current_setting('body_test.w8')::uuid,'abandoned');
 select throws_ok($$select decide_program_schedule(current_setting('body_test.a')::uuid,current_setting('body_test.v')::uuid,current_setting('body_test.day')::uuid,1,4,5,'skip',md5('archived_decision')::uuid)$$,'23514',null,'archived assignment cannot accept new decisions');
 select set_config('body_test.v10',pg_temp.rotation(10)::text,true);
+select pg_temp.enroll(current_setting('body_test.v10')::uuid);
 select set_config('body_test.w10',start_program_workout(current_setting('body_test.v10')::uuid,1,md5('options_10')::uuid)::text,true);
 select is(jsonb_array_length(workout_start_options()->'assignment'->'days'),5,'ten-position choices retain all training identities');
 select end_workout(current_setting('body_test.w10')::uuid,'abandoned');
 select set_config('body_test.v3',pg_temp.rotation(3)::text,true);
+select pg_temp.enroll(current_setting('body_test.v3')::uuid);
 select set_config('body_test.w3',start_program_workout(current_setting('body_test.v3')::uuid,1,md5('options_3')::uuid)::text,true);
 select is(jsonb_array_length(workout_start_options()->'assignment'->'days'),2,'three-position choices retain their real nonweekly shape');
 select end_workout(current_setting('body_test.w3')::uuid,'abandoned');
