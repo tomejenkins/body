@@ -109,7 +109,8 @@ export async function loadLibrary(
         .eq("owner_id", user.id),
       client
         .from("workout_exercises")
-        .select("exercise_id")
+        .select("exercise_id,workout_sessions!inner(archived_at)")
+        .is("workout_sessions.archived_at", null)
         .is("removed_at", null)
         .eq("owner_id", user.id)
         .order("created_at", { ascending: false })

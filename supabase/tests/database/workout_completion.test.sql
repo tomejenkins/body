@@ -39,7 +39,7 @@ select throws_ok($$select * from workout_training_summary(null)$$,'22023',null,'
 select throws_ok($$select * from workout_training_summary(array[null]::uuid[])$$,'22023',null,'null identity rejected');
 select throws_ok($$select * from workout_training_summary(array(select gen_random_uuid() from generate_series(1,52)))$$,'22023',null,'summary work is bounded');
 select is((select count(*)::int from workout_training_summary(array[]::uuid[])),0,'empty batch is safe');
-select throws_ok($$delete from workout_sessions where id=current_setting('body_test.w')::uuid$$,'42501',null,'completion cannot erase historical session');
+select throws_ok($$delete from workout_sessions where id=current_setting('body_test.w')::uuid$$,'23514',null,'completion cannot erase historical session without retention authority');
 select set_config('request.jwt.claims',json_build_object('sub',md5('complete_b')::uuid,'role','authenticated')::text,true);
 select is((select count(*)::int from workout_training_summary(array[current_setting('body_test.w')::uuid])),0,'foreign IDs reveal no completed facts');
 reset role;

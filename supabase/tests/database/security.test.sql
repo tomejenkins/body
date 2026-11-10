@@ -991,11 +991,11 @@ select ok((select not has_table_privilege('authenticated','public.workout_sessio
 
 select ok((select has_table_privilege('authenticated','public.workout_sessions','SELECT')), 'workout_sessions: authenticated SELECT is explicit');
 
-select ok((select has_table_privilege('authenticated','public.workout_sessions','DELETE') = false), 'workout_sessions: DELETE matches reviewed matrix');
+select ok((select has_table_privilege('authenticated','public.workout_sessions','DELETE') = true), 'workout_sessions: DELETE matches reviewed matrix');
 
 select ok((select bool_and(has_column_privilege('authenticated','public.workout_sessions',attname,'INSERT') = (attname = any(array['favorite_workout_id','favorite_start_nonce','ad_hoc_focus','ad_hoc_start_nonce','source_program_version_id','program_start_nonce','id','owner_id','source_program_id','source_program_day_id','program_assignment_id','source_cycle_position','source_rotation','program_name_snapshot','day_name_snapshot','name','notes']::text[]))) from pg_attribute where attrelid='public.workout_sessions'::regclass and attnum>0 and not attisdropped), 'workout_sessions: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.workout_sessions',attname,'UPDATE') = (attname = any(array['continuation_nonce','timer_command','name','status','notes','program_name_snapshot','day_name_snapshot']::text[]))) from pg_attribute where attrelid='public.workout_sessions'::regclass and attnum>0 and not attisdropped), 'workout_sessions: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.workout_sessions',attname,'UPDATE') = (attname = any(array['retention_command','continuation_nonce','timer_command','name','status','notes','program_name_snapshot','day_name_snapshot']::text[]))) from pg_attribute where attrelid='public.workout_sessions'::regclass and attnum>0 and not attisdropped), 'workout_sessions: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.workout_exercises'::regclass), 'workout_exercises: RLS enabled');
 
@@ -1824,7 +1824,7 @@ select ok((select count(*)=0 from public.workout_sessions where id=md5('session_
 
 select is(pg_temp.affected($sql$update public.workout_sessions set notes='Corrected session' where id=md5('session_carol')::uuid$sql$), 0::bigint, 'workout_sessions: unauthorized UPDATE affects zero rows');
 
-select throws_ok($sql$delete from public.workout_sessions where id=md5('session_carol')::uuid$sql$, '42501', null, 'workout_sessions: destructive DELETE has no grant');
+select is(pg_temp.affected($sql$delete from public.workout_sessions where id=md5('session_carol')::uuid$sql$),0::bigint,'workout_sessions: cross-owner DELETE affects no rows');
 
 select ok((select count(*)=0 from public.workout_exercises where id=md5('we_carol')::uuid), 'workout_exercises: Bob cannot SELECT Carol rows');
 
@@ -2021,7 +2021,7 @@ select throws_ok($sql$delete from public.programs where id=md5('program_carol'):
 
 select throws_ok($sql$delete from public.program_assignments where id=md5('assignment_carol')::uuid$sql$, '42501', null, 'program_assignments: own destructive DELETE deliberately denied');
 
-select throws_ok($sql$delete from public.workout_sessions where id=md5('session_carol')::uuid$sql$, '42501', null, 'workout_sessions: own destructive DELETE deliberately denied');
+select throws_ok($sql$delete from public.workout_sessions where id=md5('session_carol')::uuid$sql$, '23514', null, 'workout_sessions: own raw DELETE requires a retention receipt');
 
 select throws_ok($sql$delete from public.workout_exercises where id=md5('we_carol')::uuid$sql$, '42501', null, 'workout_exercises: own destructive DELETE deliberately denied');
 

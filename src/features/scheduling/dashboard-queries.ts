@@ -30,6 +30,7 @@ export async function loadTrainingWeek(week?: unknown) {
     .select("id,name,finished_at,completion_status,program_assignment_id")
     .eq("owner_id", user.id)
     .eq("status", "completed")
+    .is("archived_at", null)
     .or(
       `program_assignment_id.is.null,program_assignment_id.neq.${schedule.assignmentId}`,
     )

@@ -100,7 +100,7 @@ test("focused Home fits five rows, replaces global tabs, preserves management an
     page.getByRole("link", { name: "Add exercises", exact: true }),
   ).toBeVisible();
   await bar(page)
-    .getByRole("button", { name: "End Workout", exact: true })
+    .getByRole("button", { name: "Finish Workout", exact: true })
     .click();
   const ending = page.getByRole("dialog", { name: "End workout?" });
   await expect(ending).toBeVisible();
@@ -266,7 +266,7 @@ test("server timer pauses across refresh/devices, rejects races, and saved loggi
   await bar(page).getByRole("link", { name: "Back to Workout Home" }).click();
   await expect(cards(page)).toHaveCount(5);
   await bar(page)
-    .getByRole("button", { name: "End Workout", exact: true })
+    .getByRole("button", { name: "Finish Workout", exact: true })
     .click();
   const ending = page.getByRole("dialog", { name: "End workout?" });
   await ending

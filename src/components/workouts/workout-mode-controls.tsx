@@ -1,4 +1,6 @@
 "use client";
+import { cn } from "@/lib/utils";
+import { InlineAbandon, useWorkoutClosure } from "./workout-closure";
 import { Dialog } from "radix-ui";
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -40,6 +42,7 @@ export function WorkoutModeControls({
   disabled: boolean;
   children: React.ReactNode;
 }) {
+  const closure = useWorkoutClosure();
   const [seconds, setSeconds] = useState(
     value?.effective_elapsed_seconds ?? null,
   );
@@ -200,7 +203,7 @@ export function WorkoutModeControls({
         : "Running";
   return (
     <nav
-      className="workout-mode-controls"
+      className={cn("workout-mode-controls", closure && "has-inline-abandon")}
       aria-label="Workout controls"
       style={{ bottom: keyboard }}
     >
@@ -279,28 +282,36 @@ export function WorkoutModeControls({
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
-      <Dialog.Root>
-        <Dialog.Trigger asChild>
-          <Button type="button" variant="outline" disabled={closed}>
-            End Workout
-          </Button>
-        </Dialog.Trigger>
-        <Dialog.Portal>
-          <Dialog.Overlay className="workout-panel-overlay" />
-          <Dialog.Content className="workout-panel workout-end-panel">
-            <Dialog.Title>End workout?</Dialog.Title>
-            <Dialog.Description>
-              Review saved work before closing this session.
-            </Dialog.Description>
-            {children}
-            <Dialog.Close asChild>
-              <Button type="button" variant="outline">
-                Keep training
-              </Button>
-            </Dialog.Close>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+      <div className="workout-closure-actions">
+        <Dialog.Root>
+          <Dialog.Trigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={closed || closure?.pending}
+              onClick={closure?.cancel}
+            >
+              {closure ? "Finish Workout" : "End Workout"}
+            </Button>
+          </Dialog.Trigger>
+          <Dialog.Portal>
+            <Dialog.Overlay className="workout-panel-overlay" />
+            <Dialog.Content className="workout-panel workout-end-panel">
+              <Dialog.Title>End workout?</Dialog.Title>
+              <Dialog.Description>
+                Review saved work before closing this session.
+              </Dialog.Description>
+              {children}
+              <Dialog.Close asChild>
+                <Button type="button" variant="outline">
+                  Keep training
+                </Button>
+              </Dialog.Close>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+        <InlineAbandon />
+      </div>
     </nav>
   );
 }

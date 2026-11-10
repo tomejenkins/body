@@ -1,4 +1,8 @@
 "use client";
+import {
+  WorkoutClosureProvider,
+  FinishWorkout,
+} from "@/components/workouts/workout-closure";
 import { SuggestedMovementControls } from "@/components/workouts/suggested-movement-controls";
 import { ExerciseNavigation } from "@/components/workouts/exercise-navigation";
 import { newerTimerState } from "@/features/continuity/timer";
@@ -45,10 +49,7 @@ import {
   type WeightUnit,
 } from "@/features/sets/model";
 import { ExerciseThumbnail } from "@/components/exercises/exercise-thumbnail";
-import {
-  CloseWorkout,
-  ItemControls,
-} from "@/components/workouts/workout-controls";
+import { ItemControls } from "@/components/workouts/workout-controls";
 import { Button } from "@/components/ui/button";
 type LoggerRow = {
   item: WorkoutItem | null;
@@ -1644,59 +1645,53 @@ export function WorkoutLogger({
         </details>
       )}
       {active ? (
-        <WorkoutModeControls
+        <WorkoutClosureProvider
+          key={workout.id}
           session={workout.id}
-          value={continuity ?? workout.continuity ?? null}
-          onState={acceptContinuity}
-          home={home}
-          backHref={
-            home
-              ? workout.isProgram
-                ? "/programs"
-                : "/workout"
-              : loggerHref(workout.id)
-          }
-          disabled={!canEdit || pending}
+          disabled={!canEdit || dirty || pending}
         >
-          <section className="workout-ending">
-            <h2 className="sr-only">Workout actions</h2>
-            <p>
-              Completed and pending sets will be preserved exactly as saved.
-              Pending sets will not be marked complete.
-            </p>
-            {dirty && (
-              <p role="status">Resolve unsaved edits before closing.</p>
-            )}
-            {incomplete && (
-              <label className="check-label">
-                <input
-                  type="checkbox"
-                  checked={ack}
-                  onChange={(e) => setAck(e.target.checked)}
-                />
-                Finish without completing all sets ({summary.pending} pending;{" "}
-                {missing}{" "}
-                {workout.movements?.length ? "movements" : "exercises"} missing
-                sets)
-              </label>
-            )}
-            <div className="workout-ending-actions">
-              <CloseWorkout
-                sessionId={workout.id}
-                outcome="completed"
-                disabled={!canEdit || dirty || (incomplete && !ack)}
-              />
-              <details>
-                <summary>Abandon instead</summary>
-                <CloseWorkout
-                  sessionId={workout.id}
-                  outcome="abandoned"
-                  disabled={!canEdit || dirty}
-                />
-              </details>
-            </div>
-          </section>
-        </WorkoutModeControls>
+          <WorkoutModeControls
+            session={workout.id}
+            value={continuity ?? workout.continuity ?? null}
+            onState={acceptContinuity}
+            home={home}
+            backHref={
+              home
+                ? workout.isProgram
+                  ? "/programs"
+                  : "/workout"
+                : loggerHref(workout.id)
+            }
+            disabled={!canEdit || pending}
+          >
+            <section className="workout-ending">
+              <h2 className="sr-only">Workout actions</h2>
+              <p>
+                Completed and pending sets will be preserved exactly as saved.
+                Pending sets will not be marked complete.
+              </p>
+              {dirty && (
+                <p role="status">Resolve unsaved edits before closing.</p>
+              )}
+              {incomplete && (
+                <label className="check-label">
+                  <input
+                    type="checkbox"
+                    checked={ack}
+                    onChange={(e) => setAck(e.target.checked)}
+                  />
+                  Finish without completing all sets ({summary.pending} pending;{" "}
+                  {missing}{" "}
+                  {workout.movements?.length ? "movements" : "exercises"}{" "}
+                  missing sets)
+                </label>
+              )}
+              <div className="workout-ending-actions">
+                <FinishWorkout disabled={incomplete && !ack} />
+              </div>
+            </section>
+          </WorkoutModeControls>
+        </WorkoutClosureProvider>
       ) : (
         <section className="library-section">
           <p>
