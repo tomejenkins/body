@@ -1,0 +1,62 @@
+[
+  {
+    "path": "/login",
+    "status": 200,
+    "expected": 200,
+    "passed": true
+  },
+  {
+    "path": "/manifest.webmanifest",
+    "status": 200,
+    "expected": 200,
+    "passed": true
+  },
+  {
+    "path": "/dashboard",
+    "status": 307,
+    "expected": 307,
+    "passed": true
+  },
+  {
+    "path": "/workout",
+    "status": 307,
+    "expected": 307,
+    "passed": true
+  },
+  {
+    "path": "/workout/12345678-1234-1234-1234-123456789012/complete",
+    "status": 307,
+    "expected": 307,
+    "passed": true
+  },
+  {
+    "path": "/workout/12345678-1234-1234-1234-123456789012/complete?achievements=all",
+    "status": 307,
+    "expected": 307,
+    "passed": true
+  },
+  {
+    "path": "/programs",
+    "status": 307,
+    "expected": 307,
+    "passed": true
+  },
+  {
+    "path": "/history",
+    "status": 307,
+    "expected": 307,
+    "passed": true
+  },
+  {
+    "path": "/history?filter=archived",
+    "status": 307,
+    "expected": 307,
+    "passed": true
+  },
+  {
+    "path": "/history/programs",
+    "status": 307,
+    "expected": 307,
+    "passed": true
+  }
+]

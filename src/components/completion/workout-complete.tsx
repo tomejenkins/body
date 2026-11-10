@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CircleCheck, LockKeyhole } from "lucide-react";
+import { ArrowUpRight, BookmarkCheck, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Achievements } from "@/components/records/achievements";
 import { SaveFavorite } from "@/components/workouts/save-favorite";
@@ -24,6 +24,11 @@ export function WorkoutComplete({
     unsupported = w.items.some((i) =>
       ["duration", "assisted"].includes(i.loggingKind ?? ""),
     );
+  const prescribedSets = s.outcomes.reduce((n, m) => n + m.required, 0),
+    completedSets = s.outcomes.reduce((n, m) => n + m.completed, 0),
+    completedMovements = s.outcomes.filter(
+      (m) => m.completed >= m.required,
+    ).length;
   const qualifier = duration.label.includes("legacy")
     ? "Legacy elapsed"
     : duration.label.startsWith("Estimated")
@@ -36,7 +41,21 @@ export function WorkoutComplete({
   return (
     <article className="workout-completion">
       <header className="completion-heading">
-        <CircleCheck size={30} aria-hidden="true" />
+        <span className="completion-success" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="64" height="64" fill="none">
+            <circle
+              className="completion-success-ring"
+              cx="32"
+              cy="32"
+              r="28"
+            />
+            <path
+              className="completion-success-check"
+              pathLength="1"
+              d="M20 32.5 28.5 41 45 24.5"
+            />
+          </svg>
+        </span>
         <h1>Workout Complete!</h1>
         <h2>{friendlyWorkoutName(w.name)}</h2>
         {w.finishedAt && (
@@ -55,7 +74,7 @@ export function WorkoutComplete({
         </p>
       </header>
       <dl className="completion-statistics" aria-label="Workout statistics">
-        <div aria-label={duration.detail}>
+        <div className="completion-duration" aria-label={duration.detail}>
           <dt>Duration</dt>
           <dd>
             {duration.value === "Less than a minute"
@@ -89,6 +108,7 @@ export function WorkoutComplete({
             achievements={s.achievements.featured}
             unit={w.weightUnit}
             compact
+            presentation="completion"
           />
           {s.achievements.additional.length > 0 && (
             <div className="completion-more">
@@ -108,6 +128,7 @@ export function WorkoutComplete({
                     unit={w.weightUnit}
                     compact
                     heading="More Personal Bests"
+                    presentation="completion"
                   />
                 </section>
               )}
@@ -117,7 +138,7 @@ export function WorkoutComplete({
       ) : (
         <p className="completion-saved">
           {s.statistics.working_sets
-            ? "Workout saved. Your training adds to your progress."
+            ? "Another session in the books."
             : "Workout saved."}
         </p>
       )}
@@ -133,13 +154,17 @@ export function WorkoutComplete({
                 ? "Program work not completed"
                 : "Program workout saved"}
           </h2>
-          <p>
-            {s.outcomes.filter((m) => m.completed >= m.required).length}/
-            {s.outcomes.length} movements complete ·{" "}
-            {s.outcomes.reduce((n, m) => n + m.completed, 0)}/
-            {s.outcomes.reduce((n, m) => n + m.required, 0)} prescribed sets
-            completed
+          <p className="completion-program-counts">
+            {completedMovements}/{s.outcomes.length} movements complete ·{" "}
+            {completedSets}/{prescribedSets} prescribed sets completed
           </p>
+          {prescribedSets > 0 && (
+            <progress
+              aria-label="Prescribed sets completed"
+              value={Math.min(completedSets, prescribedSets)}
+              max={prescribedSets}
+            />
+          )}
           {partial && (
             <>
               <p className="set-source">
@@ -154,25 +179,40 @@ export function WorkoutComplete({
       )}
       {w.isProgram && (
         <section className="completion-next" aria-label="Next time">
-          <h2>Next time</h2>
-          {feedback.map((i) => (
-            <p key={i.id}>
-              <strong>{i.name}</strong>: suggested {i.suggestion.display}{" "}
-              {w.weightUnit}
-              {i.suggestion.reps ? ` · ${i.suggestion.reps} reps` : ""}.{" "}
-              {i.suggestion.basis}
-            </p>
-          ))}
-          {!feedback.length && (
-            <p className="set-source">
-              No load suggestion yet. Keep building recorded performance.
-            </p>
-          )}
+          <details>
+            <summary>
+              Next time{" "}
+              <span>
+                {feedback.length
+                  ? `${feedback.length} load suggestion${feedback.length === 1 ? "" : "s"}`
+                  : "Training guidance"}
+              </span>
+            </summary>
+            <div className="completion-next-content">
+              {feedback.map((i) => (
+                <p key={i.id}>
+                  <strong>{i.name}</strong>: suggested {i.suggestion.display}{" "}
+                  {w.weightUnit}
+                  {i.suggestion.reps
+                    ? ` · ${i.suggestion.reps} reps`
+                    : ""}. {i.suggestion.basis}
+                </p>
+              ))}
+              {!feedback.length && (
+                <p className="set-source">
+                  No load suggestion yet. Keep building recorded performance.
+                </p>
+              )}
+            </div>
+          </details>
         </section>
       )}
       <section className="completion-favorite" aria-label="Favorite shortcut">
         {s.favorite.saved ? (
-          <p role="status">Saved as Favorite · {s.favorite.saved.name}</p>
+          <p role="status" className="completion-favorite-saved">
+            <BookmarkCheck size={18} aria-hidden="true" />{" "}
+            <span>Saved as Favorite · {s.favorite.saved.name}</span>
+          </p>
         ) : s.favorite.eligible ? (
           s.favorite.atCapacity ? (
             <p>
@@ -209,7 +249,7 @@ export function WorkoutComplete({
           </Link>
         </Button>
         <Link prefetch={false} href={`/history/${w.id}`}>
-          View Full Workout
+          View Full Workout <ArrowUpRight size={15} aria-hidden="true" />
         </Link>
       </footer>
     </article>

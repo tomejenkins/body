@@ -1,0 +1,18 @@
+{
+  "scope": "Shared stylesheet source compression estimate; not an HTTP payload or runtime benchmark",
+  "before": {
+    "bytes": 42891,
+    "gzipBytes": 7914
+  },
+  "after": {
+    "bytes": 50730,
+    "gzipBytes": 9172
+  },
+  "delta": {
+    "bytes": 7839,
+    "gzipBytes": 1258
+  },
+  "newDependencies": 0,
+  "newClientComponents": 0,
+  "newDataQueries": 0
+}

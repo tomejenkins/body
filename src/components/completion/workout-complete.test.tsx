@@ -41,9 +41,7 @@ it("shows persisted counts, useful no-PR confirmation, private disabled Feed and
   expect(
     screen.getByLabelText("Completed qualifying working sets"),
   ).toHaveTextContent("2");
-  expect(
-    screen.getByText("Workout saved. Your training adds to your progress."),
-  ).toBeVisible();
+  expect(screen.getByText("Another session in the books.")).toBeVisible();
   const share = screen.getByRole("button", {
     name: "Share to Feed · Coming Later",
   });
@@ -133,4 +131,71 @@ it("features three records and defers additional achievement HTML until explicit
   rerender(<WorkoutComplete workout={w} summary={data} showAllAchievements />);
   expect(container.querySelectorAll(".achievement-card")).toHaveLength(4);
   expect(screen.getByText("Estimated 1RM")).toBeVisible();
+});
+
+it("shows honest empty and unsupported states without implying qualifying training", () => {
+  render(
+    <WorkoutComplete
+      workout={{
+        ...w,
+        items: [{ loggingKind: "duration" } as Workout["items"][number]],
+      }}
+      summary={{
+        ...summary,
+        statistics: {
+          session_id: w.id,
+          working_sets: 0,
+          exercises_performed: 0,
+        },
+        favorite: { ...summary.favorite, eligible: false },
+      }}
+    />,
+  );
+  expect(screen.getByText("Workout saved.")).toBeVisible();
+  expect(screen.queryByText("Another session in the books.")).toBeNull();
+  expect(
+    screen.getByText("No qualifying working sets were recorded."),
+  ).toBeVisible();
+  expect(screen.getByText("Strength sets")).toBeVisible();
+  expect(
+    screen.getByText(/Other legacy timed or assisted entries/),
+  ).toBeVisible();
+  expect(screen.queryByRole("button", { name: "Save Favorite" })).toBeNull();
+});
+it("uses existing prescribed counts for an accessible set-progress display and keeps Next time expandable", () => {
+  const { rerender } = render(
+    <WorkoutComplete
+      workout={{ ...w, isProgram: true }}
+      summary={{
+        ...summary,
+        outcomes: [{ movement: 1, required: 3, completed: 1, repsAchieved: 1 }],
+      }}
+    />,
+  );
+  const progress = screen.getByRole("progressbar", {
+    name: "Prescribed sets completed",
+  });
+  expect(progress).toHaveAttribute("value", "1");
+  expect(progress).toHaveAttribute("max", "3");
+  const details = screen.getByText("Training guidance").closest("details");
+  expect(details).not.toHaveAttribute("open");
+  expect(
+    screen.getByText(
+      "No load suggestion yet. Keep building recorded performance.",
+    ),
+  ).toBeInTheDocument();
+  rerender(
+    <WorkoutComplete
+      workout={{ ...w, isProgram: true, completionStatus: "full" }}
+      summary={{
+        ...summary,
+        outcomes: [{ movement: 1, required: 3, completed: 3, repsAchieved: 3 }],
+      }}
+    />,
+  );
+  expect(screen.getByRole("progressbar")).toHaveAttribute("value", "3");
+  expect(screen.getByText("Program workout saved")).toBeVisible();
+  expect(
+    screen.queryByRole("link", { name: "Review program schedule" }),
+  ).toBeNull();
 });
