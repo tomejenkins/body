@@ -1,0 +1,5 @@
+
+> body@1.0.0 programs:check
+> node scripts/generate-program-catalog.mjs --check
+
+Programs: 12; training days: 46; slots: 205

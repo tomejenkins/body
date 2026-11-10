@@ -25,7 +25,7 @@ export async function openWorkoutEnding(page: Page) {
       .isVisible())
   )
     await page
-      .getByRole("button", { name: "End Workout", exact: true })
+      .getByRole("button", { name: "Finish Workout", exact: true })
       .click();
   await expect(
     page.getByRole("dialog", { name: "End workout?", exact: true }),

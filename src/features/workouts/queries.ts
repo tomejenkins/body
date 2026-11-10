@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/features/auth/session";
 import type { Workout, WorkoutStatus } from "./types";
 type SessionRow = {
+  archived_at: string | null;
+  retention_revision: number;
   favorite_workout_id?: string | null;
   source_program_day_id?: string | null;
   favorite_attribution?: Workout["favoriteAttribution"];
@@ -38,7 +40,10 @@ type ItemRow = {
     }[];
   } | null;
 };
-export async function loadWorkout(id?: string): Promise<Workout | null> {
+export async function loadWorkout(
+  id?: string,
+  retained = false,
+): Promise<Workout | null> {
   const user = await requireUser(id ? `/workout/${id}` : "/workout");
   const client = await createClient({ readOnly: true });
   const continuity = await client.rpc("workout_continuity", {
@@ -48,9 +53,10 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
   let query = client
     .from("workout_sessions")
     .select(
-      "id,name,status,completion_status,started_at,finished_at,source_program_version_id,source_program_day_id,favorite_attribution,favorite_workout_id",
+      "id,name,status,completion_status,started_at,finished_at,source_program_version_id,source_program_day_id,favorite_attribution,favorite_workout_id,archived_at,retention_revision",
     )
     .eq("owner_id", user.id);
+  if (!retained) query = query.is("archived_at", null);
   query = id ? query.eq("id", id) : query.eq("status", "in_progress");
   const result = await query.maybeSingle<SessionRow>();
   if (result.error) throw new Error("Workout could not be loaded.");
@@ -98,8 +104,9 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
   for (const item of items) item.workout_sets = byItem.get(item.id) ?? [];
   const classification =
     session.status === "completed" && session.source_program_version_id
-      ? await client.rpc("workout_program_classifications", {
+      ? await client.rpc("workout_evidence_classifications", {
           p_sessions: [session.id],
+          p_retained: retained,
         })
       : null;
   if (
@@ -129,6 +136,8 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
     favoriteAttribution: session.favorite_attribution,
     favoriteId: session.favorite_workout_id,
     id: session.id,
+    archivedAt: session.archived_at,
+    retentionRevision: session.retention_revision,
     name: session.name,
     status: session.status,
     completionStatus:

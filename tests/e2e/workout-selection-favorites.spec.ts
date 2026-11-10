@@ -184,6 +184,18 @@ test("partial acceptance, confirmed skip, defer replacement/cancel and stale dev
           .deferredUntil,
     )
     .toBe(dateOffset(options.assignment.today, 3));
+  // The database commit can precede the refreshed RSC form. Wait for the
+  // rendered command revision before submitting the next deliberate action.
+  const replacedCursor = (await a.client.rpc("workout_start_options")).data
+    .assignment.cursor;
+  await expect(
+    controls
+      .locator("form")
+      .filter({
+        has: page.getByRole("button", { name: "Cancel deferral" }),
+      })
+      .locator('input[name="revision"]'),
+  ).toHaveValue(String(replacedCursor.decisionRevision));
   await controls.getByRole("button", { name: "Cancel deferral" }).click();
   await expect
     .poll(

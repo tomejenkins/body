@@ -85,11 +85,13 @@ export default async function Page({
           </dd>
         </div>
       </dl>
-      {a.terminalReason && <p>{lifecycleReasons[a.terminalReason]}</p>}
+      {a.terminalReason && (
+        <p>Recorded ending: {lifecycleReasons[a.terminalReason]}</p>
+      )}
       {a.completionEvidenceChanged && (
         <p>
-          Completion evidence changed; the original ending record remains
-          preserved.
+          Your program ended after previously qualifying training. Current
+          retained training history is incomplete.
         </p>
       )}
       {a.pendingEnd && (

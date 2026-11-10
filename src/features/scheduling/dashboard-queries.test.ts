@@ -31,6 +31,7 @@ it("reads one owner-filtered padded weekly summary query with an explicit cap, n
   const q = {
     select: vi.fn(),
     eq: vi.fn(),
+    is: vi.fn(),
     in: vi.fn(),
     or: vi.fn(),
     gte: vi.fn(),
@@ -39,7 +40,17 @@ it("reads one owner-filtered padded weekly summary query with an explicit cap, n
     limit: vi.fn(),
     returns: vi.fn().mockResolvedValue({ data: [] }),
   };
-  for (const fn of [q.select, q.eq, q.in, q.or, q.gte, q.lt, q.order, q.limit])
+  for (const fn of [
+    q.select,
+    q.eq,
+    q.is,
+    q.in,
+    q.or,
+    q.gte,
+    q.lt,
+    q.order,
+    q.limit,
+  ])
     fn.mockReturnValue(q);
   const rpc = vi.fn().mockResolvedValue({
       data: {
@@ -59,6 +70,7 @@ it("reads one owner-filtered padded weekly summary query with an explicit cap, n
   expect(rpc).toHaveBeenCalledTimes(1);
   expect(from).toHaveBeenCalledWith("workout_sessions");
   expect(q.eq).toHaveBeenCalledWith("owner_id", "verified");
+  expect(q.is).toHaveBeenCalledWith("archived_at", null);
   expect(q.gte).toHaveBeenCalledWith("finished_at", "2026-03-01T00:00:00Z");
   expect(q.lt).toHaveBeenCalledWith("finished_at", "2026-03-10T00:00:00Z");
   expect(q.limit).toHaveBeenCalledWith(201);
@@ -77,7 +89,17 @@ it("reports provider failure rather than inventing an empty plan", async () => {
 it("reconciles other-program historical full labels using bounded authoritative classification", async () => {
   m.user.mockResolvedValue({ id: "verified" });
   const q: Record<string, ReturnType<typeof vi.fn>> = {};
-  for (const key of ["select", "eq", "in", "or", "gte", "lt", "order", "limit"])
+  for (const key of [
+    "select",
+    "eq",
+    "is",
+    "in",
+    "or",
+    "gte",
+    "lt",
+    "order",
+    "limit",
+  ])
     q[key] = vi.fn().mockReturnValue(q);
   q.returns = vi.fn().mockResolvedValue({
     data: [

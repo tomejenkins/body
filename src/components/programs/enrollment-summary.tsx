@@ -66,7 +66,8 @@ export function EnrollmentSummary({
       )}
       {a.completionEvidenceChanged && (
         <p className="set-source">
-          Completion evidence changed. Your enrollment history is preserved.
+          Your program ending is preserved. Current retained training history is
+          incomplete.
         </p>
       )}
       {current && (

@@ -1,3 +1,4 @@
+import { WorkoutRetention } from "./workout-retention";
 import { loadTrainingSummary } from "@/features/completion/statistics";
 import { progressionFeedback } from "@/features/programs/progression-feedback";
 import { SaveFavorite } from "@/components/workouts/save-favorite";
@@ -27,10 +28,12 @@ import { LocalTime } from "./local-time";
 import { ExerciseThumbnail } from "@/components/exercises/exercise-thumbnail";
 export async function WorkoutReview({ workout }: { workout: Workout }) {
   const [achievements, suggestions, outcomes, statistics] = await Promise.all([
-    loadAchievements(workout.id),
-    loadProgressionSuggestions(workout),
-    loadProgramOutcomes(workout),
-    workout.status === "completed"
+    workout.archivedAt ? Promise.resolve([]) : loadAchievements(workout.id),
+    workout.archivedAt
+      ? Promise.resolve({})
+      : loadProgressionSuggestions(workout),
+    workout.archivedAt ? Promise.resolve([]) : loadProgramOutcomes(workout),
+    workout.status === "completed" && !workout.archivedAt
       ? loadTrainingSummary(workout.id)
       : Promise.resolve(null),
   ]);
@@ -49,7 +52,22 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
   return (
     <>
       <div className="page-heading">
-        <Link href="/history">← History</Link>
+        <Link
+          href={workout.archivedAt ? "/history?filter=archived" : "/history"}
+        >
+          ← History
+        </Link>
+        {workout.archivedAt && (
+          <>
+            <p role="status" className="workout-history-status">
+              Archived Workout
+            </p>
+            <p>
+              Saved details are preserved. This workout is excluded from active
+              records and progress.
+            </p>
+          </>
+        )}
         <p className="workout-history-status">
           {historyStatus(workout.status, workout.completionStatus)}
         </p>
@@ -72,7 +90,7 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
         ) : (
           <>
             <p>Saved workout · Read only</p>
-            {workout.status === "completed" && (
+            {workout.status === "completed" && !workout.archivedAt && (
               <Link href={`/workout/${workout.id}/complete`}>
                 Workout Summary
               </Link>
@@ -93,7 +111,7 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
             : ""}
         </p>
       )}
-      {workout.status === "completed" && (
+      {workout.status === "completed" && !workout.archivedAt && (
         <SaveFavorite
           type={
             workout.sourceVersionId && workout.sourceDayId
@@ -113,43 +131,49 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
           name={workout.name}
         />
       )}
-      <ClosedDrafts workout={workout} />
+      {!workout.archivedAt && <ClosedDrafts workout={workout} />}
       <Achievements achievements={achievements} unit={workout.weightUnit} />
-      {workout.isProgram && workout.status === "completed" && (
-        <>
-          <section aria-label="Next time" className="program-progress">
-            <h2>Next time</h2>
-            <p>
-              {outcomes.filter((m) => m.completed >= m.required).length}/
-              {outcomes.length} movements complete ·{" "}
-              {outcomes.reduce((n, m) => n + m.completed, 0)}/
-              {outcomes.reduce((n, m) => n + m.required, 0)} prescribed sets
-              completed · {outcomes.reduce((n, m) => n + m.repsAchieved, 0)} met
-              the rep target
-            </p>
-            <details>
-              <summary>Movement targets</summary>
-              {outcomes.map((m) => (
-                <p key={m.movement}>
-                  Movement {m.movement}: {m.completed}/{m.required} sets ·{" "}
-                  {m.repsAchieved} met the rep target
+      {workout.isProgram &&
+        workout.status === "completed" &&
+        !workout.archivedAt && (
+          <>
+            <section aria-label="Next time" className="program-progress">
+              <h2>Next time</h2>
+              <p>
+                {outcomes.filter((m) => m.completed >= m.required).length}/
+                {outcomes.length} movements complete ·{" "}
+                {outcomes.reduce((n, m) => n + m.completed, 0)}/
+                {outcomes.reduce((n, m) => n + m.required, 0)} prescribed sets
+                completed · {outcomes.reduce((n, m) => n + m.repsAchieved, 0)}{" "}
+                met the rep target
+              </p>
+              <details>
+                <summary>Movement targets</summary>
+                {outcomes.map((m) => (
+                  <p key={m.movement}>
+                    Movement {m.movement}: {m.completed}/{m.required} sets ·{" "}
+                    {m.repsAchieved} met the rep target
+                  </p>
+                ))}
+              </details>
+              {suggestionItems.map((i) => (
+                <p key={i.id}>
+                  {i.name}: suggested {i.suggestion.display}{" "}
+                  {workout.weightUnit}
+                  {i.suggestion.reps
+                    ? ` · ${i.suggestion.reps} reps`
+                    : ""}. {i.suggestion.basis}
                 </p>
               ))}
-            </details>
-            {suggestionItems.map((i) => (
-              <p key={i.id}>
-                {i.name}: suggested {i.suggestion.display} {workout.weightUnit}
-                {i.suggestion.reps ? ` · ${i.suggestion.reps} reps` : ""}.{" "}
-                {i.suggestion.basis}
-              </p>
-            ))}
-            {!Object.keys(suggestions).length && (
-              <p>No load suggestion yet. Keep building recorded performance.</p>
-            )}
-          </section>
-          <ProgramProgress session={workout.id} />
-        </>
-      )}
+              {!Object.keys(suggestions).length && (
+                <p>
+                  No load suggestion yet. Keep building recorded performance.
+                </p>
+              )}
+            </section>
+            <ProgramProgress session={workout.id} />
+          </>
+        )}
       {statistics && (
         <p className="qualifying-training-summary">
           {statistics.working_sets} qualifying working sets ·{" "}
@@ -215,6 +239,15 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
           <h2>No exercises recorded.</h2>
           <p>This workout is preserved without invented performance.</p>
         </section>
+      )}
+      {workout.status !== "in_progress" && (
+        <WorkoutRetention
+          key={`${workout.id}:${workout.retentionRevision}`}
+          session={workout.id}
+          revision={workout.retentionRevision ?? 0}
+          archived={!!workout.archivedAt}
+          request={crypto.randomUUID()}
+        />
       )}
     </>
   );

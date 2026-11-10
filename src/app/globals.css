@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @theme inline {
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: #fff;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -11,6 +13,7 @@
 }
 :root {
   color-scheme: light dark;
+  --destructive: #b4232c;
   --background: #f7f8f5;
   --foreground: #242e28;
   --primary: #325b44;

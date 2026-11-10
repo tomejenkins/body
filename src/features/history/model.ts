@@ -7,7 +7,8 @@ import { isUuid } from "@/features/exercises/validation";
 import type { WorkoutStatus } from "@/features/workouts/types";
 export type LoggingKind =
   "legacy" | "loaded" | "bodyweight" | "assisted" | "duration";
-export type HistoryFilter = "all" | "completed" | "incomplete" | "abandoned";
+export type HistoryFilter =
+  "all" | "completed" | "incomplete" | "abandoned" | "archived";
 export type HistorySummary = {
   id: string;
   name: string;
@@ -79,7 +80,9 @@ export function localTimestamp(value: string, zone: string) {
   }).format(new Date(value));
 }
 export function historyFilter(value: unknown): HistoryFilter {
-  return ["all", "completed", "incomplete", "abandoned"].includes(String(value))
+  return ["all", "completed", "incomplete", "abandoned", "archived"].includes(
+    String(value),
+  )
     ? (value as HistoryFilter)
     : "all";
 }

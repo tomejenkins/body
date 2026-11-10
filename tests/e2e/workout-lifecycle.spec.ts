@@ -201,10 +201,9 @@ test("concurrent starts share one session, owner boundaries hold and abandon pre
   await page.goto("/workout");
   await page.getByRole("link", { name: "Resume Workout", exact: true }).click();
   await expect(page.locator(".workout-items li h2")).toHaveText(["Push-up"]);
-  await openWorkoutEnding(page);
-  await page.getByText("Abandon instead", { exact: true }).click();
+  await page.getByRole("button", { name: "Abandon", exact: true }).click();
   await page
-    .getByRole("button", { name: "Abandon workout", exact: true })
+    .getByRole("button", { name: "Confirm Abandon", exact: true })
     .click();
   await expect(page).toHaveURL(
     /\/workout\?message=abandoned&finished=[a-f0-9-]{36}$/,

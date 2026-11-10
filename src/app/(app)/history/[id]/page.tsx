@@ -10,7 +10,7 @@ export default async function Page({
 }) {
   const { id } = await params;
   if (!isUuid(id)) notFound();
-  const workout = await loadWorkout(id);
+  const workout = await loadWorkout(id, true);
   if (!workout) notFound();
   return <WorkoutReview workout={workout} />;
 }

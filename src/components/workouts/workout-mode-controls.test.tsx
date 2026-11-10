@@ -2,6 +2,7 @@ import { useState } from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { beforeEach, expect, it, vi } from "vitest";
 import type { Continuity } from "@/features/continuity/model";
+import { WorkoutClosureProvider, FinishWorkout } from "./workout-closure";
 import { WorkoutModeControls } from "./workout-mode-controls";
 const mocks = vi.hoisted(() => ({ read: vi.fn(), pause: vi.fn() }));
 vi.mock("@/features/continuity/actions", () => ({
@@ -88,4 +89,31 @@ it("keeps the exact retry intent after a transport failure and waits for confirm
     await screen.findByRole("button", { name: "Resume Workout" }),
   ).toBeEnabled();
   expect(screen.getByRole("status")).toHaveTextContent("Paused");
+});
+
+it("keeps Finish review accessible with an unsaved draft while both actual closure submissions remain blocked", async () => {
+  render(
+    <WorkoutClosureProvider session={value.id} disabled>
+      <WorkoutModeControls
+        session={value.id}
+        value={value}
+        onState={() => {}}
+        backHref="/workout"
+        home
+        disabled={false}
+      >
+        <FinishWorkout disabled={false} />
+      </WorkoutModeControls>
+    </WorkoutClosureProvider>,
+  );
+  expect(screen.getByRole("button", { name: /^Abandon$/ })).toBeDisabled();
+  const review = screen.getByRole("button", { name: /^Finish Workout$/ });
+  expect(review).toBeEnabled();
+  fireEvent.click(review);
+  expect(
+    await screen.findByRole("dialog", { name: "End workout?" }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("button", { name: /^Finish workout$/ }),
+  ).toBeDisabled();
 });

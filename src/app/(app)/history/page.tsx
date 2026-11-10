@@ -25,8 +25,11 @@ export default async function Page({
       <HistoryViewSelector current="workouts" />
       <div className="page-heading">
         <p className="eyebrow">YOUR TRAINING STORY</p>
-        <h1>Workout history</h1>
+        <h1>
+          {filter === "archived" ? "Archived Workouts" : "Workout history"}
+        </h1>
         <div className="history-destinations">
+          <Link href="/history?filter=archived">Archived Workouts →</Link>
           <Link href="/history/records">Personal Records →</Link>
           <Link href="/history/progress">Training progress →</Link>
         </div>
@@ -57,9 +60,18 @@ export default async function Page({
               <Link href={`/history/${w.id}`}>
                 <div>
                   <h2>{friendlyWorkoutName(w.name)}</h2>
-                  <LocalTime value={w.started_at} />
+                  <LocalTime
+                    value={
+                      filter === "archived"
+                        ? (w.finished_at ?? w.started_at)
+                        : w.started_at
+                    }
+                  />
                 </div>
-                <p>{historyStatus(w.status, w.completion_status)}</p>
+                <p>
+                  {filter === "archived" ? "Archived · " : ""}
+                  {historyStatus(w.status, w.completion_status)}
+                </p>
                 <p>
                   {w.exercise_count} exercises selected · {w.working_sets}{" "}
                   completed working sets · {w.warm_up_sets} warm-up sets ·{" "}
