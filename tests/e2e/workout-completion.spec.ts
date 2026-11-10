@@ -182,6 +182,11 @@ test("ad-hoc finish shows qualifying facts, saves one Favorite, refreshes safely
     "animation-iteration-count",
     "1",
   );
+  expect(
+    await completion(page)
+      .locator(".completion-success")
+      .evaluate((el) => getComputedStyle(el, "::after").animationName),
+  ).toBe("completion-halo");
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(completion(page).locator(".completion-success-check")).toHaveCSS(
     "animation-name",
@@ -191,6 +196,11 @@ test("ad-hoc finish shows qualifying facts, saves one Favorite, refreshes safely
     "stroke-dashoffset",
     "0px",
   );
+  expect(
+    await completion(page)
+      .locator(".completion-success")
+      .evaluate((el) => getComputedStyle(el, "::after").animationName),
+  ).toBe("none");
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({
     path: info.outputPath("complete-ad-hoc-no-pr.png"),

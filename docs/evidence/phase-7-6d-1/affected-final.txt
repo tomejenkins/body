@@ -1,0 +1,29 @@
+
+> body@1.0.0 test:e2e
+> playwright test workout-flow-polish.spec.ts two-tap-abandon.spec.ts workout-mode.spec.ts --output=/workspace/work/flow-7-6d-1/affected-final
+
+
+Running 12 tests using 2 workers
+
+(node:119034) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:119035) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/e2e/two-tap-abandon.spec.ts:6:1 › inline two-tap abandonment preserves saved work, supports cancellation/retry and never advances or ends a program (10.3s)
+  ✓   3 [desktop] › tests/e2e/workout-flow-polish.spec.ts:260:1 › mobile header stays opaque and readable while scrolling (3.0s)
+  ✓   2 [desktop] › tests/e2e/workout-flow-polish.spec.ts:7:1 › confirmed exercise actions reuse Add Set and return to the same Home; footer remains stable (15.6s)
+  ✓   4 [desktop] › tests/e2e/workout-mode.spec.ts:39:1 › focused Home fits five rows, replaces global tabs, preserves management and end confirmation (4.9s)
+  ✓   6 [desktop] › tests/e2e/workout-mode.spec.ts:285:1 › blank and generated ad-hoc management stays available without fabricated tile context (5.7s)
+(node:119869) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop] › tests/e2e/workout-mode.spec.ts:153:1 › server timer pauses across refresh/devices, rejects races, and saved logging resumes without losing data (9.6s)
+(node:120017) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [mobile] › tests/e2e/two-tap-abandon.spec.ts:6:1 › inline two-tap abandonment preserves saved work, supports cancellation/retry and never advances or ends a program (5.8s)
+  ✓   9 [mobile] › tests/e2e/workout-flow-polish.spec.ts:260:1 › mobile header stays opaque and readable while scrolling (3.2s)
+  ✓  10 [mobile] › tests/e2e/workout-mode.spec.ts:39:1 › focused Home fits five rows, replaces global tabs, preserves management and end confirmation (3.9s)
+  ✓   8 [mobile] › tests/e2e/workout-flow-polish.spec.ts:7:1 › confirmed exercise actions reuse Add Set and return to the same Home; footer remains stable (12.1s)
+  ✓  12 [mobile] › tests/e2e/workout-mode.spec.ts:285:1 › blank and generated ad-hoc management stays available without fabricated tile context (4.7s)
+  ✓  11 [mobile] › tests/e2e/workout-mode.spec.ts:153:1 › server timer pauses across refresh/devices, rejects races, and saved logging resumes without losing data (8.0s)
+
+  12 passed (47.1s)

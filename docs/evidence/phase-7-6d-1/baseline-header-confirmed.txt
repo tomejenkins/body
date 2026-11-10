@@ -1,0 +1,12 @@
+
+> body@1.0.0 test:e2e
+> playwright test tests/e2e/flow-before.spec.ts --project=mobile --output=/workspace/work/flow-7-6d-1/before-header-confirmed
+
+
+Running 1 test using 1 worker
+
+(node:94346) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [mobile] › tests/e2e/flow-before.spec.ts:5:1 › temporary baseline header capture (1.7s)
+
+  1 passed (2.4s)

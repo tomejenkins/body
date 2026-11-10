@@ -1901,8 +1901,8 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
   display: grid;
   place-items: center;
   position: relative;
-  width: 76px;
-  height: 76px;
+  width: 84px;
+  height: 84px;
   margin: 0 auto 20px;
   color: var(--status-complete);
 }
@@ -1910,7 +1910,8 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
   content: "";
   position: absolute;
   inset: 0;
-  border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 28%, transparent);
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--primary) 5%, transparent);
   border-radius: 50%;
 }
 .workout-completion .completion-success-ring {
@@ -2282,6 +2283,9 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
   .workout-completion .completion-success {
     animation: completion-arrive 420ms ease-out;
   }
+  .workout-completion .completion-success::after {
+    animation: completion-halo 620ms ease-out;
+  }
   .workout-completion .completion-success-check {
     animation: completion-check 460ms 60ms ease-out backwards;
   }
@@ -2303,6 +2307,19 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+@keyframes completion-halo {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  45% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 @keyframes completion-check {
@@ -2455,61 +2472,107 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
   flex-wrap: wrap;
   gap: 0.75rem;
 }
-.workout-closure-actions,
-.inline-abandon {
+/* One fixed stack: optional exercise actions, full-width timer, three stable columns. */
+.workout-mode-controls {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
 }
-.workout-closure-actions > button,
-.inline-abandon > button,
-.inline-abandon form button {
-  min-height: 44px;
-  padding-inline: 10px;
-  font-size: 14px;
-  white-space: nowrap;
+.workout-timer-row .workout-timer-trigger {
+  width: 100%;
+  min-height: 3rem;
+  padding: 2px 8px;
 }
-.inline-abandon form {
-  margin: 0;
+.workout-timer-row .timer-digits {
+  font-size: 1.2rem;
+  font-variant-numeric: tabular-nums;
 }
-.inline-abandon {
+.workout-timer-row .timer-state {
+  font-size: 0.7rem;
+}
+.workout-footer-actions {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 6px;
+  align-items: stretch;
 }
-.inline-abandon > button:first-child {
-  grid-column: 1 / -1;
-}
-.inline-abandon .auth-error {
-  grid-column: 1 / -1;
-  margin: 0;
-}
-.workout-mode-controls.has-inline-abandon {
-  grid-template-columns: auto 1fr;
-}
-.has-inline-abandon .workout-closure-actions {
-  grid-column: 1 / -1;
-  justify-content: center;
-}
-.workout-closure-actions {
-  align-items: flex-start;
-}
-.workout-closure-actions > button {
-  flex: 0 1 auto;
-}
-.workout-closure-actions > .inline-abandon {
-  flex: 1;
+.workout-footer-actions > a,
+.workout-footer-actions > button,
+.workout-footer-actions .inline-abandon form {
+  grid-row: 2;
   min-width: 0;
 }
-.inline-abandon > button {
-  flex-shrink: 0;
+.workout-footer-actions > a {
+  grid-column: 1;
 }
-.inline-abandon > button:first-child,
-.inline-abandon form {
-  flex: 1;
+.workout-footer-actions > button {
+  grid-column: 3;
 }
-.inline-abandon form button {
+.workout-footer-actions .inline-abandon {
+  display: contents;
+}
+.workout-footer-actions .inline-abandon form {
+  grid-column: 2;
+  margin: 0;
+}
+.workout-footer-actions > a,
+.workout-footer-actions > button,
+.workout-footer-actions .inline-abandon button {
   width: 100%;
+  height: 3.25rem;
+  min-height: 48px;
+  padding: 3px 4px;
+  font-size: clamp(0.75rem, 3.35vw, 0.875rem);
+  line-height: 1.2;
+  white-space: normal;
+  text-align: center;
 }
-body:has(.has-inline-abandon) main {
-  padding-bottom: calc(150px + env(safe-area-inset-bottom));
+.workout-footer-actions .auth-error {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin: 0;
+  padding: 6px 0;
+  font-size: 0.8rem;
+}
+.exercise-completion-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding: 4px 0 10px;
+}
+.exercise-completion-actions > button {
+  min-width: 0;
+  min-height: 48px;
+  padding: 6px;
+  font-size: 0.875rem;
+  white-space: normal;
+}
+body:has(.active-workout-mode) main {
+  padding-bottom: 16px;
+}
+body:has(.active-workout-mode) .app-content {
+  padding-bottom: 0;
+}
+.active-workout-mode {
+  padding-bottom: calc(var(--workout-controls-space, 140px) + 16px);
+}
+/* Opaque paint beneath the wordmark, not an iOS compositing/filter workaround. */
+.topbar {
+  background: var(--background);
+  isolation: isolate;
+}
+@media (max-width: 700px) {
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    height: calc(48px + env(safe-area-inset-top));
+    min-height: calc(48px + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) 18px 0;
+  }
+  body:has(.active-workout-mode) .topbar {
+    padding: env(safe-area-inset-top) 16px 0;
+  }
 }
