@@ -1885,139 +1885,433 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
   }
 }
 
-/* A private, concise finish surface using existing authoritative facts. */
+/* Completion-only presentation; data entry, records and global navigation stay unchanged. */
 .workout-completion {
-  max-width: 620px;
+  --completion-record: #775723;
+  --completion-record-surface: color-mix(in srgb, var(--card) 92%, #c59a51);
+  max-width: 680px;
   margin-inline: auto;
+  padding-block: 4px 16px;
 }
-.completion-heading {
-  margin-bottom: 18px;
+.workout-completion .completion-heading {
+  text-align: center;
+  margin-bottom: 24px;
 }
-.completion-heading > svg {
+.workout-completion .completion-success {
+  display: grid;
+  place-items: center;
+  position: relative;
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 20px;
   color: var(--status-complete);
-  margin-bottom: 10px;
 }
-.completion-heading h1 {
-  font-size: 30px;
-  margin-bottom: 8px;
+.workout-completion .completion-success::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+  border-radius: 50%;
 }
-.completion-heading h2 {
-  font-size: 19px;
+.workout-completion .completion-success-ring {
+  fill: color-mix(in srgb, var(--primary) 8%, var(--background));
+  stroke: color-mix(in srgb, var(--primary) 20%, transparent);
+  stroke-width: 1;
+}
+.workout-completion .completion-success-check {
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.workout-completion .completion-heading h1 {
+  font-size: clamp(2.1rem, 5vw, 3rem);
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  margin: 0 0 12px;
+}
+.workout-completion .completion-heading h2 {
+  font-size: clamp(1.05rem, 3vw, 1.3rem);
+  line-height: 1.4;
+  font-weight: 500;
   overflow-wrap: anywhere;
-  margin-bottom: 6px;
+  margin: 0 auto 6px;
+  max-width: 32ch;
 }
-.completion-heading > p {
+.workout-completion .completion-heading > p {
+  font-size: 0.8rem;
+  line-height: 1.5;
   color: var(--secondary);
-  font-size: 13px;
+  margin: 0 0 8px;
 }
-.completion-private {
-  display: flex;
+.workout-completion .completion-heading .completion-private {
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
-  margin-top: 8px;
+  justify-content: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
 }
-.completion-statistics {
+.workout-completion .completion-statistics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 18px;
+  padding: 20px 6px;
+  margin: 0 0 20px;
+  border-radius: 20px;
+  background: #244331;
+  color: #fff;
 }
-.completion-statistics > div {
-  background: var(--muted);
-  border-radius: 12px;
-  padding: 12px 6px;
-  text-align: center;
-}
-.completion-statistics dt {
-  font-size: 12px;
-  color: var(--secondary);
-}
-.completion-statistics dd {
-  font-size: 21px;
-  font-weight: 600;
-  margin-block: 6px;
-}
-.completion-statistics small {
-  display: block;
-  color: var(--secondary);
-  font-size: 11px;
-}
-.workout-completion .workout-achievements h2,
-.completion-program h2,
-.completion-next h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-.workout-completion .records-grid {
-  grid-template-columns: 1fr;
-  gap: 8px;
-}
-.workout-completion .record-card {
-  padding: 12px;
-  background: var(--muted);
-  border: 0;
-}
-.workout-completion .record-card h3 {
-  overflow-wrap: anywhere;
-  font-size: 15px;
-}
-.workout-completion .record-card strong {
-  font-size: 18px;
-}
-.completion-program,
-.completion-next,
-.completion-favorite,
-.completion-more {
-  margin-block: 18px;
-}
-.completion-program > p,
-.completion-next > p {
-  font-size: 14px;
-  margin-block: 8px;
-}
-.completion-program > a,
-.completion-favorite > a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  font-size: 14px;
-}
-.completion-favorite .save-favorite {
-  margin: 0;
-}
-.completion-more > summary {
-  min-height: 44px;
-  padding-block: 12px;
-}
-.completion-share {
-  width: 100%;
-  white-space: normal;
-}
-.completion-actions {
+.workout-completion .completion-statistics > div {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  gap: 4px;
-  padding-block: 12px;
-  margin-top: 12px;
-  background: var(--background);
+  align-items: center;
+  min-width: 0;
+  padding: 0 6px;
+  text-align: center;
 }
-.completion-actions > a:last-child {
-  display: inline-flex;
-  min-height: 44px;
+.workout-completion .completion-statistics > div + div {
+  border-left: 1px solid #ffffff29;
+}
+.workout-completion .completion-statistics dt {
+  font-size: 0.72rem;
+  line-height: 1.3;
+  color: #d4e0d7;
+  order: 1;
+}
+.workout-completion .completion-statistics dd {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: center;
-  font-size: 14px;
+  flex: 1;
+  font-size: 2rem;
+  line-height: 1.15;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  overflow-wrap: anywhere;
+  margin: 0 0 8px;
 }
-.completion-saved {
-  font-size: 15px;
-  margin-block: 14px;
+.workout-completion .completion-statistics .completion-duration dd {
+  font-size: clamp(1.15rem, 3.6vw, 1.6rem);
+  letter-spacing: -0.025em;
 }
-.completion-more > a {
+.workout-completion .completion-statistics small {
+  display: block;
+  order: 2;
+  font-size: 0.65rem;
+  line-height: 1.4;
+  color: #d4e0d7;
+  margin-top: 3px;
+}
+.workout-completion .completion-saved {
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--secondary);
+  margin: 20px 0 26px;
+}
+.workout-completion > .set-source {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin-block: 12px;
+}
+.workout-completion .workout-achievements {
+  margin: 28px 0 0;
+}
+.workout-completion .workout-achievements h2 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--completion-record);
+  margin: 0 0 12px;
+}
+.workout-completion .records-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.workout-completion .achievement-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid
+    color-mix(in srgb, var(--completion-record) 20%, var(--border));
+  border-radius: 18px;
+  background: var(--completion-record-surface);
+}
+.workout-completion .completion-record-symbol {
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--completion-record) 10%, transparent);
+  color: var(--completion-record);
+}
+.workout-completion .completion-record-result {
+  min-width: 0;
+}
+.workout-completion .achievement-card h3 {
+  font-size: 0.95rem;
+  line-height: 1.35;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+  margin: 0 0 4px;
+}
+.workout-completion .achievement-card p {
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--secondary);
+  margin: 0 0 8px;
+}
+.workout-completion .achievement-card strong {
+  display: block;
+  font-size: clamp(1.2rem, 4vw, 1.55rem);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.workout-completion .completion-more > a {
   display: inline-flex;
-  min-height: 44px;
   align-items: center;
-  font-size: 14px;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 0.8rem;
+  color: var(--completion-record);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.workout-completion #all-achievements {
+  scroll-margin-top: 24px;
+}
+.workout-completion .completion-program {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  margin-top: 26px;
+  background: var(--card);
+}
+.workout-completion .completion-program h2 {
+  font-size: 1rem;
+  line-height: 1.4;
+  margin: 0 0 8px;
+}
+.workout-completion .completion-program-counts {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--secondary);
+  margin: 0 0 14px;
+}
+.workout-completion .completion-program progress {
+  display: block;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--muted);
+  accent-color: var(--primary);
+  overflow: hidden;
+}
+.workout-completion .completion-program progress::-webkit-progress-bar {
+  background: var(--muted);
+  border-radius: 6px;
+}
+.workout-completion .completion-program progress::-webkit-progress-value {
+  background: var(--primary);
+  border-radius: 6px;
+}
+.workout-completion .completion-program progress::-moz-progress-bar {
+  background: var(--primary);
+  border-radius: 6px;
+}
+.workout-completion .completion-program .set-source {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  margin: 14px 0 0;
+}
+.workout-completion .completion-program > a,
+.workout-completion .completion-favorite > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.8rem;
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.workout-completion .completion-next {
+  margin: 16px 0 24px;
+  padding-inline: 4px;
+}
+.workout-completion .completion-next summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding-block: 10px;
+  font-size: 0.9rem;
+  font-weight: 550;
+  cursor: pointer;
+}
+.workout-completion .completion-next summary::after {
+  content: "+";
+  color: var(--secondary);
+}
+.workout-completion .completion-next details[open] summary::after {
+  content: "−";
+}
+.workout-completion .completion-next summary span {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--secondary);
+  margin-left: auto;
+  text-align: right;
+}
+.workout-completion .completion-next-content p {
+  font-size: 0.8rem;
+  line-height: 1.65;
+  margin: 8px 0 12px;
+}
+.workout-completion .completion-next-content strong {
+  font-weight: 550;
+}
+.workout-completion .completion-favorite {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.workout-completion .completion-favorite:empty {
+  display: none;
+}
+.workout-completion .completion-favorite .save-favorite {
+  margin: 0;
+}
+.workout-completion .completion-favorite summary {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.workout-completion .completion-favorite summary::after {
+  content: "+";
+  margin-left: auto;
+  color: var(--secondary);
+}
+.workout-completion .completion-favorite details[open] summary::after {
+  content: "−";
+}
+.workout-completion .completion-favorite-saved {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+.workout-completion .completion-share {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  font-size: 0.7rem;
+  margin-top: 8px;
+}
+.workout-completion .completion-actions {
+  display: grid;
+  gap: 6px;
+  padding-top: 20px;
+  margin-top: 8px;
+}
+.workout-completion .completion-actions > a:first-child {
+  min-height: 52px;
+  border-radius: 14px;
+  font-size: 1rem;
+}
+.workout-completion .completion-actions > a:last-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 0.8rem;
+}
+@media (prefers-color-scheme: dark) {
+  .workout-completion {
+    --completion-record: #e2c793;
+    --completion-record-surface: color-mix(in srgb, var(--card) 94%, #c59a51);
+  }
+  .workout-completion .completion-statistics {
+    background: #203a2b;
+    border: 1px solid #43604b;
+  }
+}
+@media (min-width: 768px) {
+  .workout-completion {
+    padding-top: 14px;
+  }
+  .workout-completion .completion-heading {
+    margin-bottom: 30px;
+  }
+  .workout-completion .completion-success {
+    margin-bottom: 24px;
+  }
+  .workout-completion .completion-statistics {
+    padding: 26px 12px;
+  }
+  .workout-completion .completion-statistics dd {
+    font-size: 2.5rem;
+  }
+  .workout-completion .completion-statistics .completion-duration dd {
+    font-size: 1.8rem;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .workout-completion .completion-success {
+    animation: completion-arrive 420ms ease-out;
+  }
+  .workout-completion .completion-success-check {
+    animation: completion-check 460ms 60ms ease-out backwards;
+  }
+  .workout-completion .completion-statistics > div {
+    animation: completion-arrive 360ms 90ms ease-out backwards;
+  }
+  .workout-completion .completion-statistics > div:nth-child(2) {
+    animation-delay: 140ms;
+  }
+  .workout-completion .completion-statistics > div:nth-child(3) {
+    animation-delay: 190ms;
+  }
+}
+@keyframes completion-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes completion-check {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 /* Scoped program enrollment surfaces; logger, picker and Workout entry retain their styles. */

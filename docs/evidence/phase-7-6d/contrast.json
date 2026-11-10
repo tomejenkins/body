@@ -1,0 +1,53 @@
+{
+  "method": "WCAG sRGB luminance using declared theme colors and sRGB color-mix; disabled Feed control excluded",
+  "results": [
+    {
+      "name": "Light statistics labels",
+      "ratio": 8.03,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "name": "Dark statistics labels",
+      "ratio": 9.08,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "name": "Light record labels",
+      "ratio": 5.68,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "name": "Dark record labels",
+      "ratio": 7.78,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "name": "Light record accent",
+      "ratio": 6.19,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "name": "Dark record accent",
+      "ratio": 9.24,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "name": "Light Done action",
+      "ratio": 9.45,
+      "minimum": 4.5,
+      "passed": true
+    },
+    {
+      "name": "Dark Done action",
+      "ratio": 9.96,
+      "minimum": 4.5,
+      "passed": true
+    }
+  ]
+}

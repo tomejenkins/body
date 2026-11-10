@@ -102,6 +102,23 @@ function localFixture(a: Account, sql: string) {
   );
 }
 const completion = (page: Page) => page.locator(".workout-completion");
+async function savedEvidence(a: Account) {
+  const [sessions, sets, receipts] = await Promise.all([
+    a.client
+      .from("workout_sessions")
+      .select("id,status,completion_status,finished_at,updated_at")
+      .order("id"),
+    a.client
+      .from("workout_sets")
+      .select("id,status,actual_reps,actual_weight_kg,updated_at")
+      .order("id"),
+    a.client.from("program_lifecycle_receipts").select("id").order("id"),
+  ]);
+  for (const result of [sessions, sets, receipts])
+    expect(result.error).toBeNull();
+  return { sessions: sessions.data, sets: sets.data, receipts: receipts.data };
+}
+
 test("ad-hoc finish shows qualifying facts, saves one Favorite, refreshes safely and Done returns to fresh Dashboard", async ({
   page,
 }, info) => {
@@ -136,9 +153,7 @@ test("ad-hoc finish shows qualifying facts, saves one Favorite, refreshes safely
   await expect(metrics.locator("dd")).toHaveCount(3);
   await expect(metrics.locator("dd").nth(1)).toHaveText("2");
   await expect(metrics.locator("dd").nth(2)).toHaveText("2");
-  await expect(completion(page)).toContainText(
-    "Workout saved. Your training adds to your progress.",
-  );
+  await expect(completion(page)).toContainText("Another session in the books.");
   await expect(page.locator(".achievement-card")).toHaveCount(0);
   const before = (
     await a.client
@@ -158,6 +173,24 @@ test("ad-hoc finish shows qualifying facts, saves one Favorite, refreshes safely
   await expect(share).toBeDisabled();
   await share.evaluate((e: HTMLButtonElement) => e.click());
   expect(posts).toEqual([]);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(completion(page).locator(".completion-success-check")).toHaveCSS(
+    "animation-name",
+    "completion-check",
+  );
+  await expect(completion(page).locator(".completion-success-check")).toHaveCSS(
+    "animation-iteration-count",
+    "1",
+  );
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(completion(page).locator(".completion-success-check")).toHaveCSS(
+    "animation-name",
+    "none",
+  );
+  await expect(completion(page).locator(".completion-success-check")).toHaveCSS(
+    "stroke-dashoffset",
+    "0px",
+  );
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({
     path: info.outputPath("complete-ad-hoc-no-pr.png"),
@@ -244,6 +277,12 @@ test("program completion and partial summary reuse outcomes/progression while Fa
     path: info.outputPath("complete-program.png"),
     fullPage: true,
   });
+  await completion(page)
+    .getByRole("region", { name: "Program workout summary" })
+    .scrollIntoViewIfNeeded();
+  await page.screenshot({
+    path: info.outputPath("complete-program-progress.png"),
+  });
   const w = await a.client.rpc("start_program_workout", {
     p_version: p.version,
     p_workout: 3,
@@ -271,6 +310,17 @@ test("program completion and partial summary reuse outcomes/progression while Fa
     path: info.outputPath("complete-partial.png"),
     fullPage: true,
   });
+  await completion(page)
+    .getByRole("region", { name: "Program workout summary" })
+    .scrollIntoViewIfNeeded();
+  await page.screenshot({
+    path: info.outputPath("complete-partial-progress.png"),
+  });
+  await completion(page).locator(".completion-next summary").click();
+  await expect(
+    completion(page).locator(".completion-next details"),
+  ).toHaveAttribute("open", "");
+
   await completion(page).locator(".save-favorite > summary").click();
   await page
     .getByRole("button", { name: "Save Favorite", exact: true })
@@ -361,6 +411,7 @@ test("three diverse new records and additional exact/estimated/volume achievemen
         r.metric === "actual_rm" && r.load_key === 5,
     ),
   ).toBe(true);
+  await page.emulateMedia({ reducedMotion: "reduce" });
   for (const [width, height] of [
     [375, 667],
     [390, 844],
@@ -392,15 +443,43 @@ test("three diverse new records and additional exact/estimated/volume achievemen
       .locator(".completion-statistics > div")
       .evaluateAll((nodes) => nodes.map((e) => e.getBoundingClientRect().y));
     expect(new Set(boxes).size).toBe(1);
+    for (const target of await completion(page)
+      .locator(
+        ".completion-actions a, .completion-more > a, .completion-favorite summary",
+      )
+      .all()) {
+      expect((await target.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    }
+
     for (const colorScheme of ["light", "dark"] as const) {
       await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
-      if (width === 390 || width === 1440)
-        await page.screenshot({
-          path: info.outputPath(`complete-prs-${width}-${colorScheme}.png`),
-          fullPage: true,
-        });
+      await page.screenshot({
+        path: info.outputPath(`complete-prs-${width}-${colorScheme}.png`),
+        fullPage: true,
+      });
     }
   }
+  // Browser text-size stress without changing recorded facts or zooming the screenshot.
+  await page.setViewportSize({ width: 375, height: 667 });
+  await page.addStyleTag({ content: "html { font-size: 200%; }" });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  const fullWorkoutLink = completion(page).getByRole("link", {
+    name: "View Full Workout",
+    exact: true,
+  });
+  await fullWorkoutLink.scrollIntoViewIfNeeded();
+  const linkBox = await fullWorkoutLink.boundingBox(),
+    navigationBox = await page.locator(".desktop-sidebar").boundingBox();
+  expect(linkBox!.y + linkBox!.height).toBeLessThanOrEqual(navigationBox!.y);
+  await page.screenshot({
+    path: info.outputPath("complete-large-text.png"),
+    fullPage: true,
+  });
+  await page.reload();
   const top = await page.locator(".achievement-card h3").allTextContents();
   await page.reload();
   await expect(page.locator(".achievement-card h3")).toHaveText(top);
@@ -411,6 +490,10 @@ test("three diverse new records and additional exact/estimated/volume achievemen
   await expect(completion(page)).toContainText("Estimated 1RM");
   await expect(completion(page)).toContainText("Best Session Volume");
   await expect(completion(page)).not.toContainText("Best Triple");
+  await page.screenshot({
+    path: info.outputPath("complete-additional-achievements.png"),
+    fullPage: true,
+  });
   expect(
     (await a.client.rpc("workout_achievements", { p_session: w })).data,
   ).toEqual(achievements);
@@ -494,4 +577,182 @@ test("effective paused duration, Favorite capacity and active/abandoned/foreign/
   await anonymous.goto(`http://127.0.0.1:3000/workout/${w.data}/complete`);
   await expect(anonymous).toHaveURL(/login\?next=/);
   await context.close();
+});
+
+test("one real bodyweight record, empty training, retained access and motion stay truthful", async ({
+  page,
+}, info) => {
+  const a = await verifiedAccount();
+  async function bodyweight(reps: number) {
+    const w = await a.client.rpc("start_exercise_workout", {
+      p_exercises: [exercise("push_up")],
+      p_request: crypto.randomUUID(),
+    });
+    expect(w.error).toBeNull();
+    const item = (
+      await a.client
+        .from("workout_exercises")
+        .select("id")
+        .eq("workout_session_id", w.data)
+        .single()
+    ).data!;
+    const row = (
+      await a.client
+        .from("workout_sets")
+        .select("id,revision")
+        .eq("workout_exercise_id", item.id)
+        .order("position")
+        .limit(1)
+        .single()
+    ).data!;
+    expect(
+      (
+        await a.client.rpc("log_workout_set", {
+          p_item: item.id,
+          p_id: row.id,
+          p_revision: row.revision,
+          p_operation: "save",
+          p_mutation: crypto.randomUUID(),
+          p_reps: reps,
+          p_weight: null,
+          p_mode: "bodyweight",
+          p_completed: true,
+        })
+      ).error,
+    ).toBeNull();
+    expect(
+      (
+        await a.client.rpc("end_workout", {
+          p_session: w.data,
+          p_outcome: "completed",
+        })
+      ).error,
+    ).toBeNull();
+    return w.data as string;
+  }
+  await bodyweight(10);
+  const id = await bodyweight(12);
+  await loginSelection(page, a);
+  const evidenceBefore = await savedEvidence(a);
+  await page.goto(`/workout/${id}/complete`);
+  await expect(page.locator(".achievement-card")).toHaveCount(1);
+  await expect(page.locator(".achievement-card")).toContainText(
+    "Most Bodyweight Reps",
+  );
+  await expect(page.locator(".achievement-card strong")).toHaveText("12 reps");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: "light", reducedMotion: "reduce" });
+  await page.screenshot({
+    path: info.outputPath("complete-one-pr.png"),
+    fullPage: true,
+  });
+  await page.reload();
+  expect(await savedEvidence(a)).toEqual(evidenceBefore);
+  expect(
+    (
+      await a.client.rpc("retain_workout", {
+        p_session: id,
+        p_kind: "archive",
+        p_request: crypto.randomUUID(),
+        p_expected: 0,
+      })
+    ).error,
+  ).toBeNull();
+  await page.goto(`/workout/${id}/complete?achievements=all`);
+  await expect(
+    page.getByRole("heading", { name: "Workout Complete!", exact: true }),
+  ).toHaveCount(0);
+  await expect(page.locator(".achievement-card")).toHaveCount(0);
+  expect(
+    (
+      await a.client.rpc("retain_workout", {
+        p_session: id,
+        p_kind: "delete",
+        p_request: crypto.randomUUID(),
+        p_expected: 1,
+      })
+    ).error,
+  ).toBeNull();
+  await page.goto(`/workout/${id}/complete`);
+  await expect(
+    page.getByRole("heading", { name: "Workout Complete!", exact: true }),
+  ).toHaveCount(0);
+  const empty = await a.client.rpc("start_ad_hoc_workout");
+  expect(
+    (
+      await a.client.rpc("end_workout", {
+        p_session: empty.data,
+        p_outcome: "completed",
+      })
+    ).error,
+  ).toBeNull();
+  const emptyBefore = await savedEvidence(a);
+  await page.goto(`/workout/${empty.data}/complete`);
+  await expect(completion(page)).toContainText(
+    "No qualifying working sets were recorded.",
+  );
+  await expect(completion(page)).not.toContainText(
+    "Another session in the books.",
+  );
+  await expect(
+    completion(page).locator(".completion-statistics dd").nth(1),
+  ).toHaveText("0");
+  await expect(completion(page).locator(".save-favorite")).toHaveCount(0);
+  await page.screenshot({
+    path: info.outputPath("complete-empty.png"),
+    fullPage: true,
+  });
+  expect(await savedEvidence(a)).toEqual(emptyBefore);
+});
+test("reviewing completion never replays an automatic program ending", async ({
+  page,
+}) => {
+  const a = await verifiedAccount(),
+    p = await selectionProgram(a, 8, 1);
+  const assignment = (await a.client.rpc("program_schedule")).data
+    .assignmentId as string;
+  expect(
+    (
+      await a.client.rpc("program_lifecycle", {
+        p_kind: "end_after_next",
+        p_request: crypto.randomUUID(),
+        p_assignment: assignment,
+        p_expected: 0,
+      })
+    ).error,
+  ).toBeNull();
+  const item = await programItem(a, p.session, p.exercise);
+  await log(a, item, 1, 12);
+  await loginSelection(page, a);
+  await page.goto(`/workout/${p.session}`);
+  await finish(page, false);
+  const before = (
+    await a.client
+      .from("program_assignments")
+      .select(
+        "state,terminal_reason,terminal_session_id,ended_at,lifecycle_revision",
+      )
+      .eq("id", assignment)
+      .single()
+  ).data;
+  expect(before?.terminal_reason).toBe("ended_after_next");
+  const evidenceBefore = await savedEvidence(a);
+  await page.reload();
+  await page.goto(`/workout/${p.session}/complete?achievements=all`);
+  await expect(completion(page).getByRole("progressbar")).toHaveAttribute(
+    "value",
+    "1",
+  );
+  expect(
+    (
+      await a.client
+        .from("program_assignments")
+        .select(
+          "state,terminal_reason,terminal_session_id,ended_at,lifecycle_revision",
+        )
+        .eq("id", assignment)
+        .single()
+    ).data,
+  ).toEqual(before);
+  expect(await savedEvidence(a)).toEqual(evidenceBefore);
 });
