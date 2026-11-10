@@ -96,6 +96,17 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
     byItem.set(set.workout_exercise_id, group);
   }
   for (const item of items) item.workout_sets = byItem.get(item.id) ?? [];
+  const classification =
+    session.status === "completed" && session.source_program_version_id
+      ? await client.rpc("workout_program_classifications", {
+          p_sessions: [session.id],
+        })
+      : null;
+  if (
+    classification &&
+    (classification.error || classification.data?.length !== 1)
+  )
+    throw new Error("Program completion could not be verified.");
   const preference = await client
     .from("account_preferences")
     .select("display_weight_unit,preferred_effort_scale")
@@ -120,7 +131,8 @@ export async function loadWorkout(id?: string): Promise<Workout | null> {
     id: session.id,
     name: session.name,
     status: session.status,
-    completionStatus: session.completion_status,
+    completionStatus:
+      classification?.data[0]?.completion_status ?? session.completion_status,
     startedAt: session.started_at,
     finishedAt: session.finished_at,
     items: items.map((row) => ({

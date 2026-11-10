@@ -131,3 +131,14 @@ it("groups ordered programme movements once and includes ad-hoc additions", () =
     ["extra", "Not Started"],
   ]);
 });
+it("does not complete prescribed movement work from zero external load, while real bodyweight remains valid", () => {
+  expect(
+    movementProgress([item([set({ actual_weight_kg: 0 })])], 1).status,
+  ).toBe("Not Started");
+  expect(
+    movementProgress(
+      [item([set({ load_mode: "bodyweight", actual_weight_kg: null })])],
+      1,
+    ).status,
+  ).toBe("Complete");
+});

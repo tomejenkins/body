@@ -12,7 +12,7 @@ export function qualifyingProgressSet(set: LoggedSet) {
     (set.actual_reps ?? 0) > 0 &&
     set.logging_kind !== "duration" &&
     set.logging_kind !== "assisted" &&
-    (set.load_mode === "bodyweight" || set.actual_weight_kg !== null)
+    (set.load_mode === "bodyweight" || (set.actual_weight_kg ?? 0) > 0)
   );
 }
 export function movementProgress(
