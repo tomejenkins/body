@@ -1,0 +1,27 @@
+[
+  {
+    "probe": "zero_external_load",
+    "completion_status": "full",
+    "program_sets": 2,
+    "qualifying_sets": 0,
+    "next_position": 2
+  },
+  {
+    "probe": "zero_repetitions",
+    "completion_status": "full",
+    "program_sets": 0,
+    "next_position": 2
+  },
+  {
+    "probe": "archive_assignment_with_active_workout",
+    "assignment_state": "archived",
+    "workout_state": "in_progress"
+  },
+  {
+    "probe": "repeat_enrollment_identity",
+    "distinct_assignment": true,
+    "assignments": 2,
+    "active_assignments": 1,
+    "retained_old_sessions": 3
+  }
+]

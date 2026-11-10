@@ -1,0 +1,1394 @@
+{
+  "profiles": [
+    {
+      "name": "local",
+      "latency": 0,
+      "down": -1,
+      "up": -1
+    },
+    {
+      "name": "mobile-80ms",
+      "latency": 80,
+      "down": 1250000,
+      "up": 250000
+    },
+    {
+      "name": "mobile-300ms",
+      "latency": 300,
+      "down": 200000,
+      "up": 64000
+    }
+  ],
+  "samples": [
+    {
+      "profile": "local",
+      "n": 0,
+      "acknowledgementMs": 119.5,
+      "observedDomSavedAt": 943.9000000059605,
+      "operationStart": 860,
+      "requests": [
+        {
+          "requestBytes": 375,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 905.2000000029802,
+          "responseEnd": 939.3000000044703,
+          "duration": 34.100000001490116,
+          "responseStart": 938.1000000014901,
+          "transferBytes": 1027,
+          "encodedBodyBytes": 727,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 940.3000000044703,
+          "responseEnd": 980.9000000059605,
+          "duration": 40.600000001490116,
+          "responseStart": 975.3000000044703,
+          "transferBytes": 733,
+          "encodedBodyBytes": 433,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 1,
+      "acknowledgementMs": 177.39999999850988,
+      "observedDomSavedAt": 1148.3000000044703,
+      "operationStart": 1027.8000000044703,
+      "requests": [
+        {
+          "requestBytes": 375,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 1085.9000000059605,
+          "responseEnd": 1141.6000000014901,
+          "duration": 55.69999999552965,
+          "responseStart": 1136.6000000014901,
+          "transferBytes": 1027,
+          "encodedBodyBytes": 727,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 1144.3000000044703,
+          "responseEnd": 1189.6000000014901,
+          "duration": 45.29999999701977,
+          "responseStart": 1186.5,
+          "transferBytes": 733,
+          "encodedBodyBytes": 433,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 2,
+      "acknowledgementMs": 165.60000000149012,
+      "observedDomSavedAt": 1378.3000000044703,
+      "operationStart": 1249.5,
+      "requests": [
+        {
+          "requestBytes": 374,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 1312,
+          "responseEnd": 1371.8000000044703,
+          "duration": 59.80000000447035,
+          "responseStart": 1370.7000000029802,
+          "transferBytes": 1028,
+          "encodedBodyBytes": 728,
+          "decodedBodyBytes": 2682
+        },
+        {
+          "start": 1373.7000000029802,
+          "responseEnd": 1425.7000000029802,
+          "duration": 52,
+          "responseStart": 1421.9000000059605,
+          "transferBytes": 733,
+          "encodedBodyBytes": 433,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 3,
+      "acknowledgementMs": 132,
+      "observedDomSavedAt": 1570.2000000029802,
+      "operationStart": 1492.8000000044703,
+      "requests": [
+        {
+          "requestBytes": 375,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 1528.3000000044703,
+          "responseEnd": 1565.3000000044703,
+          "duration": 37,
+          "responseStart": 1564,
+          "transferBytes": 1027,
+          "encodedBodyBytes": 727,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 1567.3000000044703,
+          "responseEnd": 1601.5,
+          "duration": 34.19999999552965,
+          "responseStart": 1599.4000000059605,
+          "transferBytes": 733,
+          "encodedBodyBytes": 433,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 4,
+      "acknowledgementMs": 98.29999999701977,
+      "observedDomSavedAt": 1719.6000000014901,
+      "operationStart": 1650.2000000029802,
+      "requests": [
+        {
+          "requestBytes": 375,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 1686.9000000059605,
+          "responseEnd": 1722.2000000029802,
+          "duration": 35.29999999701977,
+          "responseStart": 1715.4000000059605,
+          "transferBytes": 1025,
+          "encodedBodyBytes": 725,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 1717.3000000044703,
+          "responseEnd": 1750.7000000029802,
+          "duration": 33.399999998509884,
+          "responseStart": 1749.4000000059605,
+          "transferBytes": 733,
+          "encodedBodyBytes": 433,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 5,
+      "acknowledgementMs": 110.39999999850988,
+      "observedDomSavedAt": 1857.1000000014901,
+      "operationStart": 1772.9000000059605,
+      "requests": [
+        {
+          "requestBytes": 375,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 1806.5,
+          "responseEnd": 1851.6000000014901,
+          "duration": 45.100000001490116,
+          "responseStart": 1849.9000000059605,
+          "transferBytes": 1028,
+          "encodedBodyBytes": 728,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 1853,
+          "responseEnd": 1887.9000000059605,
+          "duration": 34.900000005960464,
+          "responseStart": 1884.8000000044703,
+          "transferBytes": 732,
+          "encodedBodyBytes": 432,
+          "decodedBodyBytes": 678
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 6,
+      "acknowledgementMs": 104.29999999701977,
+      "observedDomSavedAt": 2003.4000000059605,
+      "operationStart": 1917.4000000059605,
+      "requests": [
+        {
+          "requestBytes": 375,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 1958.6000000014901,
+          "responseEnd": 1999.8000000044703,
+          "duration": 41.20000000298023,
+          "responseStart": 1998.5,
+          "transferBytes": 1028,
+          "encodedBodyBytes": 728,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 2001.1000000014901,
+          "responseEnd": 2037.8000000044703,
+          "duration": 36.70000000298023,
+          "responseStart": 2036.3000000044703,
+          "transferBytes": 733,
+          "encodedBodyBytes": 433,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 7,
+      "acknowledgementMs": 385.79999999701977,
+      "observedDomSavedAt": 2463,
+      "operationStart": 2172.7000000029802,
+      "requests": [
+        {
+          "requestBytes": 375,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 2240.8000000044703,
+          "responseEnd": 2458.2000000029802,
+          "duration": 217.39999999850988,
+          "responseStart": 2455.4000000059605,
+          "transferBytes": 1026,
+          "encodedBodyBytes": 726,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 2457.2000000029802,
+          "responseEnd": 2568.3000000044703,
+          "duration": 111.10000000149012,
+          "responseStart": 2566.4000000059605,
+          "transferBytes": 732,
+          "encodedBodyBytes": 432,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 8,
+      "acknowledgementMs": 118.89999999850988,
+      "observedDomSavedAt": 2776.3000000044703,
+      "operationStart": 2689.3000000044703,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 2734.4000000059605,
+          "responseEnd": 2771.7000000029802,
+          "duration": 37.29999999701977,
+          "responseStart": 2769.8000000044703,
+          "transferBytes": 1025,
+          "encodedBodyBytes": 725,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 2773.3000000044703,
+          "responseEnd": 2807.9000000059605,
+          "duration": 34.600000001490116,
+          "responseStart": 2806.4000000059605,
+          "transferBytes": 733,
+          "encodedBodyBytes": 433,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 9,
+      "acknowledgementMs": 113.5,
+      "observedDomSavedAt": 2949.8000000044703,
+      "operationStart": 2856.8000000044703,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 2899.60000000149,
+          "responseEnd": 2941.5,
+          "duration": 41.899999998509884,
+          "responseStart": 2940.3000000044703,
+          "transferBytes": 1028,
+          "encodedBodyBytes": 728,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 2944,
+          "responseEnd": 2980.7000000029802,
+          "duration": 36.70000000298023,
+          "responseStart": 2979.5,
+          "transferBytes": 733,
+          "encodedBodyBytes": 433,
+          "decodedBodyBytes": 679
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 10,
+      "acknowledgementMs": 117.20000000298023,
+      "observedDomSavedAt": 3208.8000000044703,
+      "operationStart": 3117.5,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 3167.5,
+          "responseEnd": 3204.9000000059605,
+          "duration": 37.400000005960464,
+          "responseStart": 3204.2000000029802,
+          "transferBytes": 1028,
+          "encodedBodyBytes": 728,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 3206.3000000044703,
+          "responseEnd": 3232.4000000059605,
+          "duration": 26.100000001490116,
+          "responseStart": 3231.5,
+          "transferBytes": 733,
+          "encodedBodyBytes": 433,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "local",
+      "n": 11,
+      "acknowledgementMs": 104.10000000149012,
+      "observedDomSavedAt": 3350.9000000059605,
+      "operationStart": 3266.3000000044703,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 3308.4000000059605,
+          "responseEnd": 3345,
+          "duration": 36.599999994039536,
+          "responseStart": 3344.10000000149,
+          "transferBytes": 1028,
+          "encodedBodyBytes": 728,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 3346.5,
+          "responseEnd": 3380.10000000149,
+          "duration": 33.600000001490116,
+          "responseStart": 3379.2000000029802,
+          "transferBytes": 732,
+          "encodedBodyBytes": 432,
+          "decodedBodyBytes": 679
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 0,
+      "acknowledgementMs": 171,
+      "observedDomSavedAt": 3537.10000000149,
+      "operationStart": 3404.2000000029802,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 3449.10000000149,
+          "responseEnd": 3533.7000000029802,
+          "duration": 84.60000000149012,
+          "responseStart": 3489,
+          "transferBytes": 1027,
+          "encodedBodyBytes": 727,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 3535.10000000149,
+          "responseEnd": 3626.8000000044703,
+          "duration": 91.70000000298023,
+          "responseStart": 3572.9000000059605,
+          "transferBytes": 732,
+          "encodedBodyBytes": 432,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 1,
+      "acknowledgementMs": 161,
+      "observedDomSavedAt": 3840.5,
+      "operationStart": 3704.3000000044703,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 3742.3000000044703,
+          "responseEnd": 3835.60000000149,
+          "duration": 93.29999999701977,
+          "responseStart": 3773.60000000149,
+          "transferBytes": 1029,
+          "encodedBodyBytes": 729,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 3837.4000000059605,
+          "responseEnd": 3924.8000000044703,
+          "duration": 87.39999999850988,
+          "responseStart": 3871.10000000149,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 2,
+      "acknowledgementMs": 159.89999999850988,
+      "observedDomSavedAt": 4153.60000000149,
+      "operationStart": 4012.8000000044703,
+      "requests": [
+        {
+          "requestBytes": 375,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 4061,
+          "responseEnd": 4148.4000000059605,
+          "duration": 87.40000000596046,
+          "responseStart": 4098.60000000149,
+          "transferBytes": 1030,
+          "encodedBodyBytes": 730,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 4149.5,
+          "responseEnd": 4236.10000000149,
+          "duration": 86.60000000149012,
+          "responseStart": 4177.4000000059605,
+          "transferBytes": 733,
+          "encodedBodyBytes": 433,
+          "decodedBodyBytes": 678
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 3,
+      "acknowledgementMs": 142.5,
+      "observedDomSavedAt": 4425.9000000059605,
+      "operationStart": 4300.10000000149,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 4331.10000000149,
+          "responseEnd": 4420.80000000447,
+          "duration": 89.70000000298023,
+          "responseStart": 4367.20000000298,
+          "transferBytes": 1028,
+          "encodedBodyBytes": 728,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 4422.20000000298,
+          "responseEnd": 4511,
+          "duration": 88.79999999701977,
+          "responseStart": 4449.20000000298,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 4,
+      "acknowledgementMs": 164.5,
+      "observedDomSavedAt": 4712.60000000149,
+      "operationStart": 4577.5,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 4618.80000000447,
+          "responseEnd": 4708.4000000059605,
+          "duration": 89.60000000149012,
+          "responseStart": 4650.80000000447,
+          "transferBytes": 1031,
+          "encodedBodyBytes": 731,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 4710,
+          "responseEnd": 4798.60000000149,
+          "duration": 88.60000000149012,
+          "responseStart": 4745,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 5,
+      "acknowledgementMs": 164.80000000447035,
+      "observedDomSavedAt": 5027.5,
+      "operationStart": 4887.10000000149,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 4932.80000000447,
+          "responseEnd": 5024.80000000447,
+          "duration": 92,
+          "responseStart": 4976.80000000447,
+          "transferBytes": 1031,
+          "encodedBodyBytes": 731,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 5025.5,
+          "responseEnd": 5112.80000000447,
+          "duration": 87.30000000447035,
+          "responseStart": 5053.5,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 6,
+      "acknowledgementMs": 157.29999999701977,
+      "observedDomSavedAt": 5319.30000000447,
+      "operationStart": 5185.4000000059605,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 5230.20000000298,
+          "responseEnd": 5316,
+          "duration": 85.79999999701977,
+          "responseStart": 5262,
+          "transferBytes": 1031,
+          "encodedBodyBytes": 731,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 5317.4000000059605,
+          "responseEnd": 5405.9000000059605,
+          "duration": 88.5,
+          "responseStart": 5342.10000000149,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 7,
+      "acknowledgementMs": 160.29999999701977,
+      "observedDomSavedAt": 5598.4000000059605,
+      "operationStart": 5471.9000000059605,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 5506.70000000298,
+          "responseEnd": 5594.70000000298,
+          "duration": 88,
+          "responseStart": 5535.60000000149,
+          "transferBytes": 1031,
+          "encodedBodyBytes": 731,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 5593.60000000149,
+          "responseEnd": 5682.5,
+          "duration": 88.89999999850988,
+          "responseStart": 5629.20000000298,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 677
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 8,
+      "acknowledgementMs": 162.10000000149012,
+      "observedDomSavedAt": 5902.20000000298,
+      "operationStart": 5762.10000000149,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 5808.5,
+          "responseEnd": 5899.60000000149,
+          "duration": 91.10000000149012,
+          "responseStart": 5836.70000000298,
+          "transferBytes": 1030,
+          "encodedBodyBytes": 730,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 5900.4000000059605,
+          "responseEnd": 5987,
+          "duration": 86.59999999403954,
+          "responseStart": 5927.80000000447,
+          "transferBytes": 734,
+          "encodedBodyBytes": 434,
+          "decodedBodyBytes": 678
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 9,
+      "acknowledgementMs": 160,
+      "observedDomSavedAt": 6185.20000000298,
+      "operationStart": 6051.10000000149,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 6090.4000000059605,
+          "responseEnd": 6181.10000000149,
+          "duration": 90.69999999552965,
+          "responseStart": 6122.5,
+          "transferBytes": 1031,
+          "encodedBodyBytes": 731,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 6182.70000000298,
+          "responseEnd": 6270.4000000059605,
+          "duration": 87.70000000298023,
+          "responseStart": 6209.4000000059605,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 10,
+      "acknowledgementMs": 170,
+      "observedDomSavedAt": 6495.80000000447,
+      "operationStart": 6349.10000000149,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 6404.4000000059605,
+          "responseEnd": 6493.9000000059605,
+          "duration": 89.5,
+          "responseStart": 6444.4000000059605,
+          "transferBytes": 1030,
+          "encodedBodyBytes": 730,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 6493.80000000447,
+          "responseEnd": 6581.80000000447,
+          "duration": 88,
+          "responseStart": 6526.9000000059605,
+          "transferBytes": 734,
+          "encodedBodyBytes": 434,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-80ms",
+      "n": 11,
+      "acknowledgementMs": 153.20000000298023,
+      "observedDomSavedAt": 6789.10000000149,
+      "operationStart": 6654.20000000298,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 6691,
+          "responseEnd": 6782.80000000447,
+          "duration": 91.80000000447035,
+          "responseStart": 6720,
+          "transferBytes": 1032,
+          "encodedBodyBytes": 732,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 6783.9000000059605,
+          "responseEnd": 6870.4000000059605,
+          "duration": 86.5,
+          "responseStart": 6808.4000000059605,
+          "transferBytes": 734,
+          "encodedBodyBytes": 434,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 0,
+      "acknowledgementMs": 848.5,
+      "observedDomSavedAt": 7294.60000000149,
+      "operationStart": 6937.70000000298,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 6968.5,
+          "responseEnd": 7288.5,
+          "duration": 320,
+          "responseStart": 7002.5,
+          "transferBytes": 1030,
+          "encodedBodyBytes": 730,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 7290.9000000059605,
+          "responseEnd": 7619.4000000059605,
+          "duration": 328.5,
+          "responseStart": 7325.9000000059605,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 1,
+      "acknowledgementMs": 849.3999999985099,
+      "observedDomSavedAt": 8164.30000000447,
+      "operationStart": 7809.4000000059605,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 7840.60000000149,
+          "responseEnd": 8158.70000000298,
+          "duration": 318.1000000014901,
+          "responseStart": 7875.5,
+          "transferBytes": 1030,
+          "encodedBodyBytes": 730,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 8160.4000000059605,
+          "responseEnd": 8481.30000000447,
+          "duration": 320.8999999985099,
+          "responseStart": 8193.20000000298,
+          "transferBytes": 734,
+          "encodedBodyBytes": 434,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 2,
+      "acknowledgementMs": 906.6000000014901,
+      "observedDomSavedAt": 9078.20000000298,
+      "operationStart": 8682.70000000298,
+      "requests": [
+        {
+          "requestBytes": 375,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 8756.30000000447,
+          "responseEnd": 9066.60000000149,
+          "duration": 310.29999999701977,
+          "responseStart": 8806,
+          "transferBytes": 1032,
+          "encodedBodyBytes": 732,
+          "decodedBodyBytes": 2683
+        },
+        {
+          "start": 9068,
+          "responseEnd": 9396.20000000298,
+          "duration": 328.20000000298023,
+          "responseStart": 9110.20000000298,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 3,
+      "acknowledgementMs": 855.6000000014901,
+      "observedDomSavedAt": 9964,
+      "operationStart": 9614.5,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 9646.30000000447,
+          "responseEnd": 9959.5,
+          "duration": 313.19999999552965,
+          "responseStart": 9686.10000000149,
+          "transferBytes": 1029,
+          "encodedBodyBytes": 729,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 9961,
+          "responseEnd": 10289,
+          "duration": 328,
+          "responseStart": 9995.90000000596,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 682
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 4,
+      "acknowledgementMs": 847.2000000029802,
+      "observedDomSavedAt": 10832.10000000149,
+      "operationStart": 10490.10000000149,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 10515.30000000447,
+          "responseEnd": 10828.30000000447,
+          "duration": 313,
+          "responseStart": 10548.60000000149,
+          "transferBytes": 1031,
+          "encodedBodyBytes": 731,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 10829.70000000298,
+          "responseEnd": 11158.5,
+          "duration": 328.79999999701977,
+          "responseStart": 10865.5,
+          "transferBytes": 736,
+          "encodedBodyBytes": 436,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 5,
+      "acknowledgementMs": 841.5,
+      "observedDomSavedAt": 11728,
+      "operationStart": 11358.40000000596,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 11390.10000000149,
+          "responseEnd": 11721.40000000596,
+          "duration": 331.30000000447035,
+          "responseStart": 11427.40000000596,
+          "transferBytes": 1030,
+          "encodedBodyBytes": 730,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 11724.90000000596,
+          "responseEnd": 12043.70000000298,
+          "duration": 318.79999999701977,
+          "responseStart": 11757.5,
+          "transferBytes": 736,
+          "encodedBodyBytes": 436,
+          "decodedBodyBytes": 682
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 6,
+      "acknowledgementMs": 842.2000000029802,
+      "observedDomSavedAt": 12564.90000000596,
+      "operationStart": 12219.20000000298,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 12247.80000000447,
+          "responseEnd": 12561.70000000298,
+          "duration": 313.8999999985099,
+          "responseStart": 12281.70000000298,
+          "transferBytes": 1031,
+          "encodedBodyBytes": 731,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 12562.70000000298,
+          "responseEnd": 12891.70000000298,
+          "duration": 329,
+          "responseStart": 12595.60000000149,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 682
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 7,
+      "acknowledgementMs": 853.2999999970198,
+      "observedDomSavedAt": 13435.60000000149,
+      "operationStart": 13086.40000000596,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 13121.10000000149,
+          "responseEnd": 13431.80000000447,
+          "duration": 310.70000000298023,
+          "responseStart": 13158.80000000447,
+          "transferBytes": 1031,
+          "encodedBodyBytes": 731,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 13432.90000000596,
+          "responseEnd": 13754.30000000447,
+          "duration": 321.3999999985099,
+          "responseStart": 13467.20000000298,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 680
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 8,
+      "acknowledgementMs": 833.4000000059605,
+      "observedDomSavedAt": 14321.20000000298,
+      "operationStart": 13961,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 13993.40000000596,
+          "responseEnd": 14317.10000000149,
+          "duration": 323.69999999552965,
+          "responseStart": 14030.5,
+          "transferBytes": 1029,
+          "encodedBodyBytes": 729,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 14318.30000000447,
+          "responseEnd": 14646.80000000447,
+          "duration": 328.5,
+          "responseStart": 14361.80000000447,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 681
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 9,
+      "acknowledgementMs": 864.8000000044703,
+      "observedDomSavedAt": 15173,
+      "operationStart": 14812.5,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 14850.90000000596,
+          "responseEnd": 15163.5,
+          "duration": 312.59999999403954,
+          "responseStart": 14882.70000000298,
+          "transferBytes": 1031,
+          "encodedBodyBytes": 731,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 15165.10000000149,
+          "responseEnd": 15494.30000000447,
+          "duration": 329.20000000298023,
+          "responseStart": 15199.30000000447,
+          "transferBytes": 736,
+          "encodedBodyBytes": 436,
+          "decodedBodyBytes": 682
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 10,
+      "acknowledgementMs": 852.1000000014901,
+      "observedDomSavedAt": 16059.30000000447,
+      "operationStart": 15702,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 15742.90000000596,
+          "responseEnd": 16056,
+          "duration": 313.09999999403954,
+          "responseStart": 15776.10000000149,
+          "transferBytes": 1032,
+          "encodedBodyBytes": 732,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 16057.40000000596,
+          "responseEnd": 16386.20000000298,
+          "duration": 328.79999999701977,
+          "responseStart": 16090.30000000447,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 682
+        }
+      ]
+    },
+    {
+      "profile": "mobile-300ms",
+      "n": 11,
+      "acknowledgementMs": 842.7000000029802,
+      "observedDomSavedAt": 16922.40000000596,
+      "operationStart": 16575.70000000298,
+      "requests": [
+        {
+          "requestBytes": 376,
+          "action": true
+        },
+        {
+          "requestBytes": 40,
+          "action": true
+        }
+      ],
+      "requestCount": 2,
+      "resources": [
+        {
+          "start": 16606.5,
+          "responseEnd": 16919.20000000298,
+          "duration": 312.70000000298023,
+          "responseStart": 16637.80000000447,
+          "transferBytes": 1031,
+          "encodedBodyBytes": 731,
+          "decodedBodyBytes": 2684
+        },
+        {
+          "start": 16920.40000000596,
+          "responseEnd": 17248.70000000298,
+          "duration": 328.29999999701977,
+          "responseStart": 16955.70000000298,
+          "transferBytes": 735,
+          "encodedBodyBytes": 435,
+          "decodedBodyBytes": 680
+        }
+      ]
+    }
+  ],
+  "longTasks": [],
+  "timeOrigin": 1794286436378.3
+}
