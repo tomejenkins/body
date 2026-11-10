@@ -14,7 +14,7 @@ export type WeekTraining = {
   id: string;
   name: string;
   finished_at: string;
-  completion_status: "partial" | "full";
+  completion_status: "none" | "partial" | "full";
   program_assignment_id: string | null;
 };
 export function monday(date: string) {
@@ -33,6 +33,7 @@ export function trainingEvents(
   const events: TrainingEvent[] = [...(schedule.events ?? [])];
   if (!schedule.timezone || !schedule.from || !schedule.until) return events;
   for (const row of training) {
+    if (row.completion_status === "none") continue;
     if (row.program_assignment_id === schedule.assignmentId) continue; // Program evidence stays SQL-authoritative.
     const date = localDate(schedule.timezone, new Date(row.finished_at));
     if (date < schedule.from || date >= schedule.until) continue;

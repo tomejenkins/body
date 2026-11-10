@@ -1,5 +1,6 @@
 import { expect, type Page } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
+import { enrollFixture, seedLegacyEnrollment } from "./enrollment-helpers";
 export type Account = Awaited<ReturnType<typeof verifiedAccount>>;
 export async function loginSelection(page: Page, a: Account) {
   await page.goto("/login");
@@ -14,6 +15,7 @@ export async function selectionProgram(
   sets = 2,
   double = false,
   configured = true,
+  startSession = true,
 ) {
   if (configured)
     expect(
@@ -114,11 +116,17 @@ export async function selectionProgram(
   }
   const v = await a.client.rpc("snapshot_program", { p_program: p.data!.id });
   expect(v.error).toBeNull();
-  const w = await a.client.rpc("start_program_workout", {
-    p_version: v.data,
-    p_workout: 1,
-    p_request: crypto.randomUUID(),
-  });
+  if (startSession) {
+    if (configured) await enrollFixture(a, v.data as string);
+    else seedLegacyEnrollment(a, v.data as string);
+  }
+  const w = startSession
+    ? await a.client.rpc("start_program_workout", {
+        p_version: v.data,
+        p_workout: 1,
+        p_request: crypto.randomUUID(),
+      })
+    : { data: null, error: null };
   expect(w.error).toBeNull();
   return {
     version: v.data as string,
@@ -132,6 +140,7 @@ export async function completeSelection(
   session: string,
   exercise: string,
   reps: number[],
+  weight = 50,
 ) {
   const m = await a.client
     .from("workout_movements")
@@ -164,7 +173,7 @@ export async function completeSelection(
           p_operation: "save",
           p_mutation: crypto.randomUUID(),
           p_reps: rep,
-          p_weight: 50,
+          p_weight: weight,
           p_type: "working",
           p_completed: true,
         })

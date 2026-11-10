@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { execFileSync } from "node:child_process";
 import { verifiedAccount, localAuth } from "./auth-helpers";
+import { enrollFixture, seedLegacyEnrollment } from "./enrollment-helpers";
 import { dateOffset } from "../../src/features/scheduling/model";
 import { openWorkoutEnding } from "./workout-screen-helpers";
 test.setTimeout(90000);
@@ -85,6 +86,8 @@ async function fixture(a: Account, sets = 1, configured = true) {
   }
   const v = await a.client.rpc("snapshot_program", { p_program: p.data!.id });
   expect(v.error).toBeNull();
+  if (configured) await enrollFixture(a, v.data as string);
+  else seedLegacyEnrollment(a, v.data as string);
   const w = await a.client.rpc("start_program_workout", {
     p_version: v.data,
     p_workout: 1,

@@ -7,7 +7,15 @@ select ok(not has_column_privilege('authenticated','public.workout_movements','s
 select ok(not has_table_privilege('authenticated','public.workout_movements','UPDATE') and not has_table_privilege('authenticated','public.workout_movements','DELETE'),'movement snapshots immutable to clients');
 insert into auth.users(id) values(md5('execution_a')::uuid),(md5('execution_b')::uuid);
 insert into profiles(id,display_name) values(md5('execution_a')::uuid,'A'),(md5('execution_b')::uuid,'B');
-insert into account_preferences(owner_id) values(md5('execution_a')::uuid),(md5('execution_b')::uuid);
+insert into account_preferences(owner_id,scheduling_timezone) values(md5('execution_a')::uuid,'UTC'),(md5('execution_b')::uuid,'UTC');
+
+create function pg_temp.enroll(v uuid) returns void language plpgsql security invoker as $$
+declare a public.program_assignments;begin
+ select * into a from public.program_assignments where owner_id=auth.uid() and state='active';
+ if a.id is null then perform public.program_lifecycle('start',gen_random_uuid(),null,0,v,current_date,'UTC');
+ elsif a.source_version_id<>v then perform public.program_lifecycle('switch',gen_random_uuid(),a.id,a.lifecycle_revision,v,current_date,'UTC');end if;
+end $$;
+
 set local role authenticated;
 select set_config('request.jwt.claims',json_build_object('sub',md5('execution_a')::uuid,'role','authenticated')::text,true);
 select set_config('body_test.source',(select published_version_id::text from programs where slug='upper-lower-strength-size'),true);
@@ -65,6 +73,7 @@ insert into program_days(id,owner_id,program_id,cycle_length,cycle_position,name
 insert into program_slots(id,owner_id,program_day_id,position,exercise_id,target_sets) values(md5('mixed_slot')::uuid,auth.uid(),md5('mixed_day')::uuid,9,current_setting('body_test.pick')::uuid,3);
 insert into program_set_prescriptions(slot_id,owner_id,position,set_type,reps_min,reps_max,intended_to_failure) values(md5('mixed_slot')::uuid,auth.uid(),1,'warm_up',5,5,false),(md5('mixed_slot')::uuid,auth.uid(),2,'working',5,8,false),(md5('mixed_slot')::uuid,auth.uid(),3,'drop',8,12,true);
 select set_config('body_test.mixed_version',snapshot_program(md5('mixed_program')::uuid)::text,true);
+select pg_temp.enroll(current_setting('body_test.mixed_version')::uuid);
 select set_config('body_test.mixed_session',start_program_workout(current_setting('body_test.mixed_version')::uuid,1,md5('mixed_start')::uuid)::text,true);
 select set_config('body_test.mixed_movement',(select id::text from workout_movements where workout_session_id=current_setting('body_test.mixed_session')::uuid),true);
 select is((select position from workout_movements where id=current_setting('body_test.mixed_movement')::uuid),1,'gapped author ordering becomes contiguous consumer Movement numbering');

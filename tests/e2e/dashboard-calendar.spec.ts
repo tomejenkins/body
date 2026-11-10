@@ -337,11 +337,22 @@ test("empty and unconfigured states stay honest, completed assignments have no f
       expect(w.error).toBeNull();
       await completeSelection(a, w.data, p.exercise, [12]);
     }
-  const completed = await state(a);
+  const closedAssignment = await a.client
+    .from("workout_sessions")
+    .select("program_assignment_id")
+    .eq("id", p.session)
+    .single();
+  const completed = (
+    await a.client.rpc("program_schedule", {
+      p_assignment: closedAssignment.data!.program_assignment_id,
+    })
+  ).data;
   expect(completed.programComplete).toBe(true);
   expect(completed.next).toBeNull();
   await page.goto("/dashboard");
-  await expect(widget(page)).toContainText("Program complete");
+  await expect(
+    widget(page).getByRole("link", { name: "Browse Programs" }),
+  ).toBeVisible();
   await expect(
     widget(page).getByRole("button", { name: "Start Workout", exact: true }),
   ).toHaveCount(0);
@@ -353,7 +364,7 @@ test("empty and unconfigured states stay honest, completed assignments have no f
   const archived = await a.client.rpc("program_schedule", {
     p_assignment: completed.assignmentId,
   });
-  expect(archived.data.state).toBe("archived");
+  expect(archived.data.state).toBe("completed");
   expect(archived.data.next).toBeNull();
   expect((await state(a)).assignmentId).not.toBe(completed.assignmentId);
   await page.reload();

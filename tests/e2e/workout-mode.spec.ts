@@ -20,6 +20,10 @@ async function program(a: Awaited<ReturnType<typeof verifiedAccount>>) {
     .eq("slug", "upper-lower-strength-size")
     .single();
   expect(p.error).toBeNull();
+  await a.client
+    .from("account_preferences")
+    .update({ scheduling_timezone: "UTC" })
+    .eq("owner_id", a.userId);
   const w = await a.client.rpc("start_program_workout", {
     p_version: p.data!.published_version_id,
     p_workout: 1,

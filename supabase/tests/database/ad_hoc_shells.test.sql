@@ -8,7 +8,7 @@ select ok(not has_column_privilege('authenticated','public.workout_sessions','ad
 select ok(not has_function_privilege(r,'public.start_suggested_workout(jsonb,uuid)','EXECUTE'),'no start privilege for '||r) from unnest(array['anon','service_role'])r;
 insert into auth.users(id) values(md5('shell_a')::uuid),(md5('shell_b')::uuid);
 insert into profiles(id,display_name) values(md5('shell_a')::uuid,'Shell A'),(md5('shell_b')::uuid,'Shell B');
-insert into account_preferences(owner_id) values(md5('shell_a')::uuid),(md5('shell_b')::uuid);
+insert into account_preferences(owner_id,scheduling_timezone) values(md5('shell_a')::uuid,'UTC'),(md5('shell_b')::uuid,'UTC');
 set local role authenticated;
 select set_config('request.jwt.claims',json_build_object('sub',md5('shell_a')::uuid,'role','authenticated')::text,true);
 select set_config('body_test.recipe',(select jsonb_agg(jsonb_build_object('pattern',p.id,'muscle',m.id,'exerciseType','compound','title',p.name) order by p.slug)::text from movement_patterns p cross join muscle_groups m where p.slug in('horizontal_push','incline_push') and m.slug='pectorals'),true);

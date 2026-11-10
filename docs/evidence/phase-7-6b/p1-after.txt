@@ -1,0 +1,71 @@
+BEGIN
+SET
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+CREATE FUNCTION
+SET
+                                 set_config
+----------------------------------------------------------------------------
+ {"sub" : "450a3838-f9d8-0689-0990-405d180719bc", "role" : "authenticated"}
+(1 row)
+
+              set_config
+--------------------------------------
+ 0d33bc00-feda-4121-922c-7236be6cba06
+(1 row)
+
+              set_config
+--------------------------------------
+ bfac04eb-0e35-41ed-bab7-2de835043737
+(1 row)
+
+              set_config
+--------------------------------------
+ 4d1b3d61-957b-464a-bbca-7cb128f33bd6
+(1 row)
+
+DO
+                                                       json_build_object
+--------------------------------------------------------------------------------------------------------------------------------
+ {"probe" : "zero_external_load", "completion_status" : "none", "program_sets" : 0, "qualifying_sets" : 0, "next_position" : 1}
+(1 row)
+
+              set_config
+--------------------------------------
+ fe959374-dace-4e31-be21-838d358b6441
+(1 row)
+
+DO
+                                           json_build_object
+-------------------------------------------------------------------------------------------------------
+ {"probe" : "zero_repetitions", "completion_status" : "none", "program_sets" : 0, "next_position" : 1}
+(1 row)
+
+              set_config
+--------------------------------------
+ fbebd205-3d82-4103-a462-b7d770394ba1
+(1 row)
+
+UPDATE 1
+                                                   json_build_object
+------------------------------------------------------------------------------------------------------------------------
+ {"probe" : "archive_assignment_with_active_workout", "assignment_state" : "archived", "workout_state" : "in_progress"}
+(1 row)
+
+             end_workout
+--------------------------------------
+ fbebd205-3d82-4103-a462-b7d770394ba1
+(1 row)
+
+              set_config
+--------------------------------------
+ d561b151-3bfd-4709-bbcd-94a4643ae6b7
+(1 row)
+
+                                                                json_build_object
+--------------------------------------------------------------------------------------------------------------------------------------------------
+ {"probe" : "repeat_enrollment_identity", "distinct_assignment" : true, "assignments" : 2, "active_assignments" : 1, "retained_old_sessions" : 3}
+(1 row)
+
+ROLLBACK

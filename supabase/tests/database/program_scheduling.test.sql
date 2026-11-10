@@ -33,6 +33,14 @@ create function pg_temp.date_session(w uuid,d date) returns void language plpgsq
 begin
  update public.workout_sessions set started_at=d::timestamp+interval '10 hours',finished_at=d::timestamp+interval '11 hours',effective_finished_at=d::timestamp+interval '11 hours',last_activity_at=d::timestamp+interval '10 hours 59 minutes',activity_evidence_at=d::timestamp+interval '10 hours 59 minutes' where id=w;
 end $$;
+
+create function pg_temp.enroll(v uuid) returns void language plpgsql security invoker as $$
+declare a public.program_assignments;begin
+ select * into a from public.program_assignments where owner_id=auth.uid() and state='active';
+ if a.id is null then perform public.program_lifecycle('start',gen_random_uuid(),null,0,v,(clock_timestamp() at time zone (select scheduling_timezone from public.account_preferences where owner_id=auth.uid()))::date,(select scheduling_timezone from public.account_preferences where owner_id=auth.uid()));
+ elsif a.source_version_id<>v then perform public.program_lifecycle('switch',gen_random_uuid(),a.id,a.lifecycle_revision,v,(clock_timestamp() at time zone (select scheduling_timezone from public.account_preferences where owner_id=auth.uid()))::date,(select scheduling_timezone from public.account_preferences where owner_id=auth.uid()));end if;
+end $$;
+
 set local role authenticated;
 select set_config('request.jwt.claims',json_build_object('sub',md5('schedule_a')::uuid,'role','authenticated')::text,true);
 select ok(valid_scheduling_timezone('America/New_York'),'IANA timezone supported');
@@ -40,6 +48,9 @@ select ok(valid_scheduling_timezone('UTC'),'explicit UTC fallback supported');
 select ok(not valid_scheduling_timezone('PST'),'ambiguous abbreviation rejected');
 select ok(not valid_scheduling_timezone('Imaginary/City'),'unknown timezone rejected');
 select set_config('body_test.v',pg_temp.rotation(7)::text,true);
+reset role;
+insert into program_assignments(owner_id,program_id,cycle_length,source_version_id) select md5('schedule_a')::uuid,program_id,7,id from program_versions where id=current_setting('body_test.v')::uuid;
+set local role authenticated;
 select set_config('body_test.w',start_program_workout(current_setting('body_test.v')::uuid,1,md5('schedule_start')::uuid)::text,true);
 select set_config('body_test.a',(select program_assignment_id::text from workout_sessions where id=current_setting('body_test.w')::uuid),true);
 select is(program_schedule()->>'configured','false','legacy/unconfigured assignment has no fabricated calendar');
@@ -119,7 +130,7 @@ select set_config('body_test.fulld5',pg_temp.finish_day(current_setting('body_te
 select is((program_schedule_cursor(current_setting('body_test.a')::uuid)->>'readyOn')::date,current_date+2,'already resolved out-of-order workout does not duplicate a future recovery block');
 select is((program_schedule_cursor(current_setting('body_test.a')::uuid)->>'rotation')::int,1,'full variable-length rotation wraps independently of calendar week');
 select is((program_schedule_cursor(current_setting('body_test.a')::uuid)->>'completedRotations')::int,1,'full rotation requires all required positions');
-select is(program_schedule()->'next','null'::jsonb,'fixed-duration calendar stops at completed rotation target');
+select is(program_schedule(current_setting('body_test.a')::uuid)->'next','null'::jsonb,'fixed-duration calendar stops at completed rotation target');
 select throws_ok($$update workout_sessions set schedule_due_on=current_date where id=current_setting('body_test.fulld5')::uuid$$,'42501',null,'ordinary callers cannot rewrite schedule evidence');
 select throws_ok($$update program_assignments set schedule_timezone='Europe/London' where id=current_setting('body_test.a')::uuid$$,'42501',null,'assignment timezone is protected');
 select throws_ok($$update program_assignments set schedule_origin_rotation=100 where id=current_setting('body_test.a')::uuid$$,'42501',null,'derived rotation origin is protected');
@@ -136,6 +147,7 @@ select is((select count(*)::int from program_schedule_facts(current_setting('bod
 select throws_ok($$select configure_program_schedule(current_setting('body_test.a')::uuid,current_date,'UTC',md5('foreign_config')::uuid)$$,'42501',null,'foreign configuration denied');
 select set_config('request.jwt.claims',json_build_object('sub',md5('schedule_a')::uuid,'role','authenticated')::text,true);
 select set_config('body_test.v4',pg_temp.rotation(4)::text,true);
+select pg_temp.enroll(current_setting('body_test.v4')::uuid);
 select set_config('body_test.w4',pg_temp.finish_day(current_setting('body_test.v4')::uuid,1,'schedule_4')::text,true);
 select is(program_schedule()->>'configured','true','new assignments automatically use confirmed preference');
 select is(program_schedule()->>'timezone','UTC','confirmed timezone persisted on assignment');
@@ -143,14 +155,16 @@ select is((program_schedule()->>'startDate')::date,current_date,'new schedule ha
 select is((program_schedule_cursor((program_adherence()->>'assignmentId')::uuid)->>'position')::int,3,'four-day rotation retains prescribed rest');
 select ok(jsonb_array_length(program_schedule(null,current_date+90,31)->'events')>0,'distant monthly window uses bounded cycle jump');
 select ok(not exists(select 1 from jsonb_array_elements(program_schedule(null,current_date+90,31)->'events')e where e->>'status'='overdue'),'future scheduled dates never receive premature overdue warnings');
-select is(program_schedule(current_setting('body_test.a')::uuid)->>'state','archived','program change archives previous assignment');
+select is(program_schedule(current_setting('body_test.a')::uuid)->>'state','completed','genuinely completed assignment retains truthful terminal completion');
 select ok(jsonb_array_length(program_schedule(current_setting('body_test.a')::uuid,current_date-20,21)->'events')>0,'archived original due dates and actual history remain readable');
 select ok(not exists(select 1 from jsonb_array_elements(program_schedule(current_setting('body_test.a')::uuid,current_date+1,7)->'events')),'archived assignment has no future prescription');
-select throws_ok($$update program_assignments set ended_at=clock_timestamp()+interval '1 day' where id=current_setting('body_test.a')::uuid$$,'23514',null,'archived schedule boundary cannot be rewritten');
+select throws_ok($$update program_assignments set ended_at=clock_timestamp()+interval '1 day' where id=current_setting('body_test.a')::uuid$$,'42501',null,'archived schedule boundary cannot be rewritten');
 select set_config('body_test.v8',pg_temp.rotation(8)::text,true);
+select pg_temp.enroll(current_setting('body_test.v8')::uuid);
 select set_config('body_test.w8',pg_temp.finish_day(current_setting('body_test.v8')::uuid,1,'schedule_8')::text,true);
 select is((program_schedule()->'next'->>'position')::int,3,'eight-day cycle preserves its next training position');
 select set_config('body_test.v10',pg_temp.rotation(10)::text,true);
+select pg_temp.enroll(current_setting('body_test.v10')::uuid);
 select set_config('body_test.w10',pg_temp.finish_day(current_setting('body_test.v10')::uuid,1,'schedule_10')::text,true);
 select is((program_schedule()->'next'->>'position')::int,3,'ten-day cycle is independent of weekdays');
 select set_config('body_test.a10',program_schedule()->>'assignmentId',true);
@@ -158,6 +172,7 @@ select is((select cycle_length::int from program_assignments where id=current_se
 update account_preferences set scheduling_timezone='America/New_York' where owner_id=auth.uid();
 select is(program_schedule()->>'timezone','UTC','changing preference never rewrites active assignment timezone');
 select set_config('body_test.vny',pg_temp.rotation(3)::text,true);
+select pg_temp.enroll(current_setting('body_test.vny')::uuid);
 select set_config('body_test.wny',pg_temp.finish_day(current_setting('body_test.vny')::uuid,1,'schedule_ny')::text,true);
 select set_config('body_test.any',program_schedule()->>'assignmentId',true);
 select is(program_schedule()->>'timezone','America/New_York','new assignment uses deliberately changed timezone');
@@ -188,6 +203,7 @@ select ok(not has_column_privilege('authenticated','public.workout_sessions','sc
 select set_config('body_test.vmroot',(select program_id::text from program_versions where id=current_setting('body_test.vny')::uuid),true);
 update program_days set minimum_rest_hours=96 where program_id=current_setting('body_test.vmroot')::uuid and cycle_position=1;
 select set_config('body_test.vmin',snapshot_program(current_setting('body_test.vmroot')::uuid)::text,true);
+select pg_temp.enroll(current_setting('body_test.vmin')::uuid);
 select set_config('body_test.wmin',pg_temp.finish_day(current_setting('body_test.vmin')::uuid,1,'minimum_rest')::text,true);
 select is((program_schedule()->'next'->>'readyOn')::date,(program_schedule()->>'today')::date+4,'minimum rest hours conservatively expand full calendar-day spacing');
 select ok(exists(select 1 from jsonb_array_elements(program_schedule(null,(program_schedule()->>'today')::date,7)->'events')e where e->>'status'='recovery'),'additional minimum-rest days are labeled recovery, not repeated program positions');

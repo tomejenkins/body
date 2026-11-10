@@ -1,3 +1,6 @@
+import { loadEnrollmentContext } from "@/features/programs/enrollment-queries";
+import { sameEnrollmentVersion } from "@/features/programs/enrollment-model";
+import { ProgramEnrollmentEntry } from "@/components/programs/current-program";
 import { SaveFavorite } from "@/components/workouts/save-favorite";
 import { StartProgramWorkout } from "@/components/programs/start-program-workout";
 import Link from "next/link";
@@ -17,6 +20,8 @@ export default async function Page({
   if (!loaded) notFound();
   const { definition: d, version, exercises, equipment, patterns } = loaded,
     p = d.program;
+  const context = await loadEnrollmentContext();
+  const same = sameEnrollmentVersion(context.enrollment, loaded.versionId);
   return (
     <article className="program-detail">
       <Link href="/programs">← Programs</Link>
@@ -25,6 +30,7 @@ export default async function Page({
         <p className="eyebrow">Original Body program · Version {version}</p>
         <ProgramBadges program={loaded} now={new Date()} />
         <h1>{p.name}</h1>
+        <ProgramEnrollmentEntry version={loaded.versionId} />
         <p className="program-summary">{p.summary}</p>
         <Link className="program-quick-start" href="#program-workouts">
           View workouts ↓
@@ -124,18 +130,22 @@ export default async function Page({
               ) : (
                 <>
                   <p>{day.focus}</p>
-                  <StartProgramWorkout
-                    version={loaded.versionId}
-                    day={day.cycle_position}
-                    number={
-                      d.days.filter(
-                        (w) =>
-                          !w.is_rest_day &&
-                          w.cycle_position <= day.cycle_position,
-                      ).length
-                    }
-                    request={crypto.randomUUID()}
-                  />
+                  {same && (
+                    <StartProgramWorkout
+                      version={
+                        context.enrollment?.versionId ?? loaded.versionId
+                      }
+                      day={day.cycle_position}
+                      number={
+                        d.days.filter(
+                          (w) =>
+                            !w.is_rest_day &&
+                            w.cycle_position <= day.cycle_position,
+                        ).length
+                      }
+                      request={crypto.randomUUID()}
+                    />
+                  )}
                   <SaveFavorite
                     type="program_day"
                     source={loaded.versionId}

@@ -1,0 +1,175 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path=public,extensions,pg_temp;
+select no_plan();
+insert into auth.users(id) values(md5('lifecycle_a')::uuid),(md5('lifecycle_b')::uuid);
+insert into profiles(id,display_name) values(md5('lifecycle_a')::uuid,'A'),(md5('lifecycle_b')::uuid,'B');
+insert into account_preferences(owner_id,scheduling_timezone) values(md5('lifecycle_a')::uuid,'UTC'),(md5('lifecycle_b')::uuid,'UTC');
+create function pg_temp.rotation(n integer,rotations integer default null) returns uuid language plpgsql security invoker as $$
+declare root uuid;day uuid;
+begin
+ insert into public.programs(owner_id,name,cycle_length,objective,duration_rotations) values(auth.uid(),'Progression rotation '||n,n,'hypertrophy',rotations) returning id into root;
+ for i in 1..n loop
+ insert into public.program_days(owner_id,program_id,cycle_length,cycle_position,name,is_rest_day) values(auth.uid(),root,n,i,'Workout '||i,i=n) returning id into day;
+ if i<>n then insert into public.program_slots(owner_id,program_day_id,position,movement_pattern_id,exercise_id,target_sets,target_reps_min,target_reps_max,required_exercise_type,primary_muscle_id) values(auth.uid(),day,1,(select id from public.movement_patterns where slug='horizontal_push'),(select id from public.exercises where slug='barbell_bench_press'),2,8,12,'compound',(select id from public.muscle_groups where slug='pectorals'));end if;
+ end loop;return public.snapshot_program(root);
+end $$;
+
+
+create function pg_temp.record_program(v uuid,kind text,pos int default 1) returns uuid language plpgsql security invoker as $$
+declare w uuid;m uuid;e uuid;s public.workout_sets;
+begin
+ w:=public.start_program_workout(v,pos,gen_random_uuid());
+ select id into m from public.workout_movements where workout_session_id=w;
+ e:=public.select_program_exercise(m,(select id from public.exercises where slug=case when kind='bodyweight' then 'push_up' else 'barbell_bench_press' end),null,gen_random_uuid());
+ if kind<>'pending' then
+ for s in select * from public.workout_sets where workout_exercise_id=e order by position loop
+ if kind='partial' and s.position>1 then continue;end if;
+ perform public.log_workout_set(p_item=>e,p_id=>s.id,p_operation=>'save',p_revision=>s.revision,p_mutation=>gen_random_uuid(),p_reps=>case when kind='zero_reps' then 0 else 12 end,p_weight=>case when kind='bodyweight' then null when kind='zero_load' then 0 else 50 end,p_type=>case when kind='warmup' then 'warm_up' else 'working' end,p_mode=>case when kind='bodyweight' then 'bodyweight' else 'external' end,p_completed=>true);
+ end loop;end if;
+ if kind='deleted' then select * into s from public.workout_sets where workout_exercise_id=e and position=2;perform public.log_workout_set(p_item=>e,p_id=>s.id,p_operation=>'remove',p_revision=>s.revision,p_mutation=>gen_random_uuid());end if;
+ perform public.end_workout(w,'completed');return w;
+end $$;
+
+set local role authenticated;
+select set_config('request.jwt.claims',json_build_object('sub',md5('lifecycle_a')::uuid,'role','authenticated')::text,true);
+select set_config('l.version',pg_temp.rotation(4)::text,true);
+select set_config('l.v2',pg_temp.rotation(8)::text,true);
+select set_config('l.fixed',pg_temp.rotation(3,1)::text,true);
+select set_config('l.start',program_lifecycle('start',md5('l.start')::uuid,null,0,current_setting('l.version')::uuid,current_date,'UTC')::text,true);
+select set_config('l.assignment',(current_setting('l.start')::jsonb->>'assignmentId'),true);
+select is((select count(*)::int from workout_sessions),0,'explicit enrollment creates no workout');
+select is((select enrollment_provenance from program_assignments where id=current_setting('l.assignment')::uuid),'server','new enrollment has authoritative provenance');
+select is((select schedule_timezone from program_assignments where id=current_setting('l.assignment')::uuid),'UTC','existing schedule initialization is reused');
+select is(program_lifecycle('start',md5('l.start')::uuid,null,0,current_setting('l.version')::uuid,current_date,'UTC'),current_setting('l.start')::jsonb,'start retry returns same durable result');
+select is(program_lifecycle('start',md5('l.same')::uuid,null,0,current_setting('l.version')::uuid,current_date,'UTC')->>'assignmentId',current_setting('l.assignment'),'same active version continues without reset');
+select is((select count(*)::int from program_assignments),1,'same-version start cannot duplicate enrollment');
+select throws_ok($$update program_assignments set state='archived',ended_at=clock_timestamp() where id=current_setting('l.assignment')::uuid$$,'42501',null,'raw lifecycle state mutation denied');
+select throws_ok($$update program_assignments set terminal_reason='completed' where id=current_setting('l.assignment')::uuid$$,'42501',null,'terminal reason protected');
+select throws_ok($$update program_assignments set started_at=now()-interval '1 year' where id=current_setting('l.assignment')::uuid$$,'42501',null,'enrollment time protected');
+select throws_ok($$insert into program_assignments(owner_id,program_id,cycle_length,next_cycle_position,source_version_id) select auth.uid(),program_id,cycle_length,1,source_version_id from program_assignments where id=current_setting('l.assignment')::uuid$$,'23514',null,'raw enrollment without receipt denied');
+select set_config('l.pending',program_lifecycle('end_after_next',md5('l.pending')::uuid,current_setting('l.assignment')::uuid,0)::text,true);
+select is((select lifecycle_revision::int from program_assignments where id=current_setting('l.assignment')::uuid),1,'pending end increments lifecycle revision');
+select is(program_lifecycle('end_after_next',md5('l.pending')::uuid,current_setting('l.assignment')::uuid,0),current_setting('l.pending')::jsonb,'pending retry is idempotent despite new revision');
+select throws_ok($$select program_lifecycle('cancel_end',md5('l.pending')::uuid,current_setting('l.assignment')::uuid,1)$$,'23514',null,'request UUID cannot change intent');
+select set_config('l.partial',pg_temp.record_program(current_setting('l.version')::uuid,'partial')::text,true);
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'active','partial session never consumes pending end');
+select set_config('l.zero',pg_temp.record_program(current_setting('l.version')::uuid,'zero_load')::text,true);
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'active','nonqualifying sets never consume pending end');
+select set_config('l.independent',start_ad_hoc_workout()::text,true);select end_workout(current_setting('l.independent')::uuid,'completed');
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'active','independent empty closure never ends assignment');
+select set_config('l.abandoned',start_program_workout(current_setting('l.version')::uuid,1,gen_random_uuid())::text,true);select end_workout(current_setting('l.abandoned')::uuid,'abandoned');
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'active','abandonment never consumes pending end');
+
+select set_config('l.cursor',program_schedule_cursor(current_setting('l.assignment')::uuid)::text,true);
+select decide_program_schedule(current_setting('l.assignment')::uuid,current_setting('l.version')::uuid,(current_setting('l.cursor')::jsonb->>'dayId')::uuid,(current_setting('l.cursor')::jsonb->>'rotation')::int,(current_setting('l.cursor')::jsonb->>'workIndex')::bigint,(current_setting('l.cursor')::jsonb->>'decisionRevision')::bigint,'accept_partial',gen_random_uuid(),current_setting('l.partial')::uuid);
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'active','accepted partial is a decision, never automatic-end evidence');
+select set_config('l.cursor',program_schedule_cursor(current_setting('l.assignment')::uuid)::text,true);
+select decide_program_schedule(current_setting('l.assignment')::uuid,current_setting('l.version')::uuid,(current_setting('l.cursor')::jsonb->>'dayId')::uuid,(current_setting('l.cursor')::jsonb->>'rotation')::int,(current_setting('l.cursor')::jsonb->>'workIndex')::bigint,(current_setting('l.cursor')::jsonb->>'decisionRevision')::bigint,'defer',gen_random_uuid(),null,current_date+2);
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'active','defer cannot satisfy pending end');
+select set_config('l.cursor',program_schedule_cursor(current_setting('l.assignment')::uuid)::text,true);
+select decide_program_schedule(current_setting('l.assignment')::uuid,current_setting('l.version')::uuid,(current_setting('l.cursor')::jsonb->>'dayId')::uuid,(current_setting('l.cursor')::jsonb->>'rotation')::int,(current_setting('l.cursor')::jsonb->>'workIndex')::bigint,(current_setting('l.cursor')::jsonb->>'decisionRevision')::bigint,'skip',gen_random_uuid());
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'active','skip cannot satisfy pending end');
+select set_config('l.favorite',save_favorite_workout('program_day',current_setting('l.version')::uuid,(select (definition->'days'->0->>'id')::uuid from program_versions where id=current_setting('l.version')::uuid),'Independent press',gen_random_uuid())::text,true);
+select set_config('l.favorite_session',start_favorite_workout(current_setting('l.favorite')::uuid,gen_random_uuid())::text,true);
+select set_config('l.favorite_item',select_program_exercise((select id from workout_movements where workout_session_id=current_setting('l.favorite_session')::uuid),(select id from exercises where slug='barbell_bench_press'),null,gen_random_uuid())::text,true);
+select log_workout_set(p_item=>current_setting('l.favorite_item')::uuid,p_id=>id,p_operation=>'save',p_revision=>revision,p_mutation=>gen_random_uuid(),p_reps=>12,p_weight=>50,p_completed=>true) from workout_sets where workout_exercise_id=current_setting('l.favorite_item')::uuid;
+select end_workout(current_setting('l.favorite_session')::uuid,'completed');
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'active','fully logged independent Favorite cannot satisfy pending end');
+select set_config('l.full',pg_temp.record_program(current_setting('l.version')::uuid,'full')::text,true);
+select is((select terminal_reason from program_assignments where id=current_setting('l.assignment')::uuid),'ended_after_next','next qualifying full assigned closure ends atomically');
+select is((select terminal_session_id from program_assignments where id=current_setting('l.assignment')::uuid),current_setting('l.full')::uuid,'trigger evidence retains exact session identity');
+select ok((select pending_end_request_id is null and terminal_request_id is not null from program_assignments where id=current_setting('l.assignment')::uuid),'pending request is satisfied with durable intent reference');
+select is(end_workout(current_setting('l.full')::uuid,'completed'),current_setting('l.full')::uuid,'duplicate closure returns original session');
+select is((select lifecycle_revision::int from program_assignments where id=current_setting('l.assignment')::uuid),2,'duplicate closure cannot end twice');
+select set_config('l.old',current_setting('l.assignment'),true);
+select set_config('l.assignment',program_lifecycle('start',md5('l.restart')::uuid,null,0,current_setting('l.version')::uuid,current_date,'UTC')->>'assignmentId',true);
+select isnt(current_setting('l.assignment'),current_setting('l.old'),'repeat enrollment gets a fresh identity');
+select is((select count(*)::int from workout_sessions where program_assignment_id=current_setting('l.assignment')::uuid),0,'repeat enrollment inherits no positions or actual workouts');
+select program_lifecycle('end_after_next',md5('l.pending2')::uuid,current_setting('l.assignment')::uuid,0);
+select program_lifecycle('cancel_end',md5('l.cancel')::uuid,current_setting('l.assignment')::uuid,1);
+select set_config('l.after_cancel',pg_temp.record_program(current_setting('l.version')::uuid,'full')::text,true);
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'active','cancelled pending end cannot fire');
+select set_config('l.active',start_program_workout(current_setting('l.version')::uuid,2,gen_random_uuid())::text,true);
+select throws_ok($$select program_lifecycle('end_now',md5('l.block_end')::uuid,current_setting('l.assignment')::uuid,2)$$,'23514',null,'immediate end cannot detach an active workout');
+select throws_ok($$select program_lifecycle('switch',md5('l.block_switch')::uuid,current_setting('l.assignment')::uuid,2,current_setting('l.v2')::uuid,current_date,'UTC')$$,'23514',null,'switch cannot discard active training');
+select end_workout(current_setting('l.active')::uuid,'abandoned');
+select set_config('l.end',program_lifecycle('end_now',md5('l.end')::uuid,current_setting('l.assignment')::uuid,2)::text,true);
+select is((select terminal_reason from program_assignments where id=current_setting('l.assignment')::uuid),'ended_now','early end never claims full program completion');
+select is(program_lifecycle('end_now',md5('l.end')::uuid,current_setting('l.assignment')::uuid,2),current_setting('l.end')::jsonb,'end retry remains durable after termination');
+select set_config('l.assignment',program_lifecycle('start',md5('l.restart2')::uuid,null,0,current_setting('l.version')::uuid,current_date,'UTC')->>'assignmentId',true);
+select set_config('l.switch',program_lifecycle('switch',md5('l.switch')::uuid,current_setting('l.assignment')::uuid,0,current_setting('l.v2')::uuid,current_date+1,'UTC')::text,true);
+select is((select terminal_reason from program_assignments where id=current_setting('l.assignment')::uuid),'switched','switch records truthful old terminal reason');
+select is((select count(*)::int from program_assignments where state='active'),1,'atomic switch leaves exactly one active assignment');
+select set_config('l.assignment',current_setting('l.switch')::jsonb->>'assignmentId',true);
+select is((select schedule_start_date from program_assignments where id=current_setting('l.assignment')::uuid),current_date+1,'switch preserves explicitly chosen future local date');
+select throws_ok($$select program_lifecycle('end_now',md5('l.stale')::uuid,current_setting('l.assignment')::uuid,77)$$,'40001',null,'stale lifecycle revision rejected');
+select throws_ok($$select program_lifecycle('switch',md5('l.same_switch')::uuid,current_setting('l.assignment')::uuid,0,current_setting('l.v2')::uuid,current_date,'UTC')$$,'23514',null,'same-version switch cannot reset progress');
+select throws_ok($$select program_lifecycle('switch',md5('l.bad_zone')::uuid,current_setting('l.assignment')::uuid,0,current_setting('l.fixed')::uuid,current_date,'Not/AZone')$$,'22023',null,'invalid timezone rejected before transition');
+select throws_ok($$select program_lifecycle('switch',md5('l.foreign_version')::uuid,current_setting('l.assignment')::uuid,0,gen_random_uuid(),current_date,'UTC')$$,'42501',null,'inaccessible replacement cannot partially end current program');
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'active','invalid switch leaves current assignment intact');
+select set_config('l.assignment',program_lifecycle('switch',md5('l.fixed_switch')::uuid,current_setting('l.assignment')::uuid,0,current_setting('l.fixed')::uuid,current_date,'UTC')->>'assignmentId',true);
+select pg_temp.record_program(current_setting('l.fixed')::uuid,'full',1);
+select program_lifecycle('end_after_next',md5('l.fixed_pending')::uuid,current_setting('l.assignment')::uuid,0);
+select set_config('l.fixed_session',pg_temp.record_program(current_setting('l.fixed')::uuid,'full',2)::text,true);
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'completed','actual fixed rotation ends program naturally');
+select is((select terminal_reason from program_assignments where id=current_setting('l.assignment')::uuid),'completed','natural completion takes precedence over pending user end');
+select ok((select terminal_request_id is not null and pending_end_request_id is null from program_assignments where id=current_setting('l.assignment')::uuid),'pending user intent remains satisfied on natural completion');
+select throws_ok($$select start_program_workout(current_setting('l.fixed')::uuid,1,gen_random_uuid())$$,'23514',null,'completed program does not silently start another enrollment');
+
+-- Corrections alter derived completion, never resurrect an ended enrollment.
+reset role;
+update workout_sets set actual_reps=0 where workout_exercise_id in(select id from workout_exercises where workout_session_id=current_setting('l.fixed_session')::uuid);
+set local role authenticated;
+select is(program_enrollment_history(current_setting('l.assignment')::uuid)->0->>'status','Ended','withdrawn evidence cannot retain a successful completed label');
+select is((select state from program_assignments where id=current_setting('l.assignment')::uuid),'completed','historical correction never silently reactivates enrollment');
+select is((program_enrollment_history(current_setting('l.assignment')::uuid)->0->>'completionEvidenceChanged')::boolean,true,'evidence discrepancy is explicit');
+reset role;
+update workout_sets set actual_reps=12 where workout_exercise_id in(select id from workout_exercises where workout_session_id=current_setting('l.fixed_session')::uuid);
+set local role authenticated;
+select is(program_enrollment_history(current_setting('l.assignment')::uuid)->0->>'status','Completed','restored qualifying evidence restores derived completion without double counting');
+select throws_ok($$update program_lifecycle_receipts set kind='end_now' where owner_id=auth.uid()$$,'42501',null,'durable command receipts cannot be edited');
+select throws_ok($$delete from program_lifecycle_receipts where owner_id=auth.uid()$$,'42501',null,'durable command receipts cannot be deleted');
+select set_config('l.public',(select published_version_id::text from programs where slug='upper-lower-strength-size'),true);
+select set_config('l.assignment',program_lifecycle('start',md5('l.public_start')::uuid,null,0,current_setting('l.public')::uuid,current_date,'UTC')->>'assignmentId',true);
+select is((select enrollment_source_version_id from program_assignments where id=current_setting('l.assignment')::uuid),current_setting('l.public')::uuid,'public enrollment preserves exact chosen immutable source version');
+select set_config('l.copy',(select program_id::text from program_assignments where id=current_setting('l.assignment')::uuid),true);
+update programs set name='Edited private copy' where id=current_setting('l.copy')::uuid;
+select set_config('l.edited',snapshot_program(current_setting('l.copy')::uuid)::text,true);
+select isnt(current_setting('l.edited'),(select source_version_id::text from program_assignments where id=current_setting('l.assignment')::uuid),'new edition has independent immutable identity');
+select is(program_lifecycle('start',md5('l.public_continue')::uuid,null,0,current_setting('l.public')::uuid,current_date,'UTC')->>'assignmentId',current_setting('l.assignment'),'public source continuation keeps original execution version after private edits');
+select is(program_enrollment_history(current_setting('l.assignment')::uuid)->0->>'name','Upper / Lower Strength & Size','enrollment title remains immutable after root rename');
+select set_config('l.switched_version',program_lifecycle('switch',md5('l.edition_switch')::uuid,current_setting('l.assignment')::uuid,0,current_setting('l.edited')::uuid,current_date,'UTC')->>'assignmentId',true);
+select isnt(current_setting('l.switched_version'),current_setting('l.assignment'),'switching editions of same template creates a new enrollment');
+select is((select source_version_id from program_assignments where id=current_setting('l.switched_version')::uuid),current_setting('l.edited')::uuid,'new enrollment binds exact replacement edition');
+select throws_ok($$select program_lifecycle('start',gen_random_uuid(),null,0,current_setting('l.public')::uuid,current_date,'PST')$$,'22023',null,'ambiguous timezone rejected');
+select throws_ok($$select program_lifecycle('start',gen_random_uuid(),null,0,current_setting('l.public')::uuid,current_date-1,'UTC')$$,'22023',null,'retroactive enrollment date rejected');
+select throws_ok($$select program_lifecycle('start',gen_random_uuid(),null,0,current_setting('l.public')::uuid,current_date+367,'UTC')$$,'22023',null,'unbounded future start rejected');
+select is((select count(*)::int from program_assignments where owner_id=auth.uid() and state='active'),1,'rejected commands leave one active assignment');
+select set_config('request.jwt.claims',json_build_object('sub',md5('lifecycle_b')::uuid,'role','authenticated')::text,true);
+select throws_ok($$select program_lifecycle('end_now',gen_random_uuid(),current_setting('l.assignment')::uuid,0)$$,'42501',null,'foreign lifecycle identity denied');
+select is((select count(*)::int from program_lifecycle_receipts),0,'foreign command receipts remain private');
+
+select set_config('l.legacy_version',pg_temp.rotation(3,1)::text,true);
+reset role;
+insert into program_assignments(id,owner_id,program_id,cycle_length,source_version_id) select md5('l.legacy')::uuid,md5('lifecycle_b')::uuid,program_id,3,id from program_versions where id=current_setting('l.legacy_version')::uuid;
+set local role authenticated;
+select is(program_schedule()->>'configured','false','legacy fixed enrollment has no fabricated calendar');
+select pg_temp.record_program(current_setting('l.legacy_version')::uuid,'full',1);
+select is(public.program_assignment_complete(md5('l.legacy')::uuid),false,'legacy partial rotation is not complete');
+select pg_temp.record_program(current_setting('l.legacy_version')::uuid,'full',2);
+select is((select terminal_reason from program_assignments where id=md5('l.legacy')::uuid),'completed','legacy fixed program ends from actual full rotation without requiring a calendar');
+select is((program_enrollment_history(md5('l.legacy')::uuid)->0->>'completedRotations')::int,1,'legacy lifecycle and history share actual rotation result');
+select is(program_enrollment_history(md5('l.legacy')::uuid)->0->>'provenance','legacy','natural completion never invents legacy enrollment time');
+
+-- Simulate a pre-7.6B genuinely complete active legacy enrollment; reads must be truthful and nonmutating.
+reset role;
+update program_assignments set state='active',ended_at=null,terminal_reason=null,terminal_session_id=null,terminal_request_id=null,lifecycle_command=null where id=md5('l.legacy')::uuid;
+set local role authenticated;
+select is(program_enrollment_history(md5('l.legacy')::uuid)->0->>'status','Completed','already-complete active legacy enrollment is truthful without a configured calendar');
+select throws_ok($$update program_assignments set lifecycle_command=jsonb_build_object('closingSession',(select id from workout_sessions where program_assignment_id=md5('l.legacy')::uuid and source_cycle_position=2)) where id=md5('l.legacy')::uuid$$,'23514',null,'client cannot replay a historical closure hook as a raw lifecycle command');
+select program_lifecycle('end_now',gen_random_uuid(),md5('l.legacy')::uuid,1);
+select is((select terminal_reason from program_assignments where id=md5('l.legacy')::uuid),'completed','explicit close reconciles already-complete legacy enrollment without new training');
+reset role;set local role anon;
+select throws_ok($$select program_lifecycle('start',gen_random_uuid())$$,'42501',null,'anonymous lifecycle RPC denied');
+reset role;select * from finish();rollback;

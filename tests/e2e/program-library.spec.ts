@@ -180,8 +180,11 @@ test("missing images recover, approved content remains read-only and private pro
   );
   await expect(page.locator("main")).toContainText("Dumbbell");
   await expect(page.locator("main")).toContainText("Open-ended");
+  await expect(
+    page.getByRole("link", { name: "Start Program", exact: true }),
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: /Start Workout/ })).toHaveCount(
-    3,
+    0,
   );
   await expect(page.locator("main script, main iframe")).toHaveCount(0);
   const privateId = crypto.randomUUID();

@@ -2019,3 +2019,128 @@ body:has(.active-workout-mode.workout-exercise-screen) .topbar {
   align-items: center;
   font-size: 14px;
 }
+
+/* Scoped program enrollment surfaces; logger, picker and Workout entry retain their styles. */
+.enrollment-surface {
+  max-width: 760px;
+  margin-inline: auto;
+}
+.enrollment-surface h1 {
+  margin-block: 16px;
+  overflow-wrap: anywhere;
+}
+.enrollment-card {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  margin-block: 14px;
+}
+.enrollment-card h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  overflow-wrap: anywhere;
+}
+.enrollment-card p {
+  margin-block: 8px;
+}
+.enrollment-count strong {
+  font-size: 28px;
+  margin-right: 4px;
+}
+.enrollment-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-block: 8px;
+}
+.enrollment-links > a,
+.program-management > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.program-management {
+  border-block: 1px solid var(--border);
+  padding-block: 8px;
+  margin-block: 20px;
+}
+.program-management > summary {
+  min-height: 44px;
+  padding-block: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.program-lifecycle-form {
+  display: grid;
+  gap: 14px;
+  margin-block: 16px;
+  max-width: 560px;
+}
+.program-lifecycle-form > .check-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.5;
+}
+.program-lifecycle-form .check-label input {
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+.program-enrollment-entry {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  margin-block: 12px;
+  border-radius: 10px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 600;
+}
+.enrollment-history {
+  list-style: none;
+  padding: 0;
+  max-width: 760px;
+}
+.enrollment-details {
+  display: grid;
+  gap: 12px;
+  margin-block: 20px;
+}
+.enrollment-details dt {
+  color: var(--secondary);
+  font-size: 13px;
+}
+.enrollment-details dd {
+  margin-top: 4px;
+}
+.enrollment-strength {
+  margin-block: 24px;
+}
+.enrollment-comparisons {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.enrollment-comparisons > article {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+}
+.enrollment-comparisons h3 {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+.enrollment-comparisons p {
+  margin-block: 8px;
+}
+.enrollment-surface .set-source {
+  overflow-wrap: anywhere;
+}
+.history-view-selector {
+  margin-bottom: 20px;
+}

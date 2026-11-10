@@ -62,6 +62,7 @@ it("reads one owner-filtered padded weekly summary query with an explicit cap, n
   expect(q.gte).toHaveBeenCalledWith("finished_at", "2026-03-01T00:00:00Z");
   expect(q.lt).toHaveBeenCalledWith("finished_at", "2026-03-10T00:00:00Z");
   expect(q.limit).toHaveBeenCalledWith(201);
+  expect(q.in).not.toHaveBeenCalled();
   expect(q.or).toHaveBeenCalledWith(
     "program_assignment_id.is.null,program_assignment_id.neq.a",
   );
@@ -72,4 +73,53 @@ it("reports provider failure rather than inventing an empty plan", async () => {
     rpc: vi.fn().mockResolvedValue({ error: { message: "private" } }),
   });
   await expect(loadTrainingWeek()).rejects.toThrow("could not be loaded");
+});
+it("reconciles other-program historical full labels using bounded authoritative classification", async () => {
+  m.user.mockResolvedValue({ id: "verified" });
+  const q: Record<string, ReturnType<typeof vi.fn>> = {};
+  for (const key of ["select", "eq", "in", "or", "gte", "lt", "order", "limit"])
+    q[key] = vi.fn().mockReturnValue(q);
+  q.returns = vi.fn().mockResolvedValue({
+    data: [
+      {
+        id: "partial",
+        name: "Restored qualifying evidence",
+        finished_at: "2026-03-03T12:00:00Z",
+        completion_status: "none",
+        program_assignment_id: "older",
+      },
+      {
+        id: "empty",
+        name: "Old zero load",
+        finished_at: "2026-03-03T12:00:00Z",
+        completion_status: "full",
+        program_assignment_id: "older",
+      },
+    ],
+  });
+  const rpc = vi
+    .fn()
+    .mockResolvedValueOnce({
+      data: {
+        assignmentId: "current",
+        configured: true,
+        timezone: "UTC",
+        from: "2026-03-02",
+        until: "2026-03-09",
+        events: [],
+      },
+    })
+    .mockResolvedValueOnce({
+      data: [
+        { session_id: "partial", completion_status: "partial" },
+        { session_id: "empty", completion_status: "none" },
+      ],
+    });
+  m.client.mockResolvedValue({ rpc, from: vi.fn().mockReturnValue(q) });
+  const result = await loadTrainingWeek();
+  expect(result.events).toHaveLength(1);
+  expect(result.events[0].status).toBe("recorded_partial");
+  expect(rpc).toHaveBeenLastCalledWith("workout_program_classifications", {
+    p_sessions: ["partial", "empty"],
+  });
 });

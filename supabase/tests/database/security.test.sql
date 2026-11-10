@@ -923,9 +923,9 @@ select ok((select has_table_privilege('authenticated','public.program_assignment
 
 select ok((select has_table_privilege('authenticated','public.program_assignments','DELETE') = false), 'program_assignments: DELETE matches reviewed matrix');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.program_assignments',attname,'INSERT') = (attname = any(array['id','owner_id','program_id','cycle_length','state','next_cycle_position','completed_rotations','started_at','ended_at','source_version_id']::text[]))) from pg_attribute where attrelid='public.program_assignments'::regclass and attnum>0 and not attisdropped), 'program_assignments: exact INSERT column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.program_assignments',attname,'INSERT') = (attname = any(array['id','owner_id','program_id','cycle_length','next_cycle_position','source_version_id','lifecycle_command']::text[]))) from pg_attribute where attrelid='public.program_assignments'::regclass and attnum>0 and not attisdropped), 'program_assignments: exact INSERT column allowlist');
 
-select ok((select bool_and(has_column_privilege('authenticated','public.program_assignments',attname,'UPDATE') = (attname = any(array['schedule_command','state','next_cycle_position','completed_rotations','ended_at']::text[]))) from pg_attribute where attrelid='public.program_assignments'::regclass and attnum>0 and not attisdropped), 'program_assignments: exact UPDATE column allowlist');
+select ok((select bool_and(has_column_privilege('authenticated','public.program_assignments',attname,'UPDATE') = (attname = any(array['schedule_command','lifecycle_command']::text[]))) from pg_attribute where attrelid='public.program_assignments'::regclass and attnum>0 and not attisdropped), 'program_assignments: exact UPDATE column allowlist');
 
 select ok((select relrowsecurity from pg_class where oid='public.workout_sessions'::regclass), 'workout_sessions: RLS enabled');
 
@@ -1573,7 +1573,10 @@ select lives_ok($sql$insert into public.program_days(id,owner_id,program_id,cycl
 
 select lives_ok($sql$insert into public.program_slots(id,owner_id,program_day_id,position,exercise_id,target_sets) values (md5('slot_carol')::uuid,md5('carol')::uuid,md5('carol_day_1')::uuid,1,md5('system')::uuid,3)$sql$, 'program_slots: authenticated own INSERT succeeds');
 
-select lives_ok($sql$insert into public.program_assignments(id,owner_id,program_id,cycle_length) values (md5('assignment_carol')::uuid,md5('carol')::uuid,md5('program_carol')::uuid,7)$sql$, 'program_assignments: authenticated own INSERT succeeds');
+select throws_ok($sql$insert into public.program_assignments(id,owner_id,program_id,cycle_length) values (md5('assignment_carol')::uuid,md5('carol')::uuid,md5('program_carol')::uuid,7)$sql$, '23514', null, 'program_assignments: raw enrollment requires validated lifecycle command');
+reset role;
+insert into public.program_assignments(id,owner_id,program_id,cycle_length) values (md5('assignment_carol')::uuid,md5('carol')::uuid,md5('program_carol')::uuid,7);
+set local role authenticated;
 
 select lives_ok($sql$insert into public.workout_sessions(id,owner_id,name,source_program_id,source_program_day_id,program_assignment_id,source_cycle_position,source_rotation,program_name_snapshot,day_name_snapshot) values (md5('session_carol')::uuid,md5('carol')::uuid,'Carol session',md5('program_carol')::uuid,md5('carol_day_1')::uuid,md5('assignment_carol')::uuid,1,0,'Carol plan','Carol day')$sql$, 'workout_sessions: authenticated own INSERT succeeds');
 
@@ -1703,9 +1706,9 @@ select is(pg_temp.affected($sql$update public.program_slots set target_sets=4 wh
 
 select ok((select target_sets=4 from public.program_slots where id=md5('slot_carol')::uuid), 'program_slots: own UPDATE persisted its intended state');
 
-select is(pg_temp.affected($sql$update public.program_assignments set state='paused' where id=md5('assignment_carol')::uuid$sql$), 1::bigint, 'program_assignments: allowed own UPDATE affects one row');
+select throws_ok($sql$update public.program_assignments set state='paused' where id=md5('assignment_carol')::uuid$sql$, '42501', null, 'program_assignments: raw lifecycle state update denied');
 
-select ok((select state='paused' from public.program_assignments where id=md5('assignment_carol')::uuid), 'program_assignments: own UPDATE persisted its intended state');
+select ok((select state='active' from public.program_assignments where id=md5('assignment_carol')::uuid), 'program_assignments: own UPDATE persisted its intended state');
 
 select is(pg_temp.affected($sql$update public.workout_sessions set notes='Corrected session' where id=md5('session_carol')::uuid$sql$), 1::bigint, 'workout_sessions: allowed own UPDATE affects one row');
 
@@ -1813,7 +1816,7 @@ select is(pg_temp.affected($sql$delete from public.program_slots where id=md5('s
 
 select ok((select count(*)=0 from public.program_assignments where id=md5('assignment_carol')::uuid), 'program_assignments: Bob cannot SELECT Carol rows');
 
-select is(pg_temp.affected($sql$update public.program_assignments set state='paused' where id=md5('assignment_carol')::uuid$sql$), 0::bigint, 'program_assignments: unauthorized UPDATE affects zero rows');
+select throws_ok($sql$update public.program_assignments set state='paused' where id=md5('assignment_carol')::uuid$sql$, '42501', null, 'program_assignments: unauthorized raw UPDATE denied');
 
 select throws_ok($sql$delete from public.program_assignments where id=md5('assignment_carol')::uuid$sql$, '42501', null, 'program_assignments: destructive DELETE has no grant');
 
@@ -1927,7 +1930,7 @@ select ok((select name='Updated day' from public.program_days where id=md5('caro
 
 select ok((select target_sets=4 from public.program_slots where id=md5('slot_carol')::uuid), 'program_slots: state unchanged by other-owner UPDATE/DELETE attempts');
 
-select ok((select state='paused' from public.program_assignments where id=md5('assignment_carol')::uuid), 'program_assignments: state unchanged by other-owner UPDATE/DELETE attempts');
+select ok((select state='active' from public.program_assignments where id=md5('assignment_carol')::uuid), 'program_assignments: state unchanged by other-owner UPDATE/DELETE attempts');
 
 select ok((select notes='Corrected session' from public.workout_sessions where id=md5('session_carol')::uuid), 'workout_sessions: state unchanged by other-owner UPDATE/DELETE attempts');
 
@@ -1959,7 +1962,7 @@ select throws_ok($sql$insert into public.program_slots(owner_id,program_day_id,p
 
 select throws_ok($sql$insert into public.program_slots(owner_id,program_day_id,position,exercise_id,target_sets) values (md5('carol')::uuid,md5('carol_day_1')::uuid,2,md5('custom_bob')::uuid,1)$sql$, '23503', null, 'cannot use another private custom exercise in own plan');
 
-select throws_ok($sql$insert into public.program_assignments(owner_id,program_id,cycle_length,state,next_cycle_position) values (md5('carol')::uuid,md5('program_bob')::uuid,10,'paused',1)$sql$, '23503', null, 'cannot assign another user program');
+select throws_ok($sql$insert into public.program_assignments(owner_id,program_id,cycle_length,state,next_cycle_position) values (md5('carol')::uuid,md5('program_bob')::uuid,10,'paused',1)$sql$, '42501', null, 'cannot assign another user program');
 
 select throws_ok($sql$update public.programs set derived_from_program_id=md5('program_bob')::uuid where id=md5('program_carol')::uuid$sql$, '23503', null, 'cannot forge cross-owner template lineage');
 
@@ -1993,8 +1996,8 @@ select ok((select cycle_length=10 from public.program_assignments where id=md5('
 select lives_ok($sql$insert into public.program_days(id,owner_id,program_id,cycle_length,cycle_position,name,is_rest_day) values (md5('carol_rest10')::uuid,md5('carol')::uuid,md5('program_carol')::uuid,10,10,'Rest',true)$sql$, 'owner creates a rest position beyond the calendar week');
 select throws_ok($sql$insert into public.program_slots(owner_id,program_day_id,position,exercise_id,target_sets) values (md5('carol')::uuid,md5('carol_rest10')::uuid,1,md5('system')::uuid,1)$sql$, '23514', null, 'owner writes still enforce rest-day slot guard');
 select throws_ok($sql$insert into public.workout_sessions(owner_id,name,source_program_id,source_program_day_id,source_cycle_position,program_name_snapshot,day_name_snapshot) values (md5('carol')::uuid,'Invalid rest workout',md5('program_carol')::uuid,md5('carol_rest10')::uuid,10,'Plan','Rest')$sql$, '23514', null, 'owner cannot turn a rest position into a fabricated workout');
-select is(pg_temp.affected($sql$update public.program_assignments set next_cycle_position=10 where id=md5('assignment_carol')::uuid$sql$), 1::bigint, 'owner explicitly selects a tenth-position rest cursor');
-select is(pg_temp.affected($sql$update public.program_assignments set next_cycle_position=1, completed_rotations=1 where id=md5('assignment_carol')::uuid$sql$), 1::bigint, 'owner explicitly wraps a ten-position rotation');
+select throws_ok($sql$update public.program_assignments set next_cycle_position=10 where id=md5('assignment_carol')::uuid$sql$, '42501', null, 'owner explicitly selects a tenth-position rest cursor requires validated authority');
+select throws_ok($sql$update public.program_assignments set next_cycle_position=1, completed_rotations=1 where id=md5('assignment_carol')::uuid$sql$, '42501', null, 'owner explicitly wraps a ten-position rotation requires validated authority');
 
 select throws_ok($sql$insert into public.workout_sessions(owner_id,name) values (md5('carol')::uuid,'Ad hoc')$sql$, '23505', null, 'second active workout is denied by unique index');
 

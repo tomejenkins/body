@@ -1,3 +1,4 @@
+import { enrollFromDetail } from "./enrollment-helpers";
 import {
   openWorkoutManagement,
   openWorkoutEnding,
@@ -32,6 +33,7 @@ test("program Home accordion, focused navigation, status, context, refresh and r
   await login(page, a);
   const p = programs.find((p) => p.slug === "upper-lower-strength-size")!;
   await page.goto(`/programs/${p.id}`);
+  await enrollFromDetail(page, `/programs/${p.id}`);
   await page
     .getByRole("button", { name: "Start Workout 1", exact: true })
     .click();
@@ -275,6 +277,7 @@ test("stale Home selection cannot overwrite another tab and foreign focus reveal
   await login(page, a);
   const p = programs.find((p) => p.slug === "upper-lower-strength-size")!;
   await page.goto(`/programs/${p.id}`);
+  await enrollFromDetail(page, `/programs/${p.id}`);
   await page
     .getByRole("button", { name: "Start Workout 1", exact: true })
     .click();
