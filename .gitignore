@@ -13,3 +13,6 @@ next-env.d.ts
 .open-next/
 .wrangler/
 .dev.vars*
+
+# Local audit artifacts can contain test authentication traces.
+/test-results-audit/

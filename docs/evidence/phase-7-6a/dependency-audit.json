@@ -1,0 +1,216 @@
+{
+  "checked_date": "2026-11-10",
+  "all_dependencies": {
+    "info": 0,
+    "low": 0,
+    "moderate": 7,
+    "high": 4,
+    "critical": 0,
+    "total": 11
+  },
+  "runtime_omit_dev": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "packages": {
+    "@node-minify/core": {
+      "name": "@node-minify/core",
+      "severity": "high",
+      "isDirect": false,
+      "via": ["glob"],
+      "effects": ["@opennextjs/aws"],
+      "range": "9.0.1 - 9.0.2",
+      "nodes": ["node_modules/@node-minify/core"],
+      "fixAvailable": {
+        "name": "@opennextjs/cloudflare",
+        "version": "0.3.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opennextjs/aws": {
+      "name": "@opennextjs/aws",
+      "severity": "high",
+      "isDirect": false,
+      "via": ["@node-minify/core"],
+      "effects": ["@opennextjs/cloudflare"],
+      "range": ">=4.1.9",
+      "nodes": ["node_modules/@opennextjs/aws"],
+      "fixAvailable": {
+        "name": "@opennextjs/cloudflare",
+        "version": "0.3.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@opennextjs/cloudflare": {
+      "name": "@opennextjs/cloudflare",
+      "severity": "high",
+      "isDirect": true,
+      "via": ["@opennextjs/aws", "glob"],
+      "effects": [],
+      "range": ">=0.3.0",
+      "nodes": ["node_modules/@opennextjs/cloudflare"],
+      "fixAvailable": {
+        "name": "@opennextjs/cloudflare",
+        "version": "0.3.0",
+        "isSemVerMajor": true
+      }
+    },
+    "@typescript-eslint/eslint-plugin": {
+      "name": "@typescript-eslint/eslint-plugin",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": ["@typescript-eslint/type-utils", "@typescript-eslint/utils"],
+      "effects": [],
+      "range": "6.16.0 - 8.72.2",
+      "nodes": ["node_modules/@typescript-eslint/eslint-plugin"],
+      "fixAvailable": true
+    },
+    "@typescript-eslint/parser": {
+      "name": "@typescript-eslint/parser",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": ["@typescript-eslint/typescript-estree"],
+      "effects": ["typescript-eslint"],
+      "range": "6.16.0 - 8.72.2",
+      "nodes": ["node_modules/@typescript-eslint/parser"],
+      "fixAvailable": true
+    },
+    "@typescript-eslint/type-utils": {
+      "name": "@typescript-eslint/type-utils",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@typescript-eslint/typescript-estree",
+        "@typescript-eslint/utils"
+      ],
+      "effects": ["@typescript-eslint/eslint-plugin"],
+      "range": "6.16.0 - 8.72.2",
+      "nodes": ["node_modules/@typescript-eslint/type-utils"],
+      "fixAvailable": true
+    },
+    "@typescript-eslint/typescript-estree": {
+      "name": "@typescript-eslint/typescript-estree",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": ["minimatch"],
+      "effects": [
+        "@typescript-eslint/parser",
+        "@typescript-eslint/type-utils",
+        "@typescript-eslint/utils",
+        "typescript-eslint"
+      ],
+      "range": "6.16.0 - 8.72.2",
+      "nodes": ["node_modules/@typescript-eslint/typescript-estree"],
+      "fixAvailable": true
+    },
+    "@typescript-eslint/utils": {
+      "name": "@typescript-eslint/utils",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": ["@typescript-eslint/typescript-estree"],
+      "effects": ["typescript-eslint"],
+      "range": "6.16.0 - 8.72.2",
+      "nodes": ["node_modules/@typescript-eslint/utils"],
+      "fixAvailable": true
+    },
+    "glob": {
+      "name": "glob",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1109842,
+          "name": "glob",
+          "dependency": "glob",
+          "title": "glob CLI: Command injection via -c/--cmd executes matches with shell:true",
+          "url": "https://github.com/advisories/GHSA-5j98-mcp5-4vw2",
+          "severity": "high",
+          "cwe": ["CWE-78"],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+          },
+          "range": ">=10.2.0 <10.5.0"
+        },
+        {
+          "source": 1244013,
+          "name": "glob",
+          "dependency": "glob",
+          "title": "Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal",
+          "url": "https://github.com/advisories/GHSA-3g3m-2fjr-6pw4",
+          "severity": "moderate",
+          "cwe": ["CWE-400"],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=9.0.0 <=14.0.1"
+        },
+        "minimatch"
+      ],
+      "effects": ["@node-minify/core", "@opennextjs/cloudflare"],
+      "range": "9.0.0 - 14.0.1",
+      "nodes": [
+        "node_modules/@node-minify/core/node_modules/glob",
+        "node_modules/glob"
+      ],
+      "fixAvailable": {
+        "name": "@opennextjs/cloudflare",
+        "version": "0.3.0",
+        "isSemVerMajor": true
+      }
+    },
+    "minimatch": {
+      "name": "minimatch",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1244623,
+          "name": "minimatch",
+          "dependency": "minimatch",
+          "title": "minimatch has potential denial of service via globparts amplification",
+          "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249",
+          "severity": "moderate",
+          "cwe": ["CWE-405"],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=7.0.0 <11.0.1"
+        }
+      ],
+      "effects": ["@typescript-eslint/typescript-estree", "glob"],
+      "range": "7.0.0 - 11.0.0",
+      "nodes": [
+        "node_modules/@node-minify/core/node_modules/minimatch",
+        "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+        "node_modules/glob/node_modules/minimatch"
+      ],
+      "fixAvailable": {
+        "name": "@opennextjs/cloudflare",
+        "version": "0.3.0",
+        "isSemVerMajor": true
+      }
+    },
+    "typescript-eslint": {
+      "name": "typescript-eslint",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@typescript-eslint/eslint-plugin",
+        "@typescript-eslint/parser",
+        "@typescript-eslint/typescript-estree",
+        "@typescript-eslint/utils"
+      ],
+      "effects": [],
+      "range": "<=8.72.2",
+      "nodes": ["node_modules/typescript-eslint"],
+      "fixAvailable": true
+    }
+  }
+}

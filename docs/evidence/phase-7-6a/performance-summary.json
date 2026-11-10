@@ -1,0 +1,214 @@
+{
+  "method": "12 sequential edits per profile; linear-interpolated p95; response-commit DOM observer, Resource Timing, opt-in HTTP/Undici spans",
+  "control": {
+    "control-local": {
+      "samples": 12,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 76.4,
+        "p95": 93.79,
+        "min": 62.8,
+        "max": 96.7
+      },
+      "automationAcknowledgementMs": {
+        "n": 12,
+        "p50": 95.25,
+        "p95": 128.09,
+        "min": 82.5,
+        "max": 139.8
+      },
+      "mutationResourceMs": {
+        "n": 12,
+        "p50": 35.3,
+        "p95": 45.65,
+        "min": 30.6,
+        "max": 50.6
+      },
+      "domAfterMutationResponseMs": {
+        "n": 12,
+        "p50": 3.85,
+        "p95": 6.55,
+        "min": 2.1,
+        "max": 6.6
+      },
+      "browserRequestCounts": [2],
+      "requestBodyBytes": {
+        "n": 12,
+        "p50": 415,
+        "p95": 416,
+        "min": 414,
+        "max": 416
+      },
+      "responseBodyBytes": {
+        "n": 12,
+        "p50": 1166.5,
+        "p95": 1168,
+        "min": 1164,
+        "max": 1168
+      },
+      "longTaskCount": 0
+    }
+  },
+  "profiles": {
+    "local": {
+      "samples": 12,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 86.5,
+        "p95": 201.48,
+        "min": 69.4,
+        "max": 290.3
+      },
+      "automationAcknowledgementMs": {
+        "n": 12,
+        "p50": 118.05,
+        "p95": 271.18,
+        "min": 98.3,
+        "max": 385.8
+      },
+      "mutationResourceMs": {
+        "n": 12,
+        "p50": 39.3,
+        "p95": 130.72,
+        "min": 34.1,
+        "max": 217.4
+      },
+      "domAfterMutationResponseMs": {
+        "n": 12,
+        "p50": 4.85,
+        "p95": 7.42,
+        "min": -2.6,
+        "max": 8.3
+      },
+      "browserRequestCounts": [2],
+      "requestBodyBytes": {
+        "n": 12,
+        "p50": 415,
+        "p95": 416,
+        "min": 414,
+        "max": 416
+      },
+      "responseBodyBytes": {
+        "n": 12,
+        "p50": 1160,
+        "p95": 1161,
+        "min": 1158,
+        "max": 1161
+      },
+      "longTaskCount": 0
+    },
+    "mobile-80ms": {
+      "samples": 12,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 135,
+        "p95": 143.45,
+        "min": 125.8,
+        "max": 146.7
+      },
+      "automationAcknowledgementMs": {
+        "n": 12,
+        "p50": 160.65,
+        "p95": 170.45,
+        "min": 142.5,
+        "max": 171
+      },
+      "mutationResourceMs": {
+        "n": 12,
+        "p50": 89.65,
+        "p95": 92.58,
+        "min": 84.6,
+        "max": 93.3
+      },
+      "domAfterMutationResponseMs": {
+        "n": 12,
+        "p50": 3.9,
+        "p95": 5.69,
+        "min": 1.9,
+        "max": 6.3
+      },
+      "browserRequestCounts": [2],
+      "requestBodyBytes": {
+        "n": 12,
+        "p50": 416,
+        "p95": 416,
+        "min": 415,
+        "max": 416
+      },
+      "responseBodyBytes": {
+        "n": 12,
+        "p50": 1165,
+        "p95": 1166,
+        "min": 1159,
+        "max": 1166
+      },
+      "longTaskCount": 0
+    },
+    "mobile-300ms": {
+      "samples": 12,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 355.9,
+        "p95": 381.25,
+        "min": 342,
+        "max": 395.5
+      },
+      "automationAcknowledgementMs": {
+        "n": 12,
+        "p50": 848.95,
+        "p95": 883.61,
+        "min": 833.4,
+        "max": 906.6
+      },
+      "mutationResourceMs": {
+        "n": 12,
+        "p50": 313.15,
+        "p95": 327.12,
+        "min": 310.3,
+        "max": 331.3
+      },
+      "domAfterMutationResponseMs": {
+        "n": 12,
+        "p50": 4.3,
+        "p95": 10.45,
+        "min": 3.2,
+        "max": 11.6
+      },
+      "browserRequestCounts": [2],
+      "requestBodyBytes": {
+        "n": 12,
+        "p50": 416,
+        "p95": 416,
+        "min": 415,
+        "max": 416
+      },
+      "responseBodyBytes": {
+        "n": 12,
+        "p50": 1166,
+        "p95": 1167,
+        "min": 1164,
+        "max": 1167
+      },
+      "longTaskCount": 0
+    }
+  },
+  "server": {
+    "samples": 36,
+    "httpMs": {
+      "n": 36,
+      "p50": 35.23,
+      "p95": 52.79,
+      "min": 25.28,
+      "max": 216.14
+    },
+    "callsPerMutation": [3],
+    "authReadsPerMutation": [2],
+    "rpcTransportMs": {
+      "n": 36,
+      "p50": 8.94,
+      "p95": 16.33,
+      "min": 6.55,
+      "max": 185.75
+    }
+  }
+}
