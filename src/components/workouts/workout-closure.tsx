@@ -99,61 +99,72 @@ export function FinishWorkout({ disabled }: { disabled: boolean }) {
 }
 export function InlineAbandon() {
   const c = useWorkoutClosure();
-  const confirm = useRef<HTMLButtonElement>(null),
-    cancelFocus = useRef(false);
+  const button = useRef<HTMLButtonElement>(null);
+  const armed = c?.armed,
+    pending = c?.pending,
+    cancel = c?.cancel;
   useEffect(() => {
-    if (c?.armed) confirm.current?.focus({ preventScroll: true });
-  }, [c?.armed]);
+    if (!armed || pending) return;
+    const outside = (event: Event) => {
+      if (
+        event.target instanceof Node &&
+        !button.current?.contains(event.target)
+      )
+        cancel?.();
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") cancel?.();
+    };
+    const navigation = () => cancel?.();
+    window.addEventListener("popstate", navigation);
+    window.addEventListener("pagehide", navigation);
+    document.addEventListener("pointerdown", outside, true);
+    document.addEventListener("click", outside, true);
+    document.addEventListener("keydown", escape);
+    return () => {
+      window.removeEventListener("popstate", navigation);
+      window.removeEventListener("pagehide", navigation);
+      document.removeEventListener("pointerdown", outside, true);
+      document.removeEventListener("click", outside, true);
+      document.removeEventListener("keydown", escape);
+    };
+  }, [armed, pending, cancel]);
   if (!c) return null;
   return (
     <div className="inline-abandon">
-      {c.armed ? (
-        <>
-          <form action={c.action} onSubmit={c.submit}>
-            <input type="hidden" name="sessionId" value={c.session} />
-            <input type="hidden" name="outcome" value="abandoned" />
-            <Button
-              type="submit"
-              ref={confirm}
-              variant="destructive"
-              disabled={c.disabled || c.pending}
-              aria-busy={c.pending}
-            >
-              {c.pending ? "Closing workout…" : "Confirm Abandon"}
-            </Button>
-          </form>
-          <Button
-            type="button"
-            variant="outline"
-            disabled={c.pending}
-            onClick={() => {
-              cancelFocus.current = true;
-              c.cancel();
-            }}
-            aria-label="Cancel abandonment"
-          >
-            Cancel
-          </Button>
-          <span className="sr-only" role="status">
-            Confirm abandonment to close this workout. It is still active until
-            confirmed.
-          </span>
-        </>
-      ) : (
+      <form
+        action={c.action}
+        onSubmit={(event) => {
+          if (!c.armed) {
+            event.preventDefault();
+            if (!c.disabled && !c.pending) c.arm();
+          } else c.submit(event);
+        }}
+      >
+        <input type="hidden" name="sessionId" value={c.session} />
+        <input type="hidden" name="outcome" value="abandoned" />
         <Button
-          type="button"
-          variant="outline"
-          disabled={c.disabled || c.pending}
-          ref={(node) => {
-            if (node && cancelFocus.current) {
-              node.focus({ preventScroll: true });
-              cancelFocus.current = false;
+          type={c.armed ? "submit" : "button"}
+          ref={button}
+          onClick={(event) => {
+            if (!c.armed) {
+              // Keep the initial SSR button inert until the local guard is armed.
+              event.preventDefault();
+              if (!c.disabled && !c.pending) c.arm();
             }
           }}
-          onClick={c.arm}
+          variant={c.armed ? "destructive" : "outline"}
+          disabled={c.disabled || c.pending}
+          aria-busy={c.pending}
         >
-          Abandon
+          {c.pending ? "Closing…" : c.armed ? "Confirm Abandon" : "Abandon"}
         </Button>
+      </form>
+      {c.armed && (
+        <span className="sr-only" role="status">
+          Confirm abandonment to close this workout. Tap elsewhere or press
+          Escape to keep training.
+        </span>
       )}
       {c.armed && c.state.error && (
         <p role="alert" className="auth-error">

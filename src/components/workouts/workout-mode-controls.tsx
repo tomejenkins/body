@@ -33,6 +33,7 @@ export function WorkoutModeControls({
   home,
   disabled,
   children,
+  exerciseActions,
 }: {
   session: string;
   value: Continuity | null;
@@ -41,8 +42,10 @@ export function WorkoutModeControls({
   home: boolean;
   disabled: boolean;
   children: React.ReactNode;
+  exerciseActions?: React.ReactNode;
 }) {
   const closure = useWorkoutClosure();
+  const footer = useRef<HTMLElement>(null);
   const [seconds, setSeconds] = useState(
     value?.effective_elapsed_seconds ?? null,
   );
@@ -132,6 +135,28 @@ export function WorkoutModeControls({
       viewport?.removeEventListener("scroll", resize);
     };
   }, []);
+  useLayoutEffect(() => {
+    const element = footer.current,
+      root = element?.closest<HTMLElement>(".workout-execution");
+    if (!element || !root) return;
+    const publish = () =>
+      root.style.setProperty(
+        "--workout-controls-space",
+        `${Math.ceil(element.getBoundingClientRect().height) + keyboard}px`,
+      );
+    publish();
+    const observer =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(publish)
+        : null;
+    observer?.observe(element);
+    window.addEventListener("resize", publish);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", publish);
+      root.style.removeProperty("--workout-controls-space");
+    };
+  }, [keyboard]);
   async function changePause() {
     const snapshot = current.current;
     if (!snapshot || busy || snapshot.timer_revision === undefined) return;
@@ -204,85 +229,91 @@ export function WorkoutModeControls({
   return (
     <nav
       className={cn("workout-mode-controls", closure && "has-inline-abandon")}
+      ref={footer}
       aria-label="Workout controls"
       style={{ bottom: keyboard }}
     >
-      <Button asChild variant="outline">
-        <Link
-          href={backHref}
-          aria-label={home ? "Back to app" : "Back to Workout Home"}
-        >
-          Back
-        </Link>
-      </Button>
-      <Dialog.Root>
-        <Dialog.Trigger asChild>
-          <button
-            type="button"
-            className="workout-timer-trigger"
-            aria-label={`Workout Timer · ${state}`}
-          >
-            <span className="timer-digits">
-              {timerLabel(readError ? null : seconds)}
-            </span>
-            <span className="timer-state">{state}</span>
-          </button>
-        </Dialog.Trigger>
-        <Dialog.Portal>
-          <Dialog.Overlay className="workout-panel-overlay" />
-          <Dialog.Content
-            className="workout-panel"
-            aria-describedby="timer-description"
-          >
-            <Dialog.Title>Workout Timer</Dialog.Title>
-            <Dialog.Description id="timer-description">
-              Session time excluding manual pauses. Inactive gaps are not
-              measured exercise time.
-            </Dialog.Description>
-            <p className="timer-digits">
-              {timerLabel(
-                readError ? value?.effective_elapsed_seconds : seconds,
-              )}
-            </p>
-            <p role="status">{state}</p>
-            {!!value?.idle_intervals.length && (
-              <p className="set-source">Includes an inactive interval.</p>
-            )}
-            {value && !value.last_activity_at && !closed && (
-              <p className="set-source">
-                Resume this older workout or save an activity before pausing its
-                timer.
-              </p>
-            )}
-            {(error || readError) && <p role="alert">{error || readError}</p>}
-            <Button
+      {exerciseActions}
+      <div className="workout-timer-row">
+        <Dialog.Root>
+          <Dialog.Trigger asChild>
+            <button
               type="button"
-              disabled={
-                busy ||
-                disabled ||
-                closed ||
-                value?.timer_revision === undefined ||
-                !value?.last_activity_at
-              }
-              onClick={() => void changePause()}
+              className="workout-timer-trigger"
+              aria-label={`Workout Timer · ${state}`}
             >
-              {busy
-                ? "Saving timer…"
-                : retrying
-                  ? "Retry timer change"
-                  : paused
-                    ? "Resume Workout"
-                    : "Pause Workout"}
-            </Button>
-            <Dialog.Close asChild>
-              <Button type="button" variant="outline">
-                Dismiss timer
+              <span className="timer-digits">
+                {timerLabel(readError ? null : seconds)}
+              </span>
+              <span className="timer-state">{state}</span>
+            </button>
+          </Dialog.Trigger>
+          <Dialog.Portal>
+            <Dialog.Overlay className="workout-panel-overlay" />
+            <Dialog.Content
+              className="workout-panel"
+              aria-describedby="timer-description"
+            >
+              <Dialog.Title>Workout Timer</Dialog.Title>
+              <Dialog.Description id="timer-description">
+                Session time excluding manual pauses. Inactive gaps are not
+                measured exercise time.
+              </Dialog.Description>
+              <p className="timer-digits">
+                {timerLabel(
+                  readError ? value?.effective_elapsed_seconds : seconds,
+                )}
+              </p>
+              <p role="status">{state}</p>
+              {!!value?.idle_intervals.length && (
+                <p className="set-source">Includes an inactive interval.</p>
+              )}
+              {value && !value.last_activity_at && !closed && (
+                <p className="set-source">
+                  Resume this older workout or save an activity before pausing
+                  its timer.
+                </p>
+              )}
+              {(error || readError) && <p role="alert">{error || readError}</p>}
+              <Button
+                type="button"
+                disabled={
+                  busy ||
+                  disabled ||
+                  closed ||
+                  value?.timer_revision === undefined ||
+                  !value?.last_activity_at
+                }
+                onClick={() => void changePause()}
+              >
+                {busy
+                  ? "Saving timer…"
+                  : retrying
+                    ? "Retry timer change"
+                    : paused
+                      ? "Resume Workout"
+                      : "Pause Workout"}
               </Button>
-            </Dialog.Close>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
-      <div className="workout-closure-actions">
+              <Dialog.Close asChild>
+                <Button type="button" variant="outline">
+                  Dismiss timer
+                </Button>
+              </Dialog.Close>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+      </div>
+      <div className="workout-footer-actions">
+        <Button asChild variant="outline">
+          <Link
+            href={backHref}
+            onClick={closure?.cancel}
+            aria-label={home ? "Back to app" : "Back to Workout Home"}
+          >
+            Back
+          </Link>
+        </Button>
+        <InlineAbandon />
         <Dialog.Root>
           <Dialog.Trigger asChild>
             <Button
@@ -291,7 +322,7 @@ export function WorkoutModeControls({
               disabled={closed || closure?.pending}
               onClick={closure?.cancel}
             >
-              {closure ? "Finish Workout" : "End Workout"}
+              {closure?.pending ? "Finishing…" : "Finish"}
             </Button>
           </Dialog.Trigger>
           <Dialog.Portal>
@@ -310,7 +341,6 @@ export function WorkoutModeControls({
             </Dialog.Content>
           </Dialog.Portal>
         </Dialog.Root>
-        <InlineAbandon />
       </div>
     </nav>
   );

@@ -3,6 +3,8 @@ import {
   WorkoutClosureProvider,
   FinishWorkout,
 } from "@/components/workouts/workout-closure";
+import { ExerciseCompletionActions } from "@/components/workouts/exercise-completion-actions";
+import { exerciseSetsConfirmed } from "@/features/workouts/exercise-completion";
 import { SuggestedMovementControls } from "@/components/workouts/suggested-movement-controls";
 import { ExerciseNavigation } from "@/components/workouts/exercise-navigation";
 import { newerTimerState } from "@/features/continuity/timer";
@@ -649,6 +651,18 @@ export function WorkoutLogger({
     ({ item }) => item?.id === focusedItem?.id,
   );
   const incomplete = summary.pending > 0 || missing > 0;
+  const focusedEntries = Object.values(entries).filter(
+    (entry) => entry.row.workout_exercise_id === focusedItem?.id,
+  );
+  const exerciseComplete =
+    !!focusedItem &&
+    canEdit &&
+    !dirty &&
+    !pending &&
+    focusedItem.loggingKind !== "duration" &&
+    focusedItem.loggingKind !== "assisted" &&
+    exerciseSetsConfirmed(focusedEntries);
+
   return (
     <div
       className={`workout-execution active-workout-mode ${home ? "workout-home-screen" : "workout-exercise-screen"}`}
@@ -1663,6 +1677,20 @@ export function WorkoutLogger({
                 : loggerHref(workout.id)
             }
             disabled={!canEdit || pending}
+            exerciseActions={
+              exerciseComplete && focusedItem ? (
+                <ExerciseCompletionActions
+                  atLimit={
+                    focusedEntries.filter((entry) => !entry.row.deleted_at)
+                      .length >= 100
+                  }
+                  onAdd={() =>
+                    add(focusedItem.id, focusedItem.bodyweightEligible)
+                  }
+                  onHome={() => router.push(loggerHref(workout.id))}
+                />
+              ) : undefined
+            }
           >
             <section className="workout-ending">
               <h2 className="sr-only">Workout actions</h2>

@@ -1,0 +1,15 @@
+
+> body@1.0.0 test:e2e
+> playwright test tests/e2e/two-tap-abandon.spec.ts --output=/workspace/work/flow-7-6d-1/before
+
+
+Running 2 tests using 2 workers
+
+(node:89941) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89940) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop] › tests/e2e/two-tap-abandon.spec.ts:6:1 › inline two-tap abandonment preserves saved work, supports cancellation/retry and never advances or ends a program (5.9s)
+  ✓  1 [mobile] › tests/e2e/two-tap-abandon.spec.ts:6:1 › inline two-tap abandonment preserves saved work, supports cancellation/retry and never advances or ends a program (6.2s)
+
+  2 passed (7.0s)

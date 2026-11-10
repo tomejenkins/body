@@ -1,0 +1,21 @@
+
+> body@1.0.0 test:e2e
+> playwright test workout-flow-polish.spec.ts --output=/workspace/work/flow-7-6d-1/flow-browser-final
+
+
+Running 4 tests using 2 workers
+
+(node:104824) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:104823) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/e2e/workout-flow-polish.spec.ts:260:1 › mobile header stays opaque and readable while scrolling (4.7s)
+(node:105163) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop] › tests/e2e/workout-flow-polish.spec.ts:7:1 › confirmed exercise actions reuse Add Set and return to the same Home; footer remains stable (11.6s)
+(node:105367) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile] › tests/e2e/workout-flow-polish.spec.ts:260:1 › mobile header stays opaque and readable while scrolling (3.3s)
+  ✓  3 [mobile] › tests/e2e/workout-flow-polish.spec.ts:7:1 › confirmed exercise actions reuse Add Set and return to the same Home; footer remains stable (10.9s)
+
+  4 passed (17.6s)

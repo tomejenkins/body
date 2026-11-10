@@ -1,0 +1,5 @@
+
+> body@1.0.0 catalog:check
+> node scripts/generate-exercise-catalog.mjs --check
+
+Catalog: 183 exercises

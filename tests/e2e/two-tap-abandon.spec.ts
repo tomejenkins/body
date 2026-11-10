@@ -66,7 +66,7 @@ test("inline two-tap abandonment preserves saved work, supports cancellation/ret
       abandonPosts++;
   });
   await expect(
-    controls.getByRole("button", { name: "Finish Workout", exact: true }),
+    controls.getByRole("button", { name: "Finish", exact: true }),
   ).toBeVisible();
   await expect(
     controls.getByRole("button", { name: "Abandon", exact: true }),
@@ -86,7 +86,7 @@ test("inline two-tap abandonment preserves saved work, supports cancellation/ret
       await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
       await expect(controls).toHaveCSS("position", "fixed");
       const finish = await controls
-          .getByRole("button", { name: "Finish Workout", exact: true })
+          .getByRole("button", { name: "Finish", exact: true })
           .boundingBox(),
         confirm = await controls
           .getByRole("button", { name: "Confirm Abandon", exact: true })
@@ -94,7 +94,11 @@ test("inline two-tap abandonment preserves saved work, supports cancellation/ret
       expect(finish!.height).toBeGreaterThanOrEqual(44);
       expect(confirm!.height).toBeGreaterThanOrEqual(44);
       expect(Math.abs(finish!.y - confirm!.y)).toBeLessThan(5);
-      expect(confirm!.x).toBeGreaterThanOrEqual(finish!.x + finish!.width);
+      expect(confirm!.x + confirm!.width).toBeLessThanOrEqual(finish!.x);
+      expect(Math.abs(confirm!.width - finish!.width)).toBeLessThan(1);
+      await expect(
+        controls.getByRole("button", { name: /Cancel/ }),
+      ).toHaveCount(0);
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,
@@ -105,9 +109,7 @@ test("inline two-tap abandonment preserves saved work, supports cancellation/ret
         animations: "disabled",
       });
     }
-  await controls
-    .getByRole("button", { name: "Cancel abandonment", exact: true })
-    .click();
+  await page.getByRole("heading", { level: 1 }).click();
   expect(abandonPosts).toBe(0);
   await expect(
     controls.getByRole("button", { name: "Abandon", exact: true }),
@@ -117,9 +119,7 @@ test("inline two-tap abandonment preserves saved work, supports cancellation/ret
   await expect(
     controls.getByRole("button", { name: "Confirm Abandon", exact: true }),
   ).toBeFocused();
-  await controls
-    .getByRole("button", { name: "Finish Workout", exact: true })
-    .click();
+  await controls.getByRole("button", { name: "Finish", exact: true }).click();
   await page
     .getByRole("button", { name: "Keep training", exact: true })
     .click();
@@ -181,10 +181,10 @@ test("inline two-tap abandonment preserves saved work, supports cancellation/ret
     .click();
   await expect.poll(() => intercepted).toBe(true);
   await expect(
-    controls.getByRole("button", { name: "Finish Workout", exact: true }),
+    controls.getByRole("button", { name: "Finishing…", exact: true }),
   ).toBeDisabled();
   await expect(
-    controls.getByRole("button", { name: "Closing workout…", exact: true }),
+    controls.getByRole("button", { name: "Closing…", exact: true }),
   ).toBeDisabled();
   release();
   await expect(page).toHaveURL(

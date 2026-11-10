@@ -57,7 +57,7 @@ it("opens timer details without pausing and exposes the existing end confirmatio
   ).toBeInTheDocument();
   expect(mocks.pause).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole("button", { name: "Dismiss timer" }));
-  fireEvent.click(screen.getByRole("button", { name: "End Workout" }));
+  fireEvent.click(screen.getByRole("button", { name: "Finish" }));
   expect(
     await screen.findByRole("dialog", { name: "End workout?" }),
   ).toBeInTheDocument();
@@ -107,7 +107,7 @@ it("keeps Finish review accessible with an unsaved draft while both actual closu
     </WorkoutClosureProvider>,
   );
   expect(screen.getByRole("button", { name: /^Abandon$/ })).toBeDisabled();
-  const review = screen.getByRole("button", { name: /^Finish Workout$/ });
+  const review = screen.getByRole("button", { name: /^Finish$/ });
   expect(review).toBeEnabled();
   fireEvent.click(review);
   expect(

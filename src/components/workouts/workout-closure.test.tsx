@@ -35,7 +35,7 @@ it("arms locally with destructive styling and cancellation makes no request", ()
   expect(screen.getByRole("button", { name: "Confirm Abandon" })).toHaveClass(
     "bg-destructive",
   );
-  fireEvent.click(screen.getByRole("button", { name: "Cancel abandonment" }));
+  fireEvent.pointerDown(document.body);
   expect(screen.getByRole("button", { name: "Abandon" })).toBeVisible();
   expect(m.end).not.toHaveBeenCalled();
 });
@@ -47,9 +47,7 @@ it("second tap uses existing exact-session abandonment and keeps failures recove
   expect(m.end.mock.calls[0][1].get("sessionId")).toBe("one");
   expect(m.end.mock.calls[0][1].get("outcome")).toBe("abandoned");
   await screen.findByRole("alert");
-  expect(
-    screen.getByRole("button", { name: "Cancel abandonment" }),
-  ).toBeEnabled();
+  expect(screen.getByRole("button", { name: "Confirm Abandon" })).toBeEnabled();
 });
 it("shares pending state and blocks conflicting closure submissions", async () => {
   let finish: (value: { error: string }) => void = () => {};
@@ -64,9 +62,7 @@ it("shares pending state and blocks conflicting closure submissions", async () =
   await waitFor(() => expect(m.end).toHaveBeenCalledOnce());
   for (const b of screen.getAllByRole("button", { name: "Closing workout…" }))
     expect(b).toBeDisabled();
-  expect(
-    screen.getByRole("button", { name: "Cancel abandonment" }),
-  ).toBeDisabled();
+  expect(screen.getByRole("button", { name: "Closing…" })).toBeDisabled();
   await act(async () => finish({ error: "Still active; retry safely." }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Still active");
 });
@@ -80,5 +76,31 @@ it("resets armed confirmation on session changes and honors draft/pending blocke
   r.rerender(view("two", true));
   expect(screen.getByRole("button", { name: "Abandon" })).toBeDisabled();
   expect(screen.getByRole("button", { name: "Finish workout" })).toBeDisabled();
+  expect(m.end).not.toHaveBeenCalled();
+});
+
+it("keeps the same button, dismisses through outside interactions and Escape without blocking them", () => {
+  render(
+    <WorkoutClosureProvider session="one" disabled={false}>
+      <InlineAbandon />
+      <button>Other action</button>
+    </WorkoutClosureProvider>,
+  );
+  const button = screen.getByRole("button", { name: "Abandon" });
+  expect(button).toHaveAttribute("type", "button");
+  fireEvent.click(button);
+  expect(button).toHaveAttribute("type", "submit");
+  expect(screen.getByRole("button", { name: "Confirm Abandon" })).toBe(button);
+  expect(screen.queryByRole("button", { name: /Cancel/ })).toBeNull();
+  const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+  fireEvent(screen.getByRole("button", { name: "Other action" }), event);
+  expect(event.defaultPrevented).toBe(false);
+  expect(screen.getByRole("button", { name: "Abandon" })).toBe(button);
+  fireEvent.click(button);
+  fireEvent.keyDown(document, { key: "Escape" });
+  expect(screen.getByRole("button", { name: "Abandon" })).toBe(button);
+  fireEvent.click(button);
+  fireEvent(window, new PopStateEvent("popstate"));
+  expect(screen.getByRole("button", { name: "Abandon" })).toBe(button);
   expect(m.end).not.toHaveBeenCalled();
 });
