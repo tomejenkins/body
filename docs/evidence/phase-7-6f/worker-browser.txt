@@ -1,0 +1,43 @@
+
+> body@1.0.0 test:e2e
+> playwright test --config playwright.audit.config.ts worker-public --output /workspace/work/readiness-7-6f/worker-browser
+
+
+Running 1 test using 1 worker
+
+(node:238961) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [audit-chromium] › tests/audit/worker-public.spec.ts:4:1 › local Worker serves public-only offline fallback without Auth or database connectivity (5.6s)
+
+
+  1) [audit-chromium] › tests/audit/worker-public.spec.ts:4:1 › local Worker serves public-only offline fallback without Auth or database connectivity
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+       8 |   await expect
+       9 |     .poll(() => page.evaluate(() => !!navigator.serviceWorker.controller))
+    > 10 |     .toBe(true);
+         |      ^
+      11 |   await page.context().setOffline(true);
+      12 |   const response = await page.goto("/history");
+      13 |   expect(response?.status()).toBe(503);
+        at /workspace/body/tests/audit/worker-public.spec.ts:10:6
+
+    Error Context: ../work/readiness-7-6f/worker-browser/worker-public-local-Worker-30dbe-th-or-database-connectivity-audit-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../work/readiness-7-6f/worker-browser/worker-public-local-Worker-30dbe-th-or-database-connectivity-audit-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../work/readiness-7-6f/worker-browser/worker-public-local-Worker-30dbe-th-or-database-connectivity-audit-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [audit-chromium] › tests/audit/worker-public.spec.ts:4:1 › local Worker serves public-only offline fallback without Auth or database connectivity

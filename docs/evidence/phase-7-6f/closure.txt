@@ -1,0 +1,13 @@
+
+> body@1.0.0 test:e2e
+> playwright test --config playwright.audit.config.ts closure-network --output /workspace/work/readiness-7-6f/closure
+
+
+Running 2 tests using 1 worker
+
+(node:208779) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [audit-chromium] › tests/audit/closure-network.spec.ts:5:3 › completed closure rejects a failed transport without losing committed sets (9.7s)
+  ✓  2 [audit-chromium] › tests/audit/closure-network.spec.ts:5:3 › abandoned closure rejects a failed transport without losing committed sets (9.4s)
+
+  2 passed (23.4s)

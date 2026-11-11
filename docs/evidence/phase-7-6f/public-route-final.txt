@@ -1,0 +1,15 @@
+
+> body@1.0.0 test:e2e
+> playwright test --grep public offline fallback --output /workspace/work/readiness-7-6f/public-route-final
+
+
+Running 2 tests using 2 workers
+
+(node:239603) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:239604) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/e2e/connectivity.spec.ts:20:1 › public offline fallback never persists private pages or replays mutations (2.8s)
+  ✓  2 [mobile] › tests/e2e/connectivity.spec.ts:20:1 › public offline fallback never persists private pages or replays mutations (2.9s)
+
+  2 passed (4.0s)

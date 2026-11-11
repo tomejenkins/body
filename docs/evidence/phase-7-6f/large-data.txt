@@ -1,0 +1,52 @@
+BEGIN
+SET
+INSERT 0 1
+INSERT 0 1
+INSERT 0 2000
+INSERT 0 10000
+INSERT 0 60000
+ANALYZE
+ANALYZE
+ANALYZE
+SET
+                                 set_config
+----------------------------------------------------------------------------
+[local synthetic claims omitted]
+(1 row)
+
+                                                     QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------
+ Function Scan on workout_history  (cost=0.25..10.25 rows=1000 width=265) (actual time=8.830..8.831 rows=21 loops=1)
+   Buffers: shared hit=2459
+ Planning Time: 0.012 ms
+ Execution Time: 8.843 ms
+(4 rows)
+
+ history_payload_bytes
+-----------------------
+                  9072
+(1 row)
+
+                                                                       QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+ Result  (cost=7.81..8.07 rows=1 width=32) (actual time=36.982..36.985 rows=1 loops=1)
+   Buffers: shared hit=11622
+   InitPlan 3
+     ->  Seq Scan on exercises  (cost=0.07..7.81 rows=1 width=16) (actual time=0.010..0.036 rows=1 loops=1)
+           Filter: (((InitPlan 1).col1 IS NOT NULL) AND ((owner_id IS NULL) OR ((InitPlan 2).col1 = owner_id)) AND (slug = 'barbell_bench_press'::text))
+           Rows Removed by Filter: 182
+           Buffers: shared hit=5
+           InitPlan 1
+             ->  Result  (cost=0.00..0.03 rows=1 width=16) (actual time=0.004..0.004 rows=1 loops=1)
+           InitPlan 2
+             ->  Result  (cost=0.00..0.03 rows=1 width=16) (never executed)
+ Planning Time: 0.086 ms
+ Execution Time: 37.002 ms
+(13 rows)
+
+ exercise_history_payload_bytes
+--------------------------------
+                         265184
+(1 row)
+
+ROLLBACK

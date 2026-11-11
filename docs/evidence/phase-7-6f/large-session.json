@@ -1,0 +1,28 @@
+{
+  "sets": 100,
+  "cpuThrottle": 4,
+  "readinessMs": 3947,
+  "automationSaveMs": [4632, 3287, 3438, 3795, 3772],
+  "metrics": [
+    {
+      "name": "Nodes",
+      "value": 26543
+    },
+    {
+      "name": "LayoutDuration",
+      "value": 2.971369
+    },
+    {
+      "name": "ScriptDuration",
+      "value": 3.206575
+    },
+    {
+      "name": "TaskDuration",
+      "value": 22.120694
+    },
+    {
+      "name": "JSHeapUsedSize",
+      "value": 31630156
+    }
+  ]
+}

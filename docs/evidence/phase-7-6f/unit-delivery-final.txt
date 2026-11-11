@@ -1,0 +1,16 @@
+
+> body@1.0.0 test
+> vitest run
+
+
+ RUN  v5.1.0 /workspace/body
+
+
+ Test Files  69 passed (69)
+      Tests  350 passed (350)
+   Start at  05:40:01
+   Duration  43.87s (environment 73%, setup 11%, tests 8%, import 4%, transform 3%, worker 1%)
+
+Environment  jsdom was created 69 times · 27.63s total, 73% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments

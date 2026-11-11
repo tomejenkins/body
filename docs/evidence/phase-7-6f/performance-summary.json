@@ -1,0 +1,928 @@
+{
+  "baseline": {
+    "mobile-80ms": {
+      "domSavedMs": {
+        "n": 12,
+        "p50": 129.1,
+        "p95": 142.98,
+        "min": 120.7,
+        "max": 144.3
+      },
+      "browserRequests": [2],
+      "requestBytes": {
+        "n": 12,
+        "p50": 416.0,
+        "p95": 416.0,
+        "min": 415,
+        "max": 416
+      },
+      "responseBytes": {
+        "n": 12,
+        "p50": 1161.0,
+        "p95": 1162.45,
+        "min": 1159,
+        "max": 1163
+      },
+      "longTasks": 0
+    },
+    "mobile-300ms": {
+      "domSavedMs": {
+        "n": 12,
+        "p50": 357.0,
+        "p95": 374.69,
+        "min": 349.1,
+        "max": 374.8
+      },
+      "browserRequests": [2],
+      "requestBytes": {
+        "n": 12,
+        "p50": 416.0,
+        "p95": 416.0,
+        "min": 415,
+        "max": 416
+      },
+      "responseBytes": {
+        "n": 12,
+        "p50": 1164.5,
+        "p95": 1166.45,
+        "min": 1161,
+        "max": 1167
+      },
+      "longTasks": 0
+    },
+    "local": {
+      "domSavedMs": {
+        "n": 12,
+        "p50": 90.25,
+        "p95": 122.52,
+        "min": 65.9,
+        "max": 132.7
+      },
+      "browserRequests": [2],
+      "requestBytes": {
+        "n": 12,
+        "p50": 415.0,
+        "p95": 416.0,
+        "min": 414,
+        "max": 416
+      },
+      "responseBytes": {
+        "n": 12,
+        "p50": 1161.0,
+        "p95": 1162.45,
+        "min": 1159,
+        "max": 1163
+      },
+      "longTasks": 0
+    }
+  },
+  "final": {
+    "mobile-80ms": {
+      "domSavedMs": {
+        "n": 12,
+        "p50": 131.0,
+        "p95": 135.9,
+        "min": 118.3,
+        "max": 136.4
+      },
+      "browserRequests": [2],
+      "requestBytes": {
+        "n": 12,
+        "p50": 416.0,
+        "p95": 416.0,
+        "min": 415,
+        "max": 416
+      },
+      "responseBytes": {
+        "n": 12,
+        "p50": 1163.0,
+        "p95": 1164.0,
+        "min": 1160,
+        "max": 1164
+      },
+      "longTasks": 0
+    },
+    "mobile-300ms": {
+      "domSavedMs": {
+        "n": 12,
+        "p50": 363.3,
+        "p95": 377.76,
+        "min": 345.0,
+        "max": 383.2
+      },
+      "browserRequests": [2],
+      "requestBytes": {
+        "n": 12,
+        "p50": 416.0,
+        "p95": 416.0,
+        "min": 415,
+        "max": 416
+      },
+      "responseBytes": {
+        "n": 12,
+        "p50": 1165.0,
+        "p95": 1169.45,
+        "min": 1161,
+        "max": 1170
+      },
+      "longTasks": 0
+    },
+    "local": {
+      "domSavedMs": {
+        "n": 12,
+        "p50": 79.2,
+        "p95": 92.57,
+        "min": 66.6,
+        "max": 94.0
+      },
+      "browserRequests": [2],
+      "requestBytes": {
+        "n": 12,
+        "p50": 415.0,
+        "p95": 416.0,
+        "min": 414,
+        "max": 416
+      },
+      "responseBytes": {
+        "n": 12,
+        "p50": 1162.0,
+        "p95": 1165.0,
+        "min": 1160,
+        "max": 1165
+      },
+      "longTasks": 0
+    }
+  },
+  "navigationBaseline": {
+    "workout-home:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 761.0,
+        "p95": 789.6,
+        "min": 619,
+        "max": 790
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 5065.0,
+        "p95": 7945.4,
+        "min": 4159,
+        "max": 8142
+      }
+    },
+    "workout-home:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 723.0,
+        "p95": 763.8,
+        "min": 596,
+        "max": 767
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 5069.0,
+        "p95": 5269.4,
+        "min": 2677,
+        "max": 5270
+      }
+    },
+    "workout-home:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 947.0,
+        "p95": 1026.6,
+        "min": 788,
+        "max": 1028
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 1186.0,
+        "p95": 1187.6,
+        "min": 0,
+        "max": 1188
+      }
+    },
+    "dashboard:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 447.0,
+        "p95": 505.2,
+        "min": 269,
+        "max": 517
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 2659.0,
+        "p95": 2660.0,
+        "min": 0,
+        "max": 2660
+      }
+    },
+    "dashboard:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 431.0,
+        "p95": 550.8,
+        "min": 297,
+        "max": 562
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 990.0,
+        "p95": 2464.0,
+        "min": 0,
+        "max": 2660
+      }
+    },
+    "dashboard:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 665.0,
+        "p95": 930.0,
+        "min": 630,
+        "max": 981
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "programs:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 509.0,
+        "p95": 561.0,
+        "min": 348,
+        "max": 562
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 4465.0,
+        "p95": 60778.6,
+        "min": 1800,
+        "max": 74734
+      }
+    },
+    "programs:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 626.0,
+        "p95": 668.8,
+        "min": 409,
+        "max": 674
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 3775.0,
+        "p95": 4327.0,
+        "min": 1800,
+        "max": 4465
+      }
+    },
+    "programs:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 1026.0,
+        "p95": 1144.6,
+        "min": 944,
+        "max": 1170
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 1800.0,
+        "p95": 2750.4,
+        "min": 1800,
+        "max": 2988
+      }
+    },
+    "history:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 446.0,
+        "p95": 464.8,
+        "min": 432,
+        "max": 469
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 2664.0,
+        "p95": 3306.8,
+        "min": 0,
+        "max": 3467
+      }
+    },
+    "history:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 451.0,
+        "p95": 507.8,
+        "min": 346,
+        "max": 508
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 2666.0,
+        "min": 0,
+        "max": 2666
+      }
+    },
+    "history:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 728.0,
+        "p95": 853.8,
+        "min": 616,
+        "max": 856
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 551.2,
+        "min": 0,
+        "max": 689
+      }
+    },
+    "exercise:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 701.0,
+        "p95": 838.8,
+        "min": 640,
+        "max": 870
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 5883.0,
+        "p95": 6186.6,
+        "min": 2716,
+        "max": 6262
+      }
+    },
+    "exercise:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 704.0,
+        "p95": 758.6,
+        "min": 584,
+        "max": 772
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 2716.0,
+        "p95": 5252.8,
+        "min": 2715,
+        "max": 5887
+      }
+    },
+    "exercise:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 1010.0,
+        "p95": 1090.0,
+        "min": 963,
+        "max": 1098
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 2715.0,
+        "p95": 2716.0,
+        "min": 0,
+        "max": 2716
+      }
+    }
+  },
+  "navigationWorkerEnabledInvalidForComparison": {
+    "workout-home:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 557.0,
+        "p95": 593.6,
+        "min": 533,
+        "max": 599
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 5074.0,
+        "p95": 6423.0,
+        "min": 2680,
+        "max": 6482
+      }
+    },
+    "workout-home:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 508.0,
+        "p95": 534.2,
+        "min": 488,
+        "max": 538
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 4169.0,
+        "p95": 4170.8,
+        "min": 2683,
+        "max": 4171
+      }
+    },
+    "workout-home:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 484.0,
+        "p95": 520.6,
+        "min": 425,
+        "max": 524
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 1191.0,
+        "p95": 2577.4,
+        "min": 0,
+        "max": 2676
+      }
+    },
+    "dashboard:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 243.0,
+        "p95": 284.0,
+        "min": 170,
+        "max": 288
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 993.0,
+        "p95": 2527.2,
+        "min": 0,
+        "max": 2665
+      }
+    },
+    "dashboard:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 203.0,
+        "p95": 281.8,
+        "min": 181,
+        "max": 298
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "dashboard:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 171.0,
+        "p95": 184.8,
+        "min": 159,
+        "max": 187
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "programs:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 286.0,
+        "p95": 293.0,
+        "min": 253,
+        "max": 294
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 3782.0,
+        "p95": 62802.0,
+        "min": 1800,
+        "max": 77385
+      }
+    },
+    "programs:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 265.0,
+        "p95": 339.4,
+        "min": 226,
+        "max": 341
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 600.0,
+        "p95": 1620.0,
+        "min": 0,
+        "max": 1800
+      }
+    },
+    "programs:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 195.0,
+        "p95": 312.0,
+        "min": 158,
+        "max": 340
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "history:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 278.0,
+        "p95": 336.2,
+        "min": 249,
+        "max": 343
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 2671.0,
+        "p95": 3303.2,
+        "min": 0,
+        "max": 3461
+      }
+    },
+    "history:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 273.0,
+        "p95": 296.8,
+        "min": 201,
+        "max": 300
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "history:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 434.0,
+        "p95": 474.8,
+        "min": 410,
+        "max": 480
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "exercise:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 553.0,
+        "p95": 610.4,
+        "min": 538,
+        "max": 619
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 8247.0,
+        "p95": 9251.0,
+        "min": 3171,
+        "max": 9378
+      }
+    },
+    "exercise:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 531.0,
+        "p95": 587.8,
+        "min": 211,
+        "max": 590
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 2722.0,
+        "p95": 3311.8,
+        "min": 0,
+        "max": 3459
+      }
+    },
+    "exercise:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 507.0,
+        "p95": 533.4,
+        "min": 198,
+        "max": 534
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 2722.0,
+        "p95": 2722.8,
+        "min": 0,
+        "max": 2723
+      }
+    }
+  },
+  "navigationFinal": {
+    "programs:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 842.0,
+        "p95": 854.6,
+        "min": 628,
+        "max": 857
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 4465.0,
+        "p95": 60664.2,
+        "min": 1800,
+        "max": 74714
+      }
+    },
+    "programs:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 970.0,
+        "p95": 1258.6,
+        "min": 865,
+        "max": 1305
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 3775.0,
+        "p95": 5304.0,
+        "min": 1800,
+        "max": 5514
+      }
+    },
+    "programs:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 1204.0,
+        "p95": 1337.0,
+        "min": 915,
+        "max": 1358
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 3978.0,
+        "p95": 4464.6,
+        "min": 1800,
+        "max": 4465
+      }
+    },
+    "dashboard:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 690.0,
+        "p95": 837.2,
+        "min": 336,
+        "max": 872
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 2657.0,
+        "p95": 5796.0,
+        "min": 689,
+        "max": 6318
+      }
+    },
+    "dashboard:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 914.0,
+        "p95": 1094.4,
+        "min": 836,
+        "max": 1123
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 4299.0,
+        "min": 0,
+        "max": 4709
+      }
+    },
+    "dashboard:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 671.0,
+        "p95": 973.8,
+        "min": 590,
+        "max": 1004
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "history:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 675.0,
+        "p95": 1020.4,
+        "min": 396,
+        "max": 1082
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 1685.0,
+        "p95": 3302.2,
+        "min": 0,
+        "max": 3461
+      }
+    },
+    "history:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 875.0,
+        "p95": 989.6,
+        "min": 805,
+        "max": 995
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 2667.8,
+        "min": 0,
+        "max": 2668
+      }
+    },
+    "history:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 802.0,
+        "p95": 988.4,
+        "min": 770,
+        "max": 1008
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "exercise:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 884.0,
+        "p95": 1132.2,
+        "min": 776,
+        "max": 1190
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 2716.0,
+        "p95": 5580.2,
+        "min": 735,
+        "max": 6296
+      }
+    },
+    "exercise:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 1182.0,
+        "p95": 1522.6,
+        "min": 751,
+        "max": 1588
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 2716.0,
+        "p95": 2717.0,
+        "min": 735,
+        "max": 2717
+      }
+    },
+    "exercise:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 1069.0,
+        "p95": 1167.2,
+        "min": 817,
+        "max": 1175
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 2321.6,
+        "min": 0,
+        "max": 2718
+      }
+    },
+    "workout-home:0": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 893.0,
+        "p95": 922.0,
+        "min": 633,
+        "max": 928
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 4160.0,
+        "p95": 7047.4,
+        "min": 2671,
+        "max": 7352
+      }
+    },
+    "workout-home:80": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 1277.0,
+        "p95": 1819.4,
+        "min": 949,
+        "max": 1916
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 1190.0,
+        "p95": 3865.0,
+        "min": 0,
+        "max": 4161
+      }
+    },
+    "workout-home:300": {
+      "automationReadinessMs": {
+        "n": 5,
+        "p50": 939.0,
+        "p95": 1266.0,
+        "min": 743,
+        "max": 1305
+      },
+      "transferBytes": {
+        "n": 5,
+        "p50": 0.0,
+        "p95": 951.2,
+        "min": 0,
+        "max": 1189
+      }
+    }
+  },
+  "stress": {
+    "slow-bandwidth-80ms-cpu4": {
+      "cpuThrottle": 4,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 877.5,
+        "p95": 1104.06,
+        "min": 740.9,
+        "max": 1167.8
+      },
+      "longTaskCount": 124
+    },
+    "local": {
+      "cpuThrottle": 4,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 795.6,
+        "p95": 1049.72,
+        "min": 575,
+        "max": 1094.0
+      },
+      "longTaskCount": 124
+    },
+    "mobile-80ms": {
+      "cpuThrottle": 4,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 717.85,
+        "p95": 1029.75,
+        "min": 479.7,
+        "max": 1187.6
+      },
+      "longTaskCount": 124
+    },
+    "mobile-300ms": {
+      "cpuThrottle": 4,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 991.8,
+        "p95": 1562.47,
+        "min": 791.2,
+        "max": 1664.0
+      },
+      "longTaskCount": 124
+    }
+  }
+}

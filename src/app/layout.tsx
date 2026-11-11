@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { OfflineRegistration } from "@/components/layout/offline-registration";
 import "./app-ux.css";
 export const metadata: Metadata = {
   title: { default: "Body · Your training space", template: "%s · Body" },
@@ -21,7 +22,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <OfflineRegistration />
+        {children}
+      </body>
     </html>
   );
 }

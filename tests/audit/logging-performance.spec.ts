@@ -15,6 +15,15 @@ test("measure acknowledged saves under reproducible browser network profiles", a
           { name: "mobile-80ms", latency: 80, down: 1_250_000, up: 250_000 },
           { name: "mobile-300ms", latency: 300, down: 200_000, up: 64_000 },
         ];
+  if (process.env.BODY_AUDIT_STRESS === "1") {
+    profiles.push({
+      name: "slow-bandwidth-80ms-cpu4",
+      latency: 80,
+      down: 32000,
+      up: 8000,
+    });
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
+  }
   const samples: unknown[] = [];
   let batch: { requestBytes: number; action: boolean }[] = [];
   page.on("request", (request) => {
@@ -129,6 +138,7 @@ test("measure acknowledged saves under reproducible browser network profiles", a
     JSON.stringify(
       {
         profiles,
+        cpuThrottle: process.env.BODY_AUDIT_STRESS === "1" ? 4 : 1,
         samples,
         longTasks,
         timeOrigin: await page.evaluate(() => performance.timeOrigin),

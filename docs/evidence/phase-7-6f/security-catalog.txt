@@ -1,0 +1,7 @@
+ public_table_without_rls
+--------------------------
+(0 rows)
+
+ nspname | proname | prosecdef | anon_execute
+---------+---------+-----------+--------------
+(0 rows)
