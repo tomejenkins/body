@@ -1,0 +1,100 @@
+
+> body@1.0.0 test:e2e
+> playwright test logger-simplification.spec.ts advanced-effort.spec.ts workout-mode.spec.ts --output /workspace/work/logger-ux-7-6f-1/focused
+
+
+Running 22 tests using 2 workers
+
+(node:7935) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7936) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [desktop] › tests/e2e/advanced-effort.spec.ts:162:1 › remembered scale preference, retained failed effort draft, CAS conflict and warm-up exclusion (8.0s)
+  ✓   3 [desktop] › tests/e2e/logger-simplification.spec.ts:57:1 › only confirmed completion collapses its Options and preserves every set (4.7s)
+  ✓   1 [desktop] › tests/e2e/advanced-effort.spec.ts:41:1 › optional effort and failure persist independently through queue, refresh, new rows and history (13.5s)
+  ✓   4 [desktop] › tests/e2e/logger-simplification.spec.ts:105:1 › offline completion keeps Options, entered values and recovery until explicit retry (4.1s)
+  ✓   5 [desktop] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer reopen survives the older completion response (3.9s)
+  ✓   6 [desktop] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer edit survives the older completion response (3.7s)
+  ✓   8 [desktop] › tests/e2e/logger-simplification.spec.ts:276:1 › compact optional controls and accessible help fit all requested mobile themes (4.8s)
+  ✓   9 [desktop] › tests/e2e/workout-mode.spec.ts:40:1 › focused Home fits five rows, replaces global tabs, preserves management and end confirmation (3.2s)
+  ✓  10 [desktop] › tests/e2e/workout-mode.spec.ts:154:1 › server timer pauses across refresh/devices, rejects races, and saved logging resumes without losing data (6.6s)
+  ✓  11 [desktop] › tests/e2e/workout-mode.spec.ts:290:1 › blank and generated ad-hoc management stays available without fabricated tile context (3.3s)
+(node:8960) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  12 [mobile] › tests/e2e/advanced-effort.spec.ts:41:1 › optional effort and failure persist independently through queue, refresh, new rows and history (9.1s)
+  ✓  13 [mobile] › tests/e2e/advanced-effort.spec.ts:162:1 › remembered scale preference, retained failed effort draft, CAS conflict and warm-up exclusion (6.2s)
+  ✓  14 [mobile] › tests/e2e/logger-simplification.spec.ts:57:1 › only confirmed completion collapses its Options and preserves every set (4.0s)
+  ✓  15 [mobile] › tests/e2e/logger-simplification.spec.ts:105:1 › offline completion keeps Options, entered values and recovery until explicit retry (3.7s)
+  ✓  16 [mobile] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer reopen survives the older completion response (3.3s)
+  ✓  17 [mobile] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer edit survives the older completion response (3.3s)
+  ✘   7 [desktop] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (2.0m)
+(node:11161) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  19 [mobile] › tests/e2e/logger-simplification.spec.ts:276:1 › compact optional controls and accessible help fit all requested mobile themes
+  ✓  20 [mobile] › tests/e2e/workout-mode.spec.ts:40:1 › focused Home fits five rows, replaces global tabs, preserves management and end confirmation (10.3s)
+  ✓  21 [mobile] › tests/e2e/workout-mode.spec.ts:154:1 › server timer pauses across refresh/devices, rejects races, and saved logging resumes without losing data (13.0s)
+  ✓  22 [mobile] › tests/e2e/workout-mode.spec.ts:290:1 › blank and generated ad-hoc management stays available without fabricated tile context (4.6s)
+  ✘  18 [mobile] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (2.0m)
+
+
+  1) [desktop] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Next Exercise', exact: true })
+
+
+      194 |   await expect(page.locator(".logged-set")).toHaveCount(3);
+      195 |   const selected = page.locator("h1");
+    > 196 |   const firstName = await selected.textContent();
+          |      ^
+      197 |   for (const row of await page.locator(".logged-set").all()) await logRow(row);
+      198 |   await page
+      199 |     .getByRole("button", { name: "Next Exercise", exact: true })
+        at /workspace/body/tests/e2e/logger-simplification.spec.ts:196:6
+
+    Error Context: ../work/logger-ux-7-6f-1/focused/logger-simplification-Next-e2f76-tial-and-unstarted-progress-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../work/logger-ux-7-6f-1/focused/logger-simplification-Next-e2f76-tial-and-unstarted-progress-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../work/logger-ux-7-6f-1/focused/logger-simplification-Next-e2f76-tial-and-unstarted-progress-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [mobile] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Next Exercise', exact: true })
+
+
+      194 |   await expect(page.locator(".logged-set")).toHaveCount(3);
+      195 |   const selected = page.locator("h1");
+    > 196 |   const firstName = await selected.textContent();
+          |      ^
+      197 |   for (const row of await page.locator(".logged-set").all()) await logRow(row);
+      198 |   await page
+      199 |     .getByRole("button", { name: "Next Exercise", exact: true })
+        at /workspace/body/tests/e2e/logger-simplification.spec.ts:196:6
+
+    Error Context: ../work/logger-ux-7-6f-1/focused/logger-simplification-Next-e2f76-tial-and-unstarted-progress-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../work/logger-ux-7-6f-1/focused/logger-simplification-Next-e2f76-tial-and-unstarted-progress-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../work/logger-ux-7-6f-1/focused/logger-simplification-Next-e2f76-tial-and-unstarted-progress-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress
+    [mobile] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress
+  1 skipped
+  19 passed (3.2m)

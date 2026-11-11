@@ -1,0 +1,22 @@
+
+> body@1.0.0 test:e2e
+> playwright test logger-simplification.spec.ts --grep Next Exercise|compact optional --output /workspace/work/logger-ux-7-6f-1/home-visual
+
+
+Running 4 tests using 2 workers
+
+(node:10842) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10836) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop] › tests/e2e/logger-simplification.spec.ts:284:1 › compact optional controls and accessible help fit all requested mobile themes (11.4s)
+(node:11417) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (17.8s)
+(node:11604) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  4 [mobile] › tests/e2e/logger-simplification.spec.ts:284:1 › compact optional controls and accessible help fit all requested mobile themes
+  ✓  3 [mobile] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (14.5s)
+
+  1 skipped
+  3 passed (29.2s)

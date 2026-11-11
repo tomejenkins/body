@@ -1,3 +1,4 @@
+import { openAdvancedEffort } from "./set-options-helpers";
 import {
   openWorkoutEnding,
   openExerciseLogger,
@@ -51,7 +52,7 @@ test("optional effort and failure persist independently through queue, refresh, 
   await row.getByRole("textbox", { name: /reps/ }).fill("5");
   await row.getByRole("checkbox", { name: / complete$/ }).check();
   await saved(page);
-  await row.locator("summary").click();
+  await openAdvancedEffort(row);
   await row.getByRole("combobox", { name: /effort rating/ }).selectOption("10");
   await saved(page);
   await expect(
@@ -66,7 +67,7 @@ test("optional effort and failure persist independently through queue, refresh, 
     "Drop set · To Failure · RPE 10",
   );
   await page.reload();
-  await row.locator("summary").click();
+  await openAdvancedEffort(row);
   await expect(row.getByRole("combobox", { name: /type/ })).toHaveValue("drop");
   await expect(row.getByRole("checkbox", { name: /To Failure/ })).toBeChecked();
   await expect(
@@ -115,7 +116,7 @@ test("optional effort and failure persist independently through queue, refresh, 
     .click();
   await saved(page, 3);
   const extra = page.locator(".logged-set").nth(3);
-  await extra.locator("summary").click();
+  await openAdvancedEffort(extra);
   await expect(
     extra.getByRole("combobox", { name: /effort rating/ }),
   ).toHaveValue("");
@@ -150,7 +151,7 @@ test("optional effort and failure persist independently through queue, refresh, 
   await page.goto(`/workout/${w.data}`);
   await openExerciseLogger(page);
   const fresh = page.locator(".logged-set").first();
-  await fresh.locator("summary").click();
+  await openAdvancedEffort(fresh);
   await expect(
     fresh.getByRole("combobox", { name: /effort rating/ }),
   ).toHaveValue("");
@@ -178,7 +179,7 @@ test("remembered scale preference, retained failed effort draft, CAS conflict an
   await page.goto(`/workout/${a.w}`);
   await openExerciseLogger(page);
   const row = page.locator(".logged-set").first();
-  await row.locator("summary").click();
+  await openAdvancedEffort(row);
   await expect(row.getByRole("combobox", { name: /effort scale/ })).toHaveValue(
     "rir",
   );
@@ -198,7 +199,7 @@ test("remembered scale preference, retained failed effort draft, CAS conflict an
   await page.reload();
   // Wait for client draft restoration before opening native details.
   await expect(page.locator("main")).toContainText("Recovered");
-  await row.locator("summary").click();
+  await openAdvancedEffort(row);
   await expect(
     row.getByRole("combobox", { name: /effort rating/ }),
   ).toHaveValue("2");

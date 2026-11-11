@@ -1,0 +1,12 @@
+
+> body@1.0.0 test:e2e
+> playwright test --config playwright.audit.config.ts logger-options-before --output /workspace/work/logger-ux-7-6f-1/before
+
+
+Running 1 test using 1 worker
+
+(node:4329) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [audit-chromium] › tests/audit/logger-options-before.spec.ts:3:1 › capture merged-main set options before refinement (2.5s)
+
+  1 passed (3.7s)

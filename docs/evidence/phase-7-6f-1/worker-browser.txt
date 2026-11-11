@@ -1,0 +1,12 @@
+
+> body@1.0.0 test:e2e
+> playwright test --config playwright.audit.config.ts worker-public --output /workspace/work/logger-ux-7-6f-1/worker-browser-final
+
+
+Running 1 test using 1 worker
+
+(node:37172) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [audit-chromium] › tests/audit/worker-public.spec.ts:4:1 › local Worker serves public-only offline fallback without Auth or database connectivity (1.2s)
+
+  1 passed (2.1s)

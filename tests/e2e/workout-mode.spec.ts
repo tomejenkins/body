@@ -1,3 +1,4 @@
+import { openMoreEffort } from "./set-options-helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
 import catalog from "../../supabase/catalog/exercises.json" with { type: "json" };
@@ -248,6 +249,10 @@ test("server timer pauses across refresh/devices, rejects races, and saved loggi
     row.getByRole("textbox", { name: /weight in pounds/ }),
   ).toHaveValue("100");
   await row.locator(".set-options summary").click();
+  await expect(row.getByRole("checkbox", { name: /To Failure/ })).toHaveCount(
+    0,
+  );
+  await openMoreEffort(row);
   await expect(row.getByRole("checkbox", { name: /To Failure/ })).toBeVisible();
   await row.locator(".set-options summary").click();
   for (const colorScheme of ["light", "dark"] as const) {

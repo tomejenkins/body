@@ -1,0 +1,40 @@
+
+> body@1.0.0 test:e2e
+> playwright test logger-simplification.spec.ts advanced-effort.spec.ts workout-mode.spec.ts --output /workspace/work/logger-ux-7-6f-1/affected-final
+
+
+Running 22 tests using 2 workers
+
+(node:30567) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:30568) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/e2e/advanced-effort.spec.ts:162:1 › remembered scale preference, retained failed effort draft, CAS conflict and warm-up exclusion (8.8s)
+  ✓   3 [desktop] › tests/e2e/logger-simplification.spec.ts:57:1 › only confirmed completion collapses its Options and preserves every set (5.9s)
+  ✓   2 [desktop] › tests/e2e/advanced-effort.spec.ts:41:1 › optional effort and failure persist independently through queue, refresh, new rows and history (15.2s)
+  ✓   4 [desktop] › tests/e2e/logger-simplification.spec.ts:105:1 › offline completion keeps Options, entered values and recovery until explicit retry (5.0s)
+  ✓   5 [desktop] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer reopen survives the older completion response (4.5s)
+  ✓   6 [desktop] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer edit survives the older completion response (4.9s)
+  ✓   7 [desktop] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (12.4s)
+  ✓   8 [desktop] › tests/e2e/logger-simplification.spec.ts:284:1 › compact optional controls and accessible help fit all requested mobile themes (8.6s)
+  ✓   9 [desktop] › tests/e2e/workout-mode.spec.ts:40:1 › focused Home fits five rows, replaces global tabs, preserves management and end confirmation (6.9s)
+  ✓  10 [desktop] › tests/e2e/workout-mode.spec.ts:154:1 › server timer pauses across refresh/devices, rejects races, and saved logging resumes without losing data (11.4s)
+  ✓  11 [desktop] › tests/e2e/workout-mode.spec.ts:290:1 › blank and generated ad-hoc management stays available without fabricated tile context (5.8s)
+(node:31715) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31724) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [mobile] › tests/e2e/advanced-effort.spec.ts:162:1 › remembered scale preference, retained failed effort draft, CAS conflict and warm-up exclusion (6.4s)
+  ✓  12 [mobile] › tests/e2e/advanced-effort.spec.ts:41:1 › optional effort and failure persist independently through queue, refresh, new rows and history (11.8s)
+  ✓  14 [mobile] › tests/e2e/logger-simplification.spec.ts:57:1 › only confirmed completion collapses its Options and preserves every set (5.9s)
+  ✓  15 [mobile] › tests/e2e/logger-simplification.spec.ts:105:1 › offline completion keeps Options, entered values and recovery until explicit retry (4.6s)
+  ✓  16 [mobile] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer reopen survives the older completion response (4.1s)
+  ✓  17 [mobile] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer edit survives the older completion response (4.0s)
+  -  19 [mobile] › tests/e2e/logger-simplification.spec.ts:284:1 › compact optional controls and accessible help fit all requested mobile themes
+  ✓  20 [mobile] › tests/e2e/workout-mode.spec.ts:40:1 › focused Home fits five rows, replaces global tabs, preserves management and end confirmation (7.0s)
+  ✓  18 [mobile] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (10.9s)
+  ✓  22 [mobile] › tests/e2e/workout-mode.spec.ts:290:1 › blank and generated ad-hoc management stays available without fabricated tile context (6.6s)
+  ✓  21 [mobile] › tests/e2e/workout-mode.spec.ts:154:1 › server timer pauses across refresh/devices, rejects races, and saved logging resumes without losing data (9.9s)
+
+  1 skipped
+  21 passed (1.4m)

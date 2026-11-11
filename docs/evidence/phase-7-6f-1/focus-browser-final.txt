@@ -1,0 +1,15 @@
+
+> body@1.0.0 test:e2e
+> playwright test set-options-focus.spec.ts --output /workspace/work/logger-ux-7-6f-1/focus-browser-final
+
+
+Running 2 tests using 2 workers
+
+(node:37329) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37328) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/e2e/set-options-focus.spec.ts:3:1 › native Options collapse keeps focus visible without stealing other-row focus (1.3s)
+  ✓  2 [mobile] › tests/e2e/set-options-focus.spec.ts:3:1 › native Options collapse keeps focus visible without stealing other-row focus (1.3s)
+
+  2 passed (2.2s)
