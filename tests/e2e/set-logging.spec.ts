@@ -65,7 +65,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   await row(page, 0).getByRole("textbox", { name: /reps/ }).fill("10");
   await row(page, 0)
     .getByRole("checkbox", { name: / complete$/ })
-    .check();
+    .click();
   await saved(page, 0);
   for (let i = 1; i < 3; i++) {
     await row(page, i)
@@ -80,7 +80,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     if (i === 1) {
       await row(page, i)
         .getByRole("checkbox", { name: / complete$/ })
-        .check();
+        .click();
       await saved(page, i);
     }
   }
@@ -98,7 +98,7 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   await saved(page, 0);
   await row(page, 1)
     .getByRole("checkbox", { name: / complete$/ })
-    .uncheck();
+    .click();
   await saved(page, 1);
   await row(page, 1).locator("summary").click();
   await row(page, 1)
@@ -202,7 +202,7 @@ test("bodyweight, visible save failure, navigation guard, retained edits and con
   await row(page, 0).getByRole("textbox", { name: /reps/ }).fill("12");
   await row(page, 0)
     .getByRole("checkbox", { name: / complete$/ })
-    .check();
+    .click();
   await saved(page, 0);
   const id = await row(page, 0).getAttribute("data-set-id");
   const existing = await account.client

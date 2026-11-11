@@ -1,0 +1,32 @@
+
+> body@1.0.0 test:e2e
+> playwright test invalid-set-completion --output /workspace/work/invalid-completion-7-7a/p1-final
+
+
+Running 14 tests using 2 workers
+
+(node:52418) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:52417) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [desktop] › tests/e2e/invalid-set-completion.spec.ts:85:1 › clearing suggested reps stays blank after the incomplete blur acknowledgement (5.5s)
+  ✓   3 [desktop] › tests/e2e/invalid-set-completion.spec.ts:107:1 › valid completion waits for acknowledgement; repeated taps cannot duplicate it (3.7s)
+  ✓   1 [desktop] › tests/e2e/invalid-set-completion.spec.ts:31:1 › invalid Done preserves input and pending evidence without a completion request (12.4s)
+  ✓   4 [desktop] › tests/e2e/invalid-set-completion.spec.ts:159:1 › server rejection retains a valid local draft and retries through the same command (4.1s)
+  ✓   5 [desktop] › tests/e2e/invalid-set-completion.spec.ts:190:1 › invalid completed-set correction retains the last authoritative evidence until valid (4.7s)
+  ✓   6 [desktop] › tests/e2e/invalid-set-completion.spec.ts:243:1 › bodyweight requires reps, deliberate added resistance requires positive load (4.1s)
+  -   7 [desktop] › tests/e2e/invalid-set-completion.spec.ts:288:1 › mobile invalid feedback stays stable across widths, themes and viewport event storms
+(node:53100) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:53109) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [mobile] › tests/e2e/invalid-set-completion.spec.ts:85:1 › clearing suggested reps stays blank after the incomplete blur acknowledgement (3.8s)
+  ✓  10 [mobile] › tests/e2e/invalid-set-completion.spec.ts:107:1 › valid completion waits for acknowledgement; repeated taps cannot duplicate it (3.3s)
+  ✓   8 [mobile] › tests/e2e/invalid-set-completion.spec.ts:31:1 › invalid Done preserves input and pending evidence without a completion request (10.2s)
+  ✓  11 [mobile] › tests/e2e/invalid-set-completion.spec.ts:159:1 › server rejection retains a valid local draft and retries through the same command (3.6s)
+  ✓  12 [mobile] › tests/e2e/invalid-set-completion.spec.ts:190:1 › invalid completed-set correction retains the last authoritative evidence until valid (4.1s)
+  ✓  13 [mobile] › tests/e2e/invalid-set-completion.spec.ts:243:1 › bodyweight requires reps, deliberate added resistance requires positive load (3.2s)
+  ✓  14 [mobile] › tests/e2e/invalid-set-completion.spec.ts:288:1 › mobile invalid feedback stays stable across widths, themes and viewport event storms (10.2s)
+
+  1 skipped
+  13 passed (44.7s)

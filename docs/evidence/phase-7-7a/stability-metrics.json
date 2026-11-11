@@ -1,0 +1,51 @@
+{
+  "metrics": [
+    {
+      "width": 375,
+      "theme": "light",
+      "unexpectedScrollDelta": 0,
+      "repeatedScrollCalls": 0,
+      "repeatedLayoutShifts": 0
+    },
+    {
+      "width": 375,
+      "theme": "dark",
+      "unexpectedScrollDelta": 0,
+      "repeatedScrollCalls": 0,
+      "repeatedLayoutShifts": 0
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "unexpectedScrollDelta": 0,
+      "repeatedScrollCalls": 0,
+      "repeatedLayoutShifts": 0
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "unexpectedScrollDelta": 0,
+      "repeatedScrollCalls": 0,
+      "repeatedLayoutShifts": 0
+    },
+    {
+      "width": 430,
+      "theme": "light",
+      "unexpectedScrollDelta": 0,
+      "repeatedScrollCalls": 0,
+      "repeatedLayoutShifts": 0
+    },
+    {
+      "width": 430,
+      "theme": "dark",
+      "unexpectedScrollDelta": 0,
+      "repeatedScrollCalls": 0,
+      "repeatedLayoutShifts": 0
+    }
+  ],
+  "emulatedKeyboard": {
+    "scrollStorm": 0,
+    "resizeCalls": 1
+  },
+  "physicalKeyboardVerified": false
+}

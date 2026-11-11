@@ -1,0 +1,16 @@
+
+> body@1.0.0 test:e2e
+> playwright test --config playwright.audit.config.ts logging-reliability uncertain-save closure-network --output /workspace/work/invalid-completion-7-7a/reliability
+
+
+Running 5 tests using 1 worker
+
+(node:60390) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [audit-chromium] › tests/audit/closure-network.spec.ts:5:3 › completed closure rejects a failed transport without losing committed sets (7.7s)
+  ✓  2 [audit-chromium] › tests/audit/closure-network.spec.ts:5:3 › abandoned closure rejects a failed transport without losing committed sets (6.8s)
+  ✓  3 [audit-chromium] › tests/audit/logging-reliability.spec.ts:3:1 › offline draft and committed-but-unacknowledged save retry without duplicate evidence (8.7s)
+  ✓  4 [audit-chromium] › tests/audit/logging-reliability.spec.ts:114:1 › pending response, repeated completion taps and refresh preserve one ordered actual set (3.8s)
+  ✓  5 [audit-chromium] › tests/audit/uncertain-save.spec.ts:5:1 › uncertain save captures exact retry identity and protects later device writes (3.1s)
+
+  5 passed (33.5s)

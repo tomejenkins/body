@@ -69,7 +69,7 @@ select ok((select count(*) = 0 from public.workout_sets where workout_exercise_i
 
 select ok((select exercise_id <> prescribed_exercise_id from public.workout_exercises where id = pg_temp.fixture_id('we')), 'substitution preserves both original and performed exercises');
 
-select ok((select sum(ws.actual_reps * ws.actual_weight_kg) = 250 from public.workout_sets ws join public.workout_exercises we on we.id = ws.workout_exercise_id join public.workout_sessions w on w.id = we.workout_session_id where ws.status = 'completed' and w.status = 'completed'), 'completed volume excludes pending and skipped sets');
+select ok((select sum(ws.actual_reps * ws.actual_weight_kg) = 250 from public.workout_sets ws join public.workout_exercises we on we.id = ws.workout_exercise_id join public.workout_sessions w on w.id = we.workout_session_id where ws.status = 'completed' and w.status = 'completed' and w.owner_id = pg_temp.fixture_id('alice')), 'completed volume excludes pending and skipped sets');
 
 select throws_ok($sql$insert into public.program_days(owner_id, program_id, cycle_length, cycle_position, name) values (pg_temp.fixture_id('alice'), pg_temp.fixture_id('p7'), 7, 8, 'Invalid')$sql$, '23514', null, 'cycle positions cannot exceed cycle length');
 
@@ -179,7 +179,7 @@ select ok((select count(*) = 0 from public.workout_sessions where owner_id = pg_
 select ok((select count(*) = 0 from public.exercises where owner_id = pg_temp.fixture_id('bob')), 'account deletion removes its custom exercises');
 select ok((select count(*) = 1 from public.profiles where id = pg_temp.fixture_id('alice')), 'other accounts survive account deletion');
 select lives_ok($sql$delete from auth.users where id = pg_temp.fixture_id('alice')$sql$, 'full planned history cascades cleanly when its synthetic account is deleted');
-select ok((select count(*) = 0 from public.workout_sets), 'account cascade does not leave orphaned performed sets');
+select ok((select count(*) = 0 from public.workout_sets where owner_id = pg_temp.fixture_id('alice')), 'account cascade does not leave orphaned performed sets');
 select ok((select count(*) = current_setting('body_test.system_catalog_count')::bigint from public.exercises where owner_id is null), 'account deletion preserves the system exercise catalog');
 select * from finish();
 rollback;

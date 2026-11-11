@@ -41,6 +41,9 @@ import {
   newSetDraft,
   compareSets,
   valuesFor,
+  setFieldErrors,
+  SetValidationError,
+  type SetFieldErrors,
   summarizeSets,
   setTypes,
   type LoggedSet,
@@ -66,6 +69,7 @@ type Entry = {
   dirty: boolean;
   pending: number;
   error?: string;
+  fields?: SetFieldErrors;
   conflict?: LoggedSet;
   retry?: SetCommand;
   localOnly?: boolean;
@@ -364,6 +368,13 @@ export function WorkoutLogger({
         dirty: true,
         seq: old[id].seq + 1,
         error: undefined,
+        fields: old[id].fields
+          ? setFieldErrors(
+              { ...old[id].draft, ...patch, completed: true },
+              unitRef.current,
+              old[id].row,
+            )
+          : undefined,
       },
     }));
     cacheDraftsNow();
@@ -407,10 +418,18 @@ export function WorkoutLogger({
         ...old,
         [id]: {
           ...old[id],
-          error: error instanceof Error ? error.message : "Check values.",
+          error:
+            error instanceof SetValidationError
+              ? undefined
+              : error instanceof Error
+                ? error.message
+                : "Check values.",
+          fields:
+            error instanceof SetValidationError ? error.fields : undefined,
           dirty: true,
         },
       }));
+      cacheDraftsNow();
       return;
     }
     const snapshot = entry.seq;
@@ -525,14 +544,34 @@ export function WorkoutLogger({
             }
             const unchanged = own
               ? existing.seq === snapshot
-              : !existing.dirty && !existing.pending && !existing.error;
+              : !existing.dirty &&
+                !existing.pending &&
+                !existing.error &&
+                !Object.keys(existing.fields ?? {}).length;
             next[row.id] = {
               ...existing,
               row,
               draft: unchanged
-                ? draftFor(row, unitRef.current, existing.draft.effortScale)
+                ? own &&
+                  command.operation === "save" &&
+                  row.inputs_confirmed === false
+                  ? // A deliberate pending save of NULL actuals may leave the
+                    // automatic row unconfirmed. Do not reapply suggestions over
+                    // the user's explicit blanks on its acknowledgement.
+                    {
+                      ...draftFor(
+                        row,
+                        unitRef.current,
+                        existing.draft.effortScale,
+                      ),
+                      weight: existing.draft.weight,
+                      reps: existing.draft.reps,
+                      weightDirty: existing.draft.weightDirty,
+                    }
+                  : draftFor(row, unitRef.current, existing.draft.effortScale)
                 : existing.draft,
               dirty: unchanged ? false : existing.dirty,
+              fields: unchanged ? undefined : existing.fields,
               pending: own
                 ? Math.max(0, existing.pending - 1)
                 : existing.pending,
@@ -1150,7 +1189,7 @@ export function WorkoutLogger({
                     {visible.map((entry, i) => (
                       <div
                         key={entry.row.id}
-                        className={`logged-set ${entry.draft.completed ? "is-complete" : ""}`}
+                        className={`logged-set ${entry.row.status === "completed" ? "is-complete" : ""}`}
                         data-set-id={entry.row.id}
                       >
                         {item.programMovementId &&
@@ -1173,6 +1212,12 @@ export function WorkoutLogger({
                           ) : (
                             <input
                               aria-label={`${item.name} set ${i + 1} weight in ${unit === "lb" ? "pounds" : "kilograms"}`}
+                              aria-invalid={!!entry.fields?.weight}
+                              aria-describedby={
+                                entry.fields?.weight
+                                  ? `set-weight-error-${entry.row.id}`
+                                  : undefined
+                              }
                               inputMode="decimal"
                               autoComplete="off"
                               value={entry.draft.weight}
@@ -1194,6 +1239,12 @@ export function WorkoutLogger({
                           )}
                           <input
                             aria-label={`${item.name} set ${i + 1} reps`}
+                            aria-invalid={!!entry.fields?.reps}
+                            aria-describedby={
+                              entry.fields?.reps
+                                ? `set-reps-error-${entry.row.id}`
+                                : undefined
+                            }
                             inputMode="numeric"
                             autoComplete="off"
                             value={entry.draft.reps}
@@ -1211,28 +1262,91 @@ export function WorkoutLogger({
                             <input
                               aria-label={`${item.name} set ${i + 1} complete`}
                               type="checkbox"
-                              checked={entry.draft.completed}
+                              checked={entry.row.status === "completed"}
                               disabled={
                                 !canEdit || unsupported || !!entry.pending
                               }
                               onPointerDown={(e) => e.preventDefault()}
                               onChange={(e) => {
-                                change(entry.row.id, {
-                                  completed: e.target.checked,
-                                });
+                                const current = ref.current[entry.row.id];
+                                if (!current || current.pending) return;
+                                const completed = e.target.checked;
+                                const fields = setFieldErrors(
+                                  { ...current.draft, completed },
+                                  unitRef.current,
+                                  current.row,
+                                );
+                                if (Object.keys(fields).length) {
+                                  update((old) => ({
+                                    ...old,
+                                    [entry.row.id]: {
+                                      ...old[entry.row.id],
+                                      // Validation is a newer interaction even when the
+                                      // values have not changed. An earlier blur save
+                                      // must not erase its feedback on acknowledgement.
+                                      seq: old[entry.row.id].seq + 1,
+                                      fields,
+                                    },
+                                  }));
+                                  return;
+                                }
+                                try {
+                                  // Effort/type constraints are part of the same
+                                  // synchronous validation, before changing intent.
+                                  valuesFor(
+                                    { ...current.draft, completed },
+                                    unitRef.current,
+                                    current.row,
+                                  );
+                                } catch (error) {
+                                  update((old) => ({
+                                    ...old,
+                                    [entry.row.id]: {
+                                      ...old[entry.row.id],
+                                      dirty: true,
+                                      error:
+                                        error instanceof Error
+                                          ? error.message
+                                          : "Check set values.",
+                                    },
+                                  }));
+                                  cacheDraftsNow();
+                                  return;
+                                }
+                                change(entry.row.id, { completed });
                                 enqueue(entry.row.id);
                               }}
                             />
                           </label>
                         </div>
+                        {Object.keys(entry.fields ?? {}).length > 0 && (
+                          <div
+                            className="set-field-errors"
+                            aria-live="polite"
+                            aria-atomic="true"
+                          >
+                            {entry.fields?.weight && (
+                              <span id={`set-weight-error-${entry.row.id}`}>
+                                {entry.fields.weight}
+                              </span>
+                            )}
+                            {entry.fields?.reps && (
+                              <span id={`set-reps-error-${entry.row.id}`}>
+                                {entry.fields.reps}
+                              </span>
+                            )}
+                          </div>
+                        )}
                         <div className="set-save-state" role="status">
-                          {entry.pending
-                            ? "Saving…"
-                            : entry.error
-                              ? "Not saved"
-                              : entry.dirty
-                                ? "Unsaved changes"
-                                : "Saved"}
+                          {Object.keys(entry.fields ?? {}).length
+                            ? "Check set values"
+                            : entry.pending
+                              ? "Saving…"
+                              : entry.error
+                                ? "Not saved"
+                                : entry.dirty
+                                  ? "Unsaved changes"
+                                  : "Saved"}
                           {entry.row.inputs_confirmed === false &&
                           entry.row.suggested_from_date
                             ? " · suggested"
@@ -1263,6 +1377,7 @@ export function WorkoutLogger({
                                           unit,
                                         ),
                                         dirty: false,
+                                        fields: undefined,
                                         error: undefined,
                                         conflict: undefined,
                                         retry: undefined,

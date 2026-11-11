@@ -89,7 +89,7 @@ test("program Home accordion, focused navigation, status, context, refresh and r
   const row = page.locator(".logged-set").first();
   await row.getByRole("textbox", { name: /weight/ }).fill("100");
   await row.getByRole("textbox", { name: /reps/ }).fill("6");
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(row.locator(".set-save-state")).toHaveText(/^Saved/);
   await backToWorkoutHome(page);
   await expect(page).toHaveURL(new RegExp(path + "$"));
@@ -251,7 +251,7 @@ test("ad-hoc Home, incomplete Back and pending/failed draft persistence without 
   await page.unroute("**/workout/**");
   await row.getByRole("button", { name: "Retry save", exact: true }).click();
   await expect(row.locator(".set-save-state")).toHaveText(/^Saved/);
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(row.locator(".set-save-state")).toHaveText(/^Saved/);
   await backToWorkoutHome(page);
   await expect(

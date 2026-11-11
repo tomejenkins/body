@@ -48,7 +48,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
     await row(page, i).getByRole("textbox", { name: /reps/ }).fill("8");
     await row(page, i)
       .getByRole("checkbox", { name: / complete$/ })
-      .check();
+      .click();
     await saved(page, i);
     await page.reload();
     await expect(
@@ -75,7 +75,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
     .fill("52.125");
   await row(page, 3)
     .getByRole("checkbox", { name: / complete$/ })
-    .check();
+    .click();
   await saved(page, 3);
   await row(page, 3).locator("summary").click();
   await row(page, 3)

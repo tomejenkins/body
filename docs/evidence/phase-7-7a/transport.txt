@@ -1,0 +1,25 @@
+
+> body@1.0.0 test:e2e
+> playwright test action-transport-recovery --output /workspace/work/invalid-completion-7-7a/transport
+
+
+Running 8 tests using 2 workers
+
+(node:61387) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:61388) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport before commit preserves one transition and retry (6.4s)
+  ✓  2 [desktop] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport before commit retains confirmation and receipt (6.6s)
+  ✓  3 [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport after commit preserves one transition and retry (4.7s)
+(node:61916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [desktop] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport after commit retains confirmation and receipt (5.5s)
+(node:61968) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [mobile] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport before commit preserves one transition and retry (4.9s)
+  ✓  6 [mobile] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport before commit retains confirmation and receipt (6.2s)
+  ✓  7 [mobile] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport after commit preserves one transition and retry (5.0s)
+  ✓  8 [mobile] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport after commit retains confirmation and receipt (4.7s)
+
+  8 passed (25.9s)

@@ -172,7 +172,7 @@ test("exact-exercise progression is optional, preserves manual input, survives r
   await rows
     .first()
     .getByRole("checkbox", { name: / complete$/ })
-    .check();
+    .click();
   await expect(rows.first().locator(".set-save-state")).toHaveText(/^Saved/);
   await page.reload();
   await expect(

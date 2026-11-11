@@ -85,7 +85,7 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
   const first = push.locator(".logged-set").nth(0),
     second = push.locator(".logged-set").nth(1);
   await first.getByRole("textbox", { name: /reps/ }).fill("10");
-  await first.getByRole("checkbox", { name: / complete$/ }).check();
+  await first.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(first.locator(".set-save-state")).toHaveText(/^Saved/);
   await second.getByRole("textbox", { name: /reps/ }).fill("8");
   await second
@@ -94,14 +94,14 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
   await expect(second.locator(".set-save-state")).toHaveText(/^Saved/);
   await second.getByRole("textbox", { name: /weight/ }).fill("25");
   await second.getByRole("textbox", { name: /reps/ }).fill("8");
-  await second.getByRole("checkbox", { name: / complete$/ }).check();
+  await second.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(second.locator(".set-save-state")).toHaveText(/^Saved/);
   await backToWorkoutHome(page);
   await openExerciseLogger(page, "Barbell bench press");
   const warm = bench.locator(".logged-set").first();
   await warm.getByRole("textbox", { name: /weight/ }).fill("50");
   await warm.getByRole("textbox", { name: /reps/ }).fill("10");
-  await warm.getByRole("checkbox", { name: / complete$/ }).check();
+  await warm.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(warm.locator(".set-save-state")).toHaveText(/^Saved/);
   await warm.locator("summary").click();
   await warm.getByRole("combobox", { name: /type/ }).selectOption("warm_up");

@@ -133,41 +133,73 @@ export function draftFor(
     toFailure: row.performed_to_failure ?? false,
   };
 }
+export type SetFieldErrors = { weight?: string; reps?: string };
+export class SetValidationError extends Error {
+  constructor(public readonly fields: SetFieldErrors) {
+    super(Object.values(fields).join(". "));
+    this.name = "SetValidationError";
+  }
+}
+// Incomplete drafts retain the existing nullable/zero contract. Completion of
+// recorded training requires positive evidence; warm-ups keep their old limits.
+export function setFieldErrors(
+  draft: SetDraft,
+  unit: WeightUnit,
+  canonical: LoggedSet | null,
+): SetFieldErrors {
+  const errors: SetFieldErrors = {};
+  const reps = draft.reps.trim();
+  if (!reps) {
+    if (draft.completed) errors.reps = "Enter reps";
+  } else if (!/^\d+$/.test(reps) || Number(reps) > 1000) {
+    errors.reps = "Enter whole-number reps from 0 to 1,000";
+  } else if (
+    draft.completed &&
+    draft.type !== "warm_up" &&
+    Number(reps) === 0
+  ) {
+    errors.reps = "Reps must be greater than zero";
+  }
+  if (draft.mode === "external") {
+    try {
+      const weight = actualWeight(draft, unit, canonical);
+      if (weight === null) {
+        if (draft.completed) errors.weight = "Enter weight";
+      } else if (
+        draft.completed &&
+        draft.type !== "warm_up" &&
+        Number(weight) <= 0
+      ) {
+        errors.weight = "Weight must be greater than zero";
+      }
+    } catch {
+      errors.weight = "Enter a valid weight (up to 100,000 kg)";
+    }
+  }
+  return errors;
+}
+function actualWeight(
+  draft: SetDraft,
+  unit: WeightUnit,
+  canonical: LoggedSet | null,
+) {
+  if (draft.mode === "bodyweight") return null;
+  if (draft.weightDirty || !canonical) return weightToKg(draft.weight, unit);
+  const weight =
+    canonical.inputs_confirmed === false
+      ? canonical.prescribed_weight_kg
+      : canonical.actual_weight_kg;
+  return weight == null ? null : String(weight);
+}
 export function valuesFor(
   draft: SetDraft,
   unit: WeightUnit,
   canonical: LoggedSet | null,
 ) {
+  const fields = setFieldErrors(draft, unit, canonical);
+  if (Object.keys(fields).length) throw new SetValidationError(fields);
   const reps = draft.reps.trim() === "" ? null : Number(draft.reps);
-  if (
-    reps !== null &&
-    (!/^\d+$/.test(draft.reps.trim()) ||
-      !Number.isInteger(reps) ||
-      reps < 0 ||
-      reps > 1000)
-  )
-    throw new Error("Enter whole-number reps from 0 to 1,000.");
-  const weight =
-    draft.mode === "bodyweight"
-      ? null
-      : draft.weightDirty || !canonical
-        ? weightToKg(draft.weight, unit)
-        : (canonical.inputs_confirmed === false
-              ? canonical.prescribed_weight_kg
-              : canonical.actual_weight_kg) == null
-          ? null
-          : String(
-              canonical.inputs_confirmed === false
-                ? canonical.prescribed_weight_kg
-                : canonical.actual_weight_kg,
-            );
-  if (
-    draft.completed &&
-    (reps === null || (draft.mode === "external" && weight === null))
-  )
-    throw new Error(
-      "Enter actual reps and external load before completing this set.",
-    );
+  const weight = actualWeight(draft, unit, canonical);
   const effort: ReportedEffort = {
     scale: draft.effortValue?.trim() ? (draft.effortScale ?? "rpe") : null,
     value: draft.effortValue?.trim() ? Number(draft.effortValue) : null,

@@ -3424,3 +3424,16 @@ body:has(.active-workout-mode) .app-content {
 .movement-selected-summary > span {
   color: var(--secondary);
 }
+
+/* Invalid completion never replaces the row or moves focus. */
+.active-workout-mode .logged-set > .set-field-errors {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  color: var(--ui-danger);
+  font-size: 12px;
+}
+.set-grid input[aria-invalid="true"] {
+  border-color: var(--ui-danger);
+}

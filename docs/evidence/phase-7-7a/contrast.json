@@ -1,0 +1,32 @@
+[
+  {
+    "width": 375,
+    "theme": "light",
+    "contrast": 6.180264716727212
+  },
+  {
+    "width": 375,
+    "theme": "dark",
+    "contrast": 8.992208238644011
+  },
+  {
+    "width": 390,
+    "theme": "light",
+    "contrast": 6.180264716727212
+  },
+  {
+    "width": 390,
+    "theme": "dark",
+    "contrast": 8.992208238644011
+  },
+  {
+    "width": 430,
+    "theme": "light",
+    "contrast": 6.180264716727212
+  },
+  {
+    "width": 430,
+    "theme": "dark",
+    "contrast": 8.992208238644011
+  }
+]

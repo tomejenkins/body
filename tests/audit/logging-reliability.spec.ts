@@ -140,7 +140,7 @@ test("pending response, repeated completion taps and refresh preserve one ordere
     await route.continue();
   });
   const complete = row.getByRole("checkbox", { name: / complete$/ });
-  await complete.uncheck();
+  await complete.click();
   await held;
   await expect(row.locator(".set-save-state")).toHaveText("Saving…");
   await expect(complete).toBeDisabled();

@@ -1,0 +1,12 @@
+
+> body@1.0.0 test:e2e
+> playwright test --config playwright.audit.config.ts invalid-completion-before --output /workspace/work/invalid-completion-7-7a/before
+
+
+Running 1 test using 1 worker
+
+(node:42538) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [audit-chromium] › tests/audit/invalid-completion-before.spec.ts:4:1 › baseline invalid completion and repeated viewport scroll (3.6s)
+
+  1 passed (4.4s)
