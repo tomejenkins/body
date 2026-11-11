@@ -90,3 +90,9 @@ export function loggerHref(workoutId: string, itemId?: string) {
   if (!isUuid(workoutId)) return "/workout";
   return `/workout/${workoutId}${itemId && isUuid(itemId) ? `?exercise=${itemId}` : ""}`;
 }
+
+export function groupLoggerHref(workoutId: string, groupId: string) {
+  return isUuid(workoutId) && isUuid(groupId)
+    ? `/workout/${workoutId}?group=${groupId}`
+    : "/workout";
+}

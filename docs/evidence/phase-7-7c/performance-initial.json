@@ -1,0 +1,49 @@
+{
+  "environment": "Local production Next.js, Chromium CDP emulation; three saved rows per cell; descriptive samples, not a cellular benchmark",
+  "results": [
+    {
+      "latencyMs": 0,
+      "mode": "ordinary",
+      "navigationToRowsMs": 1115,
+      "doneToSavedMs": [401, 570, 599],
+      "saveRequests": 6,
+      "completedSaveRequests": 3,
+      "groupingWritesDuringSets": 0,
+      "pickerCount": 1,
+      "domNodes": 397
+    },
+    {
+      "latencyMs": 0,
+      "mode": "superset",
+      "navigationToRowsMs": 787,
+      "doneToSavedMs": [537, 510, 658],
+      "saveRequests": 6,
+      "completedSaveRequests": 3,
+      "groupingWritesDuringSets": 0,
+      "pickerCount": 0,
+      "domNodes": 418
+    },
+    {
+      "latencyMs": 150,
+      "mode": "ordinary",
+      "navigationToRowsMs": 512,
+      "doneToSavedMs": [614, 794, 606],
+      "saveRequests": 6,
+      "completedSaveRequests": 3,
+      "groupingWritesDuringSets": 0,
+      "pickerCount": 1,
+      "domNodes": 398
+    },
+    {
+      "latencyMs": 150,
+      "mode": "superset",
+      "navigationToRowsMs": 577,
+      "doneToSavedMs": [812, 594, 796],
+      "saveRequests": 6,
+      "completedSaveRequests": 3,
+      "groupingWritesDuringSets": 0,
+      "pickerCount": 0,
+      "domNodes": 418
+    }
+  ]
+}

@@ -18,6 +18,11 @@ export type WorkoutItem = {
   prescribedSets?: number | null;
 };
 export type Workout = {
+  hasGroupHistory?: boolean;
+  favoriteGroupingEdited?: boolean;
+  groupOrder?: import("@/features/grouping/model").GroupMember[];
+  groupLabels?: Record<string, string>;
+  groups?: import("@/features/grouping/model").ExerciseGroup[];
   archivedAt?: string | null;
   retentionRevision?: number;
   favoriteId?: string | null;

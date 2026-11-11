@@ -148,7 +148,9 @@ export async function saveFavorite(
   if (
     !source ||
     !request ||
-    !["program_day", "completed_ad_hoc"].includes(String(type)) ||
+    !["program_day", "completed_ad_hoc", "completed_workout"].includes(
+      String(type),
+    ) ||
     (type === "program_day" && !day)
   )
     return { error: "Choose a valid Favorite source." };
@@ -170,15 +172,16 @@ export async function saveFavorite(
         if (typeof selected?.name === "string") sourceName = selected.name;
       }
     } else {
-      const workout = await c
+      let query = c
         .from("workout_sessions")
         .select("name")
         .eq("id", source)
         .eq("owner_id", user.id)
         .eq("status", "completed")
-        .is("source_program_version_id", null)
-        .is("archived_at", null)
-        .maybeSingle();
+        .is("archived_at", null);
+      if (type === "completed_ad_hoc")
+        query = query.is("source_program_version_id", null);
+      const workout = await query.maybeSingle();
       if (!workout.error && typeof workout.data?.name === "string")
         sourceName = workout.data.name;
     }

@@ -40,7 +40,7 @@ export async function loadCompletion(w: Workout) {
   const source = favoriteSource(w),
     saved = favorites.data.find(
       (f) =>
-        f.id === w.favoriteId ||
+        (f.id === w.favoriteId && !w.favoriteGroupingEdited) ||
         (f.source_type === source.type && f.source_key === source.key),
     );
   return {

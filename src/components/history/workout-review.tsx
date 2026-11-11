@@ -1,3 +1,10 @@
+import { favoriteSource } from "@/features/completion/model";
+import {
+  groupItems,
+  memberKey,
+  orderedGroups,
+} from "@/features/grouping/model";
+import type { WorkoutItem } from "@/features/workouts/types";
 import { WorkoutRetention } from "./workout-retention";
 import { loadTrainingSummary } from "@/features/completion/statistics";
 import { progressionFeedback } from "@/features/programs/progression-feedback";
@@ -49,6 +56,66 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
     .flatMap((item) => item.sets)
     .filter((s) => !s.deleted_at && s.status === "completed").length;
   const pending = sets.filter((s) => s.status !== "completed").length;
+  const source = favoriteSource(workout);
+  const order = workout.groupOrder ?? [
+    ...new Map(
+      workout.items.map((item) => {
+        const member = {
+          type: item.programMovementId
+            ? ("movement" as const)
+            : ("selection" as const),
+          id: item.programMovementId ?? item.id,
+        };
+        return [memberKey(member), member] as const;
+      }),
+    ).values(),
+  ];
+  const groups = orderedGroups(workout.groups ?? [], order.map(memberKey));
+  function renderRecordedItem(item: WorkoutItem, label?: string) {
+    return (
+      <li className="workout-item" key={item.id}>
+        <div className="workout-item-heading">
+          <ExerciseThumbnail visual={item.visual} />
+          <h2>
+            {label ? `${label} · ` : ""}
+            {item.name}
+          </h2>
+        </div>
+        <p className="auth-links">
+          <Link href={`/exercises/${item.exerciseId}/history`}>Look Back</Link>
+          <Link href={`/exercises/${item.exerciseId}`}>Exercise details</Link>
+        </p>
+        <ol className="performance-list">
+          {item.sets
+            .filter((s) => !s.deleted_at)
+            .map((s, i) => (
+              <li key={s.id}>
+                <span>
+                  {s.set_type === "warm_up" ? "W" : i + 1} ·{" "}
+                  {setTypes[s.set_type]}
+                  {effortSummary(s) && ` · ${effortSummary(s)}`}
+                </span>
+                <strong>
+                  {performanceLabel(
+                    s,
+                    workout.weightUnit,
+                    item.loggingKind ?? "legacy",
+                  )}
+                </strong>
+                <span>
+                  {s.status === "completed"
+                    ? "Completed"
+                    : s.status === "skipped"
+                      ? "Skipped"
+                      : "Not completed"}
+                </span>
+              </li>
+            ))}
+        </ol>
+        {!item.sets.some((s) => !s.deleted_at) && <p>No sets recorded.</p>}
+      </li>
+    );
+  }
   return (
     <article className="history-review refined-screen">
       <div className="page-heading">
@@ -113,21 +180,9 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
       )}
       {workout.status === "completed" && !workout.archivedAt && (
         <SaveFavorite
-          type={
-            workout.sourceVersionId && workout.sourceDayId
-              ? "program_day"
-              : "completed_ad_hoc"
-          }
-          source={
-            workout.sourceVersionId && workout.sourceDayId
-              ? workout.sourceVersionId
-              : workout.id
-          }
-          day={
-            workout.sourceVersionId
-              ? (workout.sourceDayId ?? undefined)
-              : undefined
-          }
+          type={source.type}
+          source={source.source}
+          day={"day" in source ? source.day : undefined}
         />
       )}
       {!workout.archivedAt && <ClosedDrafts workout={workout} />}
@@ -188,50 +243,46 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
         className="workout-items history-detail"
         aria-label="Recorded exercises"
       >
-        {workout.items.map((item) => (
-          <li className="workout-item" key={item.id}>
-            <div className="workout-item-heading">
-              <ExerciseThumbnail visual={item.visual} />
-              <h2>{item.name}</h2>
-            </div>
-            <p className="auth-links">
-              <Link href={`/exercises/${item.exerciseId}/history`}>
-                Look Back
-              </Link>
-              <Link href={`/exercises/${item.exerciseId}`}>
-                Exercise details
-              </Link>
-            </p>
-            <ol className="performance-list">
-              {item.sets
-                .filter((s) => !s.deleted_at)
-                .map((s, i) => (
-                  <li key={s.id}>
-                    <span>
-                      {s.set_type === "warm_up" ? "W" : i + 1} ·{" "}
-                      {setTypes[s.set_type]}
-                      {effortSummary(s) && ` · ${effortSummary(s)}`}
-                    </span>
-                    <strong>
-                      {performanceLabel(
-                        s,
-                        workout.weightUnit,
-                        item.loggingKind ?? "legacy",
-                      )}
-                    </strong>
-                    <span>
-                      {s.status === "completed"
-                        ? "Completed"
-                        : s.status === "skipped"
-                          ? "Skipped"
-                          : "Not completed"}
-                    </span>
+        {!groups.length
+          ? workout.items.map((item) => renderRecordedItem(item))
+          : order.map((member) => {
+              const group = groups.find((g) =>
+                g.members.some((m) => memberKey(m) === memberKey(member)),
+              );
+              if (group) {
+                const anchor = order.find((m) =>
+                  group.members.some((gm) => memberKey(gm) === memberKey(m)),
+                );
+                if (!anchor || memberKey(anchor) !== memberKey(member))
+                  return null;
+                return (
+                  <li key={`group:${group.id}`} className="history-superset">
+                    <h2>Superset {groups.indexOf(group) + 1}</h2>
+                    <p className="set-source">Final workout grouping</p>
+                    <ol>
+                      {group.members.flatMap((m, i) => {
+                        const items = groupItems(workout, m);
+                        return items.length
+                          ? items.map((item) =>
+                              renderRecordedItem(item, `A${i + 1}`),
+                            )
+                          : [
+                              <li key={memberKey(m)}>
+                                A{i + 1} ·{" "}
+                                {workout.groupLabels?.[memberKey(m)] ??
+                                  "Movement"}
+                                <p>No exercise selected.</p>
+                              </li>,
+                            ];
+                      })}
+                    </ol>
                   </li>
-                ))}
-            </ol>
-            {!item.sets.some((s) => !s.deleted_at) && <p>No sets recorded.</p>}
-          </li>
-        ))}
+                );
+              }
+              return groupItems(workout, member).map((item) =>
+                renderRecordedItem(item),
+              );
+            })}
       </ol>
       {!workout.items.length && (
         <section className="empty-state">

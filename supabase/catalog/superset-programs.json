@@ -1,0 +1,739 @@
+[
+  {
+    "id": "f36dd073-0838-5bc3-81e3-792451a1150e",
+    "versionId": "dfa11c12-79bd-5f2b-bd4b-7fdaf1fe83c6",
+    "version": 1,
+    "slug": "upper-lower-superset-split",
+    "name": "Upper/Lower Superset Split",
+    "objective": "hypertrophy",
+    "experience": "intermediate",
+    "sessionsMin": 3,
+    "sessionsMax": 4,
+    "minutesMin": 45,
+    "minutesMax": 70,
+    "flexible": true,
+    "summary": "Complementary paired movements with independent sets and flexible recovery.",
+    "description": "## Who it suits\n\nLifters familiar with controlled technique who prefer complementary, moderate-effort pairings.\n\n## The rotation\n\nFollow the ordered training and recovery positions; they are not fixed weekdays. Add recovery when needed. Prescribed Supersets are real two-member groups. The squat and hinge work stays separate.\n\n## Progression\n\nProgress each exercise independently within its repetition range. Keep roughly three repetitions available; use lighter loads for paired work. No combined Superset strength score is calculated.\n\n## Before you lift\n\nWarm up separately. Alternate paired movements at a controlled pace, then take enough recovery for technique and breathing. Rest guidance is not a timer requirement. Stop when a movement causes pain. These are original, unbranded Body templates.",
+    "tags": ["upper_lower", "full_gym", "superset"],
+    "mediaId": "14785ec4-7692-52e0-af6d-4b299c277af2",
+    "days": [
+      {
+        "name": "Upper A",
+        "rest": false,
+        "slots": [
+          {
+            "exercise": "dumbbell_bench_press",
+            "exerciseId": "c8924ae0-5267-5c1c-b56e-1f731c423b82",
+            "movementPatternId": "e33054bc-391e-503b-97c3-031ce9cbdb52",
+            "exerciseType": "compound",
+            "primaryMuscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": [
+              "5ff1abee-ece7-563c-b7cc-3ad160c3fa2d",
+              "f114c60e-e7bd-5c0f-9e92-91827867ec10"
+            ],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "chest_supported_dumbbell_row",
+            "exerciseId": "c2a06ea4-9c45-544b-90c4-fe7cf1540042",
+            "movementPatternId": "ca7204d7-f2ef-591e-bd6b-bd9370dea436",
+            "exerciseType": "compound",
+            "primaryMuscleId": "95891341-c8cc-5a87-87b9-c90e1ea47cca",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": [
+              "5ff1abee-ece7-563c-b7cc-3ad160c3fa2d",
+              "ac4abf74-8428-5e8f-a4bf-fe40a9eb1fbe"
+            ],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "standing_dumbbell_curl",
+            "exerciseId": "ed763c61-2fc4-5be2-92c4-11c2332c3b6b",
+            "movementPatternId": "a60b2134-cf9c-5766-95e4-4592856168bd",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "f77b2bde-68f0-5811-ae62-79c68313161e",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["5ff1abee-ece7-563c-b7cc-3ad160c3fa2d"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "rope_triceps_pushdown",
+            "exerciseId": "018cc40e-6124-5286-b4da-a9a629191638",
+            "movementPatternId": "9845acb8-7945-518b-90f7-f859e1535dcb",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "a25576a2-9233-5e0c-b180-c43b2f1b3ce4",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["03355fa7-9125-51a3-b3e3-d02e931ab1fc"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "dumbbell_lateral_raise",
+            "exerciseId": "9cf2986d-213d-56bb-bdf9-daacc664ce2d",
+            "movementPatternId": "8dda920b-b977-5e12-8db5-3846ec087187",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "ebf23fc3-0efa-58db-8f81-524ea1b8f919",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["5ff1abee-ece7-563c-b7cc-3ad160c3fa2d"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          }
+        ],
+        "groups": [
+          [1, 2],
+          [3, 4]
+        ]
+      },
+      {
+        "name": "Lower A",
+        "rest": false,
+        "slots": [
+          {
+            "exercise": "barbell_back_squat",
+            "exerciseId": "c894e1c0-dd77-529b-86d9-3cb07bfcf5c7",
+            "movementPatternId": "9a7628c3-7f1c-5500-9360-9660b817a5a7",
+            "exerciseType": "compound",
+            "primaryMuscleId": "7c821dfe-1426-5a8c-9d0d-3a40f0f8b49b",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": [
+              "6492f26f-59ef-5690-a80f-50e095927212",
+              "0eeca6ef-6cc0-51ea-b0c1-6ca3858017c8"
+            ],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "barbell_romanian_deadlift",
+            "exerciseId": "582062f3-c282-5a70-bfb2-fb914c8feff1",
+            "movementPatternId": "78b4c9b7-db6d-5fd2-a4c1-8c76bcb3eacd",
+            "exerciseType": "compound",
+            "primaryMuscleId": "7b0a4ff9-fc6d-55c4-af4e-42bc5934deb0",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["6492f26f-59ef-5690-a80f-50e095927212"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "seated_leg_curl",
+            "exerciseId": "cca59ca8-3a48-5932-8a95-25110b5accf1",
+            "movementPatternId": "5d997f51-120e-5ad2-ad67-12f2f1e12b80",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "33a851d2-c7c2-5be9-8f99-242f4c9cfe5b",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["6787fc45-a68d-5cde-acf8-a7e299c217b7"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "kneeling_cable_crunch",
+            "exerciseId": "7c909dec-7ea5-5076-bf81-1ca38930af1e",
+            "movementPatternId": "c1391397-e7dd-577d-a70e-3042d1816402",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "b48b4f27-955a-5147-b3b6-3a92667f8d00",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["03355fa7-9125-51a3-b3e3-d02e931ab1fc"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          }
+        ],
+        "groups": [[3, 4]]
+      },
+      {
+        "name": "Recovery",
+        "rest": true,
+        "slots": [],
+        "groups": []
+      },
+      {
+        "name": "Upper B",
+        "rest": false,
+        "slots": [
+          {
+            "exercise": "seated_dumbbell_shoulder_press",
+            "exerciseId": "cbe98ba1-a0d3-5e3e-b3b9-1087e907cd49",
+            "movementPatternId": "7980cd3c-42eb-578a-959f-0f901fe6d9d1",
+            "exerciseType": "compound",
+            "primaryMuscleId": "23a9cdfd-0152-5be9-ae83-00a1adf0adee",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": [
+              "5ff1abee-ece7-563c-b7cc-3ad160c3fa2d",
+              "ac4abf74-8428-5e8f-a4bf-fe40a9eb1fbe"
+            ],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "neutral_grip_cable_lat_pulldown",
+            "exerciseId": "fc35de89-1514-5956-aea9-0a06a20a9567",
+            "movementPatternId": "5a8208f7-2cd2-5c63-86e6-21b7edf8054e",
+            "exerciseType": "compound",
+            "primaryMuscleId": "95891341-c8cc-5a87-87b9-c90e1ea47cca",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["03355fa7-9125-51a3-b3e3-d02e931ab1fc"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "chest_supported_dumbbell_reverse_fly",
+            "exerciseId": "157e0c08-824f-5dd7-9036-5e3666f1e60b",
+            "movementPatternId": "25c70972-0c15-598d-96c9-9f7e96dd95e3",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "b0620f84-d8ba-516b-a6cc-4bdf5d87c284",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": [
+              "5ff1abee-ece7-563c-b7cc-3ad160c3fa2d",
+              "ac4abf74-8428-5e8f-a4bf-fe40a9eb1fbe"
+            ],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "dumbbell_lateral_raise",
+            "exerciseId": "9cf2986d-213d-56bb-bdf9-daacc664ce2d",
+            "movementPatternId": "8dda920b-b977-5e12-8db5-3846ec087187",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "ebf23fc3-0efa-58db-8f81-524ea1b8f919",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["5ff1abee-ece7-563c-b7cc-3ad160c3fa2d"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "dumbbell_hammer_curl",
+            "exerciseId": "65f30f78-a57b-57d5-b643-c23ee2beed42",
+            "movementPatternId": "a60b2134-cf9c-5766-95e4-4592856168bd",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "f77b2bde-68f0-5811-ae62-79c68313161e",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["5ff1abee-ece7-563c-b7cc-3ad160c3fa2d"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          }
+        ],
+        "groups": [
+          [1, 2],
+          [3, 4]
+        ]
+      },
+      {
+        "name": "Lower B",
+        "rest": false,
+        "slots": [
+          {
+            "exercise": "barbell_front_squat",
+            "exerciseId": "4d532d15-59b2-5632-9279-e2ee706f392f",
+            "movementPatternId": "9a7628c3-7f1c-5500-9360-9660b817a5a7",
+            "exerciseType": "compound",
+            "primaryMuscleId": "7c821dfe-1426-5a8c-9d0d-3a40f0f8b49b",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": [
+              "6492f26f-59ef-5690-a80f-50e095927212",
+              "0eeca6ef-6cc0-51ea-b0c1-6ca3858017c8"
+            ],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "dumbbell_romanian_deadlift",
+            "exerciseId": "7f2e7cde-6b1e-511a-aeb2-3e82b9a217bf",
+            "movementPatternId": "78b4c9b7-db6d-5fd2-a4c1-8c76bcb3eacd",
+            "exerciseType": "compound",
+            "primaryMuscleId": "7b0a4ff9-fc6d-55c4-af4e-42bc5934deb0",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["5ff1abee-ece7-563c-b7cc-3ad160c3fa2d"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "standing_dumbbell_calf_raise",
+            "exerciseId": "10373a98-20ea-52a6-90f4-ab180c8290cd",
+            "movementPatternId": "c5e7b1e5-7239-526f-9eb5-46ea62209180",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "132e76e5-f37e-5b6a-a0e4-78dc5c534b6c",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["5ff1abee-ece7-563c-b7cc-3ad160c3fa2d"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "floor_crunch",
+            "exerciseId": "0810df72-9e6c-5e4b-bfda-d28ded311e4d",
+            "movementPatternId": "c1391397-e7dd-577d-a70e-3042d1816402",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "b48b4f27-955a-5147-b3b6-3a92667f8d00",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["7f7dfe34-c52a-5f93-b8e8-d188cc32637c"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          }
+        ],
+        "groups": [[3, 4]]
+      },
+      {
+        "name": "Recovery",
+        "rest": true,
+        "slots": [],
+        "groups": []
+      },
+      {
+        "name": "Recovery",
+        "rest": true,
+        "slots": [],
+        "groups": []
+      }
+    ]
+  },
+  {
+    "id": "6170d688-0fc8-5596-86d4-e26cf6704b3c",
+    "versionId": "d10d42cf-bae2-51c5-8b67-3e011e9cb2ea",
+    "version": 1,
+    "slug": "full-body-superset-training",
+    "name": "Full Body Superset Training",
+    "objective": "hypertrophy",
+    "experience": "intermediate",
+    "sessionsMin": 2,
+    "sessionsMax": 3,
+    "minutesMin": 45,
+    "minutesMax": 70,
+    "flexible": true,
+    "summary": "Complementary paired movements with independent sets and flexible recovery.",
+    "description": "## Who it suits\n\nLifters familiar with controlled technique who prefer complementary, moderate-effort pairings.\n\n## The rotation\n\nFollow the ordered training and recovery positions; they are not fixed weekdays. Add recovery when needed. Prescribed Supersets are real two-member groups. The squat and hinge work stays separate.\n\n## Progression\n\nProgress each exercise independently within its repetition range. Keep roughly three repetitions available; use lighter loads for paired work. No combined Superset strength score is calculated.\n\n## Before you lift\n\nWarm up separately. Alternate paired movements at a controlled pace, then take enough recovery for technique and breathing. Rest guidance is not a timer requirement. Stop when a movement causes pain. These are original, unbranded Body templates.",
+    "tags": ["full_body", "full_gym", "superset"],
+    "mediaId": "62604439-d757-560f-9a9a-517dbf16d0b5",
+    "days": [
+      {
+        "name": "Full Body A",
+        "rest": false,
+        "slots": [
+          {
+            "exercise": "dumbbell_goblet_squat",
+            "exerciseId": "610774fb-26cb-5091-8cc1-cdcdb17dd501",
+            "movementPatternId": "9a7628c3-7f1c-5500-9360-9660b817a5a7",
+            "exerciseType": "compound",
+            "primaryMuscleId": "7c821dfe-1426-5a8c-9d0d-3a40f0f8b49b",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["5ff1abee-ece7-563c-b7cc-3ad160c3fa2d"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "dumbbell_bench_press",
+            "exerciseId": "c8924ae0-5267-5c1c-b56e-1f731c423b82",
+            "movementPatternId": "e33054bc-391e-503b-97c3-031ce9cbdb52",
+            "exerciseType": "compound",
+            "primaryMuscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": [
+              "5ff1abee-ece7-563c-b7cc-3ad160c3fa2d",
+              "f114c60e-e7bd-5c0f-9e92-91827867ec10"
+            ],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "chest_supported_dumbbell_row",
+            "exerciseId": "c2a06ea4-9c45-544b-90c4-fe7cf1540042",
+            "movementPatternId": "ca7204d7-f2ef-591e-bd6b-bd9370dea436",
+            "exerciseType": "compound",
+            "primaryMuscleId": "95891341-c8cc-5a87-87b9-c90e1ea47cca",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": [
+              "5ff1abee-ece7-563c-b7cc-3ad160c3fa2d",
+              "ac4abf74-8428-5e8f-a4bf-fe40a9eb1fbe"
+            ],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "lying_leg_curl",
+            "exerciseId": "1196fb2f-d163-5b49-9284-84981dd7324c",
+            "movementPatternId": "5d997f51-120e-5ad2-ad67-12f2f1e12b80",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "33a851d2-c7c2-5be9-8f99-242f4c9cfe5b",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["a71a2a6b-a6a9-5494-abad-13e7e66e7e53"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "kneeling_cable_crunch",
+            "exerciseId": "7c909dec-7ea5-5076-bf81-1ca38930af1e",
+            "movementPatternId": "c1391397-e7dd-577d-a70e-3042d1816402",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "b48b4f27-955a-5147-b3b6-3a92667f8d00",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["03355fa7-9125-51a3-b3e3-d02e931ab1fc"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          }
+        ],
+        "groups": [
+          [2, 3],
+          [4, 5]
+        ]
+      },
+      {
+        "name": "Recovery",
+        "rest": true,
+        "slots": [],
+        "groups": []
+      },
+      {
+        "name": "Full Body B",
+        "rest": false,
+        "slots": [
+          {
+            "exercise": "barbell_romanian_deadlift",
+            "exerciseId": "582062f3-c282-5a70-bfb2-fb914c8feff1",
+            "movementPatternId": "78b4c9b7-db6d-5fd2-a4c1-8c76bcb3eacd",
+            "exerciseType": "compound",
+            "primaryMuscleId": "7b0a4ff9-fc6d-55c4-af4e-42bc5934deb0",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["6492f26f-59ef-5690-a80f-50e095927212"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "seated_dumbbell_shoulder_press",
+            "exerciseId": "cbe98ba1-a0d3-5e3e-b3b9-1087e907cd49",
+            "movementPatternId": "7980cd3c-42eb-578a-959f-0f901fe6d9d1",
+            "exerciseType": "compound",
+            "primaryMuscleId": "23a9cdfd-0152-5be9-ae83-00a1adf0adee",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": [
+              "5ff1abee-ece7-563c-b7cc-3ad160c3fa2d",
+              "ac4abf74-8428-5e8f-a4bf-fe40a9eb1fbe"
+            ],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "neutral_grip_cable_lat_pulldown",
+            "exerciseId": "fc35de89-1514-5956-aea9-0a06a20a9567",
+            "movementPatternId": "5a8208f7-2cd2-5c63-86e6-21b7edf8054e",
+            "exerciseType": "compound",
+            "primaryMuscleId": "95891341-c8cc-5a87-87b9-c90e1ea47cca",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["03355fa7-9125-51a3-b3e3-d02e931ab1fc"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "dumbbell_lateral_raise",
+            "exerciseId": "9cf2986d-213d-56bb-bdf9-daacc664ce2d",
+            "movementPatternId": "8dda920b-b977-5e12-8db5-3846ec087187",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "ebf23fc3-0efa-58db-8f81-524ea1b8f919",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["5ff1abee-ece7-563c-b7cc-3ad160c3fa2d"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "floor_crunch",
+            "exerciseId": "0810df72-9e6c-5e4b-bfda-d28ded311e4d",
+            "movementPatternId": "c1391397-e7dd-577d-a70e-3042d1816402",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "b48b4f27-955a-5147-b3b6-3a92667f8d00",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["7f7dfe34-c52a-5f93-b8e8-d188cc32637c"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          }
+        ],
+        "groups": [
+          [2, 3],
+          [4, 5]
+        ]
+      },
+      {
+        "name": "Recovery",
+        "rest": true,
+        "slots": [],
+        "groups": []
+      },
+      {
+        "name": "Full Body C",
+        "rest": false,
+        "slots": [
+          {
+            "exercise": "leg_press_45_degree_leg_press",
+            "exerciseId": "4b541185-5e63-56d8-a781-0656900e2442",
+            "movementPatternId": "9a7628c3-7f1c-5500-9360-9660b817a5a7",
+            "exerciseType": "compound",
+            "primaryMuscleId": "7c821dfe-1426-5a8c-9d0d-3a40f0f8b49b",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["429aad09-ac83-52a5-b10f-e5565b7bfa54"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "incline_dumbbell_press",
+            "exerciseId": "20490168-cb5f-5298-9f0c-e5bb5e7f91a5",
+            "movementPatternId": "3b4daf6a-9e6b-5a6b-a225-208a18c94c2a",
+            "exerciseType": "compound",
+            "primaryMuscleId": "55a2b8fb-751c-5e83-b8bf-54ded38b8ac2",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": [
+              "5ff1abee-ece7-563c-b7cc-3ad160c3fa2d",
+              "ac4abf74-8428-5e8f-a4bf-fe40a9eb1fbe"
+            ],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "seated_cable_row",
+            "exerciseId": "fadfd2a7-5fac-5b00-9511-1e28a5586321",
+            "movementPatternId": "ca7204d7-f2ef-591e-bd6b-bd9370dea436",
+            "exerciseType": "compound",
+            "primaryMuscleId": "95891341-c8cc-5a87-87b9-c90e1ea47cca",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["03355fa7-9125-51a3-b3e3-d02e931ab1fc"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "standing_dumbbell_calf_raise",
+            "exerciseId": "10373a98-20ea-52a6-90f4-ab180c8290cd",
+            "movementPatternId": "c5e7b1e5-7239-526f-9eb5-46ea62209180",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "132e76e5-f37e-5b6a-a0e4-78dc5c534b6c",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["5ff1abee-ece7-563c-b7cc-3ad160c3fa2d"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          },
+          {
+            "exercise": "reverse_crunch",
+            "exerciseId": "6056eff0-4a58-5c0c-891c-35dee8150472",
+            "movementPatternId": "c1391397-e7dd-577d-a70e-3042d1816402",
+            "exerciseType": "isolation",
+            "primaryMuscleId": "b48b4f27-955a-5147-b3b6-3a92667f8d00",
+            "sets": 3,
+            "repsMin": 8,
+            "repsMax": 12,
+            "failure": false,
+            "alternatives": [],
+            "equipmentIds": ["7f7dfe34-c52a-5f93-b8e8-d188cc32637c"],
+            "restSeconds": 90,
+            "effortScale": "rir",
+            "effortValue": 3,
+            "progression": "double_progression"
+          }
+        ],
+        "groups": [
+          [2, 3],
+          [4, 5]
+        ]
+      },
+      {
+        "name": "Recovery",
+        "rest": true,
+        "slots": [],
+        "groups": []
+      },
+      {
+        "name": "Recovery",
+        "rest": true,
+        "slots": [],
+        "groups": []
+      }
+    ]
+  }
+]

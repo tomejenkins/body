@@ -230,3 +230,7 @@ See [adaptive program scheduling](adaptive-program-scheduling.md) for the new as
 ## Phase 7.5B.1 exercise-first entry
 
 `20261109185258_exercise_first_workout_entry.sql` adds no tables or client-writable columns. Validated canonical exercise IDs extend the existing immutable ad-hoc focus snapshot and normal movement/selection initializer. Three explicitly granted invoker functions provide catalog-derived slots, atomic idempotent starts and six qualifying owner recents. Ordinary duplicate-intent validation remains intact. See [entry contracts](workout-entry-refinement.md).
+
+## Phase 7.7C structural exercise groups
+
+`20261111202827_workout_exercise_groups.sql` adds owner-private `program_day_groups` (two/three ordered same-day slot UUIDs) and `workout_group_commands` (immutable typed, revision-checked structural commands and request receipts). Current membership and presentation rounds are derived; no new set or completion authority exists. Immutable program definitions and Favorite structures carry optional group metadata; session initialization remaps actual member identities. Parent workout deletion cascades structural facts while reusable snapshots remain. The next migration installs two original Superset programs without rewriting prior versions. See [grouping contracts](superset-grouping-architecture.md) and [validation](phase-7-7c-validation.md).

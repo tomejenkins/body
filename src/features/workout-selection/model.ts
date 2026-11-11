@@ -32,7 +32,7 @@ export type AssignedChoices = {
 export type FavoriteChoice = {
   id: string;
   name: string;
-  sourceType: "program_day" | "completed_ad_hoc";
+  sourceType: "program_day" | "completed_ad_hoc" | "completed_workout";
   movements: number;
   attribution: { program?: string; day?: string; workout?: string };
 };

@@ -2,14 +2,18 @@
 import fs from "node:fs";
 const read = (path) =>
   JSON.parse(fs.readFileSync(new URL(path, import.meta.url), "utf8"));
-const programs = read("../supabase/catalog/programs.json"),
+const originalPrograms = read("../supabase/catalog/programs.json"),
+  programs = [
+    ...originalPrograms,
+    ...read("../supabase/catalog/superset-programs.json"),
+  ],
   catalog = read("../supabase/catalog/exercises.json");
 if (
-  programs.length !== 12 ||
-  new Set(programs.map((p) => p.id)).size !== 12 ||
-  new Set(programs.map((p) => p.slug)).size !== 12
+  programs.length !== 14 ||
+  new Set(programs.map((p) => p.id)).size !== 14 ||
+  new Set(programs.map((p) => p.slug)).size !== 14
 )
-  throw Error("Expected twelve unique original programs");
+  throw Error("Expected fourteen unique original programs");
 const names = [
   "Full Body Foundation",
   "Foundational Barbell Strength",
@@ -23,6 +27,8 @@ const names = [
   "Three-Day Hypertrophy",
   "Dumbbell-Only Full Body",
   "Functional Strength",
+  "Upper/Lower Superset Split",
+  "Full Body Superset Training",
 ];
 if (programs.some((p, i) => p.name !== names[i]))
   throw Error("Only reviewed original Body program titles are allowed");
@@ -41,6 +47,26 @@ for (const p of programs) {
       d.rest ? d.slots.length !== 0 : d.slots.length < 3 || d.slots.length > 6
     )
       throw Error(`Invalid day ${p.slug}/${d.name}`);
+    const grouped = new Set();
+    for (const group of d.groups ?? []) {
+      if (
+        !Array.isArray(group) ||
+        group.length < 2 ||
+        group.length > 3 ||
+        group.some(
+          (position) =>
+            !Number.isInteger(position) ||
+            position < 1 ||
+            position > d.slots.length ||
+            grouped.has(position),
+        )
+      )
+        throw Error("Invalid Superset membership");
+      for (const position of group) {
+        if (grouped.has(position)) throw Error("Overlapping Superset");
+        grouped.add(position);
+      }
+    }
     for (const s of d.slots) {
       const e = exercises.get(s.exerciseId);
       if (
@@ -105,7 +131,7 @@ const loader = fs.readFileSync(
   "utf8",
 );
 const q = (s) => "'" + s.replaceAll("'", "''") + "'";
-const sql = `-- Generated from programs.json by generate-program-catalog.mjs. Review both.\nbegin;\n${loader}\ncreate function body_private.install_body_catalog() returns void language plpgsql security invoker set search_path='' as $body_catalog$\ndeclare recipe jsonb;begin\n for recipe in select value from jsonb_array_elements(${q(JSON.stringify(programs))}::jsonb) loop perform body_private.install_body_program(recipe);end loop;\nend $body_catalog$;\nrevoke all on function body_private.install_body_catalog() from public,anon,authenticated,service_role;\nselect body_private.install_body_catalog();\ncommit;\n`;
+const sql = `-- Generated from programs.json by generate-program-catalog.mjs. Review both.\nbegin;\n${loader}\ncreate function body_private.install_body_catalog() returns void language plpgsql security invoker set search_path='' as $body_catalog$\ndeclare recipe jsonb;begin\n for recipe in select value from jsonb_array_elements(${q(JSON.stringify(originalPrograms))}::jsonb) loop perform body_private.install_body_program(recipe);end loop;\nend $body_catalog$;\nrevoke all on function body_private.install_body_catalog() from public,anon,authenticated,service_role;\nselect body_private.install_body_catalog();\ncommit;\n`;
 if (process.argv.includes("--check")) {
   if (fs.readFileSync(path, "utf8") !== sql)
     throw Error(

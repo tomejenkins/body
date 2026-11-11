@@ -1,0 +1,41 @@
+BEGIN
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+ local_identity
+----------------
+ t
+(1 row)
+
+SET
+DO
+ bounded_command_count
+-----------------------
+                   201
+(1 row)
+
+                                     QUERY PLAN
+-------------------------------------------------------------------------------------
+ Result  (cost=0.00..0.27 rows=1 width=32) (actual time=1.809..1.809 rows=1 loops=1)
+   Buffers: shared hit=147
+ Planning Time: 0.007 ms
+ Execution Time: 1.816 ms
+(4 rows)
+
+                                     QUERY PLAN
+-------------------------------------------------------------------------------------
+ Result  (cost=0.00..0.27 rows=1 width=32) (actual time=0.757..0.757 rows=1 loops=1)
+   Buffers: shared hit=19
+ Planning Time: 0.007 ms
+ Execution Time: 0.763 ms
+(4 rows)
+
+                                     QUERY PLAN
+-------------------------------------------------------------------------------------
+ Result  (cost=0.00..0.27 rows=1 width=32) (actual time=0.713..0.713 rows=1 loops=1)
+   Buffers: shared hit=19
+ Planning Time: 0.006 ms
+ Execution Time: 0.718 ms
+(4 rows)
+
+ROLLBACK

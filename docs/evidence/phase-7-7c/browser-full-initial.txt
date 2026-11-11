@@ -1,0 +1,299 @@
+
+> body@1.0.0 test:e2e
+> playwright test --output=/tmp/supersets-77c-results/full
+
+
+Running 230 tests using 2 workers
+
+(node:131896) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:131895) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    2 [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport before commit preserves one transition and retry (4.5s)
+  ✓    1 [desktop] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport before commit retains confirmation and receipt (4.8s)
+  ✓    3 [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport after commit preserves one transition and retry (3.9s)
+  ✓    4 [desktop] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport after commit retains confirmation and receipt (4.6s)
+  ✓    6 [desktop] › tests/e2e/advanced-effort.spec.ts:162:1 › remembered scale preference, retained failed effort draft, CAS conflict and warm-up exclusion (5.7s)
+  ✓    5 [desktop] › tests/e2e/advanced-effort.spec.ts:41:1 › optional effort and failure persist independently through queue, refresh, new rows and history (10.3s)
+  ✓    7 [desktop] › tests/e2e/authentication.spec.ts:10:1 › registration, email verification, onboarding, persistent session and logout (4.3s)
+  ✓    8 [desktop] › tests/e2e/authentication.spec.ts:50:1 › failed login, partial profile retry, RLS isolation and unsafe destination rejection (3.1s)
+  ✓    9 [desktop] › tests/e2e/authentication.spec.ts:103:1 › password recovery email, update, old password rejection and new password login (2.9s)
+  ✓   10 [desktop] › tests/e2e/authentication.spec.ts:130:1 › invalid callbacks fail safely and auth pages follow system theme (1.2s)
+  ✓   11 [desktop] › tests/e2e/connectivity.spec.ts:20:1 › public offline fallback never persists private pages or replays mutations (2.4s)
+  ✓   12 [desktop] › tests/e2e/connectivity.spec.ts:57:1 › mounted logger preserves failed input and retries only on explicit save (3.1s)
+  ✓   13 [desktop] › tests/e2e/connectivity.spec.ts:96:1 › storage cache remains public through authenticated navigation and sign out (4.5s)
+  ✓   14 [desktop] › tests/e2e/continuity-records.spec.ts:104:1 › persistent bar survives navigation/refresh, hides in logger and leaves after finish (6.6s)
+  ✓   15 [desktop] › tests/e2e/continuity-records.spec.ts:170:1 › inactive check-in estimates saved endpoint; resume keeps structured gap without manual times (5.5s)
+  ✓   16 [desktop] › tests/e2e/continuity-records.spec.ts:214:1 › server expiration preserves performance and rejected local drafts remain reviewable (4.1s)
+  ✓   17 [desktop] › tests/e2e/continuity-records.spec.ts:250:1 › exact-rep records, honest empty states and three diverse completed achievements (5.8s)
+  ✓   19 [desktop] › tests/e2e/dashboard-calendar.spec.ts:195:1 › stale decisions and another device's active workout cannot launch the wrong day (3.3s)
+  ✓   18 [desktop] › tests/e2e/dashboard-calendar.spec.ts:65:1 › carried recommendation, seven dates, keyboard, full schedule, historical completion and one-tap identity (9.6s)
+  ✓   20 [desktop] › tests/e2e/dashboard-calendar.spec.ts:241:1 › partial, accepted partial, skip, defer and independent Favorite all remain accessible on the same date (3.4s)
+  ✓   22 [desktop] › tests/e2e/dashboard-calendar.spec.ts:375:1 › fixed assignment timezone and nonweekly calendar survive year boundaries and browser history (2.9s)
+  ✓   21 [desktop] › tests/e2e/dashboard-calendar.spec.ts:293:1 › empty and unconfigured states stay honest, completed assignments have no future start (5.5s)
+  ✓   23 [desktop] › tests/e2e/exercise-library.spec.ts:18:1 › search, combined filters, hard type constraints and favorites (4.7s)
+  ✓   24 [desktop] › tests/e2e/exercise-library.spec.ts:97:1 › custom creation, typed edits, real recents, archiving and private boundaries (7.8s)
+  ✓   26 [desktop] › tests/e2e/favorite-one-tap.spec.ts:308:1 › completion and history save source-default names with no title input or copied actual performance (2.8s)
+  ✓   27 [desktop] › tests/e2e/favorite-one-tap.spec.ts:378:1 › foreign source IDs are denied and a failed transport remains retryable without false saved feedback (2.5s)
+  -   28 [desktop] › tests/e2e/invalid-completion-contrast.spec.ts:4:1 › field errors meet text contrast in every requested mobile width and theme
+  ✓   25 [desktop] › tests/e2e/favorite-one-tap.spec.ts:61:1 › one-tap recommended and alternative saves, stale device deduplication, compact menu and safe editing (12.2s)
+  ✓   29 [desktop] › tests/e2e/logger-simplification.spec.ts:57:1 › only confirmed completion collapses its Options and preserves every set (4.5s)
+  ✓   30 [desktop] › tests/e2e/logger-simplification.spec.ts:105:1 › offline completion keeps Options, entered values and recovery until explicit retry (3.8s)
+  ✓   31 [desktop] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer reopen survives the older completion response (3.2s)
+  ✓   32 [desktop] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer edit survives the older completion response (3.7s)
+  ✓   34 [desktop] › tests/e2e/logger-simplification.spec.ts:284:1 › compact optional controls and accessible help fit all requested mobile themes (6.7s)
+  ✓   33 [desktop] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (8.6s)
+  ✓   35 [desktop] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 375x667 light (18.3s)
+  ✓   36 [desktop] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 375x667 dark (18.8s)
+  ✓   37 [desktop] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 390x844 light (19.1s)
+  ✓   38 [desktop] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 390x844 dark (19.8s)
+  ✓   39 [desktop] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 430x932 light (18.1s)
+  ✓   40 [desktop] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 430x932 dark (17.2s)
+  ✓   41 [desktop] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 768x1024 light (12.7s)
+  ✓   42 [desktop] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 768x1024 dark (12.7s)
+  ✓   43 [desktop] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 1440x900 light (13.4s)
+  ✓   44 [desktop] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 1440x900 dark (13.4s)
+  ✓   46 [desktop] › tests/e2e/navigation.spec.ts:45:1 › system dark mode and PWA manifest are available (2.6s)
+  ✓   45 [desktop] › tests/e2e/navigation.spec.ts:14:1 › all destinations render, navigation tracks the route, and layouts fit (4.4s)
+  ✓   47 [desktop] › tests/e2e/navigation.spec.ts:62:1 › keyboard users can skip navigation (2.9s)
+  ✓   48 [desktop] › tests/e2e/navigation.spec.ts:72:1 › navigation uses the right placement and usable touch targets (2.9s)
+  ✓   49 [desktop] › tests/e2e/navigation.spec.ts:110:1 › theme follows system changes without navigation (4.0s)
+  ✓   51 [desktop] › tests/e2e/program-library.spec.ts:164:1 › missing images recover, approved content remains read-only and private programs stay private (4.9s)
+  ✓   50 [desktop] › tests/e2e/program-library.spec.ts:15:1 › official discovery, combined filters, pagination, immutable detail and theme layouts (18.7s)
+  ✓   53 [desktop] › tests/e2e/program-lifecycle-history.spec.ts:218:1 › concurrent commands, exact retries, active workout guards and authoritative automatic end (3.1s)
+  ✓   52 [desktop] › tests/e2e/program-lifecycle-history.spec.ts:35:1 › explicit enrollment, statistics, pending end, switch, separate repeats and private paginated history (14.0s)
+  ✓   54 [desktop] › tests/e2e/program-lifecycle-history.spec.ts:280:1 › cancel and qualifying closure race has one durable result without losing the workout (696ms)
+  ✓   55 [desktop] › tests/e2e/program-progression.spec.ts:6:1 › exact-exercise progression is optional, preserves manual input, survives refresh and reports rotation progress (6.5s)
+  ✓   56 [desktop] › tests/e2e/program-scheduling.spec.ts:134:1 › weekly calendar carries missed training, preserves actual completion and supports adjacent weeks/themes (9.2s)
+  ✓   58 [desktop] › tests/e2e/program-scheduling.spec.ts:346:1 › initial configuration races serialize and retries cannot duplicate scheduling identity (1.2s)
+  ✓   57 [desktop] › tests/e2e/program-scheduling.spec.ts:254:1 › legacy calendar requires explicit initialization and competing configuration is protected (4.8s)
+  ✓   59 [desktop] › tests/e2e/program-selection.spec.ts:48:1 › direct logger, four match levels, touch carousel, persistence and explicit safe continuation (14.5s)
+  ✓   60 [desktop] › tests/e2e/program-selection.spec.ts:218:1 › only completed actual performance updates exact-slot last choice; pick/last deduplicate and another client sees the selection (15.1s)
+  ✓   61 [desktop] › tests/e2e/program-selection.spec.ts:361:1 › an offline draft remains reviewable if another client replaces its untouched server selection (10.5s)
+  ✓   62 [desktop] › tests/e2e/progress-analytics.spec.ts:77:1 › historical dominance preserves exact records but suppresses redundant recognition; genuine tradeoff celebrates (9.9s)
+  ✓   63 [desktop] › tests/e2e/progress-analytics.spec.ts:173:1 › activity calendar, unit preference, volume and accessible mobile progress layouts (8.2s)
+  ✓   65 [desktop] › tests/e2e/set-logging.spec.ts:183:1 › bodyweight, visible save failure, navigation guard, retained edits and concurrent conflict (7.1s)
+  ✓   64 [desktop] › tests/e2e/set-logging.spec.ts:25:1 › three visible sets, same-session defaults, units, editing, types, ordering and partial finish (15.5s)
+  ✓   66 [desktop] › tests/e2e/set-options-focus.spec.ts:3:1 › native Options collapse keeps focus visible without stealing other-row focus (1.3s)
+  ✓   68 [desktop] › tests/e2e/suggested-workout.spec.ts:17:1 › two focus selections create five unbound movements; logger, back, safe movement change and removal persist (12.9s)
+  ✓   69 [desktop] › tests/e2e/suggested-workout.spec.ts:133:1 › single muscle, limited catalog and one-tap blank starts remain lightweight (8.5s)
+  ✓   67 [desktop] › tests/e2e/smart-set-defaults.spec.ts:14:1 › automatic rows, exact pounds, meaningful history, concurrent retry and Settings-only units (24.5s)
+  ✓   70 [desktop] › tests/e2e/suggested-workout.spec.ts:175:1 › emphasis persists distinct intents inside a shared pattern and preserves unbound start (9.3s)
+  ✓   72 [desktop] › tests/e2e/superset-groups.spec.ts:203:1 › overlap and stale concurrent commands serialize; retries and owner boundaries preserve actuals (4.8s)
+  ✓   73 [desktop] › tests/e2e/superset-groups.spec.ts:274:1 › builder responsive themes, focus return, reduced motion, large text and bounded pickers (11.4s)
+  ✘   71 [desktop] › tests/e2e/superset-groups.spec.ts:60:1 › two groups before exercise choice, shared round logging, unequal sets, edits and final History (26.9s)
+(node:139062) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   75 [desktop] › tests/e2e/superset-groups.spec.ts:464:1 › lost grouping acknowledgement retries the exact receipt without duplicating a group (6.3s)
+  ✓   74 [desktop] › tests/e2e/superset-groups.spec.ts:331:1 › both official programs instantiate immutable groups; grouped Favorites remain independent (17.3s)
+  ✓   76 [desktop] › tests/e2e/two-tap-abandon.spec.ts:6:1 › inline two-tap abandonment preserves saved work, supports cancellation/retry and never advances or ends a program (8.6s)
+  ✓   78 [desktop] › tests/e2e/workout-completion.spec.ts:122:1 › ad-hoc finish shows qualifying facts, saves one Favorite, refreshes safely and Done returns to fresh Dashboard (12.8s)
+  ✓   79 [desktop] › tests/e2e/workout-completion.spec.ts:268:1 › program completion and partial summary reuse outcomes/progression while Favorite save and revisit do not accept partial training (13.5s)
+  ✓   80 [desktop] › tests/e2e/workout-completion.spec.ts:362:1 › three diverse new records and additional exact/estimated/volume achievements are private and stable (12.7s)
+  ✓   81 [desktop] › tests/e2e/workout-completion.spec.ts:508:1 › effective paused duration, Favorite capacity and active/abandoned/foreign/missing access follow existing policy (12.6s)
+  ✓   82 [desktop] › tests/e2e/workout-completion.spec.ts:589:1 › one real bodyweight record, empty training, retained access and motion stay truthful (7.1s)
+  ✓   83 [desktop] › tests/e2e/workout-completion.spec.ts:714:1 › reviewing completion never replays an automatic program ending (7.3s)
+  ✓   84 [desktop] › tests/e2e/workout-entry-refinement.spec.ts:12:1 › two entry paths, secondary alternatives, direct setup and safe resume (6.1s)
+  ✓   85 [desktop] › tests/e2e/workout-entry-refinement.spec.ts:81:1 › Full Body creates five unselected categories and muscle controls reset across modes (5.2s)
+  ✓   86 [desktop] › tests/e2e/workout-entry-refinement.spec.ts:176:1 › exercise-first recents/search retain deliberate order and duplicate intents with normal logging (6.4s)
+  ✓   77 [desktop] › tests/e2e/visual-refinement.spec.ts:9:1 › visual surfaces retain actual enrollment and training evidence (1.5m)
+  ✓   88 [desktop] › tests/e2e/workout-flow-polish.spec.ts:262:1 › mobile header stays opaque and readable while scrolling (3.0s)
+  ✓   87 [desktop] › tests/e2e/workout-flow-polish.spec.ts:7:1 › confirmed exercise actions reuse Add Set and return to the same Home; footer remains stable (10.9s)
+  ✓   90 [desktop] › tests/e2e/workout-history.spec.ts:211:1 › unsupported measurements are explicit and archived custom history stays private (5.2s)
+  ✓   89 [desktop] › tests/e2e/workout-history.spec.ts:27:1 › paginated private history, mixed bodyweight loads, snapshots and Look Back (11.4s)
+  ✓   92 [desktop] › tests/e2e/workout-lifecycle.spec.ts:160:1 › concurrent starts share one session, owner boundaries hold and abandon preserves it (4.0s)
+  ✓   91 [desktop] › tests/e2e/workout-lifecycle.spec.ts:29:1 › start, resume, select visuals, reorder, remove and finish without fabricated sets (9.5s)
+  ✓   93 [desktop] › tests/e2e/workout-mode.spec.ts:40:1 › focused Home fits five rows, replaces global tabs, preserves management and end confirmation (5.4s)
+  ✓   94 [desktop] › tests/e2e/workout-mode.spec.ts:154:1 › server timer pauses across refresh/devices, rejects races, and saved logging resumes without losing data (7.6s)
+  ✓   95 [desktop] › tests/e2e/workout-mode.spec.ts:290:1 › blank and generated ad-hoc management stays available without fabricated tile context (5.3s)
+  ✓   97 [desktop] › tests/e2e/workout-navigation.spec.ts:196:1 › invalid and foreign context expose no controls; stale closed workout additions fail safely (4.1s)
+  ✓   98 [desktop] › tests/e2e/workout-retention.spec.ts:110:1 › archive, original archived detail, restore and permanent deletion reconcile records and preserve Favorite structure (5.8s)
+  ✓   96 [desktop] › tests/e2e/workout-navigation.spec.ts:20:1 › builder context, recent Add, detail Add, recommendations, Look Back and restored filters (11.6s)
+  ✓  100 [desktop] › tests/e2e/workout-retention.spec.ts:314:1 › retention races and exact-request retries preserve one atomic outcome and owner privacy (941ms)
+  ✓   99 [desktop] › tests/e2e/workout-retention.spec.ts:258:1 › program triggering evidence can be archived/restored/deleted without replaying its historical ending (12.9s)
+  ✓  101 [desktop] › tests/e2e/workout-screens.spec.ts:29:1 › program Home accordion, focused navigation, status, context, refresh and reduced motion (27.1s)
+  ✓  102 [desktop] › tests/e2e/workout-screens.spec.ts:159:1 › ad-hoc Home, incomplete Back and pending/failed draft persistence without forced completion (18.3s)
+  ✓  103 [desktop] › tests/e2e/workout-screens.spec.ts:272:1 › stale Home selection cannot overwrite another tab and foreign focus reveals no performance (22.7s)
+  ✓  104 [desktop] › tests/e2e/workout-selection-favorites.spec.ts:17:1 › authoritative recommended and alternative choices keep source day, pending gap and repeat rotation (21.7s)
+  ✓  105 [desktop] › tests/e2e/workout-selection-favorites.spec.ts:108:1 › partial acceptance, confirmed skip, defer replacement/cancel and stale device decisions update the calendar (22.5s)
+  ✓  106 [desktop] › tests/e2e/workout-selection-favorites.spec.ts:252:1 › program and completed ad-hoc favorites launch independently with clean logging and safe rename/remove (28.2s)
+  ✓  107 [desktop] › tests/e2e/workout-selection-favorites.spec.ts:391:1 › closed-session feedback uses current 3 × 12 evidence while 12/10/9 holds and active evidence stays prior-only (8.6s)
+(node:143872) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:144071) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  109 [desktop] › tests/e2e/invalid-set-completion.spec.ts:86:1 › clearing suggested reps stays blank after the incomplete blur acknowledgement (9.9s)
+  ✓  110 [desktop] › tests/e2e/invalid-set-completion.spec.ts:108:1 › valid completion waits for acknowledgement; repeated taps cannot duplicate it (7.4s)
+  ✓  108 [desktop] › tests/e2e/invalid-set-completion.spec.ts:32:1 › invalid Done preserves input and pending evidence without a completion request (23.8s)
+  ✓  111 [desktop] › tests/e2e/invalid-set-completion.spec.ts:160:1 › server rejection retains a valid local draft and retries through the same command (6.9s)
+  ✓  112 [desktop] › tests/e2e/invalid-set-completion.spec.ts:191:1 › invalid completed-set correction retains the last authoritative evidence until valid (7.4s)
+  ✓  113 [desktop] › tests/e2e/invalid-set-completion.spec.ts:244:1 › discarding an invalid completed correction clears feedback and restores only saved values (6.7s)
+  -  115 [desktop] › tests/e2e/invalid-set-completion.spec.ts:308:1 › mobile invalid feedback stays stable across widths, themes and viewport event storms
+(node:145116) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  114 [desktop] › tests/e2e/invalid-set-completion.spec.ts:263:1 › bodyweight requires reps, deliberate added resistance requires positive load (6.3s)
+(node:145263) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  116 [mobile] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport before commit preserves one transition and retry (8.7s)
+  ✓  117 [mobile] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport before commit retains confirmation and receipt (12.9s)
+  ✓  118 [mobile] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport after commit preserves one transition and retry (9.8s)
+  ✓  119 [mobile] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport after commit retains confirmation and receipt (11.8s)
+  ✓  121 [mobile] › tests/e2e/advanced-effort.spec.ts:162:1 › remembered scale preference, retained failed effort draft, CAS conflict and warm-up exclusion (17.9s)
+  ✓  120 [mobile] › tests/e2e/advanced-effort.spec.ts:41:1 › optional effort and failure persist independently through queue, refresh, new rows and history (30.7s)
+  ✓  123 [mobile] › tests/e2e/authentication.spec.ts:50:1 › failed login, partial profile retry, RLS isolation and unsafe destination rejection (6.2s)
+  ✓  122 [mobile] › tests/e2e/authentication.spec.ts:10:1 › registration, email verification, onboarding, persistent session and logout (9.5s)
+  ✓  125 [mobile] › tests/e2e/authentication.spec.ts:130:1 › invalid callbacks fail safely and auth pages follow system theme (1.5s)
+  ✓  124 [mobile] › tests/e2e/authentication.spec.ts:103:1 › password recovery email, update, old password rejection and new password login (3.3s)
+  ✓  126 [mobile] › tests/e2e/connectivity.spec.ts:20:1 › public offline fallback never persists private pages or replays mutations (2.3s)
+  ✓  127 [mobile] › tests/e2e/connectivity.spec.ts:57:1 › mounted logger preserves failed input and retries only on explicit save (4.2s)
+  ✓  128 [mobile] › tests/e2e/connectivity.spec.ts:96:1 › storage cache remains public through authenticated navigation and sign out (4.8s)
+  ✓  130 [mobile] › tests/e2e/continuity-records.spec.ts:170:1 › inactive check-in estimates saved endpoint; resume keeps structured gap without manual times (5.7s)
+  ✓  129 [mobile] › tests/e2e/continuity-records.spec.ts:104:1 › persistent bar survives navigation/refresh, hides in logger and leaves after finish (9.0s)
+  ✓  131 [mobile] › tests/e2e/continuity-records.spec.ts:214:1 › server expiration preserves performance and rejected local drafts remain reviewable (6.2s)
+  ✓  132 [mobile] › tests/e2e/continuity-records.spec.ts:250:1 › exact-rep records, honest empty states and three diverse completed achievements (9.8s)
+  ✓  134 [mobile] › tests/e2e/dashboard-calendar.spec.ts:195:1 › stale decisions and another device's active workout cannot launch the wrong day (4.5s)
+  ✓  135 [mobile] › tests/e2e/dashboard-calendar.spec.ts:241:1 › partial, accepted partial, skip, defer and independent Favorite all remain accessible on the same date (4.7s)
+  ✓  133 [mobile] › tests/e2e/dashboard-calendar.spec.ts:65:1 › carried recommendation, seven dates, keyboard, full schedule, historical completion and one-tap identity (15.9s)
+  ✓  137 [mobile] › tests/e2e/dashboard-calendar.spec.ts:375:1 › fixed assignment timezone and nonweekly calendar survive year boundaries and browser history (3.4s)
+  ✓  136 [mobile] › tests/e2e/dashboard-calendar.spec.ts:293:1 › empty and unconfigured states stay honest, completed assignments have no future start (6.8s)
+  ✓  138 [mobile] › tests/e2e/exercise-library.spec.ts:18:1 › search, combined filters, hard type constraints and favorites (4.7s)
+  ✓  139 [mobile] › tests/e2e/exercise-library.spec.ts:97:1 › custom creation, typed edits, real recents, archiving and private boundaries (7.5s)
+  ✓  141 [mobile] › tests/e2e/favorite-one-tap.spec.ts:308:1 › completion and history save source-default names with no title input or copied actual performance (3.5s)
+  ✓  142 [mobile] › tests/e2e/favorite-one-tap.spec.ts:378:1 › foreign source IDs are denied and a failed transport remains retryable without false saved feedback (2.6s)
+  ✓  143 [mobile] › tests/e2e/invalid-completion-contrast.spec.ts:4:1 › field errors meet text contrast in every requested mobile width and theme (4.3s)
+  ✓  140 [mobile] › tests/e2e/favorite-one-tap.spec.ts:61:1 › one-tap recommended and alternative saves, stale device deduplication, compact menu and safe editing (17.1s)
+  ✓  144 [mobile] › tests/e2e/logger-simplification.spec.ts:57:1 › only confirmed completion collapses its Options and preserves every set (4.4s)
+  ✓  145 [mobile] › tests/e2e/logger-simplification.spec.ts:105:1 › offline completion keeps Options, entered values and recovery until explicit retry (4.0s)
+  ✓  146 [mobile] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer reopen survives the older completion response (3.6s)
+  ✓  147 [mobile] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer edit survives the older completion response (4.5s)
+  -  149 [mobile] › tests/e2e/logger-simplification.spec.ts:284:1 › compact optional controls and accessible help fit all requested mobile themes
+  -  150 [mobile] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 375x667 light
+  -  151 [mobile] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 375x667 dark
+  -  152 [mobile] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 390x844 light
+  -  153 [mobile] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 390x844 dark
+  -  154 [mobile] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 430x932 light
+  -  155 [mobile] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 430x932 dark
+  -  156 [mobile] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 768x1024 light
+  -  157 [mobile] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 768x1024 dark
+  -  158 [mobile] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 1440x900 light
+  -  159 [mobile] › tests/e2e/mobile-visual.spec.ts:15:5 › visual 1440x900 dark
+  ✓  160 [mobile] › tests/e2e/navigation.spec.ts:14:1 › all destinations render, navigation tracks the route, and layouts fit (2.6s)
+  ✓  161 [mobile] › tests/e2e/navigation.spec.ts:45:1 › system dark mode and PWA manifest are available (1.7s)
+  ✓  148 [mobile] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (9.8s)
+  ✓  162 [mobile] › tests/e2e/navigation.spec.ts:62:1 › keyboard users can skip navigation (1.8s)
+  ✓  163 [mobile] › tests/e2e/navigation.spec.ts:72:1 › navigation uses the right placement and usable touch targets (2.2s)
+  ✓  164 [mobile] › tests/e2e/navigation.spec.ts:110:1 › theme follows system changes without navigation (2.2s)
+  ✓  166 [mobile] › tests/e2e/program-library.spec.ts:164:1 › missing images recover, approved content remains read-only and private programs stay private (2.8s)
+  ✓  165 [mobile] › tests/e2e/program-library.spec.ts:15:1 › official discovery, combined filters, pagination, immutable detail and theme layouts (12.0s)
+  ✓  168 [mobile] › tests/e2e/program-lifecycle-history.spec.ts:218:1 › concurrent commands, exact retries, active workout guards and authoritative automatic end (3.1s)
+  ✓  169 [mobile] › tests/e2e/program-lifecycle-history.spec.ts:280:1 › cancel and qualifying closure race has one durable result without losing the workout (414ms)
+  ✓  167 [mobile] › tests/e2e/program-lifecycle-history.spec.ts:35:1 › explicit enrollment, statistics, pending end, switch, separate repeats and private paginated history (12.3s)
+  ✓  170 [mobile] › tests/e2e/program-progression.spec.ts:6:1 › exact-exercise progression is optional, preserves manual input, survives refresh and reports rotation progress (5.2s)
+  ✓  172 [mobile] › tests/e2e/program-scheduling.spec.ts:254:1 › legacy calendar requires explicit initialization and competing configuration is protected (3.3s)
+  ✓  173 [mobile] › tests/e2e/program-scheduling.spec.ts:346:1 › initial configuration races serialize and retries cannot duplicate scheduling identity (688ms)
+  ✓  171 [mobile] › tests/e2e/program-scheduling.spec.ts:134:1 › weekly calendar carries missed training, preserves actual completion and supports adjacent weeks/themes (8.4s)
+  ✓  174 [mobile] › tests/e2e/program-selection.spec.ts:48:1 › direct logger, four match levels, touch carousel, persistence and explicit safe continuation (9.8s)
+  ✓  175 [mobile] › tests/e2e/program-selection.spec.ts:218:1 › only completed actual performance updates exact-slot last choice; pick/last deduplicate and another client sees the selection (10.0s)
+  ✓  177 [mobile] › tests/e2e/progress-analytics.spec.ts:77:1 › historical dominance preserves exact records but suppresses redundant recognition; genuine tradeoff celebrates (5.6s)
+  ✓  176 [mobile] › tests/e2e/program-selection.spec.ts:361:1 › an offline draft remains reviewable if another client replaces its untouched server selection (6.4s)
+  ✓  178 [mobile] › tests/e2e/progress-analytics.spec.ts:173:1 › activity calendar, unit preference, volume and accessible mobile progress layouts (7.4s)
+  ✓  180 [mobile] › tests/e2e/set-logging.spec.ts:183:1 › bodyweight, visible save failure, navigation guard, retained edits and concurrent conflict (5.4s)
+  ✓  179 [mobile] › tests/e2e/set-logging.spec.ts:25:1 › three visible sets, same-session defaults, units, editing, types, ordering and partial finish (12.6s)
+  ✓  181 [mobile] › tests/e2e/set-options-focus.spec.ts:3:1 › native Options collapse keeps focus visible without stealing other-row focus (794ms)
+  ✓  183 [mobile] › tests/e2e/suggested-workout.spec.ts:17:1 › two focus selections create five unbound movements; logger, back, safe movement change and removal persist (7.6s)
+  ✓  184 [mobile] › tests/e2e/suggested-workout.spec.ts:133:1 › single muscle, limited catalog and one-tap blank starts remain lightweight (5.4s)
+  ✓  182 [mobile] › tests/e2e/smart-set-defaults.spec.ts:14:1 › automatic rows, exact pounds, meaningful history, concurrent retry and Settings-only units (15.3s)
+  ✓  185 [mobile] › tests/e2e/suggested-workout.spec.ts:175:1 › emphasis persists distinct intents inside a shared pattern and preserves unbound start (5.2s)
+  ✓  187 [mobile] › tests/e2e/superset-groups.spec.ts:203:1 › overlap and stale concurrent commands serialize; retries and owner boundaries preserve actuals (2.4s)
+  ✓  186 [mobile] › tests/e2e/superset-groups.spec.ts:60:1 › two groups before exercise choice, shared round logging, unequal sets, edits and final History (15.9s)
+  ✓  188 [mobile] › tests/e2e/superset-groups.spec.ts:274:1 › builder responsive themes, focus return, reduced motion, large text and bounded pickers (14.0s)
+  ✓  190 [mobile] › tests/e2e/superset-groups.spec.ts:464:1 › lost grouping acknowledgement retries the exact receipt without duplicating a group (3.5s)
+  ✓  189 [mobile] › tests/e2e/superset-groups.spec.ts:331:1 › both official programs instantiate immutable groups; grouped Favorites remain independent (11.2s)
+  -  192 [mobile] › tests/e2e/visual-refinement.spec.ts:9:1 › visual surfaces retain actual enrollment and training evidence
+  ✓  191 [mobile] › tests/e2e/two-tap-abandon.spec.ts:6:1 › inline two-tap abandonment preserves saved work, supports cancellation/retry and never advances or ends a program (4.7s)
+  ✓  193 [mobile] › tests/e2e/workout-completion.spec.ts:122:1 › ad-hoc finish shows qualifying facts, saves one Favorite, refreshes safely and Done returns to fresh Dashboard (5.9s)
+  ✓  194 [mobile] › tests/e2e/workout-completion.spec.ts:268:1 › program completion and partial summary reuse outcomes/progression while Favorite save and revisit do not accept partial training (7.0s)
+  ✓  196 [mobile] › tests/e2e/workout-completion.spec.ts:508:1 › effective paused duration, Favorite capacity and active/abandoned/foreign/missing access follow existing policy (6.1s)
+  ✓  195 [mobile] › tests/e2e/workout-completion.spec.ts:362:1 › three diverse new records and additional exact/estimated/volume achievements are private and stable (10.5s)
+  ✓  197 [mobile] › tests/e2e/workout-completion.spec.ts:589:1 › one real bodyweight record, empty training, retained access and motion stay truthful (4.4s)
+  ✓  198 [mobile] › tests/e2e/workout-completion.spec.ts:714:1 › reviewing completion never replays an automatic program ending (4.0s)
+  ✓  199 [mobile] › tests/e2e/workout-entry-refinement.spec.ts:12:1 › two entry paths, secondary alternatives, direct setup and safe resume (5.4s)
+  ✓  200 [mobile] › tests/e2e/workout-entry-refinement.spec.ts:81:1 › Full Body creates five unselected categories and muscle controls reset across modes (5.0s)
+  ✓  201 [mobile] › tests/e2e/workout-entry-refinement.spec.ts:176:1 › exercise-first recents/search retain deliberate order and duplicate intents with normal logging (6.2s)
+  ✓  203 [mobile] › tests/e2e/workout-flow-polish.spec.ts:262:1 › mobile header stays opaque and readable while scrolling (3.6s)
+  ✓  202 [mobile] › tests/e2e/workout-flow-polish.spec.ts:7:1 › confirmed exercise actions reuse Add Set and return to the same Home; footer remains stable (12.7s)
+  ✓  205 [mobile] › tests/e2e/workout-history.spec.ts:211:1 › unsupported measurements are explicit and archived custom history stays private (4.7s)
+  ✓  204 [mobile] › tests/e2e/workout-history.spec.ts:27:1 › paginated private history, mixed bodyweight loads, snapshots and Look Back (10.6s)
+  ✓  207 [mobile] › tests/e2e/workout-lifecycle.spec.ts:160:1 › concurrent starts share one session, owner boundaries hold and abandon preserves it (3.8s)
+  ✓  206 [mobile] › tests/e2e/workout-lifecycle.spec.ts:29:1 › start, resume, select visuals, reorder, remove and finish without fabricated sets (9.3s)
+  ✓  208 [mobile] › tests/e2e/workout-mode.spec.ts:40:1 › focused Home fits five rows, replaces global tabs, preserves management and end confirmation (5.6s)
+  ✓  210 [mobile] › tests/e2e/workout-mode.spec.ts:290:1 › blank and generated ad-hoc management stays available without fabricated tile context (4.7s)
+  ✓  209 [mobile] › tests/e2e/workout-mode.spec.ts:154:1 › server timer pauses across refresh/devices, rejects races, and saved logging resumes without losing data (8.4s)
+  ✓  212 [mobile] › tests/e2e/workout-navigation.spec.ts:196:1 › invalid and foreign context expose no controls; stale closed workout additions fail safely (3.4s)
+  ✓  211 [mobile] › tests/e2e/workout-navigation.spec.ts:20:1 › builder context, recent Add, detail Add, recommendations, Look Back and restored filters (11.3s)
+  ✓  213 [mobile] › tests/e2e/workout-retention.spec.ts:110:1 › archive, original archived detail, restore and permanent deletion reconcile records and preserve Favorite structure (6.6s)
+  ✓  215 [mobile] › tests/e2e/workout-retention.spec.ts:314:1 › retention races and exact-request retries preserve one atomic outcome and owner privacy (755ms)
+  ✓  214 [mobile] › tests/e2e/workout-retention.spec.ts:258:1 › program triggering evidence can be archived/restored/deleted without replaying its historical ending (6.7s)
+  ✓  217 [mobile] › tests/e2e/workout-screens.spec.ts:159:1 › ad-hoc Home, incomplete Back and pending/failed draft persistence without forced completion (10.4s)
+  ✓  216 [mobile] › tests/e2e/workout-screens.spec.ts:29:1 › program Home accordion, focused navigation, status, context, refresh and reduced motion (17.3s)
+  ✓  218 [mobile] › tests/e2e/workout-screens.spec.ts:272:1 › stale Home selection cannot overwrite another tab and foreign focus reveals no performance (11.3s)
+  ✓  219 [mobile] › tests/e2e/workout-selection-favorites.spec.ts:17:1 › authoritative recommended and alternative choices keep source day, pending gap and repeat rotation (11.8s)
+  ✓  220 [mobile] › tests/e2e/workout-selection-favorites.spec.ts:108:1 › partial acceptance, confirmed skip, defer replacement/cancel and stale device decisions update the calendar (10.1s)
+  ✓  221 [mobile] › tests/e2e/workout-selection-favorites.spec.ts:252:1 › program and completed ad-hoc favorites launch independently with clean logging and safe rename/remove (9.4s)
+(node:153057) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  222 [mobile] › tests/e2e/workout-selection-favorites.spec.ts:391:1 › closed-session feedback uses current 3 × 12 evidence while 12/10/9 holds and active evidence stays prior-only (3.0s)
+(node:153174) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  224 [mobile] › tests/e2e/invalid-set-completion.spec.ts:86:1 › clearing suggested reps stays blank after the incomplete blur acknowledgement (3.9s)
+  ✓  225 [mobile] › tests/e2e/invalid-set-completion.spec.ts:108:1 › valid completion waits for acknowledgement; repeated taps cannot duplicate it (3.1s)
+  ✓  223 [mobile] › tests/e2e/invalid-set-completion.spec.ts:32:1 › invalid Done preserves input and pending evidence without a completion request (8.9s)
+  ✓  226 [mobile] › tests/e2e/invalid-set-completion.spec.ts:160:1 › server rejection retains a valid local draft and retries through the same command (3.9s)
+  ✓  227 [mobile] › tests/e2e/invalid-set-completion.spec.ts:191:1 › invalid completed-set correction retains the last authoritative evidence until valid (3.7s)
+  ✓  228 [mobile] › tests/e2e/invalid-set-completion.spec.ts:244:1 › discarding an invalid completed correction clears feedback and restores only saved values (4.2s)
+  ✓  229 [mobile] › tests/e2e/invalid-set-completion.spec.ts:263:1 › bodyweight requires reps, deliberate added resistance requires positive load (3.5s)
+  ✓  230 [mobile] › tests/e2e/invalid-set-completion.spec.ts:308:1 › mobile invalid feedback stays stable across widths, themes and viewport event storms (11.3s)
+
+
+  1) [desktop] › tests/e2e/superset-groups.spec.ts:60:1 › two groups before exercise choice, shared round logging, unequal sets, edits and final History
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  locator('.logged-set').nth(2).locator('.set-save-state')
+    Expected: "Saved"
+    Received: "Saved · Bodyweight"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveText" locator('.logged-set').nth(2).locator('.set-save-state') with timeout 5000ms
+      - waiting for locator('.logged-set').nth(2).locator('.set-save-state')
+        - locator resolved to <div role="status" class="set-save-state">Saving… · Bodyweight</div>
+        - unexpected value "Saving… · Bodyweight"
+        13 × locator resolved to <div role="status" class="set-save-state">Saved · Bodyweight</div>
+           - unexpected value "Saved · Bodyweight"
+
+
+      55 |   await row.getByRole("textbox", { name: / reps$/ }).fill("8");
+      56 |   await row.getByRole("checkbox", { name: / complete$/ }).click();
+    > 57 |   await expect(row.locator(".set-save-state")).toHaveText("Saved");
+         |                                                ^
+      58 | }
+      59 |
+      60 | test("two groups before exercise choice, shared round logging, unequal sets, edits and final History", async ({
+        at save (/workspace/body/tests/e2e/superset-groups.spec.ts:57:48)
+        at /workspace/body/tests/e2e/superset-groups.spec.ts:151:7
+
+    Error Context: ../../tmp/supersets-77c-results/full/superset-groups-two-groups-0cc67-ets-edits-and-final-History-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../tmp/supersets-77c-results/full/superset-groups-two-groups-0cc67-ets-edits-and-final-History-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../tmp/supersets-77c-results/full/superset-groups-two-groups-0cc67-ets-edits-and-final-History-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › tests/e2e/superset-groups.spec.ts:60:1 › two groups before exercise choice, shared round logging, unequal sets, edits and final History
+  14 skipped
+  215 passed (15.7m)

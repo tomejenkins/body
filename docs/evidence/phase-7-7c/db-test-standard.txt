@@ -1,0 +1,62 @@
+
+> body@1.0.0 db:test
+> supabase test db supabase/tests/database
+
+Target: local stack (127.0.0.1:54322)
+psql:/workspace/body/supabase/tests/database/ad_hoc_shells.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/ad_hoc_shells.test.sql .......... ok
+psql:/workspace/body/supabase/tests/database/advanced_effort.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/advanced_effort.test.sql ........ ok
+psql:/workspace/body/supabase/tests/database/exercise_groups.test.sql:3: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/exercise_groups.test.sql ........ ok
+psql:/workspace/body/supabase/tests/database/exercise_library.test.sql:3: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/exercise_library.test.sql ....... ok
+psql:/workspace/body/supabase/tests/database/initial_schema.test.sql:3: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/initial_schema.test.sql ......... ok
+psql:/workspace/body/supabase/tests/database/movement_intents.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/movement_intents.test.sql ....... ok
+psql:/workspace/body/supabase/tests/database/personal_records.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/personal_records.test.sql ....... ok
+psql:/workspace/body/supabase/tests/database/program_execution.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/program_execution.test.sql ...... ok
+psql:/workspace/body/supabase/tests/database/program_foundation.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/program_foundation.test.sql ..... ok
+psql:/workspace/body/supabase/tests/database/program_history.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/program_history.test.sql ........ ok
+psql:/workspace/body/supabase/tests/database/program_library.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/program_library.test.sql ........ ok
+psql:/workspace/body/supabase/tests/database/program_lifecycle.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/program_lifecycle.test.sql ...... ok
+psql:/workspace/body/supabase/tests/database/program_progression.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/program_progression.test.sql .... ok
+psql:/workspace/body/supabase/tests/database/program_qualification.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/program_qualification.test.sql .. ok
+psql:/workspace/body/supabase/tests/database/program_scheduling.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/program_scheduling.test.sql ..... ok
+psql:/workspace/body/supabase/tests/database/progress_analytics.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/progress_analytics.test.sql ..... ok
+psql:/workspace/body/supabase/tests/database/security.test.sql:3: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/security.test.sql ............... ok
+psql:/workspace/body/supabase/tests/database/set_logging.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/set_logging.test.sql ............ ok
+psql:/workspace/body/supabase/tests/database/smart_set_defaults.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/smart_set_defaults.test.sql ..... ok
+psql:/workspace/body/supabase/tests/database/workout_completion.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/workout_completion.test.sql ..... ok
+psql:/workspace/body/supabase/tests/database/workout_continuity.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/workout_continuity.test.sql ..... ok
+psql:/workspace/body/supabase/tests/database/workout_entry.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/workout_entry.test.sql .......... ok
+psql:/workspace/body/supabase/tests/database/workout_history.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/workout_history.test.sql ........ ok
+psql:/workspace/body/supabase/tests/database/workout_lifecycle.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/workout_lifecycle.test.sql ...... ok
+psql:/workspace/body/supabase/tests/database/workout_retention.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/workout_retention.test.sql ...... ok
+psql:/workspace/body/supabase/tests/database/workout_selection.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/workout_selection.test.sql ...... ok
+psql:/workspace/body/supabase/tests/database/workout_timer.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/workspace/body/supabase/tests/database/workout_timer.test.sql .......... ok
+All tests successful.
+Files=27, Tests=2402, 16 wallclock secs ( 0.36 usr  0.04 sys +  0.21 cusr  0.17 csys =  0.78 CPU)
+Result: PASS
