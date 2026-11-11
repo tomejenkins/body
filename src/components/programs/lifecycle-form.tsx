@@ -1,4 +1,5 @@
 "use client";
+import { unstable_rethrow } from "next/navigation";
 import { useActionState } from "react";
 import { changeProgram } from "@/features/programs/lifecycle-actions";
 import type { LifecycleKind } from "@/features/programs/enrollment-model";
@@ -25,10 +26,27 @@ export function LifecycleForm({
   fallbackDate?: string;
   blocked?: boolean;
 }) {
-  const [state, action, pending] = useActionState(changeProgram, {}),
+  const [state, action, pending] = useActionState(
+      async (previous: { error?: string }, form: FormData) => {
+        try {
+          return await changeProgram(previous, form);
+        } catch (error) {
+          unstable_rethrow(error);
+          return {
+            error:
+              "The program change could not be confirmed. Retry the same action when connected, or refresh to check its current state.",
+          };
+        }
+      },
+      {},
+    ),
     enrolling = kind === "start" || kind === "switch";
   return (
-    <form action={action} className="program-lifecycle-form">
+    <form
+      action={action}
+      className="program-lifecycle-form"
+      onReset={(event) => event.preventDefault()}
+    >
       <input type="hidden" name="kind" value={kind} />
       <input type="hidden" name="request" value={request} />
       <input type="hidden" name="revision" value={revision} />

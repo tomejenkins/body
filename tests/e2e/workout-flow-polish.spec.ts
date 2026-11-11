@@ -51,7 +51,7 @@ test("confirmed exercise actions reuse Add Set and return to the same Home; foot
     const row = rows.nth(i);
     await row.getByRole("textbox", { name: /weight in pounds/ }).fill("100");
     await row.getByRole("textbox", { name: / reps$/ }).fill("8");
-    await row.getByRole("checkbox", { name: / complete$/ }).check();
+    await row.getByRole("checkbox", { name: / complete$/ }).click();
     await expect(row.getByRole("status")).toContainText("Saved");
     if (i < count - 1) await expect(actions).toHaveCount(0);
   }
@@ -110,7 +110,7 @@ test("confirmed exercise actions reuse Add Set and return to the same Home; foot
   await expect(
     extra.getByRole("textbox", { name: /weight in pounds/ }),
   ).toHaveValue("100");
-  await extra.getByRole("checkbox", { name: / complete$/ }).check();
+  await extra.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(extra.getByRole("status")).toContainText("Saved");
   await expect(actions).toBeVisible();
   for (const [width, height] of [

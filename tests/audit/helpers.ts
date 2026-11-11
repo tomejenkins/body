@@ -27,7 +27,7 @@ export async function fixture(page: Page) {
   await expect(row.locator(".set-save-state")).toHaveText("Saved");
   await row.getByRole("textbox", { name: /weight/ }).fill("100");
   await row.getByRole("textbox", { name: /reps/ }).fill("8");
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(row.locator(".set-save-state")).toHaveText("Saved");
   return { a, row, session: started.data as string, item };
 }

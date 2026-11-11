@@ -1,0 +1,70 @@
+
+> body@1.0.0 test:e2e
+> playwright test invalid-set-completion invalid-completion-contrast workout-screens logger-simplification action-transport-recovery --output /workspace/work/invalid-completion-7-7a/affected-final
+
+
+Running 44 tests using 2 workers
+
+(node:80394) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:80393) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport before commit preserves one transition and retry (5.4s)
+  ✓   2 [desktop] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport before commit retains confirmation and receipt (5.6s)
+  ✓   3 [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport after commit preserves one transition and retry (4.1s)
+  -   5 [desktop] › tests/e2e/invalid-completion-contrast.spec.ts:4:1 › field errors meet text contrast in every requested mobile width and theme
+  ✓   4 [desktop] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport after commit retains confirmation and receipt (4.9s)
+  ✓   7 [desktop] › tests/e2e/logger-simplification.spec.ts:105:1 › offline completion keeps Options, entered values and recovery until explicit retry (4.6s)
+  ✓   6 [desktop] › tests/e2e/logger-simplification.spec.ts:57:1 › only confirmed completion collapses its Options and preserves every set (5.4s)
+  ✓   8 [desktop] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer reopen survives the older completion response (3.7s)
+  ✓   9 [desktop] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer edit survives the older completion response (3.7s)
+  ✓  11 [desktop] › tests/e2e/logger-simplification.spec.ts:284:1 › compact optional controls and accessible help fit all requested mobile themes (6.3s)
+  ✓  10 [desktop] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (9.6s)
+  ✓  13 [desktop] › tests/e2e/workout-screens.spec.ts:159:1 › ad-hoc Home, incomplete Back and pending/failed draft persistence without forced completion (7.2s)
+  ✓  12 [desktop] › tests/e2e/workout-screens.spec.ts:29:1 › program Home accordion, focused navigation, status, context, refresh and reduced motion (12.4s)
+(node:81494) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  14 [desktop] › tests/e2e/workout-screens.spec.ts:272:1 › stale Home selection cannot overwrite another tab and foreign focus reveals no performance (10.2s)
+(node:81794) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  16 [desktop] › tests/e2e/invalid-set-completion.spec.ts:86:1 › clearing suggested reps stays blank after the incomplete blur acknowledgement (4.1s)
+  ✓  15 [desktop] › tests/e2e/invalid-set-completion.spec.ts:32:1 › invalid Done preserves input and pending evidence without a completion request (12.5s)
+  ✓  17 [desktop] › tests/e2e/invalid-set-completion.spec.ts:108:1 › valid completion waits for acknowledgement; repeated taps cannot duplicate it (5.2s)
+  ✓  18 [desktop] › tests/e2e/invalid-set-completion.spec.ts:160:1 › server rejection retains a valid local draft and retries through the same command (6.2s)
+  ✓  19 [desktop] › tests/e2e/invalid-set-completion.spec.ts:191:1 › invalid completed-set correction retains the last authoritative evidence until valid (5.7s)
+  ✓  20 [desktop] › tests/e2e/invalid-set-completion.spec.ts:244:1 › discarding an invalid completed correction clears feedback and restores only saved values (5.1s)
+  -  22 [desktop] › tests/e2e/invalid-set-completion.spec.ts:308:1 › mobile invalid feedback stays stable across widths, themes and viewport event storms
+(node:82432) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  21 [desktop] › tests/e2e/invalid-set-completion.spec.ts:263:1 › bodyweight requires reps, deliberate added resistance requires positive load (4.5s)
+(node:82597) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  23 [mobile] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport before commit preserves one transition and retry (4.6s)
+  ✓  24 [mobile] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport before commit retains confirmation and receipt (5.9s)
+  ✓  25 [mobile] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport after commit preserves one transition and retry (5.0s)
+  ✓  26 [mobile] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport after commit retains confirmation and receipt (6.2s)
+  ✓  27 [mobile] › tests/e2e/invalid-completion-contrast.spec.ts:4:1 › field errors meet text contrast in every requested mobile width and theme (6.5s)
+  ✓  28 [mobile] › tests/e2e/logger-simplification.spec.ts:57:1 › only confirmed completion collapses its Options and preserves every set (7.0s)
+  ✓  29 [mobile] › tests/e2e/logger-simplification.spec.ts:105:1 › offline completion keeps Options, entered values and recovery until explicit retry (6.3s)
+  ✓  30 [mobile] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer reopen survives the older completion response (5.7s)
+  ✓  31 [mobile] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer edit survives the older completion response (6.1s)
+  -  33 [mobile] › tests/e2e/logger-simplification.spec.ts:284:1 › compact optional controls and accessible help fit all requested mobile themes
+  ✓  32 [mobile] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (13.3s)
+  ✓  34 [mobile] › tests/e2e/workout-screens.spec.ts:29:1 › program Home accordion, focused navigation, status, context, refresh and reduced motion (14.8s)
+  ✓  35 [mobile] › tests/e2e/workout-screens.spec.ts:159:1 › ad-hoc Home, incomplete Back and pending/failed draft persistence without forced completion (11.1s)
+(node:83918) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  36 [mobile] › tests/e2e/workout-screens.spec.ts:272:1 › stale Home selection cannot overwrite another tab and foreign focus reveals no performance (10.0s)
+(node:84099) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  38 [mobile] › tests/e2e/invalid-set-completion.spec.ts:86:1 › clearing suggested reps stays blank after the incomplete blur acknowledgement (5.2s)
+  ✓  39 [mobile] › tests/e2e/invalid-set-completion.spec.ts:108:1 › valid completion waits for acknowledgement; repeated taps cannot duplicate it (4.5s)
+  ✓  37 [mobile] › tests/e2e/invalid-set-completion.spec.ts:32:1 › invalid Done preserves input and pending evidence without a completion request (13.0s)
+  ✓  40 [mobile] › tests/e2e/invalid-set-completion.spec.ts:160:1 › server rejection retains a valid local draft and retries through the same command (5.2s)
+  ✓  41 [mobile] › tests/e2e/invalid-set-completion.spec.ts:191:1 › invalid completed-set correction retains the last authoritative evidence until valid (4.8s)
+  ✓  42 [mobile] › tests/e2e/invalid-set-completion.spec.ts:244:1 › discarding an invalid completed correction clears feedback and restores only saved values (4.5s)
+  ✓  43 [mobile] › tests/e2e/invalid-set-completion.spec.ts:263:1 › bodyweight requires reps, deliberate added resistance requires positive load (5.1s)
+  ✓  44 [mobile] › tests/e2e/invalid-set-completion.spec.ts:308:1 › mobile invalid feedback stays stable across widths, themes and viewport event storms (16.2s)
+
+  3 skipped
+  41 passed (2.6m)

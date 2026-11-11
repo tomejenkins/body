@@ -315,7 +315,7 @@ test("program and completed ad-hoc favorites launch independently with clean log
   ).not.toBeChecked();
   await set.getByRole("textbox", { name: /weight in pounds/ }).fill("100");
   await set.getByRole("textbox", { name: / reps$/ }).fill("8");
-  await set.getByRole("checkbox", { name: / complete$/ }).check();
+  await set.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(set.getByRole("status")).toContainText("Saved");
   await openWorkoutEnding(page);
   const acknowledge = page.getByRole("checkbox", {

@@ -1,0 +1,133 @@
+
+> body@1.0.0 test:e2e
+> playwright test --output /workspace/work/invalid-completion-7-7a/browser-full
+
+
+Running 216 tests using 2 workers
+
+(node:59506) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59507) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘    1 [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport before commit preserves one transition and retry (6.1s)
+(node:59885) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    2 [desktop] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport before commit retains confirmation and receipt (6.8s)
+  ✓    4 [desktop] › tests/e2e/action-transport-recovery.spec.ts:76:3 › archive transport after commit retains confirmation and receipt (5.7s)
+  ✘    3 [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport after commit preserves one transition and retry (5.8s)
+(node:60207) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓    6 [desktop] › tests/e2e/advanced-effort.spec.ts:162:1 › remembered scale preference, retained failed effort draft, CAS conflict and warm-up exclusion (12.2s)
+  ✓    5 [desktop] › tests/e2e/advanced-effort.spec.ts:41:1 › optional effort and failure persist independently through queue, refresh, new rows and history (19.7s)
+  ✓    7 [desktop] › tests/e2e/authentication.spec.ts:10:1 › registration, email verification, onboarding, persistent session and logout (9.4s)
+  ✓    8 [desktop] › tests/e2e/authentication.spec.ts:50:1 › failed login, partial profile retry, RLS isolation and unsafe destination rejection (7.5s)
+  ✘   10 [desktop] › tests/e2e/authentication.spec.ts:130:1 › invalid callbacks fail safely and auth pages follow system theme (155ms)
+  ✘    9 [desktop] › tests/e2e/authentication.spec.ts:103:1 › password recovery email, update, old password rejection and new password login (3.4s)
+
+
+  1) [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport before commit preserves one transition and retry
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "could not be confirmed"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert">The program change could not be confirmed. Retry …</p> aka getByText('The program change could not')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      39 |       .getByRole("button", { name: "Switch Program", exact: true })
+      40 |       .click();
+    > 41 |     await expect(page.getByRole("alert")).toContainText(
+         |                                           ^
+      42 |       "could not be confirmed",
+      43 |     );
+      44 |     await expect(
+        at /workspace/body/tests/e2e/action-transport-recovery.spec.ts:41:43
+
+    Error Context: ../work/invalid-completion-7-7a/browser-full/action-transport-recovery--22bd9-es-one-transition-and-retry-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../work/invalid-completion-7-7a/browser-full/action-transport-recovery--22bd9-es-one-transition-and-retry-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../work/invalid-completion-7-7a/browser-full/action-transport-recovery--22bd9-es-one-transition-and-retry-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport after commit preserves one transition and retry
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "could not be confirmed"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert">The program change could not be confirmed. Retry …</p> aka getByText('The program change could not')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+        5 × locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+          - unexpected value ""
+
+
+      39 |       .getByRole("button", { name: "Switch Program", exact: true })
+      40 |       .click();
+    > 41 |     await expect(page.getByRole("alert")).toContainText(
+         |                                           ^
+      42 |       "could not be confirmed",
+      43 |     );
+      44 |     await expect(
+        at /workspace/body/tests/e2e/action-transport-recovery.spec.ts:41:43
+
+    Error Context: ../work/invalid-completion-7-7a/browser-full/action-transport-recovery--82068-es-one-transition-and-retry-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../work/invalid-completion-7-7a/browser-full/action-transport-recovery--82068-es-one-transition-and-retry-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../work/invalid-completion-7-7a/browser-full/action-transport-recovery--82068-es-one-transition-and-retry-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop] › tests/e2e/authentication.spec.ts:103:1 › password recovery email, update, old password rejection and new password login
+
+    Test was interrupted.
+
+    Error: page.goto: net::ERR_ABORTED; maybe frame was detached?
+    Call log:
+      - navigating to "http://127.0.0.1:54321/auth/v1/verify?token=pkce_0e17ef5a927db6a4086a5680fd1b3fb86a8136ab0f7452d6d4152a11&type=recovery&redirect_to=http%3A%2F%2F127.0.0.1%3A3000%2Fauth%2Fcallback%3Fnext%3D%2Freset-password", waiting until "load"
+
+
+      112 |   await page.getByRole("button", { name: "Send reset link" }).click();
+      113 |   await expect(page.getByRole("status")).toContainText("If an account exists");
+    > 114 |   await page.goto(await emailLink(account.email, "recovery"));
+          |              ^
+      115 |   await expect(page).toHaveURL(/\/reset-password$/);
+      116 |   await page.getByLabel("Password", { exact: true }).fill(replacement);
+      117 |   await page.getByLabel("Confirm password").fill(replacement);
+        at /workspace/body/tests/e2e/authentication.spec.ts:114:14
+
+    Error Context: ../work/invalid-completion-7-7a/browser-full/authentication-password-re-a5086-tion-and-new-password-login-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../work/invalid-completion-7-7a/browser-full/authentication-password-re-a5086-tion-and-new-password-login-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../work/invalid-completion-7-7a/browser-full/authentication-password-re-a5086-tion-and-new-password-login-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport before commit preserves one transition and retry
+    [desktop] › tests/e2e/action-transport-recovery.spec.ts:22:3 › switch transport after commit preserves one transition and retry
+  2 interrupted
+    [desktop] › tests/e2e/authentication.spec.ts:103:1 › password recovery email, update, old password rejection and new password login
+    [desktop] › tests/e2e/authentication.spec.ts:130:1 › invalid callbacks fail safely and auth pages follow system theme
+  206 did not run
+  6 passed (43.7s)

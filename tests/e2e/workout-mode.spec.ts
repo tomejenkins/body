@@ -235,7 +235,7 @@ test("server timer pauses across refresh/devices, rejects races, and saved loggi
   const row = page.locator(".logged-set").first();
   await row.getByRole("textbox", { name: /weight in pounds/ }).fill("100");
   await row.getByRole("textbox", { name: / reps$/ }).fill("8");
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(row.getByRole("status")).toContainText("Saved");
   await expect
     .poll(

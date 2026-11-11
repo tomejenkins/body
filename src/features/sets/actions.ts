@@ -22,6 +22,13 @@ export async function mutateSet(input: SetCommand): Promise<SetResult> {
     !Object.hasOwn(setTypes, input.type) ||
     !["external", "bodyweight"].includes(input.mode) ||
     typeof input.completed !== "boolean" ||
+    (input.operation === "save" &&
+      input.completed &&
+      (input.reps === null ||
+        (input.mode === "external" && input.weight === null) ||
+        (input.type !== "warm_up" &&
+          (Number(input.reps) <= 0 ||
+            (input.mode === "external" && Number(input.weight) <= 0))))) ||
     (input.operation !== "add" &&
       (!Number.isSafeInteger(input.revision) || Number(input.revision) < 0)) ||
     (input.reps !== null &&

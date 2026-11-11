@@ -51,7 +51,7 @@ async function holdCompletion(page: Page) {
 async function logRow(row: Locator) {
   await row.getByRole("textbox", { name: /weight/ }).fill("100");
   await row.getByRole("textbox", { name: / reps$/ }).fill("8");
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(row.locator(".set-save-state")).toHaveText(/^Saved/);
 }
 test("only confirmed completion collapses its Options and preserves every set", async ({
@@ -68,7 +68,7 @@ test("only confirmed completion collapses its Options and preserves every set", 
     row.getByRole("combobox", { name: /effort rating/ }),
   ).toHaveCount(0);
   const held = await holdCompletion(page);
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await held.arrived;
   await expect(row.locator(".set-save-state")).toHaveText("Saving…");
   await expect(options).toHaveAttribute("open", "");
@@ -108,7 +108,7 @@ test("offline completion keeps Options, entered values and recovery until explic
   const { row, a } = await pendingRow(page),
     id = await row.getAttribute("data-set-id");
   await page.context().setOffline(true);
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(row.locator(".set-save-state")).toHaveText("Not saved");
   await expect(row.locator(".set-options")).toHaveAttribute("open", "");
   await expect(
@@ -136,7 +136,7 @@ for (const action of ["reopen", "edit"] as const)
     const { row, a } = await pendingRow(page),
       id = await row.getAttribute("data-set-id"),
       held = await holdCompletion(page);
-    await row.getByRole("checkbox", { name: / complete$/ }).check();
+    await row.getByRole("checkbox", { name: / complete$/ }).click();
     await held.arrived;
     if (action === "reopen") {
       await row.locator(".set-options > summary").click();

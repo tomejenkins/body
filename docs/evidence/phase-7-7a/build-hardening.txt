@@ -1,0 +1,69 @@
+
+> body@1.0.0 build
+> next build --webpack
+
+▲ Next.js 16.4.4 (webpack)
+- Environments: .env.local
+✓ Running next.config.ts took 21ms
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead.
+
+  To migrate automatically, run:
+  npx @next/codemod@canary middleware-to-proxy .
+
+  Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (114kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (268kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+✓ Compiled successfully in 5.8s
+  Running TypeScript ...
+  Finished TypeScript in 2.9s ...
+  Collecting page data using 2 workers ...
+  Generating static pages using 2 workers (0/6) ...
+  Generating static pages using 2 workers (1/6)
+  Generating static pages using 2 workers (2/6)
+  Generating static pages using 2 workers (4/6)
+✓ Generating static pages using 2 workers (6/6) in 314ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /auth/callback
+├ ƒ /dashboard
+├ ƒ /exercises
+├ ƒ /exercises/[id]
+├ ƒ /exercises/[id]/edit
+├ ƒ /exercises/[id]/history
+├ ƒ /exercises/new
+├ ƒ /feed
+├ ƒ /forgot-password
+├ ƒ /history
+├ ƒ /history/[id]
+├ ƒ /history/programs
+├ ƒ /history/programs/[id]
+├ ƒ /history/progress
+├ ƒ /history/records
+├ ƒ /login
+├ ○ /manifest.webmanifest
+├ ○ /offline
+├ ƒ /onboarding
+├ ƒ /profile
+├ ƒ /programs
+├ ƒ /programs/[id]
+├ ƒ /programs/current
+├ ƒ /programs/enroll
+├ ƒ /reset-password
+├ ƒ /signup
+├ ƒ /workout
+├ ƒ /workout/[id]
+├ ƒ /workout/[id]/complete
+├ ƒ /workout/[id]/select
+└ ƒ /workout/new
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

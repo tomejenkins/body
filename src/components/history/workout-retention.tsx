@@ -1,4 +1,5 @@
 "use client";
+import { unstable_rethrow } from "next/navigation";
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { changeWorkoutRetention } from "@/features/retention/actions";
@@ -16,7 +17,20 @@ export function WorkoutRetention({
   const [kind, setKind] = useState<"archive" | "restore" | "delete" | null>(
       null,
     ),
-    [state, action, pending] = useActionState(changeWorkoutRetention, {});
+    [state, action, pending] = useActionState(
+      async (previous: { error?: string }, form: FormData) => {
+        try {
+          return await changeWorkoutRetention(previous, form);
+        } catch (error) {
+          unstable_rethrow(error);
+          return {
+            error:
+              "The workout change could not be confirmed. Retry the same action when connected, or refresh to check its current state.",
+          };
+        }
+      },
+      {},
+    );
   const [requests] = useState(() => ({
     archive: request,
     restore: crypto.randomUUID(),
@@ -28,6 +42,7 @@ export function WorkoutRetention({
       {kind ? (
         <form
           action={action}
+          onReset={(event) => event.preventDefault()}
           key={kind}
           aria-label={`${kind} workout confirmation`}
         >

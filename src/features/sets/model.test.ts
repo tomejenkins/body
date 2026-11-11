@@ -55,11 +55,11 @@ it("keeps blank pending data distinct from explicit zero and bodyweight load nul
   expect(() => valuesFor({ ...draft, completed: true }, "kg", row)).toThrow();
   expect(
     valuesFor(
-      { ...draft, mode: "bodyweight", reps: "0", completed: true },
+      { ...draft, mode: "bodyweight", reps: "8", completed: true },
       "kg",
       row,
     ),
-  ).toMatchObject({ weight: null, reps: 0, completed: true });
+  ).toMatchObject({ weight: null, reps: 8, completed: true });
 });
 it("validates decimal, integer and bounded performance inputs", () => {
   for (const weight of ["NaN", "Infinity", "-1", "1e3", "100001", "0.1234567"])

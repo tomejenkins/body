@@ -1,0 +1,166 @@
+
+> body@1.0.0 test:e2e
+> playwright test invalid-set-completion logger-simplification --output /workspace/work/invalid-completion-7-7a/p1
+
+
+Running 22 tests using 2 workers
+
+(node:46387) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:46386) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/e2e/invalid-set-completion.spec.ts:85:1 › valid completion waits for acknowledgement; repeated taps cannot duplicate it (7.0s)
+  ✓   3 [desktop] › tests/e2e/invalid-set-completion.spec.ts:137:1 › invalid completed-set correction retains the last authoritative evidence until valid (3.8s)
+  ✓   4 [desktop] › tests/e2e/invalid-set-completion.spec.ts:190:1 › bodyweight requires reps, deliberate added resistance requires positive load (2.7s)
+  -   5 [desktop] › tests/e2e/invalid-set-completion.spec.ts:235:1 › mobile invalid feedback stays stable across widths, themes and viewport event storms
+(node:46974) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   2 [desktop] › tests/e2e/invalid-set-completion.spec.ts:31:1 › invalid Done preserves input and pending evidence without a completion request (17.1s)
+(node:47109) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [desktop] › tests/e2e/logger-simplification.spec.ts:57:1 › only confirmed completion collapses its Options and preserves every set (4.2s)
+  ✓   8 [desktop] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer reopen survives the older completion response (4.2s)
+  ✓   7 [desktop] › tests/e2e/logger-simplification.spec.ts:105:1 › offline completion keeps Options, entered values and recovery until explicit retry (5.2s)
+  ✓   9 [desktop] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer edit survives the older completion response (5.9s)
+  ✓  10 [desktop] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (16.2s)
+(node:47622) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [desktop] › tests/e2e/logger-simplification.spec.ts:284:1 › compact optional controls and accessible help fit all requested mobile themes (11.7s)
+(node:47678) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [mobile] › tests/e2e/invalid-set-completion.spec.ts:85:1 › valid completion waits for acknowledgement; repeated taps cannot duplicate it (5.6s)
+  ✓  14 [mobile] › tests/e2e/invalid-set-completion.spec.ts:137:1 › invalid completed-set correction retains the last authoritative evidence until valid (3.1s)
+  ✓  15 [mobile] › tests/e2e/invalid-set-completion.spec.ts:190:1 › bodyweight requires reps, deliberate added resistance requires positive load (2.0s)
+  ✘  12 [mobile] › tests/e2e/invalid-set-completion.spec.ts:31:1 › invalid Done preserves input and pending evidence without a completion request (15.4s)
+(node:48206) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [mobile] › tests/e2e/logger-simplification.spec.ts:57:1 › only confirmed completion collapses its Options and preserves every set (3.3s)
+  ✓  18 [mobile] › tests/e2e/logger-simplification.spec.ts:105:1 › offline completion keeps Options, entered values and recovery until explicit retry (2.7s)
+  ✓  19 [mobile] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer reopen survives the older completion response (2.3s)
+  ✓  20 [mobile] › tests/e2e/logger-simplification.spec.ts:133:3 › a newer edit survives the older completion response (2.3s)
+  ✓  21 [mobile] › tests/e2e/logger-simplification.spec.ts:170:1 › Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress (5.4s)
+  -  22 [mobile] › tests/e2e/logger-simplification.spec.ts:284:1 › compact optional controls and accessible help fit all requested mobile themes
+  ✘  16 [mobile] › tests/e2e/invalid-set-completion.spec.ts:235:1 › mobile invalid feedback stays stable across widths, themes and viewport event storms (1.7m)
+
+
+  1) [desktop] › tests/e2e/invalid-set-completion.spec.ts:31:1 › invalid Done preserves input and pending evidence without a completion request
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  locator('.logged-set').nth(1).locator('.set-save-state')
+    Expected: "Check set values"
+    Received: "Saved"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveText" locator('.logged-set').nth(1).locator('.set-save-state') with timeout 5000ms
+      - waiting for locator('.logged-set').nth(1).locator('.set-save-state')
+        - locator resolved to <div role="status" class="set-save-state">Saving…</div>
+        - unexpected value "Saving…"
+        12 × locator resolved to <div role="status" class="set-save-state">Saved</div>
+           - unexpected value "Saved"
+
+
+      55 |     await done(row).click();
+      56 |     await expect(done(row)).not.toBeChecked();
+    > 57 |     await expect(state(row)).toHaveText("Check set values");
+         |                              ^
+      58 |     await expect(row.locator(".set-field-errors")).not.toBeEmpty();
+      59 |     await expect(row.locator(".set-options")).toHaveAttribute("open", "");
+      60 |     await expect(row.getByRole("textbox", { name: /weight/ })).toHaveValue(
+        at /workspace/body/tests/e2e/invalid-set-completion.spec.ts:57:30
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../work/invalid-completion-7-7a/p1/invalid-set-completion-inv-fa378-ithout-a-completion-request-desktop/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../work/invalid-completion-7-7a/p1/invalid-set-completion-inv-fa378-ithout-a-completion-request-desktop/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../work/invalid-completion-7-7a/p1/invalid-set-completion-inv-fa378-ithout-a-completion-request-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../work/invalid-completion-7-7a/p1/invalid-set-completion-inv-fa378-ithout-a-completion-request-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [mobile] › tests/e2e/invalid-set-completion.spec.ts:31:1 › invalid Done preserves input and pending evidence without a completion request
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator:  locator('.logged-set').nth(1).locator('.set-save-state')
+    Expected: "Check set values"
+    Received: "Saved"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveText" locator('.logged-set').nth(1).locator('.set-save-state') with timeout 5000ms
+      - waiting for locator('.logged-set').nth(1).locator('.set-save-state')
+        - locator resolved to <div role="status" class="set-save-state">Saving…</div>
+        - unexpected value "Saving…"
+        13 × locator resolved to <div role="status" class="set-save-state">Saved</div>
+           - unexpected value "Saved"
+
+
+      55 |     await done(row).click();
+      56 |     await expect(done(row)).not.toBeChecked();
+    > 57 |     await expect(state(row)).toHaveText("Check set values");
+         |                              ^
+      58 |     await expect(row.locator(".set-field-errors")).not.toBeEmpty();
+      59 |     await expect(row.locator(".set-options")).toHaveAttribute("open", "");
+      60 |     await expect(row.getByRole("textbox", { name: /weight/ })).toHaveValue(
+        at /workspace/body/tests/e2e/invalid-set-completion.spec.ts:57:30
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../work/invalid-completion-7-7a/p1/invalid-set-completion-inv-fa378-ithout-a-completion-request-mobile/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../work/invalid-completion-7-7a/p1/invalid-set-completion-inv-fa378-ithout-a-completion-request-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../work/invalid-completion-7-7a/p1/invalid-set-completion-inv-fa378-ithout-a-completion-request-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../work/invalid-completion-7-7a/p1/invalid-set-completion-inv-fa378-ithout-a-completion-request-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [mobile] › tests/e2e/invalid-set-completion.spec.ts:235:1 › mobile invalid feedback stays stable across widths, themes and viewport event storms
+
+    Test was interrupted.
+
+    Error: locator.boundingBox: Test ended.
+    Call log:
+      - waiting for locator('.workout-panel')
+
+
+      285 |         };
+      286 |       });
+    > 287 |       const footer = await page.locator(".workout-mode-controls").boundingBox();
+          |                                                           ^
+      288 |       for (let i = 0; i < 6; i++)
+      289 |         await done(row).evaluate((el: HTMLInputElement) => el.click());
+      290 |       await page.waitForTimeout(150);
+        at /workspace/body/tests/e2e/invalid-set-completion.spec.ts:287:59
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../work/invalid-completion-7-7a/p1/invalid-set-completion-mob-9a5f2-s-and-viewport-event-storms-mobile/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../work/invalid-completion-7-7a/p1/invalid-set-completion-mob-9a5f2-s-and-viewport-event-storms-mobile/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../work/invalid-completion-7-7a/p1/invalid-set-completion-mob-9a5f2-s-and-viewport-event-storms-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../work/invalid-completion-7-7a/p1/invalid-set-completion-mob-9a5f2-s-and-viewport-event-storms-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop] › tests/e2e/invalid-set-completion.spec.ts:31:1 › invalid Done preserves input and pending evidence without a completion request
+    [mobile] › tests/e2e/invalid-set-completion.spec.ts:31:1 › invalid Done preserves input and pending evidence without a completion request
+  1 interrupted
+    [mobile] › tests/e2e/invalid-set-completion.spec.ts:235:1 › mobile invalid feedback stays stable across widths, themes and viewport event storms
+  2 skipped
+  17 passed (2.6m)

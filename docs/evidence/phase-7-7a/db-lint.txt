@@ -1,0 +1,10 @@
+
+> body@1.0.0 db:lint
+> supabase db lint --schema public,body_private --fail-on warning
+
+Target: local stack (127.0.0.1:54322)
+Linting schema: public
+Linting schema: body_private
+
+No schema errors found
+{"results":[],"message":"db lint","target":{"kind":"local","host":"127.0.0.1","port":54322}}

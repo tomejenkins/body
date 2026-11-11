@@ -1,4 +1,5 @@
 "use client";
+import { keyboardVisibility } from "./keyboard-visibility";
 import { cn } from "@/lib/utils";
 import { InlineAbandon, useWorkoutClosure } from "./workout-closure";
 import { Dialog } from "radix-ui";
@@ -112,27 +113,26 @@ export function WorkoutModeControls({
   }, [base, running, value?.server_now]);
   useEffect(() => {
     const viewport = window.visualViewport;
-    const resize = () => {
+    const reveal = keyboardVisibility();
+    let frame = 0;
+    const measure = (shouldReveal: boolean) => {
       const inset = viewport
         ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
         : 0;
       setKeyboard(inset > 150 ? inset : 0);
-      if (
-        inset > 150 &&
-        document.activeElement?.matches(
-          ".workout-execution input, .workout-execution select",
-        )
-      )
-        document.activeElement.scrollIntoView({
-          block: "center",
-          behavior: "auto",
-        });
+      reveal(inset, viewport, shouldReveal, footer.current);
     };
+    const resize = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => measure(true));
+    };
+    const scroll = () => measure(false);
     viewport?.addEventListener("resize", resize);
-    viewport?.addEventListener("scroll", resize);
+    viewport?.addEventListener("scroll", scroll);
     return () => {
+      cancelAnimationFrame(frame);
       viewport?.removeEventListener("resize", resize);
-      viewport?.removeEventListener("scroll", resize);
+      viewport?.removeEventListener("scroll", scroll);
     };
   }, []);
   useLayoutEffect(() => {

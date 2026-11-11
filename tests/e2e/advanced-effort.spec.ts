@@ -50,7 +50,7 @@ test("optional effort and failure persist independently through queue, refresh, 
   ).toHaveCount(0);
   await row.getByRole("textbox", { name: /weight/ }).fill("50");
   await row.getByRole("textbox", { name: /reps/ }).fill("5");
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await saved(page);
   await openAdvancedEffort(row);
   await row.getByRole("combobox", { name: /effort rating/ }).selectOption("10");

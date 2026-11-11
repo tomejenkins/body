@@ -143,7 +143,7 @@ test("direct logger, four match levels, touch carousel, persistence and explicit
   const row = firstMovement(page).locator(".logged-set").first();
   await row.getByRole("textbox", { name: /weight in pounds/ }).fill("100");
   await row.getByRole("textbox", { name: /reps/ }).fill("7");
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await saved(page);
   const before = await a.client
     .from("workout_sets")

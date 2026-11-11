@@ -67,3 +67,25 @@ it("uses invoker RPC without an owner argument and hides provider errors", async
   rpc.mockRejectedValue(new Error("private network detail"));
   expect((await mutateSet(command)).error).toContain("draft is retained");
 });
+
+it("blocks invalid completed training at the server action while retaining pending and warm-up contracts", async () => {
+  for (const patch of [
+    { reps: null, weight: null },
+    { reps: 0, weight: "50" },
+    { reps: 8, weight: "0" },
+    { reps: 8, weight: null },
+    { mode: "bodyweight" as const, reps: 0, weight: null },
+  ]) {
+    expect(
+      (
+        await mutateSet({
+          ...command,
+          operation: "save",
+          completed: true,
+          ...patch,
+        })
+      ).error,
+    ).toBeTruthy();
+  }
+  expect(mock.create).not.toHaveBeenCalled();
+});

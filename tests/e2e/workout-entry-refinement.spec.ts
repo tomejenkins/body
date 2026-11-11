@@ -291,7 +291,7 @@ test("exercise-first recents/search retain deliberate order and duplicate intent
   const row = page.locator(".logged-set").first();
   await row.getByRole("textbox", { name: /weight/ }).fill("40");
   await row.getByRole("textbox", { name: /reps/ }).fill("8");
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(row.locator(".set-save-state")).toHaveText(/^Saved/);
   const retry = await a.client.rpc("start_exercise_workout", {
     p_exercises: entries.map((e) => e.exercise_id),

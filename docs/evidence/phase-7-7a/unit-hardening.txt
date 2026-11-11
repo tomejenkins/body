@@ -1,0 +1,41 @@
+
+> body@1.0.0 test
+> vitest run
+
+
+ RUN  v5.1.0 /workspace/body
+
+ ❯ src/components/history/workout-retention.test.tsx (1 test | 1 failed) 148ms
+   × retains confirmation and receipt identity after rejected archive transport 147ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/history/workout-retention.test.tsx > retains confirmation and receipt identity after rejected archive transport
+Error: expect(element).toBeChecked()
+
+Received element is not checked:
+  <input
+  name="confirmed"
+  required=""
+  type="checkbox"
+  value="yes"
+/>
+ ❯ src/components/history/workout-retention.test.tsx:32:40
+     30|     "could not be confirmed",
+     31|   );
+     32|   expect(screen.getByRole("checkbox")).toBeChecked();
+       |                                        ^
+     33|   expect(screen.getByRole("alert")).not.toHaveTextContent(
+     34|     "private network detail",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 74 passed (75)
+      Tests  1 failed | 386 passed (387)
+   Start at  17:44:20
+   Duration  47.71s (environment 73%, setup 11%, tests 9%, import 5%, transform 1%, worker 1%)
+
+Environment  jsdom was created 75 times · 29.87s total, 73% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments

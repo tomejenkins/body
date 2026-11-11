@@ -59,7 +59,7 @@ test("two focus selections create five unbound movements; logger, back, safe mov
   await expect(row.getByRole("textbox", { name: /weight/ })).toHaveValue("");
   await row.getByRole("textbox", { name: /weight/ }).fill("50");
   await row.getByRole("textbox", { name: /reps/ }).fill("8");
-  await row.getByRole("checkbox", { name: / complete$/ }).check();
+  await row.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(row.locator(".set-save-state")).toHaveText(/^Saved/);
   const setId = await row.getAttribute("data-set-id");
   const before = (
