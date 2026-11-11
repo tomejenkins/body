@@ -1,0 +1,27 @@
+
+> body@1.0.0 test:e2e
+> playwright test favorite-one-tap.spec.ts program-scheduling.spec.ts dashboard-calendar.spec.ts -g one-tap recommended|completion and history|foreign source IDs|weekly calendar carries|carried recommendation --output=/workspace/work/visual-7-6e/affected-final
+
+
+Running 10 tests using 2 workers
+
+(node:187209) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:187210) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [desktop] › tests/e2e/dashboard-calendar.spec.ts:65:1 › carried recommendation, seven dates, keyboard, full schedule, historical completion and one-tap identity (10.3s)
+  ✓   3 [desktop] › tests/e2e/favorite-one-tap.spec.ts:308:1 › completion and history save source-default names with no title input or copied actual performance (4.1s)
+  ✓   1 [desktop] › tests/e2e/favorite-one-tap.spec.ts:61:1 › one-tap recommended and alternative saves, stale device deduplication, compact menu and safe editing (15.7s)
+  ✓   4 [desktop] › tests/e2e/favorite-one-tap.spec.ts:378:1 › foreign source IDs are denied and a failed transport remains retryable without false saved feedback (3.4s)
+(node:187825) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop] › tests/e2e/program-scheduling.spec.ts:134:1 › weekly calendar carries missed training, preserves actual completion and supports adjacent weeks/themes (7.9s)
+(node:187987) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   6 [mobile] › tests/e2e/dashboard-calendar.spec.ts:65:1 › carried recommendation, seven dates, keyboard, full schedule, historical completion and one-tap identity (11.1s)
+  ✓   8 [mobile] › tests/e2e/favorite-one-tap.spec.ts:308:1 › completion and history save source-default names with no title input or copied actual performance (3.3s)
+  ✓   9 [mobile] › tests/e2e/favorite-one-tap.spec.ts:378:1 › foreign source IDs are denied and a failed transport remains retryable without false saved feedback (2.6s)
+  ✓   7 [mobile] › tests/e2e/favorite-one-tap.spec.ts:61:1 › one-tap recommended and alternative saves, stale device deduplication, compact menu and safe editing (18.1s)
+  ✓  10 [mobile] › tests/e2e/program-scheduling.spec.ts:134:1 › weekly calendar carries missed training, preserves actual completion and supports adjacent weeks/themes (7.4s)
+
+  10 passed (44.6s)

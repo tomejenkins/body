@@ -21,7 +21,7 @@ export default async function Page({
   if (!v) notFound();
   const same = sameEnrollmentVersion(c.enrollment, v.id);
   return (
-    <section className="enrollment-surface">
+    <section className="enrollment-surface refined-screen">
       <Link href="/programs">← Programs</Link>
       <h1>
         {same

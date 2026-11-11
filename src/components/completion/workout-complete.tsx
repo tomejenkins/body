@@ -211,7 +211,7 @@ export function WorkoutComplete({
         {s.favorite.saved ? (
           <p role="status" className="completion-favorite-saved">
             <BookmarkCheck size={18} aria-hidden="true" />{" "}
-            <span>Saved as Favorite · {s.favorite.saved.name}</span>
+            <span>Saved to Favorites · {s.favorite.saved.name}</span>
           </p>
         ) : s.favorite.eligible ? (
           s.favorite.atCapacity ? (
@@ -226,7 +226,6 @@ export function WorkoutComplete({
               day={
                 "day" in s.favorite.source ? s.favorite.source.day : undefined
               }
-              name={w.name}
             />
           )
         ) : null}

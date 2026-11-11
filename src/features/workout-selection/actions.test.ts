@@ -125,31 +125,115 @@ it("independent starts send only favorite identity and preserve server redirects
   });
   expect(mock.redirect).toHaveBeenCalledWith(`/workout/${id}`);
 });
-it("favorite save passes only source identity/name rather than client snapshots or actual performance", async () => {
+function favoriteClient(
+  source: unknown = { name: "Source workout" },
+  saved: unknown = { id },
+) {
+  const eq = vi.fn();
+  const is = vi.fn();
+  const sourceRead = vi.fn().mockResolvedValue({ data: source });
+  const savedRead = vi.fn().mockResolvedValue({ data: saved });
+  function chain(read: typeof sourceRead) {
+    const q = { eq: vi.fn(), is: vi.fn(), maybeSingle: read };
+    q.eq.mockReturnValue(q);
+    q.is.mockReturnValue(q);
+    return q;
+  }
+  const sourceQuery = chain(sourceRead),
+    savedQuery = chain(savedRead);
+  eq.mockImplementation((...args) => sourceQuery.eq(...args));
+  is.mockImplementation((...args) => sourceQuery.is(...args));
   const rpc = vi.fn().mockResolvedValue({ data: id });
+  const from = vi.fn().mockImplementation((table) => ({
+    select: () => (table === "favorite_workouts" ? savedQuery : sourceQuery),
+  }));
   mock.create.mockResolvedValue({
     rpc,
+    from,
     auth: {
       getUser: vi
         .fn()
         .mockResolvedValue({ data: { user: { id: "verified" } } }),
     },
   });
+  return { rpc, sourceQuery, savedQuery, sourceRead, savedRead };
+}
+it("resolves names from owned source, ignores submitted title/snapshots, and confirms retained saved state", async () => {
+  const c = favoriteClient({ name: " Source workout " });
   expect(
     (
       await saveFavorite(
         {},
-        form({ sourceType: "completed_ad_hoc", source: id, name: " Press " }),
+        form({
+          sourceType: "completed_ad_hoc",
+          source: id,
+          name: "Forged title",
+        }),
       )
     ).success,
-  ).toBeTruthy();
-  expect(rpc).toHaveBeenCalledWith("save_favorite_workout", {
+  ).toBe("Saved to Favorites");
+  expect(c.rpc).toHaveBeenCalledWith("save_favorite_workout", {
     p_type: "completed_ad_hoc",
     p_source: id,
     p_day: null,
-    p_name: "Press",
+    p_name: "Source workout",
     p_request: id,
   });
+  expect(c.sourceQuery.eq).toHaveBeenCalledWith("owner_id", "verified");
+  expect(c.sourceQuery.is).toHaveBeenCalledWith("archived_at", null);
+  expect(c.savedQuery.eq).toHaveBeenCalledWith("archived", false);
+});
+it("derives a program default from the exact readable immutable training day", async () => {
+  const c = favoriteClient({
+    definition: { days: [{ id, is_rest_day: false, name: "Back Day" }] },
+  });
+  expect(
+    (await saveFavorite({}, form({ sourceType: "program_day", source: id })))
+      .success,
+  ).toBeTruthy();
+  expect(c.rpc.mock.calls[0][1].p_name).toBe("Back Day");
+  c.sourceRead.mockResolvedValue({
+    data: {
+      definition: { days: [{ id, is_rest_day: true, name: "Recovery" }] },
+    },
+  });
+  expect(
+    (await saveFavorite({}, form({ sourceType: "program_day", source: id })))
+      .error,
+  ).toBeTruthy();
+  expect(c.rpc).toHaveBeenCalledTimes(1);
+});
+it("rejects inaccessible sources and never claims saved after a concurrent removal or failed RPC", async () => {
+  const c = favoriteClient(null);
+  expect(
+    (
+      await saveFavorite(
+        {},
+        form({ sourceType: "completed_ad_hoc", source: id }),
+      )
+    ).error,
+  ).toBeTruthy();
+  expect(c.rpc).not.toHaveBeenCalled();
+  c.sourceRead.mockResolvedValue({ data: { name: "Workout" } });
+  c.savedRead.mockResolvedValue({ data: null });
+  expect(
+    (
+      await saveFavorite(
+        {},
+        form({ sourceType: "completed_ad_hoc", source: id }),
+      )
+    ).error,
+  ).toContain("no longer saved");
+  c.rpc.mockResolvedValue({ error: { code: "23514" } });
+  expect(
+    (
+      await saveFavorite(
+        {},
+        form({ sourceType: "completed_ad_hoc", source: id }),
+      )
+    ).error,
+  ).toContain("limit is 100");
+  expect(mock.refresh).not.toHaveBeenCalled();
 });
 it("rename/remove are owner scoped and never claim success after a zero-row write", async () => {
   const read = vi.fn().mockResolvedValue({ data: null });

@@ -206,18 +206,14 @@ test("ad-hoc finish shows qualifying facts, saves one Favorite, refreshes safely
     path: info.outputPath("complete-ad-hoc-no-pr.png"),
     fullPage: true,
   });
-  await completion(page).locator(".save-favorite > summary").click();
-  await page.getByLabel("Favorite name").fill("Press and row");
   await page
-    .getByRole("button", { name: "Save Favorite", exact: true })
+    .getByRole("button", { name: "Save as Favorite", exact: true })
     .click();
   await expect(completion(page).getByRole("status")).toContainText(
-    "Saved as Favorite",
+    "Saved to Favorites",
   );
   await page.reload();
-  await expect(completion(page)).toContainText(
-    "Saved as Favorite · Press and row",
-  );
+  await expect(completion(page)).toContainText("Saved to Favorites · Workout");
   expect(
     (await a.client.from("favorite_workouts").select("id")).data,
   ).toHaveLength(1);
@@ -258,7 +254,9 @@ test("ad-hoc finish shows qualifying facts, saves one Favorite, refreshes safely
   await expect(done).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/dashboard$/);
-  await expect(page.locator(".home-recent")).toContainText("2 working sets");
+  await expect(page.locator(".home-recent")).toContainText(
+    "2 completed working sets",
+  );
   await page.goBack();
   await expect(
     page.getByRole("heading", { name: "Workout Complete!" }),
@@ -331,11 +329,10 @@ test("program completion and partial summary reuse outcomes/progression while Fa
     completion(page).locator(".completion-next details"),
   ).toHaveAttribute("open", "");
 
-  await completion(page).locator(".save-favorite > summary").click();
   await page
-    .getByRole("button", { name: "Save Favorite", exact: true })
+    .getByRole("button", { name: "Save as Favorite", exact: true })
     .click();
-  await expect(completion(page)).toContainText("Saved as Favorite");
+  await expect(completion(page)).toContainText("Saved to Favorites");
   expect((await a.client.rpc("program_schedule")).data.progress).toEqual(
     cursor,
   );
@@ -546,7 +543,7 @@ test("effective paused duration, Favorite capacity and active/abandoned/foreign/
   await expect(completion(page)).toContainText("Your Favorites is full (100)");
   await expect(
     completion(page).getByRole("button", {
-      name: "Save Favorite",
+      name: "Save as Favorite",
       exact: true,
     }),
   ).toHaveCount(0);

@@ -1,3 +1,4 @@
+import { Search } from "lucide-react";
 import { ProgramCalendar } from "@/components/programs/program-calendar";
 import { CurrentProgram } from "@/components/programs/current-program";
 import { Button } from "@/components/ui/button";
@@ -25,17 +26,15 @@ export default async function Page({
     catalog = await loadProgramCatalog(f),
     now = new Date();
   return (
-    <div className="program-library">
+    <div className="program-library refined-screen">
       <header className="library-heading">
-        <p className="eyebrow">A rhythm that fits</p>
         <h1>Programs</h1>
-        <p>
-          Original Body training plans. Explore the structure, find your
-          starting point.
-        </p>
+        <p>Find your training rhythm.</p>
       </header>
       <CurrentProgram />
-      <ProgramCalendar week={params.week} baseHref={catalogURL(f)} />
+      <Link className="program-schedule-link" href="#program-calendar">
+        View Schedule →
+      </Link>
       {params.switch === "1" && (
         <p role="status">
           Choose a replacement program. Your existing history will be preserved.
@@ -48,16 +47,25 @@ export default async function Page({
         className="program-filters"
         aria-label="Program filters"
       >
-        <label>
-          Search programs
-          <input
-            type="search"
-            name="q"
-            defaultValue={f.q}
-            maxLength={100}
-            placeholder="Find a program"
-          />
-        </label>
+        <div className="program-search-row">
+          <label>
+            <span className="sr-only">Search programs</span>
+            <input
+              type="search"
+              name="q"
+              defaultValue={f.q}
+              maxLength={100}
+              placeholder="Find a program"
+            />
+          </label>
+          <Button
+            type="submit"
+            aria-label="Apply filters"
+            title="Apply filters"
+          >
+            <Search size={20} aria-hidden="true" />
+          </Button>
+        </div>
         <details
           open={Object.keys(catalogFacets).some((k) => !!f[k as CatalogFacet])}
         >
@@ -80,12 +88,9 @@ export default async function Page({
             ))}
           </div>
         </details>
-        <div className="program-filter-actions">
-          <Button type="submit">Apply filters</Button>
-          <Button asChild variant="outline">
-            <Link href="/programs">Reset filters</Link>
-          </Button>
-        </div>
+        <Link className="program-reset" href="/programs">
+          Reset filters
+        </Link>
       </form>
       <p role="status">
         {catalog.total} {catalog.total === 1 ? "program" : "programs"} found
@@ -146,9 +151,9 @@ export default async function Page({
           </Button>
         )}
       </nav>
+      <ProgramCalendar week={params.week} baseHref={catalogURL(f)} />
       <p className="muted">
-        Start a program workout from its details, then choose exercises as you
-        train. Your current workout stays unchanged while browsing.
+        Browsing keeps your current program and workout unchanged.
       </p>
     </div>
   );

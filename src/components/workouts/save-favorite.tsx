@@ -1,43 +1,25 @@
 import { randomUUID } from "node:crypto";
-import { SelectionForm } from "./selection-form";
-export function SaveFavorite({
+import { loadSavedFavoriteKeys } from "@/features/workout-selection/queries";
+import { SaveFavoriteButton } from "./save-favorite-button";
+export async function SaveFavorite({
   type,
   source,
   day,
-  name,
 }: {
   type: "program_day" | "completed_ad_hoc";
   source: string;
   day?: string;
-  name: string;
 }) {
+  const keys = await loadSavedFavoriteKeys();
+  const saved = keys.has(`${type}:${source}${day ? `:${day}` : ""}`);
   return (
-    <details className="save-favorite">
-      <summary>Save as Favorite</summary>
-      <p className="set-source">
-        Save the movement structure. New sessions are independent and contain no
-        completed performance.
-      </p>
-      <SelectionForm
-        kind="save"
-        fields={{
-          sourceType: type,
-          source,
-          request: randomUUID(),
-          ...(day ? { day } : {}),
-        }}
-        label="Save Favorite"
-      >
-        <label>
-          Favorite name
-          <input
-            name="name"
-            defaultValue={name.slice(0, 100)}
-            maxLength={100}
-            required
-          />
-        </label>
-      </SelectionForm>
-    </details>
+    <SaveFavoriteButton
+      key={`${type}:${source}:${day ?? ""}:${saved}`}
+      type={type}
+      source={source}
+      day={day}
+      request={randomUUID()}
+      saved={saved}
+    />
   );
 }

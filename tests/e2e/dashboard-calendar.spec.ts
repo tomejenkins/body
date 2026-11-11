@@ -390,9 +390,11 @@ test("fixed assignment timezone and nonweekly calendar survive year boundaries a
   await expect(day(page, s.today)).toHaveAttribute("aria-current", "date");
   await expect(widget(page)).toContainText("Pacific/Auckland");
   await page.goto("/dashboard?week=2026-12-31");
-  await expect(widget(page).locator("time")).toHaveCount(7);
+  await expect(widget(page).locator(".training-week-strip time")).toHaveCount(
+    7,
+  );
   const times = await widget(page)
-    .locator("time")
+    .locator(".training-week-strip time")
     .evaluateAll((nodes) => nodes.map((n) => n.getAttribute("datetime")));
   expect(times).toEqual([
     "2026-12-28",
@@ -409,8 +411,7 @@ test("fixed assignment timezone and nonweekly calendar survive year boundaries a
   await widget(page).getByRole("link", { name: "Next training week" }).click();
   await expect(page).toHaveURL(/week=2027-01-04/);
   await page.goBack();
-  await expect(widget(page).locator("time").first()).toHaveAttribute(
-    "datetime",
-    "2026-12-28",
-  );
+  await expect(
+    widget(page).locator(".training-week-strip time").first(),
+  ).toHaveAttribute("datetime", "2026-12-28");
 });

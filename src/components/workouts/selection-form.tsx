@@ -1,5 +1,5 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   startSelection,
@@ -12,12 +12,16 @@ export function SelectionForm({
   fields,
   label,
   disabled = false,
+  accessibleLabel,
+  onSuccess,
   children,
 }: {
   kind: "start" | "decision" | "save" | "manage";
   fields: Record<string, string | number>;
   label: string;
   disabled?: boolean;
+  accessibleLabel?: string;
+  onSuccess?: () => void;
   children?: React.ReactNode;
 }) {
   const [state, action, pending] = useActionState(
@@ -29,13 +33,25 @@ export function SelectionForm({
     }[kind],
     {},
   );
+  useEffect(() => {
+    if (state.success) onSuccess?.();
+  }, [state.success, onSuccess]);
   return (
     <form action={action} className="selection-form">
       {Object.entries(fields).map(([k, v]) => (
         <input key={k} type="hidden" name={k} value={v} />
       ))}
       {children}
-      <Button type="submit" disabled={disabled || pending}>
+      <Button
+        type="submit"
+        aria-label={accessibleLabel}
+        variant={
+          kind === "manage" && fields.operation === "remove"
+            ? "destructive"
+            : "default"
+        }
+        disabled={disabled || pending}
+      >
         {pending ? "Saving…" : label}
       </Button>
       {state.error && <p role="alert">{state.error}</p>}

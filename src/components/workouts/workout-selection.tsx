@@ -1,3 +1,4 @@
+import { FavoriteActions } from "./favorite-actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { randomUUID } from "node:crypto";
@@ -75,7 +76,6 @@ export async function WorkoutSelection({
                 type="program_day"
                 source={a.version}
                 day={recommended.id}
-                name={recommended.name}
               />
             </section>
           )}
@@ -124,7 +124,6 @@ export async function WorkoutSelection({
                       type="program_day"
                       source={a.version}
                       day={d.id}
-                      name={d.name}
                     />
                   </li>
                 ))}
@@ -151,15 +150,12 @@ export async function WorkoutSelection({
         className="favorite-workouts"
         aria-label="Your Favorites"
       >
-        <h2>Your Favorites</h2>
-        <p className="set-source">
-          Reusable, independent workouts. They do not resolve assigned program
-          days.
-        </p>
+        <h2 tabIndex={-1}>Your Favorites</h2>
+        <p className="set-source">Your independent workout shortcuts.</p>
         {options.favorites.length ? (
           <ul>
             {options.favorites.map((f) => (
-              <li key={f.id}>
+              <li key={f.id} className="favorite-shortcut">
                 <div>
                   <h3>{f.name}</h3>
                   <p>
@@ -173,42 +169,11 @@ export async function WorkoutSelection({
                 <SelectionForm
                   kind="start"
                   fields={{ favorite: f.id, request: randomUUID() }}
-                  label={`Start ${f.name}`}
+                  label="Start Workout"
+                  accessibleLabel={`Start ${f.name}`}
                   disabled={!!active}
                 />
-                <details>
-                  <summary>Manage {f.name}</summary>
-                  <SelectionForm
-                    kind="manage"
-                    fields={{ favorite: f.id, operation: "rename" }}
-                    label="Rename Favorite"
-                  >
-                    <label>
-                      New name
-                      <input
-                        name="name"
-                        defaultValue={f.name}
-                        required
-                        maxLength={100}
-                      />
-                    </label>
-                  </SelectionForm>
-                  <SelectionForm
-                    kind="manage"
-                    fields={{ favorite: f.id, operation: "remove" }}
-                    label="Remove Favorite"
-                  >
-                    <label className="check-label">
-                      <input
-                        type="checkbox"
-                        name="confirmed"
-                        value="yes"
-                        required
-                      />
-                      Remove this shortcut; keep existing history
-                    </label>
-                  </SelectionForm>
-                </details>
+                <FavoriteActions id={f.id} name={f.name} />
               </li>
             ))}
           </ul>

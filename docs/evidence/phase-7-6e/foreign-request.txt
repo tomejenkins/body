@@ -1,0 +1,15 @@
+
+> body@1.0.0 test:e2e
+> playwright test favorite-one-tap.spec.ts -g foreign source IDs --output=/workspace/work/visual-7-6e/foreign-request
+
+
+Running 2 tests using 2 workers
+
+(node:170901) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:170902) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [mobile] › tests/e2e/favorite-one-tap.spec.ts:355:1 › foreign source IDs are denied and a failed transport remains retryable without false saved feedback (7.8s)
+  ✓  1 [desktop] › tests/e2e/favorite-one-tap.spec.ts:355:1 › foreign source IDs are denied and a failed transport remains retryable without false saved feedback (8.0s)
+
+  2 passed (9.6s)

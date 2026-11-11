@@ -1,0 +1,8 @@
+{
+  "base_merge": "c276d269d2dff1d5bbc9c22d3c484cdd0251ab3b",
+  "retained_dashboard_run_head": "25b47ab17ffb0086deca8be93de3cf1b2f0d439b",
+  "base_tree": "33c98390549218cccfad6a62e37ef65b13578782",
+  "retained_run_tree": "33c98390549218cccfad6a62e37ef65b13578782",
+  "identical_source_trees": true,
+  "note": "Dashboard and calendar before images are retained actual Phase 7.6D.1 captures; other fresh before captures used the unchanged merged-main build. Fixtures and capture dates differ."
+}

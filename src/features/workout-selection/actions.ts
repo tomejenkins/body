@@ -1,4 +1,5 @@
 "use server";
+import { favoriteDefaultName } from "./favorite-name";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
@@ -143,25 +144,51 @@ export async function saveFavorite(
   const source = uuid(f, "source"),
     day = uuid(f, "day"),
     request = uuid(f, "request"),
-    type = f.get("sourceType"),
-    name = f.get("name");
+    type = f.get("sourceType");
   if (
     !source ||
     !request ||
     !["program_day", "completed_ad_hoc"].includes(String(type)) ||
-    typeof name !== "string" ||
-    !name.trim() ||
-    name.trim().length > 100 ||
     (type === "program_day" && !day)
   )
-    return { error: "Choose a valid source and a name of 1–100 characters." };
+    return { error: "Choose a valid Favorite source." };
   try {
-    const { c } = await verified();
+    const { c, user } = await verified();
+    let sourceName: string | null = null;
+    if (type === "program_day") {
+      const version = await c
+        .from("program_versions")
+        .select("definition")
+        .eq("id", source)
+        .maybeSingle();
+      const days = version.data?.definition?.days;
+      if (!version.error && Array.isArray(days)) {
+        const selected = days.find(
+          (d: { id?: string; is_rest_day?: boolean; name?: string }) =>
+            d.id === day && d.is_rest_day === false,
+        );
+        if (typeof selected?.name === "string") sourceName = selected.name;
+      }
+    } else {
+      const workout = await c
+        .from("workout_sessions")
+        .select("name")
+        .eq("id", source)
+        .eq("owner_id", user.id)
+        .eq("status", "completed")
+        .is("source_program_version_id", null)
+        .is("archived_at", null)
+        .maybeSingle();
+      if (!workout.error && typeof workout.data?.name === "string")
+        sourceName = workout.data.name;
+    }
+    if (sourceName === null)
+      return { error: "Favorite source unavailable. Refresh and retry." };
     const r = await c.rpc("save_favorite_workout", {
       p_type: type,
       p_source: source,
       p_day: type === "program_day" ? day : null,
-      p_name: name.trim(),
+      p_name: favoriteDefaultName(sourceName),
       p_request: request,
     });
     if (r.error || !r.data)
@@ -169,12 +196,23 @@ export async function saveFavorite(
         error:
           "Favorite not saved. Check source access and confirmed training; the limit is 100 favorites.",
       };
+    const saved = await c
+      .from("favorite_workouts")
+      .select("id")
+      .eq("id", r.data)
+      .eq("owner_id", user.id)
+      .eq("archived", false)
+      .maybeSingle();
+    if (saved.error || !saved.data)
+      return {
+        error: "Favorite is no longer saved. Refresh to review Favorites.",
+      };
   } catch {
     return { error: failed };
   }
   refresh();
   return {
-    success: "Saved to Your Favorites. Future workouts start independently.",
+    success: "Saved to Favorites",
   };
 }
 export async function manageFavorite(

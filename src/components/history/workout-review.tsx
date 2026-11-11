@@ -50,7 +50,7 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
     .filter((s) => !s.deleted_at && s.status === "completed").length;
   const pending = sets.filter((s) => s.status !== "completed").length;
   return (
-    <>
+    <article className="history-review refined-screen">
       <div className="page-heading">
         <Link
           href={workout.archivedAt ? "/history?filter=archived" : "/history"}
@@ -128,7 +128,6 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
               ? (workout.sourceDayId ?? undefined)
               : undefined
           }
-          name={workout.name}
         />
       )}
       {!workout.archivedAt && <ClosedDrafts workout={workout} />}
@@ -249,6 +248,6 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
           request={crypto.randomUUID()}
         />
       )}
-    </>
+    </article>
   );
 }
