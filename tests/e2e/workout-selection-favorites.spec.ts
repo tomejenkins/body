@@ -1,3 +1,4 @@
+import { favoriteEditor, renameFavorite } from "./favorite-helpers";
 import { test, expect, type Locator } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
 import {
@@ -262,9 +263,10 @@ test("program and completed ad-hoc favorites launch independently with clean log
   const alternatives = page.locator(".program-workout-options");
   await open(alternatives);
   const day = alternatives.locator("li").filter({ hasText: "Training 2" });
-  await open(day.locator(".save-favorite"));
-  await day.getByLabel("Favorite name").fill("Saved press");
-  await day.getByRole("button", { name: "Save Favorite", exact: true }).click();
+  await day
+    .getByRole("button", { name: "Save as Favorite", exact: true })
+    .click();
+  await renameFavorite(page, "Training 2", "Saved press");
   const favorites = page.getByRole("region", { name: "Your Favorites" });
   await expect(
     favorites.getByRole("button", { name: "Start Saved press" }),
@@ -326,43 +328,55 @@ test("program and completed ad-hoc favorites launch independently with clean log
   await expect(page).toHaveURL(/\/complete$/);
   await page.goto(`/history/${session}`);
   await expect(page.getByText(/Independent Favorite/)).toBeVisible();
-  await open(page.locator(".save-favorite"));
-  await page.getByLabel("Favorite name").fill("Modified press");
   await page
-    .getByRole("button", { name: "Save Favorite", exact: true })
+    .getByRole("button", { name: "Save as Favorite", exact: true })
     .click();
   await expect(
-    page.getByRole("status").filter({ hasText: "Saved to Your Favorites" }),
+    page.getByRole("status").filter({ hasText: "Saved to Favorites" }),
   ).toBeVisible();
   const after = (await a.client.rpc("workout_start_options")).data;
   expect(after.assignment.cursor).toEqual(before.assignment.cursor);
   expect(after.favorites).toHaveLength(2);
   expect(
-    after.favorites.find((f: { name: string }) => f.name === "Modified press")
-      .sourceType,
+    after.favorites.find(
+      (f: { name: string; sourceType: string }) =>
+        f.name === "Saved press" && f.sourceType === "completed_ad_hoc",
+    ).sourceType,
   ).toBe("completed_ad_hoc");
   await page.goto("/workout");
-  await open(
-    favorites.getByText("Manage Saved press", { exact: true }).locator(".."),
-  );
-  const original = favorites.locator("li").filter({
-    has: page.getByRole("heading", { name: "Saved press", exact: true }),
+  // Rename/remove the original program shortcut, not the independently saved session.
+  const original = favorites
+    .locator("li")
+    .filter({
+      has: page.getByRole("heading", { name: "Saved press", exact: true }),
+    })
+    .filter({ hasText: "Selection training" });
+  await original
+    .getByRole("button", { name: "Manage Saved press", exact: true })
+    .click();
+  await page.getByRole("menuitem", { name: "Rename", exact: true }).click();
+  const editor = page.getByRole("dialog", {
+    name: "Rename Favorite",
+    exact: true,
   });
-  await original.getByLabel("New name").fill("Renamed press");
-  await original.getByRole("button", { name: "Rename Favorite" }).click();
+  await editor.getByLabel("New name").fill("Renamed press");
+  await editor
+    .getByRole("button", { name: "Rename Favorite", exact: true })
+    .click();
+  await expect(editor).toBeHidden();
   await expect(
-    favorites.getByRole("heading", { name: "Renamed press" }),
+    favorites.getByRole("heading", { name: "Renamed press", exact: true }),
   ).toBeVisible();
-  const renamed = favorites.locator("li").filter({
-    has: page.getByRole("heading", { name: "Renamed press", exact: true }),
-  });
-  await open(renamed.locator("details"));
-  await renamed
+  const remove = await favoriteEditor(page, "Renamed press", "Remove");
+  await remove
     .getByLabel("Remove this shortcut; keep existing history")
     .check();
-  await renamed.getByRole("button", { name: "Remove Favorite" }).click();
+  await remove
+    .getByRole("button", { name: "Remove Favorite", exact: true })
+    .click();
+  await expect(remove).toBeHidden();
   await expect(
-    favorites.getByRole("heading", { name: "Renamed press" }),
+    favorites.getByRole("heading", { name: "Renamed press", exact: true }),
   ).toHaveCount(0);
   expect(
     (

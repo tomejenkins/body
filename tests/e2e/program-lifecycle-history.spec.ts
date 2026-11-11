@@ -61,7 +61,9 @@ test("explicit enrollment, statistics, pending end, switch, separate repeats and
         .eq("owner_id", a.userId)
     ).data,
   ).toEqual([]);
-  await page.locator("#manage-program summary").click();
+  await page
+    .getByRole("button", { name: "Manage Program", exact: true })
+    .click();
   await page.screenshot({
     path: info.outputPath("manage-program.png"),
     fullPage: true,
@@ -70,15 +72,23 @@ test("explicit enrollment, statistics, pending end, switch, separate repeats and
   await page
     .getByRole("button", { name: "End After Next Workout", exact: true })
     .click();
+  await page
+    .getByRole("button", { name: "Close Manage Program", exact: true })
+    .click();
   await expect(
     page.getByText(
       "Program will end after your next completed program workout.",
       { exact: true },
     ),
   ).toBeVisible();
-  await page
-    .locator("#manage-program")
-    .evaluate((e) => ((e as HTMLDetailsElement).open = true));
+  if (
+    !(await page
+      .getByRole("dialog", { name: "Manage Program", exact: true })
+      .isVisible())
+  )
+    await page
+      .getByRole("button", { name: "Manage Program", exact: true })
+      .click();
   await page.screenshot({
     path: info.outputPath("pending-end.png"),
     fullPage: true,
@@ -133,7 +143,9 @@ test("explicit enrollment, statistics, pending end, switch, separate repeats and
   rows = await enrollments(a);
   expect(rows).toHaveLength(2);
   expect(rows.find((r) => r.id === first)?.status).toBe("Switched");
-  await page.locator("#manage-program summary").click();
+  await page
+    .getByRole("button", { name: "Manage Program", exact: true })
+    .click();
   await page
     .getByLabel(
       "Confirm ending this program now. My workouts and progress will be kept.",
@@ -234,7 +246,9 @@ test("concurrent commands, exact retries, active workout guards and authoritativ
   expect((await command(a, "switch", id, 1, q.version)).error).not.toBeNull();
   await loginSelection(page, a);
   await page.goto("/programs/current");
-  await page.locator("#manage-program summary").click();
+  await page
+    .getByRole("button", { name: "Manage Program", exact: true })
+    .click();
   await expect(
     page.getByRole("button", { name: "End Program Now", exact: true }),
   ).toBeDisabled();

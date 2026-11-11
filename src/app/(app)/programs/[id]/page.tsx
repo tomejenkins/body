@@ -23,7 +23,7 @@ export default async function Page({
   const context = await loadEnrollmentContext();
   const same = sameEnrollmentVersion(context.enrollment, loaded.versionId);
   return (
-    <article className="program-detail">
+    <article className="program-detail refined-screen">
       <Link href="/programs">← Programs</Link>
       <ProgramCover media={d.media?.cover ?? null} title={p.name} priority />
       <header>
@@ -150,7 +150,6 @@ export default async function Page({
                     type="program_day"
                     source={loaded.versionId}
                     day={day.id}
-                    name={day.name}
                   />
                   <details className="program-workout-preview">
                     <summary>View {day.slots.length} movements</summary>

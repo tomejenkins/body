@@ -75,7 +75,7 @@ it("keeps partial acceptance separate and suppresses repeated/ineligible Favorit
     screen.getByRole("link", { name: "Review program schedule" }),
   ).toHaveAttribute("href", "/workout?decisions=program#schedule-decisions");
   expect(screen.queryByRole("button", { name: "Save Favorite" })).toBeNull();
-  expect(screen.getByRole("status")).toHaveTextContent("Saved as Favorite");
+  expect(screen.getByRole("status")).toHaveTextContent("Saved to Favorites");
   rerender(
     <WorkoutComplete
       workout={w}

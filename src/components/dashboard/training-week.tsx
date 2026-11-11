@@ -125,6 +125,26 @@ export function TrainingWeek({
         </div>
       ) : (
         <>
+          {s?.next && s.next.recommendedOn !== s.today && (
+            <aside
+              className="training-next-summary"
+              aria-label="Next program workout"
+            >
+              <span>Next workout</span>
+              <h3>{s.next.name}</h3>
+              <p>
+                <time dateTime={s.next.recommendedOn}>
+                  {new Intl.DateTimeFormat("en-US", {
+                    weekday: "short",
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    timeZone: "UTC",
+                  }).format(new Date(`${s.next.recommendedOn}T12:00:00Z`))}
+                </time>
+              </p>
+            </aside>
+          )}
           <nav
             className="training-week-navigation"
             aria-label="Training week navigation"
@@ -301,11 +321,7 @@ export function TrainingWeek({
               </Link>
             )}
           </div>
-          {s?.next && s.next.recommendedOn !== s.today && (
-            <p className="set-source">
-              Next: {s.next.name} · {s.next.recommendedOn}
-            </p>
-          )}
+
           {truncated && (
             <p className="set-source">
               Some training is not shown.{" "}

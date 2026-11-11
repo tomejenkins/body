@@ -34,7 +34,7 @@ export default async function Page({
   const a = loaded.enrollment,
     last = loaded.workouts.at(-1);
   return (
-    <section className="enrollment-surface">
+    <section className="enrollment-surface refined-screen">
       <HistoryViewSelector current="programs" />
       <Link href="/history/programs">← Program History</Link>
       <h1>{a.name}</h1>
@@ -98,7 +98,9 @@ export default async function Page({
         <p>Program will end after your next completed program workout.</p>
       )}
       {a.state === "active" && (
-        <Link href="/programs/current#manage-program">Manage Program</Link>
+        <Link href="/programs/current?manage=1#manage-program">
+          Manage Program
+        </Link>
       )}
       <EnrollmentStrength enrollment={a} unit={c.unit} />
       <section aria-label="Assigned workout history">

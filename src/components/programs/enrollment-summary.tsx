@@ -31,8 +31,8 @@ export function EnrollmentSummary({
           {a.name}
         </Link>
       </h2>
-      <p>
-        {a.status} · {enrollmentDuration(a)}
+      <p className="enrollment-state">
+        <span>{a.status}</span> · {enrollmentDuration(a)}
       </p>
       <p className="enrollment-count">
         <strong>{a.workouts}</strong> workouts completed
@@ -46,16 +46,19 @@ export function EnrollmentSummary({
               timeZone: a.timezone,
             }).format(new Date(a.startedAt))}
           </time>
+          {current && a.state === "active"
+            ? ` · Rotation ${a.currentRotation}`
+            : ""}
         </p>
       )}
-      {a.state === "active" && (
+      {a.state === "active" && !current && (
         <p className="set-source">
           Rotation {a.currentRotation} · {a.completedRotations} complete
           rotations
         </p>
       )}
       {highlights.map((c) => (
-        <p key={c.exerciseId}>
+        <p className="enrollment-highlight" key={c.exerciseId}>
           <strong>{c.name}</strong> {comparisonChange(c, unit)}
         </p>
       ))}
@@ -73,7 +76,9 @@ export function EnrollmentSummary({
       {current && (
         <div className="enrollment-links">
           <Link href="/programs/current">Continue / View Program</Link>
-          <Link href="/programs/current#manage-program">Manage Program</Link>
+          <Link href="/programs/current?manage=1#manage-program">
+            Manage Program
+          </Link>
         </div>
       )}
     </article>

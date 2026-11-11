@@ -19,7 +19,7 @@ export default async function Page({
     ]),
     last = history.items.at(-1);
   return (
-    <>
+    <div className="history-screen refined-screen">
       <HistoryViewSelector current="programs" />
       <div className="page-heading">
         <h1>Program History</h1>
@@ -50,6 +50,6 @@ export default async function Page({
           </Link>
         )}
       </nav>
-    </>
+    </div>
   );
 }

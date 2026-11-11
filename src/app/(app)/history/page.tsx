@@ -1,13 +1,8 @@
 import { HistoryViewSelector } from "@/components/history/history-view-selector";
-import { qualifiedDuration } from "@/features/continuity/model";
+import { HistoryCard } from "@/components/history/history-card";
 import Link from "next/link";
 import { loadHistory } from "@/features/history/queries";
-import {
-  cursorFor,
-  friendlyWorkoutName,
-  historyStatus,
-} from "@/features/history/model";
-import { LocalTime } from "@/components/history/local-time";
+import { cursorFor } from "@/features/history/model";
 export const metadata = { title: "History" };
 export default async function Page({
   searchParams,
@@ -21,10 +16,9 @@ export default async function Page({
   );
   const last = rows.at(-1);
   return (
-    <>
+    <div className="history-screen refined-screen">
       <HistoryViewSelector current="workouts" />
       <div className="page-heading">
-        <p className="eyebrow">YOUR TRAINING STORY</p>
         <h1>
           {filter === "archived" ? "Archived Workouts" : "Workout history"}
         </h1>
@@ -33,7 +27,6 @@ export default async function Page({
           <Link href="/history/records">Personal Records →</Link>
           <Link href="/history/progress">Training progress →</Link>
         </div>
-        <p className="intro">Look back at the work you put in.</p>
       </div>
       <nav className="history-filters" aria-label="History filters">
         {(
@@ -57,47 +50,7 @@ export default async function Page({
         <ol className="history-list">
           {rows.map((w) => (
             <li key={w.id}>
-              <Link href={`/history/${w.id}`}>
-                <div>
-                  <h2>{friendlyWorkoutName(w.name)}</h2>
-                  <LocalTime
-                    value={
-                      filter === "archived"
-                        ? (w.finished_at ?? w.started_at)
-                        : w.started_at
-                    }
-                  />
-                </div>
-                <p>
-                  {filter === "archived" ? "Archived · " : ""}
-                  {historyStatus(w.status, w.completion_status)}
-                </p>
-                <p>
-                  {w.exercise_count} exercises selected · {w.working_sets}{" "}
-                  completed working sets · {w.warm_up_sets} warm-up sets ·{" "}
-                  {w.incomplete_sets} incomplete sets
-                </p>
-                <p>
-                  {qualifiedDuration({
-                    started_at: w.started_at,
-                    finished_at: w.finished_at,
-                    effective_finished_at: w.effective_finished_at ?? null,
-                    duration_kind: w.duration_kind ?? "legacy",
-                    idle_intervals: w.idle_intervals ?? [],
-                    manual_pause_intervals: w.manual_pause_intervals,
-                  })}
-                </p>
-                {w.closure_reason === "inactivity" && (
-                  <p>Closed after inactivity · Saved sets kept</p>
-                )}
-                {!!w.achievement_count && (
-                  <p>
-                    {w.achievement_count} personal best
-                    {w.achievement_count === 1 ? "" : "s"}
-                  </p>
-                )}
-                <span>View workout →</span>
-              </Link>
+              <HistoryCard workout={w} archived={filter === "archived"} />
             </li>
           ))}
         </ol>
@@ -124,6 +77,6 @@ export default async function Page({
           </Link>
         )}
       </div>
-    </>
+    </div>
   );
 }

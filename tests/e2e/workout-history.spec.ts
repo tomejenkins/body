@@ -173,7 +173,10 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
   await page.goto("/history");
   await expect(page.locator(".history-list >li")).toHaveCount(20);
   await expect(page.locator(".history-list")).toContainText(
-    "2 completed working sets · 1 warm-up sets · 3 incomplete sets",
+    "2 completed working sets",
+  );
+  await expect(page.locator(".history-list")).toContainText(
+    "1 warm-up sets · 3 incomplete sets",
   );
   await page
     .getByRole("link", { name: "Older workouts →", exact: true })

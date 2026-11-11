@@ -17,7 +17,11 @@ export async function ProgramCalendar({
   const { schedule: s, timezone } = await loadProgramSchedule(week);
   if (!s?.configured || !s.from || !s.today)
     return (
-      <section className="program-calendar" aria-label="Program calendar">
+      <section
+        className="program-calendar"
+        id="program-calendar"
+        aria-label="Program calendar"
+      >
         <h2>Your calendar</h2>
         <p>
           {s

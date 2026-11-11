@@ -4,8 +4,7 @@ import { randomUUID } from "node:crypto";
 import { TrainingWeek } from "@/components/dashboard/training-week";
 import { loadTrainingWeek } from "@/features/scheduling/dashboard-queries";
 import { loadHistory } from "@/features/history/queries";
-import { friendlyWorkoutName } from "@/features/history/model";
-import { LocalTime } from "@/components/history/local-time";
+import { HistoryCard } from "@/components/history/history-card";
 export const metadata = { title: "Home" };
 export default async function Dashboard({
   searchParams,
@@ -18,11 +17,10 @@ export default async function Dashboard({
     loadTrainingWeek(params.week),
   ]);
   return (
-    <div className="home-screen">
+    <div className="home-screen refined-screen">
       <header className="page-heading">
-        <p className="eyebrow">BODY</p>
         <h1>Your training.</h1>
-        <p className="intro">A little stronger, every session.</p>
+        <p className="intro">Your next session. Your progress.</p>
       </header>
       <TrainingWeek
         key={`${week.schedule?.assignmentId}:${week.schedule?.from}`}
@@ -30,6 +28,29 @@ export default async function Dashboard({
         activeSession={history.activeSession}
         request={randomUUID()}
       />
+      {history.rows.length > 0 && (
+        <section className="recent-metrics" aria-label="Recent training totals">
+          <p>Last {Math.min(3, history.rows.length)} completed workouts</p>
+          <dl>
+            <div>
+              <dt>Working sets</dt>
+              <dd>
+                {history.rows
+                  .slice(0, 3)
+                  .reduce((n, w) => n + w.working_sets, 0)}
+              </dd>
+            </div>
+            <div>
+              <dt>Personal bests</dt>
+              <dd>
+                {history.rows
+                  .slice(0, 3)
+                  .reduce((n, w) => n + (w.achievement_count ?? 0), 0)}
+              </dd>
+            </div>
+          </dl>
+        </section>
+      )}
       <nav className="home-shortcuts" aria-label="Training shortcuts">
         <Link href="/programs">
           Programs <ArrowUpRight size={16} aria-hidden="true" />
@@ -50,13 +71,7 @@ export default async function Dashboard({
           <ol className="history-list">
             {history.rows.slice(0, 3).map((w) => (
               <li key={w.id}>
-                <Link href={`/history/${w.id}`}>
-                  <h3>{friendlyWorkoutName(w.name)}</h3>
-                  <p>
-                    <LocalTime value={w.started_at} /> · {w.working_sets}{" "}
-                    working sets
-                  </p>
-                </Link>
+                <HistoryCard workout={w} compact />
               </li>
             ))}
           </ol>

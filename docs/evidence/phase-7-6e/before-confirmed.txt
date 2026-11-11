@@ -1,0 +1,16 @@
+
+> body@1.0.0 test:e2e
+> playwright test visual-refinement.spec.ts --output=/workspace/work/visual-7-6e/before-confirmed
+
+
+Running 2 tests using 2 workers
+
+(node:131305) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:131311) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  -  2 [mobile] › tests/e2e/visual-refinement.spec.ts:9:1 › visual surfaces retain actual enrollment and training evidence
+  ✓  1 [desktop] › tests/e2e/visual-refinement.spec.ts:9:1 › visual surfaces retain actual enrollment and training evidence (30.9s)
+
+  1 skipped
+  1 passed (31.7s)
