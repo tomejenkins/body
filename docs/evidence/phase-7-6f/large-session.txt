@@ -1,0 +1,12 @@
+
+> body@1.0.0 test:e2e
+> playwright test --config playwright.audit.config.ts large-session --output /workspace/work/readiness-7-6f/large-session
+
+
+Running 1 test using 1 worker
+
+(node:212959) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [audit-chromium] › tests/audit/large-session.spec.ts:4:1 › profile bounded 100-set logger without changing set structure or inputs (30.6s)
+
+  1 passed (32.8s)

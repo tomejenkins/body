@@ -3297,3 +3297,13 @@ body:has(.active-workout-mode) .app-content {
 .program-library .enrollment-card {
   grid-template-columns: minmax(0, 1fr) minmax(80px, 5rem);
 }
+
+.connection-status:empty {
+  display: none;
+}
+.connection-status {
+  display: block;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}

@@ -1,4 +1,5 @@
 "use client";
+import { ConnectionStatus } from "./connection-status";
 import type { Continuity } from "@/features/continuity/model";
 import Link from "next/link";
 import { ActiveWorkoutBar } from "@/components/continuity/active-workout-bar";
@@ -92,6 +93,7 @@ export function AppShell({
             <span className="status-dot" /> Private by design
           </span>
         </header>
+        <ConnectionStatus />
         {userId && (
           <ActiveWorkoutBar
             key={userId}

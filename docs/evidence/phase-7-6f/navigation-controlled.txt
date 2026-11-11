@@ -1,0 +1,12 @@
+
+> body@1.0.0 test:e2e
+> playwright test --config playwright.audit.config.ts navigation-performance --output /workspace/work/readiness-7-6f/navigation-controlled
+
+
+Running 1 test using 1 worker
+
+(node:208259) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [audit-chromium] › tests/audit/navigation-performance.spec.ts:6:1 › measure private route readiness and offline navigation limits (1.3m)
+
+  1 passed (1.3m)

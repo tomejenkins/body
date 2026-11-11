@@ -1,0 +1,51 @@
+
+> body@1.0.0 test:e2e
+> playwright test navigation.spec.ts --grep all destinations --output /workspace/work/readiness-7-6f/navigation-redirect-fix
+
+
+Running 2 tests using 2 workers
+
+(node:220610) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:220611) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/e2e/navigation.spec.ts:14:1 › all destinations render, navigation tracks the route, and layouts fit (3.6s)
+  ✘  2 [mobile] › tests/e2e/navigation.spec.ts:14:1 › all destinations render, navigation tracks the route, and layouts fit (7.5s)
+
+
+  1) [mobile] › tests/e2e/navigation.spec.ts:14:1 › all destinations render, navigation tracks the route, and layouts fit
+
+    Error: expect(locator).toHaveCSS(expected) failed
+
+    Locator: getByRole('region', { name: 'Your Training Week', exact: true }).getByRole('link', { name: 'Start Other Workout', exact: true }).or(getByRole('region', { name: 'Your Training Week', exact: true }).getByRole('link', { name: 'Resume Workout', exact: true }))
+    Expected: "rgb(255, 255, 255)"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveCSS" getByRole('region', { name: 'Your Training Week', exact: true }).getByRole('link', { name: 'Start Other Workout', exact: true }).or(getByRole('region', { name: 'Your Training Week', exact: true }).getByRole('link', { name: 'Resume Workout', exact: true })) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Your Training Week', exact: true }).getByRole('link', { name: 'Start Other Workout', exact: true }).or(getByRole('region', { name: 'Your Training Week', exact: true }).getByRole('link', { name: 'Resume Workout', exact: true }))
+
+
+      26 |           .getByRole("link", { name: "Resume Workout", exact: true }),
+      27 |       ),
+    > 28 |   ).toHaveCSS("color", "rgb(255, 255, 255)");
+         |     ^
+      29 |   await expect(page).toHaveURL(/\/dashboard$/);
+      30 |   const nav = page.getByRole("navigation", { name: "Main navigation" });
+      31 |   for (const [label, heading] of routes) {
+        at /workspace/body/tests/e2e/navigation.spec.ts:28:5
+
+    Error Context: ../work/readiness-7-6f/navigation-redirect-fix/navigation-all-destination-0eed8-s-the-route-and-layouts-fit-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../work/readiness-7-6f/navigation-redirect-fix/navigation-all-destination-0eed8-s-the-route-and-layouts-fit-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace ../work/readiness-7-6f/navigation-redirect-fix/navigation-all-destination-0eed8-s-the-route-and-layouts-fit-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [mobile] › tests/e2e/navigation.spec.ts:14:1 › all destinations render, navigation tracks the route, and layouts fit
+  1 passed (8.5s)

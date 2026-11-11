@@ -1,0 +1,12 @@
+
+> body@1.0.0 test:e2e
+> playwright test --config playwright.audit.config.ts uncertain-save --output /workspace/work/readiness-7-6f/retry-baseline
+
+
+Running 1 test using 1 worker
+
+(node:194988) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [audit-chromium] › tests/audit/uncertain-save.spec.ts:5:1 › uncertain save captures exact retry identity and protects later device writes (2.6s)
+
+  1 passed (3.2s)

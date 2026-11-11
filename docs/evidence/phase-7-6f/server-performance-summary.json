@@ -1,0 +1,308 @@
+{
+  "method": "12 sequential edits per profile; linear-interpolated p95; response-commit DOM observer, Resource Timing, opt-in HTTP/Undici spans",
+  "control": {
+    "local": {
+      "samples": 12,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 90.25,
+        "p95": 122.52,
+        "min": 65.9,
+        "max": 132.7
+      },
+      "automationAcknowledgementMs": {
+        "n": 12,
+        "p50": 116.25,
+        "p95": 166.55,
+        "min": 88.5,
+        "max": 170.4
+      },
+      "mutationResourceMs": {
+        "n": 12,
+        "p50": 38.9,
+        "p95": 52.47,
+        "min": 31.7,
+        "max": 52.8
+      },
+      "domAfterMutationResponseMs": {
+        "n": 12,
+        "p50": 4.55,
+        "p95": 6.19,
+        "min": 2.9,
+        "max": 6.3
+      },
+      "browserRequestCounts": [2],
+      "requestBodyBytes": {
+        "n": 12,
+        "p50": 415,
+        "p95": 416,
+        "min": 414,
+        "max": 416
+      },
+      "responseBodyBytes": {
+        "n": 12,
+        "p50": 1161,
+        "p95": 1162.45,
+        "min": 1159,
+        "max": 1163
+      },
+      "longTaskCount": 0
+    },
+    "mobile-80ms": {
+      "samples": 12,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 129.1,
+        "p95": 142.98,
+        "min": 120.7,
+        "max": 144.3
+      },
+      "automationAcknowledgementMs": {
+        "n": 12,
+        "p50": 155.65,
+        "p95": 170.94,
+        "min": 143.5,
+        "max": 176.5
+      },
+      "mutationResourceMs": {
+        "n": 12,
+        "p50": 86.95,
+        "p95": 91.53,
+        "min": 83.6,
+        "max": 91.8
+      },
+      "domAfterMutationResponseMs": {
+        "n": 12,
+        "p50": 3.8,
+        "p95": 5.53,
+        "min": 1.8,
+        "max": 5.8
+      },
+      "browserRequestCounts": [2],
+      "requestBodyBytes": {
+        "n": 12,
+        "p50": 416,
+        "p95": 416,
+        "min": 415,
+        "max": 416
+      },
+      "responseBodyBytes": {
+        "n": 12,
+        "p50": 1161,
+        "p95": 1162.45,
+        "min": 1159,
+        "max": 1163
+      },
+      "longTaskCount": 0
+    },
+    "mobile-300ms": {
+      "samples": 12,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 357,
+        "p95": 374.69,
+        "min": 349.1,
+        "max": 374.8
+      },
+      "automationAcknowledgementMs": {
+        "n": 12,
+        "p50": 855.85,
+        "p95": 874.37,
+        "min": 375.7,
+        "max": 881.3
+      },
+      "mutationResourceMs": {
+        "n": 12,
+        "p50": 316.45,
+        "p95": 325.24,
+        "min": 308.3,
+        "max": 327
+      },
+      "domAfterMutationResponseMs": {
+        "n": 12,
+        "p50": 4.2,
+        "p95": 12.8,
+        "min": 3,
+        "max": 14.4
+      },
+      "browserRequestCounts": [2],
+      "requestBodyBytes": {
+        "n": 12,
+        "p50": 416,
+        "p95": 416,
+        "min": 415,
+        "max": 416
+      },
+      "responseBodyBytes": {
+        "n": 12,
+        "p50": 1164.5,
+        "p95": 1166.45,
+        "min": 1161,
+        "max": 1167
+      },
+      "longTaskCount": 0
+    }
+  },
+  "profiles": {
+    "local": {
+      "samples": 12,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 79.2,
+        "p95": 92.57,
+        "min": 66.6,
+        "max": 94
+      },
+      "automationAcknowledgementMs": {
+        "n": 12,
+        "p50": 99.85,
+        "p95": 116.08,
+        "min": 91.5,
+        "max": 120.7
+      },
+      "mutationResourceMs": {
+        "n": 12,
+        "p50": 35.65,
+        "p95": 41.34,
+        "min": 29.1,
+        "max": 42
+      },
+      "domAfterMutationResponseMs": {
+        "n": 12,
+        "p50": 4.6,
+        "p95": 7.42,
+        "min": 2.2,
+        "max": 7.8
+      },
+      "browserRequestCounts": [2],
+      "requestBodyBytes": {
+        "n": 12,
+        "p50": 415,
+        "p95": 416,
+        "min": 414,
+        "max": 416
+      },
+      "responseBodyBytes": {
+        "n": 12,
+        "p50": 1162,
+        "p95": 1165,
+        "min": 1160,
+        "max": 1165
+      },
+      "longTaskCount": 0
+    },
+    "mobile-80ms": {
+      "samples": 12,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 131,
+        "p95": 135.9,
+        "min": 118.3,
+        "max": 136.4
+      },
+      "automationAcknowledgementMs": {
+        "n": 12,
+        "p50": 150.9,
+        "p95": 161.74,
+        "min": 142.9,
+        "max": 161.8
+      },
+      "mutationResourceMs": {
+        "n": 12,
+        "p50": 88.6,
+        "p95": 90.88,
+        "min": 84.9,
+        "max": 91.1
+      },
+      "domAfterMutationResponseMs": {
+        "n": 12,
+        "p50": 4.55,
+        "p95": 7.3,
+        "min": 3.3,
+        "max": 8.4
+      },
+      "browserRequestCounts": [2],
+      "requestBodyBytes": {
+        "n": 12,
+        "p50": 416,
+        "p95": 416,
+        "min": 415,
+        "max": 416
+      },
+      "responseBodyBytes": {
+        "n": 12,
+        "p50": 1163,
+        "p95": 1164,
+        "min": 1160,
+        "max": 1164
+      },
+      "longTaskCount": 0
+    },
+    "mobile-300ms": {
+      "samples": 12,
+      "domSavedMs": {
+        "n": 12,
+        "p50": 363.3,
+        "p95": 377.76,
+        "min": 345,
+        "max": 383.2
+      },
+      "automationAcknowledgementMs": {
+        "n": 12,
+        "p50": 848.95,
+        "p95": 870.87,
+        "min": 393.6,
+        "max": 873.4
+      },
+      "mutationResourceMs": {
+        "n": 12,
+        "p50": 323.75,
+        "p95": 330.32,
+        "min": 312.1,
+        "max": 332.8
+      },
+      "domAfterMutationResponseMs": {
+        "n": 12,
+        "p50": 4.15,
+        "p95": 6.02,
+        "min": 3.2,
+        "max": 6.4
+      },
+      "browserRequestCounts": [2],
+      "requestBodyBytes": {
+        "n": 12,
+        "p50": 416,
+        "p95": 416,
+        "min": 415,
+        "max": 416
+      },
+      "responseBodyBytes": {
+        "n": 12,
+        "p50": 1165,
+        "p95": 1169.45,
+        "min": 1161,
+        "max": 1170
+      },
+      "longTaskCount": 0
+    }
+  },
+  "server": {
+    "samples": 36,
+    "httpMs": {
+      "n": 36,
+      "p50": 33.34,
+      "p95": 40.69,
+      "min": 25.83,
+      "max": 46.87
+    },
+    "callsPerMutation": [3],
+    "authReadsPerMutation": [2],
+    "rpcTransportMs": {
+      "n": 36,
+      "p50": 8.02,
+      "p95": 11.77,
+      "min": 5.61,
+      "max": 15.03
+    }
+  }
+}

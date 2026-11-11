@@ -1,0 +1,114 @@
+[
+  {
+    "path": "/",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "s-maxage=31536000",
+    "passed": true
+  },
+  {
+    "path": "/login",
+    "status": 200,
+    "expected": 200,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  },
+  {
+    "path": "/manifest.webmanifest",
+    "status": 200,
+    "expected": 200,
+    "cacheControl": "public, max-age=0, must-revalidate",
+    "passed": true
+  },
+  {
+    "path": "/body-sw.js",
+    "status": 200,
+    "expected": 200,
+    "cacheControl": "no-cache, no-store, must-revalidate",
+    "passed": true
+  },
+  {
+    "path": "/offline.html",
+    "status": 307,
+    "expected": 200,
+    "cacheControl": "no-cache",
+    "passed": false
+  },
+  {
+    "path": "/icon.svg",
+    "status": 200,
+    "expected": 200,
+    "cacheControl": "public, max-age=0, must-revalidate",
+    "passed": true
+  },
+  {
+    "path": "/dashboard",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  },
+  {
+    "path": "/workout",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  },
+  {
+    "path": "/programs",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  },
+  {
+    "path": "/programs/current",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  },
+  {
+    "path": "/programs/enroll?version=00000000-0000-0000-0000-000000000000",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  },
+  {
+    "path": "/history",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  },
+  {
+    "path": "/history?filter=archived",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  },
+  {
+    "path": "/history/programs",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  },
+  {
+    "path": "/history/programs/00000000-0000-0000-0000-000000000000",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  },
+  {
+    "path": "/workout/00000000-0000-0000-0000-000000000000/complete",
+    "status": 307,
+    "expected": 307,
+    "cacheControl": "private, no-store, max-age=0",
+    "passed": true
+  }
+]

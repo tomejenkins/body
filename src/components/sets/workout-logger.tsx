@@ -370,6 +370,16 @@ export function WorkoutLogger({
   ) {
     const entry = ref.current[id];
     if (!entry || entry.conflict) return;
+    // Clicking Retry can blur an unchanged failed field first. That blur is
+    // the same uncertain operation, not a new edit against a stale revision.
+    // A changed draft has a new sequence and must keep ordinary CAS behavior.
+    retry ??=
+      operation === "save" &&
+      entry.seq === entry.retrySeq &&
+      (entry.retry?.operation === "save" ||
+        (entry.localOnly && entry.retry?.operation === "add"))
+        ? entry.retry
+        : undefined;
     let values;
     try {
       values =

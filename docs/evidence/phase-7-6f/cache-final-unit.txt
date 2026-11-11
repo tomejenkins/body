@@ -1,0 +1,15 @@
+
+> body@1.0.0 test
+> vitest run src/features/connectivity/public-worker.test.ts src/components/layout/connection-status.test.tsx
+
+
+ RUN  v5.1.0 /workspace/body
+
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  05:36:41
+   Duration  1.26s (environment 71%, setup 12%, tests 10%, transform 5%, import 1%, worker 1%)
+
+    Isolate  2 workers spawned · ~466ms startup each (spawn + environment, per file)
+             at least ~466ms faster with isolate: false — reuses workers across files instead of one per file

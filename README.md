@@ -100,7 +100,7 @@ The tests use synthetic fixtures and temporary grants inside a rollback transact
 
 System preference controls light and dark themes without client-side theme flashes. Navigation uses a mobile bottom bar and desktop sidebar; links retain visible focus states and a skip link. The layout respects mobile safe areas and reduced motion. No remote fonts or assets are required.
 
-A standalone manifest, SVG icon, viewport metadata, and Apple web-app metadata establish the PWA foundation. Offline support, service worker, raster install icons, update handling, and cross-platform installation validation are intentionally deferred. Do not cache private training data by default. This is not yet a complete installable/offline PWA.
+A standalone manifest, SVG icon, viewport metadata, and Apple web-app metadata establish the PWA foundation. Phase 7.6F adds a narrowly scoped public offline fallback and browser-offline feedback. The worker stores only the public fallback and icon, never private pages, API responses or mutations; the public root redirect bypasses interception. Workout recording still requires authoritative server acknowledgement. Raster install icons, physical installation/update validation and durable offline recording remain outstanding. This is not yet a complete offline training PWA. See [connectivity architecture](docs/phase-7-6f-performance-connectivity-audit.md) and [MVP release gates](docs/mvp-readiness-and-next-roadmap.md).
 
 ## Foundation requirements audit
 

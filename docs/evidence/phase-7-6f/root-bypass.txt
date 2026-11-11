@@ -1,0 +1,37 @@
+
+> body@1.0.0 test:e2e
+> playwright test navigation.spec.ts connectivity.spec.ts --output /workspace/work/readiness-7-6f/root-bypass
+
+
+Running 20 tests using 2 workers
+
+(node:221835) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:221836) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › tests/e2e/connectivity.spec.ts:20:1 › public offline fallback never persists private pages or replays mutations (2.6s)
+  ✓   2 [desktop] › tests/e2e/connectivity.spec.ts:59:1 › mounted logger preserves failed input and retries only on explicit save (4.6s)
+  ✓   3 [desktop] › tests/e2e/connectivity.spec.ts:98:1 › storage cache remains public through authenticated navigation and sign out (5.1s)
+  ✓   4 [desktop] › tests/e2e/navigation.spec.ts:14:1 › all destinations render, navigation tracks the route, and layouts fit (4.5s)
+  ✓   5 [desktop] › tests/e2e/navigation.spec.ts:45:1 › system dark mode and PWA manifest are available (2.6s)
+  ✓   6 [desktop] › tests/e2e/navigation.spec.ts:62:1 › keyboard users can skip navigation (2.2s)
+  ✓   7 [desktop] › tests/e2e/navigation.spec.ts:72:1 › navigation uses the right placement and usable touch targets (2.7s)
+  ✓   8 [desktop] › tests/e2e/navigation.spec.ts:110:1 › theme follows system changes without navigation (3.2s)
+  ✓  10 [desktop] › tests/e2e/workout-navigation.spec.ts:196:1 › invalid and foreign context expose no controls; stale closed workout additions fail safely (8.7s)
+(node:222642) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [mobile] › tests/e2e/connectivity.spec.ts:20:1 › public offline fallback never persists private pages or replays mutations (5.1s)
+  ✓   9 [desktop] › tests/e2e/workout-navigation.spec.ts:20:1 › builder context, recent Add, detail Add, recommendations, Look Back and restored filters (20.3s)
+(node:223146) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  12 [mobile] › tests/e2e/connectivity.spec.ts:59:1 › mounted logger preserves failed input and retries only on explicit save (11.0s)
+  ✓  13 [mobile] › tests/e2e/connectivity.spec.ts:98:1 › storage cache remains public through authenticated navigation and sign out (12.9s)
+  ✓  14 [mobile] › tests/e2e/navigation.spec.ts:14:1 › all destinations render, navigation tracks the route, and layouts fit (12.8s)
+  ✓  15 [mobile] › tests/e2e/navigation.spec.ts:45:1 › system dark mode and PWA manifest are available (5.7s)
+  ✓  16 [mobile] › tests/e2e/navigation.spec.ts:62:1 › keyboard users can skip navigation (6.0s)
+  ✓  17 [mobile] › tests/e2e/navigation.spec.ts:72:1 › navigation uses the right placement and usable touch targets (6.8s)
+  ✓  18 [mobile] › tests/e2e/navigation.spec.ts:110:1 › theme follows system changes without navigation (6.9s)
+  ✓  20 [mobile] › tests/e2e/workout-navigation.spec.ts:196:1 › invalid and foreign context expose no controls; stale closed workout additions fail safely (13.4s)
+  ✓  19 [mobile] › tests/e2e/workout-navigation.spec.ts:20:1 › builder context, recent Add, detail Add, recommendations, Look Back and restored filters (28.0s)
+
+  20 passed (1.6m)

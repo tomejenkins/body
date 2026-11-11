@@ -1,0 +1,55 @@
+psql:/tests/ad_hoc_shells.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/ad_hoc_shells.test.sql .......... ok
+psql:/tests/advanced_effort.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/advanced_effort.test.sql ........ ok
+psql:/tests/exercise_library.test.sql:3: NOTICE:  extension "pgtap" already exists, skipping
+/tests/exercise_library.test.sql ....... ok
+psql:/tests/initial_schema.test.sql:3: NOTICE:  extension "pgtap" already exists, skipping
+/tests/initial_schema.test.sql ......... ok
+psql:/tests/movement_intents.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/movement_intents.test.sql ....... ok
+psql:/tests/personal_records.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/personal_records.test.sql ....... ok
+psql:/tests/program_execution.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/program_execution.test.sql ...... ok
+psql:/tests/program_foundation.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/program_foundation.test.sql ..... ok
+psql:/tests/program_history.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/program_history.test.sql ........ ok
+psql:/tests/program_library.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/program_library.test.sql ........ ok
+psql:/tests/program_lifecycle.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/program_lifecycle.test.sql ...... ok
+psql:/tests/program_progression.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/program_progression.test.sql .... ok
+psql:/tests/program_qualification.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/program_qualification.test.sql .. ok
+psql:/tests/program_scheduling.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/program_scheduling.test.sql ..... ok
+psql:/tests/progress_analytics.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/progress_analytics.test.sql ..... ok
+psql:/tests/security.test.sql:3: NOTICE:  extension "pgtap" already exists, skipping
+/tests/security.test.sql ............... ok
+psql:/tests/set_logging.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/set_logging.test.sql ............ ok
+psql:/tests/smart_set_defaults.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/smart_set_defaults.test.sql ..... ok
+psql:/tests/workout_completion.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/workout_completion.test.sql ..... ok
+psql:/tests/workout_continuity.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/workout_continuity.test.sql ..... ok
+psql:/tests/workout_entry.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/workout_entry.test.sql .......... ok
+psql:/tests/workout_history.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/workout_history.test.sql ........ ok
+psql:/tests/workout_lifecycle.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/workout_lifecycle.test.sql ...... ok
+psql:/tests/workout_retention.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/workout_retention.test.sql ...... ok
+psql:/tests/workout_selection.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/workout_selection.test.sql ...... ok
+psql:/tests/workout_timer.test.sql:2: NOTICE:  extension "pgtap" already exists, skipping
+/tests/workout_timer.test.sql .......... ok
+All tests successful.
+Files=26, Tests=2308, 14 wallclock secs ( 0.32 usr  0.04 sys +  0.23 cusr  0.17 csys =  0.76 CPU)
+Result: PASS

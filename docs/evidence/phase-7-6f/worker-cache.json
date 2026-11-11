@@ -1,0 +1,6 @@
+{
+  "originPort": "8787",
+  "offlineStatus": 503,
+  "paths": ["/icon.svg", "/offline"],
+  "reconnected": true
+}

@@ -1,0 +1,16 @@
+
+> body@1.0.0 test:e2e
+> playwright test --config playwright.audit.config.ts --output /workspace/work/readiness-7-6f/audit-final
+
+
+Running 5 tests using 1 worker
+
+(node:201245) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [audit-chromium] › tests/audit/logging-performance.spec.ts:4:1 › measure acknowledged saves under reproducible browser network profiles (17.9s)
+  ✓  2 [audit-chromium] › tests/audit/logging-reliability.spec.ts:3:1 › offline draft and committed-but-unacknowledged save retry without duplicate evidence (2.8s)
+  ✓  3 [audit-chromium] › tests/audit/logging-reliability.spec.ts:114:1 › pending response, repeated completion taps and refresh preserve one ordered actual set (3.3s)
+  ✓  4 [audit-chromium] › tests/audit/navigation-performance.spec.ts:4:1 › measure private route readiness and offline navigation limits (29.4s)
+  ✓  5 [audit-chromium] › tests/audit/uncertain-save.spec.ts:5:1 › uncertain save captures exact retry identity and protects later device writes (2.1s)
+
+  5 passed (56.3s)

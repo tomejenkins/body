@@ -1,0 +1,25 @@
+body@1.0.0 /workspace/body
+├─┬ @opennextjs/cloudflare@1.20.15
+│ ├─┬ @opennextjs/aws@4.1.14
+│ │ └─┬ @node-minify/core@9.0.2
+│ │   └─┬ glob@10.3.3
+│ │     └── minimatch@9.0.9
+│ └─┬ glob@13.0.6
+│   └── minimatch@10.2.6
+├─┬ eslint-config-next@16.4.4
+│ ├─┬ eslint-plugin-import@2.32.0
+│ │ └── minimatch@3.1.5 deduped
+│ ├─┬ eslint-plugin-jsx-a11y@6.10.2
+│ │ └── minimatch@3.1.5 deduped
+│ ├─┬ eslint-plugin-react@7.37.5
+│ │ └── minimatch@3.1.5 deduped
+│ └─┬ typescript-eslint@8.72.1
+│   ├── @typescript-eslint/eslint-plugin@8.72.1
+│   └─┬ @typescript-eslint/typescript-estree@8.72.1
+│     └── minimatch@10.2.6
+└─┬ eslint@9.39.5
+  ├─┬ @eslint/config-array@0.21.2
+  │ └── minimatch@3.1.5 deduped
+  ├─┬ @eslint/eslintrc@3.3.7
+  │ └── minimatch@3.1.5 deduped
+  └── minimatch@3.1.5
