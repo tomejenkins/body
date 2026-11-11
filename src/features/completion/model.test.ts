@@ -79,3 +79,32 @@ it("maps real program-day or independent-session source without inventing assign
     key: "version:day",
   });
 });
+
+it("saves the final actual grouping of a program workout as an independent completed-workout structure", () => {
+  expect(
+    favoriteSource({
+      ...w,
+      sourceVersionId: "version",
+      sourceDayId: "day",
+      hasGroupHistory: true,
+    }),
+  ).toEqual({ type: "completed_workout", source: w.id, key: w.id });
+});
+
+it("keeps original Favorite attribution unless its grouping was edited", () => {
+  expect(
+    favoriteSource({
+      ...w,
+      hasGroupHistory: true,
+      favoriteGroupingEdited: true,
+    }),
+  ).toEqual({ type: "completed_ad_hoc", source: w.id, key: w.id });
+  expect(
+    favoriteSource({
+      ...w,
+      hasGroupHistory: true,
+      favoriteId: "favorite",
+      favoriteGroupingEdited: true,
+    }),
+  ).toEqual({ type: "completed_workout", source: w.id, key: w.id });
+});

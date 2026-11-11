@@ -1,0 +1,51 @@
+[
+  {
+    "path": "/",
+    "status": 307,
+    "bytes": 5974,
+    "cacheControl": "s-maxage=31536000",
+    "location": "/dashboard"
+  },
+  {
+    "path": "/login",
+    "status": 200,
+    "bytes": 11116,
+    "cacheControl": "private, no-store, max-age=0",
+    "location": null
+  },
+  {
+    "path": "/offline",
+    "status": 200,
+    "bytes": 1669,
+    "cacheControl": "public, max-age=0, must-revalidate",
+    "location": null
+  },
+  {
+    "path": "/manifest.webmanifest",
+    "status": 200,
+    "bytes": 288,
+    "cacheControl": "public, max-age=0, must-revalidate",
+    "location": null
+  },
+  {
+    "path": "/body-sw.js",
+    "status": 200,
+    "bytes": 3663,
+    "cacheControl": "no-cache, no-store, must-revalidate",
+    "location": null
+  },
+  {
+    "path": "/workout",
+    "status": 307,
+    "bytes": 0,
+    "cacheControl": "private, no-store, max-age=0",
+    "location": "http://127.0.0.1:3000/login?next=%2Fworkout"
+  },
+  {
+    "path": "/media/programs/full-body-superset-training.svg",
+    "status": 200,
+    "bytes": 453,
+    "cacheControl": "public, max-age=0, must-revalidate",
+    "location": null
+  }
+]

@@ -12,7 +12,7 @@ export function SaveFavoriteButton({
   request,
   saved,
 }: {
-  type: "program_day" | "completed_ad_hoc";
+  type: "program_day" | "completed_ad_hoc" | "completed_workout";
   source: string;
   day?: string;
   request: string;

@@ -1,0 +1,29 @@
+
+> body@1.0.0 test:e2e
+> playwright test tests/e2e/superset-groups.spec.ts tests/e2e/superset-reuse.spec.ts --output=/tmp/supersets-77c-results/verified
+
+
+Running 12 tests using 2 workers
+
+(node:159228) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:159229) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [desktop] › tests/e2e/superset-groups.spec.ts:248:1 › overlap and stale concurrent commands serialize; retries and owner boundaries preserve actuals (4.2s)
+  ✓   3 [desktop] › tests/e2e/superset-groups.spec.ts:319:1 › builder responsive themes, focus return, reduced motion, large text and bounded pickers (10.0s)
+  ✓   1 [desktop] › tests/e2e/superset-groups.spec.ts:60:1 › two groups before exercise choice, shared round logging, unequal sets, edits and final History (16.6s)
+  ✓   5 [desktop] › tests/e2e/superset-groups.spec.ts:552:1 › lost grouping acknowledgement retries the exact receipt without duplicating a group (3.8s)
+  ✓   6 [desktop] › tests/e2e/superset-reuse.spec.ts:43:1 › one-tap grouped Favorite, reused actual-free structure and source archive/restore/delete (5.2s)
+(node:159886) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [desktop] › tests/e2e/superset-groups.spec.ts:419:1 › both official programs instantiate immutable groups; grouped Favorites remain independent (13.0s)
+(node:160040) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [mobile] › tests/e2e/superset-groups.spec.ts:248:1 › overlap and stale concurrent commands serialize; retries and owner boundaries preserve actuals (2.9s)
+  ✓   7 [mobile] › tests/e2e/superset-groups.spec.ts:60:1 › two groups before exercise choice, shared round logging, unequal sets, edits and final History (15.9s)
+  ✓   9 [mobile] › tests/e2e/superset-groups.spec.ts:319:1 › builder responsive themes, focus return, reduced motion, large text and bounded pickers (14.1s)
+  ✓  11 [mobile] › tests/e2e/superset-groups.spec.ts:552:1 › lost grouping acknowledgement retries the exact receipt without duplicating a group (3.3s)
+  ✓  12 [mobile] › tests/e2e/superset-reuse.spec.ts:43:1 › one-tap grouped Favorite, reused actual-free structure and source archive/restore/delete (5.3s)
+  ✓  10 [mobile] › tests/e2e/superset-groups.spec.ts:419:1 › both official programs instantiate immutable groups; grouped Favorites remain independent (11.9s)
+
+  12 passed (55.8s)

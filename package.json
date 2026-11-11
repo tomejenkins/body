@@ -22,7 +22,7 @@
     "db:lint": "supabase db lint --schema public,body_private --fail-on warning",
     "db:test": "supabase test db supabase/tests/database",
     "catalog:check": "node scripts/generate-exercise-catalog.mjs --check",
-    "programs:check": "node scripts/generate-program-catalog.mjs --check"
+    "programs:check": "node scripts/generate-superset-programs.mjs --check"
   },
   "repository": {
     "type": "git",

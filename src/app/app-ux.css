@@ -3437,3 +3437,215 @@ body:has(.active-workout-mode) .app-content {
 .set-grid input[aria-invalid="true"] {
   border-color: var(--ui-danger);
 }
+
+/* Structural groups reuse the normal cards, fields and footer. */
+.workout-home-screen > .page-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.workout-home-screen > .page-heading h1 {
+  flex: 1;
+}
+.create-superset-shortcut {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.active-workout-mode .superset-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+}
+.superset-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.superset-expand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+  text-align: left;
+}
+.superset-expand > span {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--secondary);
+}
+.superset-member-summary,
+.superset-member-order {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.superset-member-summary > li {
+  display: grid;
+  gap: 2px;
+  padding-block: 6px;
+}
+.superset-member-summary strong {
+  font-size: 0.875rem;
+}
+.superset-member-summary span,
+.superset-member-summary small {
+  font-size: 0.75rem;
+  color: var(--secondary);
+}
+.superset-member-pickers > section {
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+.superset-member-pickers h3,
+.superset-round-member h3 {
+  font-size: 0.9375rem;
+  margin-block: 8px;
+}
+.active-workout-mode .superset-member-pickers .movement-tile {
+  min-width: 132px;
+  max-width: 160px;
+}
+.superset-round {
+  padding-block: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.superset-round > h2 {
+  font-size: 0.875rem;
+  color: var(--secondary);
+  margin: 4px 0;
+}
+.superset-round-member {
+  padding: 8px 0;
+  border-left: 2px solid transparent;
+}
+.superset-round-member h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-wrap: anywhere;
+}
+.superset-round-member h3 small {
+  margin-left: auto;
+  color: var(--secondary);
+  white-space: nowrap;
+  font-size: 0.75rem;
+}
+.superset-up-next {
+  border-left-color: var(--primary);
+  padding-left: 8px;
+}
+.superset-add-sets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-block: 12px;
+}
+.superset-builder {
+  max-height: min(88dvh, 760px);
+  overflow-y: auto;
+}
+.superset-options {
+  max-height: 36dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin-block: 12px;
+}
+.superset-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  margin: 0;
+  padding: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.superset-option > input {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.superset-option > span {
+  display: grid;
+  gap: 2px;
+  font-size: 0.875rem;
+}
+.superset-option small {
+  color: var(--secondary);
+  font-size: 0.75rem;
+}
+.superset-member-order > li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-block: 6px;
+}
+.superset-member-order > li > span {
+  flex: 1;
+  font-size: 0.8125rem;
+}
+.superset-member-order button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+}
+.history-superset {
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px;
+}
+.history-superset > h2 {
+  margin-top: 0;
+  font-size: 1.125rem;
+}
+.history-superset > ol {
+  list-style: none;
+  padding: 0;
+}
+@media (max-width: 700px) {
+  .management-panel.superset-builder {
+    bottom: 0;
+    border-radius: 20px 20px 0 0;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+}
+
+.active-workout-mode .superset-member-pickers .movement-tile {
+  flex-basis: 132px;
+  width: 132px;
+  min-height: 142px;
+  font-size: 0.8125rem;
+}
+.superset-expand {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  padding: 0;
+}
+.superset-round-member {
+  padding-left: 8px;
+}
+.superset-round-member h3 small {
+  min-width: 3.5rem;
+  min-height: 1rem;
+}
+
+.active-workout-mode .superset-member-pickers .movement-exercise-name {
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+.active-workout-mode
+  .superset-member-pickers
+  :is(.movement-match, .movement-tile-context) {
+  font-size: 0.75rem;
+}

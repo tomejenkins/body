@@ -12,7 +12,7 @@ from unnest(array['public.program_media','public.program_tags']) t cross join un
 create function pg_temp.affected(statement text) returns bigint language plpgsql security invoker as $$declare n bigint;begin execute statement;get diagnostics n=row_count;return n;end $$;
 create temporary table seed_before as select id,definition,catalog_metadata from program_versions where owner_id='6ab9fb82-8aae-5e49-9f9d-535b4a25d302';
 select ok(not exists(select 1 from program_versions v cross join lateral jsonb_array_elements_text(v.catalog_metadata->'equipmentIds') e join equipment_types t on t.id=e.value::uuid where t.slug='none'),'None is not a required piece of guidance equipment');
-select is((select count(*)::int from seed_before),12,'exactly twelve original immutable definitions');
+select is((select count(*)::int from seed_before),14,'exactly fourteen original immutable definitions');
 select is((select count(*)::int from auth.users where id='6ab9fb82-8aae-5e49-9f9d-535b4a25d302'),0,'Body platform principal has no fabricated login');
 select ok((select principal_kind='platform' and auth_user_id is null from profiles where id='6ab9fb82-8aae-5e49-9f9d-535b4a25d302'),'restricted platform identity, not an end-user profile');
 select throws_ok($$insert into profiles(id,display_name) values(gen_random_uuid(),'Not an auth user')$$,'23503',null,'person profiles still require a real auth identity');
@@ -37,7 +37,7 @@ insert into auth.users(id) values(md5('library_a')::uuid),(md5('library_b')::uui
 insert into profiles(id,display_name) values(md5('library_a')::uuid,'A'),(md5('library_b')::uuid,'B');
 set local role authenticated;
 select set_config('request.jwt.claims',json_build_object('sub',md5('library_a')::uuid,'role','authenticated')::text,true);
-select is((program_catalog()->>'total')::int,12,'authenticated catalog exposes exactly twelve approved templates');
+select is((program_catalog()->>'total')::int,14,'authenticated catalog exposes exactly fourteen approved templates');
 select is(jsonb_array_length(program_catalog()->'items'),6,'card results are paginated');
 select is(jsonb_array_length(program_catalog(p_page=>2)->'items'),6,'second page preserves all twelve');
 select ok(not exists(select 1 from jsonb_array_elements(program_catalog()->'items') x where x ? 'definition' or x ? 'days'),'cards do not download full recipes');
@@ -47,7 +47,7 @@ select is((program_catalog(p_style=>'low_volume')->>'total')::int,1,'controlled 
 select throws_ok($$select program_catalog(p_page=>0)$$,'22023',null,'invalid pagination denied');
 select throws_ok($$select program_catalog(p_goal=>'made_up')$$,'22023',null,'invalid facets denied');
 select throws_ok($$select program_catalog(p_goal=>null)$$,'22023',null,'null facets denied');
-select is((select count(*)::int from program_versions where owner_id='6ab9fb82-8aae-5e49-9f9d-535b4a25d302'),12,'only approved immutable versions readable');
+select is((select count(*)::int from program_versions where owner_id='6ab9fb82-8aae-5e49-9f9d-535b4a25d302'),14,'only approved immutable versions readable');
 select is((select count(*)::int from program_days where owner_id='6ab9fb82-8aae-5e49-9f9d-535b4a25d302'),0,'mutable official draft children remain hidden');
 select is(pg_temp.affected($$update programs set summary='Tampered' where origin='body_authored'$$),0::bigint,'ordinary user cannot edit official summaries');
 select is(pg_temp.affected($$delete from program_tag_links where owner_id='6ab9fb82-8aae-5e49-9f9d-535b4a25d302'$$),0::bigint,'ordinary user cannot alter official tags');
@@ -68,7 +68,7 @@ select set_config('request.jwt.claims',json_build_object('sub',md5('library_b'):
 select is((select count(*)::int from programs where id in(md5('library_private')::uuid,current_setting('body_test.copy')::uuid)),0,'private intent and cloned programs remain cross-owner hidden');
 select is((select count(*)::int from program_tag_links where program_id=current_setting('body_test.copy')::uuid),0,'copied tags remain owner-private');
 select throws_ok($$insert into program_gallery(program_id,owner_id,position,media_id) select current_setting('body_test.copy')::uuid,auth.uid(),1,id from program_media limit 1$$,'42501',null,'cross-owner gallery insertion denied');
-select is((program_catalog()->>'total')::int,12,'private programs never join official results');
+select is((program_catalog()->>'total')::int,14,'private programs never join official results');
 reset role;
 select throws_ok($$update programs set first_published_at=now() where id=md5('library_private')::uuid$$,'23514',null,'private draft creation cannot establish publication age');
 create temporary table publication_before as select id,first_published_at,published_version_id from programs where slug='full-body-foundation';
@@ -77,7 +77,7 @@ grant select on publication_before to authenticated;
 set local role authenticated;
 select is((select count(*)::int from programs where id=(select id from publication_before)),0,'withdrawn root is not readable');
 select is((select count(*)::int from program_versions where id=(select published_version_id from publication_before)),0,'withdrawn immutable source is not readable');
-select is((program_catalog()->>'total')::int,11,'withdrawn plans disappear from discovery');
+select is((program_catalog()->>'total')::int,13,'withdrawn plans disappear from discovery');
 reset role;
 update programs set publication_status='published' where id=(select id from publication_before);
 select ok((select p.first_published_at=b.first_published_at from programs p join publication_before b using(id)),'republishing does not reset New age');

@@ -6,7 +6,7 @@ export async function SaveFavorite({
   source,
   day,
 }: {
-  type: "program_day" | "completed_ad_hoc";
+  type: "program_day" | "completed_ad_hoc" | "completed_workout";
   source: string;
   day?: string;
 }) {

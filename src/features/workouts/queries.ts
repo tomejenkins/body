@@ -114,17 +114,30 @@ export async function loadWorkout(
     (classification.error || classification.data?.length !== 1)
   )
     throw new Error("Program completion could not be verified.");
-  const preference = await client
-    .from("account_preferences")
-    .select("display_weight_unit,preferred_effort_scale")
-    .eq("owner_id", user.id)
-    .single<{
-      display_weight_unit: WeightUnit;
-      preferred_effort_scale: import("@/features/sets/effort").EffortScale;
-    }>();
+  const [preference, grouping] = await Promise.all([
+    client
+      .from("account_preferences")
+      .select("display_weight_unit,preferred_effort_scale")
+      .eq("owner_id", user.id)
+      .single<{
+        display_weight_unit: WeightUnit;
+        preferred_effort_scale: import("@/features/sets/effort").EffortScale;
+      }>(),
+    client.rpc("workout_group_layout", {
+      p_session: session.id,
+    }),
+  ]);
   if (preference.error)
     throw new Error("Weight preference could not be loaded.");
+  if (grouping.error || !Array.isArray(grouping.data?.groups))
+    throw Error("Workout groups could not be loaded.");
   return {
+    groups: grouping.data
+      .groups as import("@/features/grouping/model").ExerciseGroup[],
+    favoriteGroupingEdited: grouping.data.favoriteEdited === true,
+    hasGroupHistory: grouping.data.hasHistory === true,
+    groupOrder: grouping.data.order,
+    groupLabels: grouping.data.labels,
     isProgram: !!session.source_program_version_id,
     continuity: continuity.data as
       import("@/features/continuity/model").Continuity | null,

@@ -21,7 +21,7 @@ test("official discovery, combined filters, pagination, immutable detail and the
     .getByRole("link", { name: "Programs", exact: true })
     .click();
   await expect(
-    page.getByRole("status").filter({ hasText: "12 programs found" }),
+    page.getByRole("status").filter({ hasText: "14 programs found" }),
   ).toBeVisible();
   await expect(page.locator(".program-card")).toHaveCount(6);
   await expect(page.getByText("Popular", { exact: true })).toHaveCount(0);
@@ -30,11 +30,11 @@ test("official discovery, combined filters, pagination, immutable detail and the
   ).toHaveCount(0);
   await page.getByRole("link", { name: "Next page" }).click();
   await expect(page.locator(".program-pagination")).toContainText(
-    "Page 2 of 2",
+    "Page 2 of 3",
   );
   await page.getByRole("link", { name: "Previous page" }).click();
   await expect(page.locator(".program-pagination")).toContainText(
-    "Page 1 of 2",
+    "Page 1 of 3",
   );
   const filters = page.getByRole("form", { name: "Program filters" });
   for (const [name, value, count] of [
@@ -60,7 +60,7 @@ test("official discovery, combined filters, pagination, immutable detail and the
       .first()
       .click();
     await expect(
-      page.getByRole("status").filter({ hasText: "12 programs found" }),
+      page.getByRole("status").filter({ hasText: "14 programs found" }),
     ).toBeVisible();
   }
   await page.screenshot({
@@ -94,7 +94,7 @@ test("official discovery, combined filters, pagination, immutable detail and the
     .first()
     .click();
   await expect(
-    page.getByRole("status").filter({ hasText: "12 programs found" }),
+    page.getByRole("status").filter({ hasText: "14 programs found" }),
   ).toBeVisible();
   await filters.getByLabel("Search programs").fill("Powerbuilding");
   await filters.getByRole("button", { name: "Apply filters" }).click();
@@ -104,7 +104,7 @@ test("official discovery, combined filters, pagination, immutable detail and the
     .first()
     .click();
   await expect(
-    page.getByRole("status").filter({ hasText: "12 programs found" }),
+    page.getByRole("status").filter({ hasText: "14 programs found" }),
   ).toBeVisible();
   await filters.getByLabel("Search programs").fill("zzzzdoesnotexist");
   await filters.getByRole("button", { name: "Apply filters" }).click();
@@ -116,7 +116,7 @@ test("official discovery, combined filters, pagination, immutable detail and the
     .first()
     .click();
   await expect(
-    page.getByRole("status").filter({ hasText: "12 programs found" }),
+    page.getByRole("status").filter({ hasText: "14 programs found" }),
   ).toBeVisible();
   const p = programs.find((p) => p.slug === "push-pull-legs")!;
   await page.goto(`/programs/${p.id}`);

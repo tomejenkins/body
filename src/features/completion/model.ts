@@ -20,6 +20,11 @@ export function completionDuration(w: Workout) {
       };
 }
 export function favoriteSource(w: Workout) {
+  if (
+    w.hasGroupHistory &&
+    (w.sourceVersionId || (w.favoriteId && w.favoriteGroupingEdited))
+  )
+    return { type: "completed_workout" as const, source: w.id, key: w.id };
   return w.sourceVersionId && w.sourceDayId
     ? {
         type: "program_day" as const,

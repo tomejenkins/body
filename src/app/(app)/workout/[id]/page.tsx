@@ -11,7 +11,10 @@ export default async function Page({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ exercise?: string | string[] }>;
+  searchParams: Promise<{
+    exercise?: string | string[];
+    group?: string | string[];
+  }>;
 }) {
   const { id } = await params;
   if (!isUuid(id)) notFound();
@@ -33,6 +36,12 @@ export default async function Page({
     <WorkoutLogger
       key={workout.id}
       focusedItemId={focusedItemId}
+      focusedGroupId={
+        typeof query.group === "string" &&
+        workout.groups?.some((g) => g.id === query.group)
+          ? query.group
+          : undefined
+      }
       workout={{
         ...workout,
         loadSuggestions,
