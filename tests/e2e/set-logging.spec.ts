@@ -1,3 +1,4 @@
+import { openSetSettings } from "./set-options-helpers";
 import {
   openWorkoutManagement,
   openWorkoutEnding,
@@ -100,14 +101,14 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
     .getByRole("checkbox", { name: / complete$/ })
     .click();
   await saved(page, 1);
-  await row(page, 1).locator("summary").click();
+  await openSetSettings(row(page, 1));
   await row(page, 1)
     .getByRole("combobox", { name: /type/ })
     .selectOption("warm_up");
   await saved(page, 1);
   await expect(row(page, 1).locator(".set-number")).toHaveText("W");
   const third = await row(page, 2).getAttribute("data-set-id");
-  await row(page, 2).locator("summary").click();
+  await openSetSettings(row(page, 2));
   await row(page, 2)
     .getByRole("button", { name: /Move .* up/ })
     .click();
@@ -133,9 +134,10 @@ test("three visible sets, same-session defaults, units, editing, types, ordering
   await expect(row(page, 2).getByRole("textbox", { name: /reps/ })).toHaveValue(
     "6",
   );
-  await expect(row(page, 2).locator("summary")).toContainText(
-    "Normal working set",
-  );
+  await openSetSettings(row(page, 2));
+  await expect(
+    row(page, 2).getByRole("combobox", { name: /type/ }),
+  ).toHaveValue("working");
   const firstId = await row(page, 0).getAttribute("data-set-id");
   const before = await account.client
     .from("workout_sets")

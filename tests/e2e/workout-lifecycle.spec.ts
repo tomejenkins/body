@@ -89,6 +89,9 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
   ]);
   await openWorkoutManagement(page);
   await page
+    .getByRole("button", { name: "Manage Dumbbell lateral raise", exact: true })
+    .click();
+  await page
     .getByRole("button", {
       name: "Move Dumbbell lateral raise up",
       exact: true,
@@ -98,6 +101,12 @@ test("start, resume, select visuals, reorder, remove and finish without fabricat
     "Dumbbell lateral raise",
     "Barbell bench press",
   ]);
+  await page
+    .getByRole("button", { name: "Close Movement settings", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Manage Barbell bench press", exact: true })
+    .click();
   await page
     .getByRole("button", { name: "Remove Barbell bench press", exact: true })
     .click();

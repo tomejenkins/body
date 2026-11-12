@@ -45,7 +45,7 @@ it("requests a bounded page with a lookahead and returns an older-page signal", 
   const result = await loadHistory("completed", null);
   expect(result.rows).toHaveLength(20);
   expect(result.hasMore).toBe(true);
-  expect(rpc).toHaveBeenCalledTimes(2);
+  expect(rpc).toHaveBeenCalledTimes(3);
   expect(rpc.mock.calls[1]).toEqual([
     "workout_history",
     { p_filter: "completed", p_before: null, p_before_id: null, p_limit: 21 },
@@ -60,11 +60,12 @@ it("loads recognition counts once for the bounded page, never per workout", asyn
     .fn()
     .mockResolvedValueOnce({ data: null, error: null })
     .mockResolvedValueOnce({ data: rows, error: null })
+    .mockResolvedValueOnce({ data: [], error: null })
     .mockResolvedValueOnce({ data: { a: 2, b: 1 }, error: null });
   mock.create.mockResolvedValue({ rpc, from: timingQuery() });
   const result = await loadHistory("all", null);
   expect(result.rows.map((w) => w.achievement_count)).toEqual([2, 1]);
-  expect(rpc.mock.calls[2]).toEqual([
+  expect(rpc.mock.calls[3]).toEqual([
     "history_achievement_counts",
     { p_sessions: ["a", "b"] },
   ]);
@@ -89,11 +90,14 @@ it("loads pause intervals once with a bounded session list and verified owner", 
   const rpc = vi
     .fn()
     .mockResolvedValueOnce({ data: null, error: null })
-    .mockResolvedValueOnce({ data: [{ id: "a" }, { id: "b" }], error: null });
+    .mockResolvedValueOnce({ data: [{ id: "a" }, { id: "b" }], error: null })
+    .mockResolvedValueOnce({ data: [], error: null });
   mock.create.mockResolvedValue({ rpc, from });
   const result = await loadHistory("all", null);
   expect(from).toHaveBeenLastCalledWith("workout_sessions");
-  expect(query.select).toHaveBeenCalledWith("id,manual_pause_intervals");
+  expect(query.select).toHaveBeenCalledWith(
+    "id,manual_pause_intervals,source_program_version_id",
+  );
   expect(query.in).toHaveBeenCalledWith("id", ["a", "b"]);
   expect(query.eq).toHaveBeenCalledWith("owner_id", "verified");
   expect(result.rows.map((r) => r.manual_pause_intervals)).toEqual([
@@ -110,9 +114,29 @@ it("reports a pause-interval read failure rather than displaying unadjusted timi
   const rpc = vi
     .fn()
     .mockResolvedValueOnce({ data: null, error: null })
-    .mockResolvedValueOnce({ data: [{ id: "a" }], error: null });
+    .mockResolvedValueOnce({ data: [{ id: "a" }], error: null })
+    .mockResolvedValueOnce({ data: [], error: null });
   mock.create.mockResolvedValue({ rpc, from });
   await expect(loadHistory("all", null)).rejects.toThrow(
     "Workout timing could not be loaded",
   );
+});
+
+it("loads one bounded cardio summary and preserves actual duration without lifetime set reads", async () => {
+  const rpc = vi
+    .fn()
+    .mockResolvedValueOnce({ data: null, error: null })
+    .mockResolvedValueOnce({ data: [{ id: "a" }, { id: "b" }], error: null })
+    .mockResolvedValueOnce({
+      data: [{ session_id: "a", cardio_items: 1, cardio_seconds: 1200 }],
+      error: null,
+    });
+  mock.create.mockResolvedValue({ rpc, from: timingQuery() });
+  const result = await loadHistory("all", null);
+  expect(rpc.mock.calls[2]).toEqual([
+    "workout_cardio_summary",
+    { p_sessions: ["a", "b"] },
+  ]);
+  expect(result.rows[0].cardio_seconds).toBe(1200);
+  expect(result.rows[1].cardio_seconds).toBe(0);
 });

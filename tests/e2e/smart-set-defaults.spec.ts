@@ -1,3 +1,4 @@
+import { openSetSettings } from "./set-options-helpers";
 import {
   openWorkoutEnding,
   openExerciseLogger,
@@ -55,7 +56,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
       row(page, i).getByRole("textbox", { name: /weight/ }),
     ).toHaveValue(weight);
   }
-  await row(page, 0).locator("summary").click();
+  await openSetSettings(row(page, 0));
   await row(page, 0)
     .getByRole("combobox", { name: /type/ })
     .selectOption("warm_up");
@@ -77,7 +78,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
     .getByRole("checkbox", { name: / complete$/ })
     .click();
   await saved(page, 3);
-  await row(page, 3).locator("summary").click();
+  await openSetSettings(row(page, 3));
   await row(page, 3)
     .getByRole("combobox", { name: /type/ })
     .selectOption("rest_pause");
@@ -242,7 +243,7 @@ test("automatic rows, exact pounds, meaningful history, concurrent retry and Set
   await expect(
     row(page, 0).getByRole("textbox", { name: /weight/ }),
   ).toHaveValue("50");
-  await row(page, 0).locator("summary").click();
+  await openSetSettings(row(page, 0));
   await row(page, 0)
     .getByRole("button", { name: /Delete/ })
     .click();

@@ -26,18 +26,34 @@ export async function loadHistory(filter: unknown, cursor: unknown) {
     throw new Error("Workout history could not be loaded. Please retry.");
   const rows = result.data as HistorySummary[];
   if (rows.length) {
-    const pauses = await client
-      .from("workout_sessions")
-      .select("id,manual_pause_intervals")
-      .in(
-        "id",
-        rows.map((r) => r.id),
-      )
-      .eq("owner_id", user.id);
+    const [pauses, cardio] = await Promise.all([
+      client
+        .from("workout_sessions")
+        .select("id,manual_pause_intervals,source_program_version_id")
+        .in(
+          "id",
+          rows.map((r) => r.id),
+        )
+        .eq("owner_id", user.id),
+      client.rpc("workout_cardio_summary", {
+        p_sessions: rows.map((r) => r.id),
+      }),
+    ]);
+    if (cardio.error || !Array.isArray(cardio.data))
+      throw Error("Cardio summaries could not be loaded.");
+    for (const row of rows) {
+      const c = cardio.data.find(
+        (c: { session_id: string }) => c.session_id === row.id,
+      );
+      row.cardio_seconds = Number(c?.cardio_seconds ?? 0);
+      row.cardio_items = Number(c?.cardio_items ?? 0);
+    }
     if (pauses.error) throw new Error("Workout timing could not be loaded.");
-    for (const row of rows)
-      row.manual_pause_intervals =
-        pauses.data.find((p) => p.id === row.id)?.manual_pause_intervals ?? [];
+    for (const row of rows) {
+      const session = pauses.data.find((p) => p.id === row.id);
+      row.manual_pause_intervals = session?.manual_pause_intervals ?? [];
+      row.is_program = !!session?.source_program_version_id;
+    }
   }
   const recognized = rows.filter((w) => w.recognition_enabled).map((w) => w.id);
   if (recognized.length) {

@@ -30,8 +30,5 @@ export async function openWorkoutEnding(page: Page) {
   ).toBeVisible();
 }
 export async function openWorkoutManagement(page: Page) {
-  const details = page.locator(".workout-management");
-  await expect(details).toBeVisible();
-  if ((await details.getAttribute("open")) === null)
-    await details.locator(":scope > summary").click();
+  await expect(page.locator(".workout-quick-actions")).toBeVisible();
 }

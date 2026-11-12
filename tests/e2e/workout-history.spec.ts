@@ -1,3 +1,4 @@
+import { openSetSettings } from "./set-options-helpers";
 import {
   openWorkoutEnding,
   openExerciseLogger,
@@ -88,6 +89,7 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
   await first.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(first.locator(".set-save-state")).toHaveText(/^Saved/);
   await second.getByRole("textbox", { name: /reps/ }).fill("8");
+  await openSetSettings(second);
   await second
     .getByRole("button", { name: "+ Add weight", exact: true })
     .click();
@@ -103,7 +105,7 @@ test("paginated private history, mixed bodyweight loads, snapshots and Look Back
   await warm.getByRole("textbox", { name: /reps/ }).fill("10");
   await warm.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(warm.locator(".set-save-state")).toHaveText(/^Saved/);
-  await warm.locator("summary").click();
+  await openSetSettings(warm);
   await warm.getByRole("combobox", { name: /type/ }).selectOption("warm_up");
   await expect(warm.locator(".set-save-state")).toHaveText(/^Saved/);
   await backToWorkoutHome(page);

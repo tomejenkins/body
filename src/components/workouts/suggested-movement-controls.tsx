@@ -5,27 +5,52 @@ import {
   movementKey,
   type SuggestedMovement,
 } from "@/features/workouts/suggested-shell";
+import { SettingsSheet } from "./settings-sheet";
 import { Button } from "@/components/ui/button";
 export function SuggestedMovementControls({
   session,
   movement,
   options,
   disabled = false,
+  inline = false,
+  onSaved,
 }: {
   session: string;
   movement?: string;
   options: SuggestedMovement[];
   disabled?: boolean;
+  inline?: boolean;
+  onSaved?: () => void;
 }) {
-  const [state, action, busy] = useActionState(editSuggestedMovement, {});
+  const [removeRequest] = useState(() => crypto.randomUUID());
   const [request, setRequest] = useState(() => crypto.randomUUID());
   const [choice, setChoice] = useState("");
   const [keep, setKeep] = useState(false);
-  return (
-    <details className="suggested-controls">
-      <summary>
-        {movement ? "Change or remove movement" : "Add movement"}
-      </summary>
+  const [open, setOpen] = useState(false);
+  const [state, action, busy] = useActionState(
+    async (
+      previous: import("@/features/workouts/suggested-actions").SuggestionState,
+      form: FormData,
+    ) => {
+      try {
+        const next = await editSuggestedMovement(previous, form);
+        if (next.success) {
+          setOpen(false);
+          onSaved?.();
+          setChoice("");
+          setRequest(crypto.randomUUID());
+        }
+        return next;
+      } catch {
+        return {
+          error: "Change could not be confirmed. Retry the same choice.",
+        };
+      }
+    },
+    {},
+  );
+  const form = (
+    <div className="suggested-controls">
       <form action={action}>
         <input type="hidden" name="session" value={session} />
         <input type="hidden" name="request" value={request} />
@@ -42,9 +67,7 @@ export function SuggestedMovementControls({
             }}
             disabled={busy || disabled}
           >
-            <option value="">
-              {movement ? "Remove unrecorded movement" : "Choose a movement"}
-            </option>
+            <option value="">Choose a movement</option>
             {options.map((o) => (
               <option value={movementKey(o)} key={movementKey(o)}>
                 {o.title} · {o.exerciseType}
@@ -65,12 +88,39 @@ export function SuggestedMovementControls({
             Keep recorded movement and add the changed movement
           </label>
         )}
-        <Button type="submit" disabled={busy || disabled}>
+        <Button type="submit" disabled={busy || disabled || !choice}>
           {busy ? "Saving…" : movement ? "Update movement" : "Add movement"}
         </Button>
+      </form>
+      {movement && (
+        <form action={action}>
+          <input type="hidden" name="session" value={session} />
+          <input type="hidden" name="request" value={removeRequest} />
+          <input type="hidden" name="remove" value={movement} />
+          <input type="hidden" name="choice" value="" />
+          <Button variant="outline" disabled={busy || disabled}>
+            Remove movement
+          </Button>
+        </form>
+      )}
+      <div>
         {state.error && <p role="alert">{state.error}</p>}
         {state.success && <p role="status">{state.success}</p>}
-      </form>
-    </details>
+      </div>
+    </div>
+  );
+  return inline ? (
+    form
+  ) : (
+    <SettingsSheet
+      label={movement ? "Change movement" : "Add movement"}
+      title={movement ? "Change movement" : "Add movement"}
+      triggerText={movement ? undefined : "Add movement"}
+      open={open}
+      onOpenChange={setOpen}
+      disabled={disabled}
+    >
+      {form}
+    </SettingsSheet>
   );
 }

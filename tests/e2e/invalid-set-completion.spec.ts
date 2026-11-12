@@ -1,3 +1,4 @@
+import { openSetSettings } from "./set-options-helpers";
 import { expect, test, type Page, type Locator } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
 import { fixture } from "../audit/helpers";
@@ -13,7 +14,6 @@ const state = (row: Locator) => row.locator(".set-save-state");
 async function pending(page: Page) {
   const context = await fixture(page),
     row = page.locator(".logged-set").nth(1);
-  await row.locator(".set-options > summary").click();
   return { ...context, row };
 }
 function watchCompletions(page: Page) {
@@ -57,7 +57,10 @@ test("invalid Done preserves input and pending evidence without a completion req
     await expect(done(row)).not.toBeChecked();
     await expect(state(row)).toHaveText("Check set values");
     await expect(row.locator(".set-field-errors")).not.toBeEmpty();
-    await expect(row.locator(".set-options")).toHaveAttribute("open", "");
+    await expect(row.locator(".set-gear")).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
     await expect(row.getByRole("textbox", { name: /weight/ })).toHaveValue(
       weight,
     );
@@ -77,7 +80,10 @@ test("invalid Done preserves input and pending evidence without a completion req
   await expect(state(row)).toHaveText("Saved");
   await expect(done(row)).toBeChecked();
   expect(commands).toHaveLength(1);
-  await expect(row.locator(".set-options")).not.toHaveAttribute("open", "");
+  await expect(row.locator(".set-gear")).toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
   await page.screenshot({
     path: info.outputPath("valid-completion.png"),
     fullPage: true,
@@ -138,7 +144,10 @@ test("valid completion waits for acknowledgement; repeated taps cannot duplicate
   await expect(state(row)).toHaveText("Saving…");
   await expect(done(row)).not.toBeChecked();
   await expect(done(row)).toBeDisabled();
-  await expect(row.locator(".set-options")).toHaveAttribute("open", "");
+  await expect(row.locator(".set-gear")).toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
   await done(row).evaluate((element: HTMLInputElement) => {
     for (let i = 0; i < 8; i++) element.click();
   });
@@ -155,7 +164,10 @@ test("valid completion waits for acknowledgement; repeated taps cannot duplicate
   release();
   await expect(state(row)).toHaveText("Saved");
   await expect(done(row)).toBeChecked();
-  await expect(row.locator(".set-options")).not.toHaveAttribute("open", "");
+  await expect(row.locator(".set-gear")).toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
 });
 test("server rejection retains a valid local draft and retries through the same command", async ({
   page,
@@ -178,7 +190,10 @@ test("server rejection retains a valid local draft and retries through the same 
   await expect(state(row)).toHaveText("Not saved");
   await expect(done(row)).not.toBeChecked();
   await expect(row.getByRole("textbox", { name: /weight/ })).toHaveValue("125");
-  await expect(row.locator(".set-options")).toHaveAttribute("open", "");
+  await expect(row.locator(".set-gear")).toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
   expect(
     (await a.client.from("workout_sets").select("status").eq("id", id).single())
       .data?.status,
@@ -199,7 +214,6 @@ test("invalid completed-set correction retains the last authoritative evidence u
     .select("*")
     .eq("id", id)
     .single();
-  await row.locator(".set-options > summary").click();
   await row.getByRole("textbox", { name: /weight/ }).fill("");
   await row.getByRole("textbox", { name: / reps$/ }).fill("");
   await row.getByRole("textbox", { name: / reps$/ }).press("Tab");
@@ -245,10 +259,10 @@ test("discarding an invalid completed correction clears feedback and restores on
   page,
 }) => {
   const { row } = await fixture(page);
-  await row.locator(".set-options > summary").click();
   await row.getByRole("textbox", { name: /weight/ }).fill("");
   await row.getByRole("textbox", { name: /weight/ }).press("Tab");
   await expect(row.locator(".set-field-errors")).toContainText("Enter weight");
+  await openSetSettings(row);
   await row
     .getByRole("button", {
       name: "Discard this draft and use saved values",
@@ -293,6 +307,7 @@ test("bodyweight requires reps, deliberate added resistance requires positive lo
         .single()
     ).data,
   ).toEqual({ actual_weight_kg: null, actual_reps: 8 });
+  await openSetSettings(row);
   await row.getByRole("button", { name: "+ Add weight", exact: true }).click();
   await expect(state(row)).toHaveText("Saved");
   await expect(done(row)).not.toBeChecked();
@@ -394,7 +409,10 @@ test("mobile invalid feedback stays stable across widths, themes and viewport ev
         await page.locator(".workout-mode-controls").boundingBox(),
       ).toEqual(footer);
       await expect(done(row)).not.toBeChecked();
-      await expect(row.locator(".set-options")).toHaveAttribute("open", "");
+      await expect(row.locator(".set-gear")).toHaveAttribute(
+        "aria-expanded",
+        "false",
+      );
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,

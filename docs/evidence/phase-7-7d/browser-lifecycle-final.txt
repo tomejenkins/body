@@ -1,0 +1,21 @@
+
+> body@1.0.0 test:e2e
+> playwright test tests/e2e/workout-lifecycle.spec.ts --output=/tmp/cardio-77d-results/lifecycle-final
+
+
+Running 4 tests using 2 workers
+
+(node:232862) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:232861) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/e2e/workout-lifecycle.spec.ts:169:1 › concurrent starts share one session, owner boundaries hold and abandon preserves it (6.4s)
+(node:233236) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop] › tests/e2e/workout-lifecycle.spec.ts:29:1 › start, resume, select visuals, reorder, remove and finish without fabricated sets (10.9s)
+(node:233410) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile] › tests/e2e/workout-lifecycle.spec.ts:169:1 › concurrent starts share one session, owner boundaries hold and abandon preserves it (4.4s)
+  ✓  3 [mobile] › tests/e2e/workout-lifecycle.spec.ts:29:1 › start, resume, select visuals, reorder, remove and finish without fabricated sets (9.8s)
+
+  4 passed (18.5s)

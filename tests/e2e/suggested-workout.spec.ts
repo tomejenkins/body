@@ -75,14 +75,11 @@ test("two focus selections create five unbound movements; logger, back, safe mov
   ).toBeVisible();
   await expect(cards(page).first()).toContainText("In Progress");
   await openWorkoutManagement(page);
-  await page
-    .locator(".manage-movement .suggested-controls")
+  await cards(page)
     .first()
-    .locator("summary")
+    .getByRole("button", { name: /^Manage / })
     .click();
-  const form = page
-    .locator(".manage-movement .suggested-controls form")
-    .first();
+  const form = page.getByRole("dialog");
   const option = await form
     .locator('select option:not([value=""])')
     .first()
@@ -106,22 +103,20 @@ test("two focus selections create five unbound movements; logger, back, safe mov
         .single()
     ).data,
   ).toEqual(before);
-  await page
-    .locator(".manage-movement .suggested-controls")
+  await cards(page)
     .last()
-    .locator("summary")
+    .getByRole("button", { name: /^Manage / })
     .click();
   await page
-    .locator(".manage-movement")
-    .last()
-    .getByRole("button", { name: "Update movement", exact: true })
+    .getByRole("dialog")
+    .getByRole("button", { name: "Remove movement", exact: true })
     .click();
   await expect(cards(page)).toHaveCount(5);
   await page.reload();
   await expect(cards(page)).toHaveCount(5);
   await openWorkoutManagement(page);
-  const add = page.locator(".workout-toolbar .suggested-controls");
-  await add.locator("summary").click();
+  await page.getByRole("button", { name: "Add movement", exact: true }).click();
+  const add = page.getByRole("dialog");
   const addChoice = await add
     .locator('select option:not([value=""])')
     .first()

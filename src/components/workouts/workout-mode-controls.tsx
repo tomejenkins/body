@@ -139,11 +139,13 @@ export function WorkoutModeControls({
     const element = footer.current,
       root = element?.closest<HTMLElement>(".workout-execution");
     if (!element || !root) return;
-    const publish = () =>
+    const publish = () => {
+      root.style.setProperty("--workout-keyboard-inset", `${keyboard}px`);
       root.style.setProperty(
         "--workout-controls-space",
         `${Math.ceil(element.getBoundingClientRect().height) + keyboard}px`,
       );
+    };
     publish();
     const observer =
       typeof ResizeObserver !== "undefined"

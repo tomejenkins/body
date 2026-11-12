@@ -3649,3 +3649,207 @@ body:has(.active-workout-mode) .app-content {
   :is(.movement-match, .movement-tile-context) {
   font-size: 0.75rem;
 }
+
+/* 7.7D: keep primary inputs together; secondary controls mount only on intent. */
+.workout-gear {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  color: var(--secondary);
+}
+.workout-gear:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.workout-gear:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.active-workout-mode .set-grid {
+  grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1fr) 44px 44px;
+  gap: 6px;
+}
+.active-workout-mode .set-grid.reps-first {
+  grid-template-columns: 24px minmax(0, 1fr) 44px 44px;
+}
+.active-workout-mode .logged-set {
+  padding: 5px 0;
+}
+.active-workout-mode .logged-set > .set-save-state {
+  min-height: 20px;
+  font-size: 0.75rem;
+  margin: 0;
+}
+.active-workout-mode .logged-set > .set-source {
+  margin: 0 0 2px;
+}
+.active-workout-mode .set-head {
+  font-size: 0.75rem;
+  margin-bottom: 2px;
+}
+.workout-settings-sheet {
+  max-height: 88dvh;
+  overflow: auto;
+}
+.workout-settings-sheet .set-option-body {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+}
+.workout-settings-sheet :is(select, input:not([type="checkbox"])) {
+  min-height: 44px;
+  width: 100%;
+}
+.workout-settings-sheet .set-option-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.workout-quick-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 0;
+  padding-block: 6px;
+}
+.workout-compact-action {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 0.875rem;
+}
+.active-workout-mode .superset-card {
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+.superset-member-summary > li {
+  padding-block: 3px;
+  gap: 0;
+}
+.superset-member-summary {
+  margin: 4px 0;
+}
+.superset-member-summary strong {
+  font-size: 0.875rem;
+}
+.superset-card > .set-source {
+  margin-block: 4px;
+}
+.cardio-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+.cardio-card h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+.cardio-card p {
+  margin: 4px 0;
+}
+.cardio-sheet {
+  display: grid;
+  gap: 12px;
+}
+.cardio-history {
+  padding-block: 12px;
+}
+.cardio-history h2 {
+  font-size: 1.125rem;
+  margin: 0 0 4px;
+}
+.cardio-history p {
+  margin: 4px 0;
+  font-size: 0.875rem;
+  color: var(--secondary);
+}
+.cardio-history ul {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0;
+}
+.cardio-history li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 8px;
+  border-bottom: 1px solid var(--border);
+}
+@media (max-width: 700px) {
+  .management-panel.workout-settings-sheet {
+    padding: 20px;
+    max-height: 88dvh;
+    bottom: max(8px, env(safe-area-inset-bottom));
+  }
+}
+.set-settings-popover {
+  z-index: 120;
+  width: min(340px, calc(100vw - 24px));
+  max-height: min(520px, var(--radix-popover-content-available-height));
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: 0 12px 40px #0003;
+}
+.set-settings-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.set-settings-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+.set-settings-popover .set-option-body {
+  display: grid;
+  gap: 10px;
+  border: 0;
+  padding: 0;
+}
+.set-settings-popover :is(select, input:not([type="checkbox"])) {
+  min-height: 44px;
+  width: 100%;
+}
+.set-settings-popover .set-option-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.set-settings-popover .set-option-actions button {
+  min-height: 44px;
+}
+.set-help-content {
+  z-index: 140;
+}
+@media (max-width: 700px) {
+  .management-panel.workout-settings-sheet {
+    bottom: max(
+      8px,
+      env(safe-area-inset-bottom),
+      var(--workout-keyboard-inset, 0px)
+    );
+    max-height: min(
+      88dvh,
+      calc(100dvh - var(--workout-keyboard-inset, 0px) - 24px)
+    );
+  }
+}

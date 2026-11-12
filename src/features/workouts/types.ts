@@ -18,6 +18,7 @@ export type WorkoutItem = {
   prescribedSets?: number | null;
 };
 export type Workout = {
+  cardio?: import("@/features/cardio/model").CardioItem[];
   hasGroupHistory?: boolean;
   favoriteGroupingEdited?: boolean;
   groupOrder?: import("@/features/grouping/model").GroupMember[];

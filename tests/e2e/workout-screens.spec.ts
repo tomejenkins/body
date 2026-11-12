@@ -196,6 +196,9 @@ test("ad-hoc Home, incomplete Back and pending/failed draft persistence without 
     .click();
   await backToWorkoutHome(page);
   await openWorkoutManagement(page);
+  await page
+    .getByRole("button", { name: "Manage Barbell bench press", exact: true })
+    .click();
   await expect(
     page.getByRole("button", {
       name: "Move Barbell bench press up",
@@ -217,6 +220,9 @@ test("ad-hoc Home, incomplete Back and pending/failed draft persistence without 
       exact: true,
     }),
   ).toBeDisabled();
+  await page
+    .getByRole("button", { name: "Close Movement settings", exact: true })
+    .click();
   await expect(cards(page).locator("h2")).toHaveText([
     "Barbell bench press",
     "Push-up",
