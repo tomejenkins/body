@@ -58,14 +58,10 @@ test("optional effort and failure persist independently through queue, refresh, 
   await expect(
     row.getByRole("checkbox", { name: /To Failure/ }),
   ).not.toBeChecked();
-  await expect(row.locator("summary")).toContainText("RPE 10");
   await row.getByRole("checkbox", { name: /To Failure/ }).check();
   await saved(page);
   await row.getByRole("combobox", { name: /type/ }).selectOption("drop");
   await saved(page);
-  await expect(row.locator("summary")).toContainText(
-    "Drop set · To Failure · RPE 10",
-  );
   await page.reload();
   await openAdvancedEffort(row);
   await expect(row.getByRole("combobox", { name: /type/ })).toHaveValue("drop");
@@ -87,7 +83,6 @@ test("optional effort and failure persist independently through queue, refresh, 
   await saved(page);
   await row.getByRole("checkbox", { name: /To Failure/ }).uncheck();
   await saved(page);
-  await expect(row.locator("summary")).toContainText("RIR 0");
   await expect(
     row.getByRole("checkbox", { name: /To Failure/ }),
   ).not.toBeChecked();
@@ -185,7 +180,6 @@ test("remembered scale preference, retained failed effort draft, CAS conflict an
   );
   await row.getByRole("combobox", { name: /effort rating/ }).selectOption("5");
   await saved(page);
-  await expect(row.locator("summary")).toContainText("RIR 5+");
   await page.route("**/*", (route) =>
     route.request().method() === "POST" &&
     route.request().headers()["next-action"]
@@ -205,6 +199,7 @@ test("remembered scale preference, retained failed effort draft, CAS conflict an
   ).toHaveValue("2");
   await row.getByRole("button", { name: "Retry save", exact: false }).click();
   await saved(page);
+  await openAdvancedEffort(row);
   const rows = await a.client
     .from("workout_sets")
     .select("id,revision")

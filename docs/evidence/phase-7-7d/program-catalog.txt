@@ -1,0 +1,6 @@
+
+> body@1.0.0 programs:check
+> node scripts/generate-superset-programs.mjs --check
+
+Programs: 14; training days: 53; slots: 238
+Superset catalog: two immutable programs, real prescribed groups

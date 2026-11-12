@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cardioMinutes } from "@/features/cardio/model";
 import { ArrowUpRight, Trophy } from "lucide-react";
 import { qualifiedDuration } from "@/features/continuity/model";
 import {
@@ -29,7 +30,11 @@ export function HistoryCard({
       </div>
       <p className="history-card-status">
         {archived ? "Archived · " : ""}
-        {historyStatus(w.status, w.completion_status)}
+        {historyStatus(
+          w.status,
+          w.completion_status,
+          !!w.cardio_items && !w.exercise_count && !w.is_program,
+        )}
       </p>
       <p className="history-card-counts">
         <span>
@@ -39,6 +44,11 @@ export function HistoryCard({
           <strong>{w.exercise_count}</strong> exercises selected
         </span>
       </p>
+      {!!w.cardio_items && (
+        <p className="history-card-counts">
+          Cardio · {cardioMinutes(w.cardio_seconds ?? 0)} recorded
+        </p>
+      )}
       {!compact && (
         <>
           <p className="history-card-metadata">

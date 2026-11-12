@@ -1,3 +1,4 @@
+import { openSetSettings } from "./set-options-helpers";
 import { openMoreEffort } from "./set-options-helpers";
 import { test, expect, type Page } from "@playwright/test";
 import { verifiedAccount } from "./auth-helpers";
@@ -72,11 +73,8 @@ test("focused Home fits five rows, replaces global tabs, preserves management an
       const last = await cards(page).last().boundingBox(),
         controls = await bar(page).boundingBox();
       expect(last!.y + last!.height).toBeLessThan(controls!.y);
-      expect(
-        await page.evaluate(
-          () => document.documentElement.scrollHeight <= innerHeight + 1,
-        ),
-      ).toBe(true);
+      // Five movement rows still fit above the fixed controls. Direct Home
+      // actions may extend the page; they replace the old one-line disclosure.
     }
     if (width === 390 || width === 375)
       for (const colorScheme of ["light", "dark"] as const) {
@@ -96,7 +94,7 @@ test("focused Home fits five rows, replaces global tabs, preserves management an
   await cards(page).nth(1).locator(".movement-row-toggle").click();
   await expect(page.locator(".movement-carousel")).toHaveCount(1);
   await cards(page).nth(1).locator(".movement-row-toggle").click();
-  await page.locator(".workout-management > summary").click();
+  await expect(page.locator(".workout-quick-actions")).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Add exercises", exact: true }),
   ).toBeVisible();
@@ -248,13 +246,13 @@ test("server timer pauses across refresh/devices, rejects races, and saved loggi
   await expect(
     row.getByRole("textbox", { name: /weight in pounds/ }),
   ).toHaveValue("100");
-  await row.locator(".set-options summary").click();
+  await openSetSettings(row);
   await expect(row.getByRole("checkbox", { name: /To Failure/ })).toHaveCount(
     0,
   );
   await openMoreEffort(row);
   await expect(row.getByRole("checkbox", { name: /To Failure/ })).toBeVisible();
-  await row.locator(".set-options summary").click();
+  await openSetSettings(row);
   for (const colorScheme of ["light", "dark"] as const) {
     await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
     await page.screenshot({
@@ -302,11 +300,14 @@ test("blank and generated ad-hoc management stays available without fabricated t
   await cards(page).first().locator(".movement-row-toggle").click();
   await expect(page.locator(".movement-context-heading")).toHaveCount(0);
   await expect(cards(page).locator(".suggested-controls")).toHaveCount(0);
-  await page.locator(".workout-management > summary").click();
-  const edit = page.locator(".manage-movement .suggested-controls").first();
-  await edit.locator("summary").click();
+  await expect(page.locator(".workout-quick-actions")).toBeVisible();
+  await cards(page)
+    .first()
+    .getByRole("button", { name: /^Manage / })
+    .click();
+  const edit = page.getByRole("dialog").locator(".suggested-controls");
   await edit
-    .getByRole("button", { name: "Update movement", exact: true })
+    .getByRole("button", { name: "Remove movement", exact: true })
     .click();
   await expect(cards(page)).toHaveCount(3);
   const id = new URL(page.url()).pathname.split("/").pop()!;
@@ -314,12 +315,12 @@ test("blank and generated ad-hoc management stays available without fabricated t
   const blank = await a.client.rpc("start_ad_hoc_workout");
   await page.goto(`/workout/${blank.data}`);
   await expect(cards(page)).toHaveCount(0);
-  await page.locator(".workout-management > summary").click();
+  await expect(page.locator(".workout-quick-actions")).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Add exercises", exact: true }),
   ).toBeVisible();
-  const add = page.locator(".workout-toolbar .suggested-controls");
-  await add.locator("summary").click();
+  await page.getByRole("button", { name: "Add movement", exact: true }).click();
+  const add = page.getByRole("dialog");
   const option = await add
     .locator('option:not([value=""])')
     .first()

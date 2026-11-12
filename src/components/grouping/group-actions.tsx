@@ -1,7 +1,7 @@
 "use client";
 import { useRef } from "react";
 import { DropdownMenu } from "radix-ui";
-import { Ellipsis, Link2 } from "lucide-react";
+import { Settings, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWorkoutClosure } from "@/components/workouts/workout-closure";
 export function CreateSupersetButton({
@@ -33,11 +33,13 @@ export function GroupActions({
   disabled,
   onEdit,
   onUngroup,
+  onChoose,
 }: {
   label: string;
   disabled: boolean;
   onEdit: (target: HTMLElement | null) => void;
   onUngroup: () => void;
+  onChoose?: () => void;
 }) {
   const trigger = useRef<HTMLButtonElement>(null),
     editing = useRef(false),
@@ -48,11 +50,11 @@ export function GroupActions({
         <Button
           ref={trigger}
           variant="outline"
-          className="favorite-menu-trigger"
+          className="workout-gear"
           aria-label={`Manage ${label}`}
           disabled={disabled || closing}
         >
-          <Ellipsis size={18} />
+          <Settings size={18} />
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
@@ -76,6 +78,11 @@ export function GroupActions({
           >
             Edit / Reorder Superset
           </DropdownMenu.Item>
+          {onChoose && (
+            <DropdownMenu.Item onSelect={onChoose}>
+              Choose exercises
+            </DropdownMenu.Item>
+          )}
           <DropdownMenu.Item onSelect={onUngroup}>Ungroup</DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

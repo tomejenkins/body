@@ -140,7 +140,9 @@ test("carried recommendation, seven dates, keyboard, full schedule, historical c
     "open",
     "",
   );
-  await page.goto(`/dashboard?week=${dateOffset(s.today, -5)}`);
+  // Navigate to the event's own week: today-5 and its overdue successor
+  // can lie in different weeks (for example on a Thursday).
+  await page.goto(`/dashboard?week=${s.next.dueOn}`);
   await day(page, s.next.dueOn).click();
   await expect(widget(page)).toContainText("Not completed · Carried forward");
   await expect(
@@ -148,7 +150,7 @@ test("carried recommendation, seven dates, keyboard, full schedule, historical c
   ).toHaveCount(0);
   await widget(page).getByRole("link", { name: "View Full Schedule" }).click();
   await expect(page).toHaveURL(/programs\?week=.*#program-calendar$/);
-  await page.goto(`/programs?week=${dateOffset(s.today, -5)}`);
+  await page.goto(`/programs?week=${s.next.dueOn}`);
   await expect(
     page.getByRole("region", { name: "Program calendar" }),
   ).toContainText("Overdue · carried forward");

@@ -1,20 +1,35 @@
 import { expect, test } from "@playwright/test";
-import { collapseSetOptions } from "../../src/components/sets/set-options-focus";
-test("native Options collapse keeps focus visible without stealing other-row focus", async ({
+import { fixture } from "../audit/helpers";
+import { openSetSettings } from "./set-options-helpers";
+test("gear settings return focus on Escape and do not steal focus from another row", async ({
   page,
 }) => {
-  // Execute the imported shipping helper in Chromium, not a duplicate policy.
-  await page.setContent(
-    '<details open><summary>Options</summary><select aria-label="Effort"><option>RIR 0</option></select></details><button>Other row</button>',
+  await fixture(page);
+  const row = page.locator(".logged-set").first(),
+    other = page
+      .locator(".logged-set")
+      .nth(1)
+      .getByRole("textbox", { name: / reps$/ });
+  await openSetSettings(row);
+  await page.keyboard.press("Escape");
+  await expect(row.locator(".set-gear")).toBeFocused();
+  await openSetSettings(row);
+  const next = page.locator(".logged-set").nth(1);
+  await next.locator(".set-gear").click();
+  await expect(next.locator(".set-gear")).toHaveAttribute(
+    "aria-expanded",
+    "true",
   );
-  const panel = await page.$("details");
-  if (!panel) throw Error("Missing details");
-  await page.getByRole("combobox", { name: "Effort" }).focus();
-  await page.evaluate(collapseSetOptions, panel);
-  await expect(page.locator("summary")).toBeFocused();
-  await expect(page.locator("details")).not.toHaveAttribute("open", "");
-  await page.locator("summary").click();
-  await page.getByRole("button", { name: "Other row" }).focus();
-  await page.evaluate(collapseSetOptions, panel);
-  await expect(page.getByRole("button", { name: "Other row" })).toBeFocused();
+  await expect(row.locator(".set-gear")).toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
+  await page.keyboard.press("Escape");
+  await openSetSettings(row);
+  await other.click();
+  await expect(other).toBeFocused();
+  await expect(row.locator(".set-gear")).toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
 });

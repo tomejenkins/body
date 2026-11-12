@@ -4,7 +4,12 @@ import { verifiedAccount } from "./auth-helpers";
 import { enrollFromDetail } from "./enrollment-helpers";
 import { loginSelection } from "./selection-helpers";
 import { backToWorkoutHome } from "./workout-screen-helpers";
-import { openMoreEffort } from "./set-options-helpers";
+import {
+  openMoreEffort,
+  openAdvancedEffort,
+  openSetSettings,
+  closeSetSettings,
+} from "./set-options-helpers";
 import programs from "../../supabase/catalog/programs.json" with { type: "json" };
 
 test.setTimeout(120000);
@@ -15,7 +20,7 @@ async function pendingRow(page: Page) {
   await row.getByRole("textbox", { name: / reps$/ }).fill("8");
   await row.getByRole("textbox", { name: / reps$/ }).press("Tab");
   await expect(row.locator(".set-save-state")).toHaveText("Saved");
-  await row.locator(".set-options > summary").click();
+  await openSetSettings(row);
   return { ...context, row };
 }
 async function holdCompletion(page: Page) {
@@ -58,9 +63,7 @@ test("only confirmed completion collapses its Options and preserves every set", 
   page,
 }, info) => {
   const { row, a, item } = await pendingRow(page);
-  const options = row.locator(".set-options"),
-    other = page.locator(".logged-set").nth(2).locator(".set-options");
-  await other.locator(":scope > summary").click();
+  const gear = row.locator(".set-gear");
   await expect(
     row.getByRole("button", { name: /Discard this draft/ }),
   ).toHaveCount(0);
@@ -71,11 +74,11 @@ test("only confirmed completion collapses its Options and preserves every set", 
   await row.getByRole("checkbox", { name: / complete$/ }).click();
   await held.arrived;
   await expect(row.locator(".set-save-state")).toHaveText("Saving…");
-  await expect(options).toHaveAttribute("open", "");
+  await expect(gear).toHaveAttribute("aria-expanded", "false");
   held.release();
   await expect(row.locator(".set-save-state")).toHaveText("Saved");
-  await expect(options).not.toHaveAttribute("open", "");
-  await expect(other).toHaveAttribute("open", "");
+  await expect(gear).toHaveAttribute("aria-expanded", "false");
+
   await expect(row.getByRole("textbox", { name: /weight/ })).toHaveValue("125");
   await expect(row.getByRole("textbox", { name: / reps$/ })).toHaveValue("8");
   await expect(row.getByRole("checkbox", { name: / complete$/ })).toBeChecked();
@@ -83,12 +86,12 @@ test("only confirmed completion collapses its Options and preserves every set", 
     path: info.outputPath("confirmed-options-collapsed.png"),
     fullPage: true,
   });
-  await options.locator(":scope > summary").click();
-  await expect(options).toHaveAttribute("open", "");
+  await openSetSettings(row);
+  await expect(gear).toHaveAttribute("aria-expanded", "true");
   await row.getByRole("textbox", { name: / reps$/ }).fill("9");
   await row.getByRole("textbox", { name: / reps$/ }).press("Tab");
   await expect(row.locator(".set-save-state")).toHaveText("Saved");
-  await expect(options).toHaveAttribute("open", "");
+  await expect(gear).toHaveAttribute("aria-expanded", "false");
   expect(
     (
       await a.client
@@ -100,7 +103,10 @@ test("only confirmed completion collapses its Options and preserves every set", 
   await page.reload();
   await expect(row.locator(".set-save-state")).toHaveText("Saved");
   await expect(row.getByRole("textbox", { name: / reps$/ })).toHaveValue("9");
-  await expect(row.locator(".set-options")).not.toHaveAttribute("open", "");
+  await expect(row.locator(".set-gear")).toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
 });
 test("offline completion keeps Options, entered values and recovery until explicit retry", async ({
   page,
@@ -110,10 +116,15 @@ test("offline completion keeps Options, entered values and recovery until explic
   await page.context().setOffline(true);
   await row.getByRole("checkbox", { name: / complete$/ }).click();
   await expect(row.locator(".set-save-state")).toHaveText("Not saved");
-  await expect(row.locator(".set-options")).toHaveAttribute("open", "");
+  await expect(row.locator(".set-gear")).toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
+  await openSetSettings(row);
   await expect(
     row.getByRole("button", { name: /Discard this draft/ }),
   ).toBeVisible();
+  await closeSetSettings(row);
   await expect(row.getByRole("textbox", { name: /weight/ })).toHaveValue("125");
   expect(
     (await a.client.from("workout_sets").select("status").eq("id", id).single())
@@ -127,7 +138,10 @@ test("offline completion keeps Options, entered values and recovery until explic
   await expect(row.locator(".set-save-state")).toHaveText("Not saved");
   await row.getByRole("button", { name: "Retry save", exact: true }).click();
   await expect(row.locator(".set-save-state")).toHaveText("Saved");
-  await expect(row.locator(".set-options")).not.toHaveAttribute("open", "");
+  await expect(row.locator(".set-gear")).toHaveAttribute(
+    "aria-expanded",
+    "false",
+  );
 });
 for (const action of ["reopen", "edit"] as const)
   test(`a newer ${action} survives the older completion response`, async ({
@@ -139,14 +153,16 @@ for (const action of ["reopen", "edit"] as const)
     await row.getByRole("checkbox", { name: / complete$/ }).click();
     await held.arrived;
     if (action === "reopen") {
-      await row.locator(".set-options > summary").click();
-      await row.locator(".set-options > summary").click();
+      await openSetSettings(row);
     } else await row.getByRole("textbox", { name: /weight/ }).fill("130");
     held.release();
     await expect(row.locator(".set-save-state")).toHaveText(
       action === "edit" ? "Unsaved changes" : "Saved",
     );
-    await expect(row.locator(".set-options")).toHaveAttribute("open", "");
+    await expect(row.locator(".set-gear")).toHaveAttribute(
+      "aria-expanded",
+      action === "reopen" ? "true" : "false",
+    );
     if (action === "edit") {
       await expect(row.getByRole("textbox", { name: /weight/ })).toHaveValue(
         "130",
@@ -164,7 +180,10 @@ for (const action of ["reopen", "edit"] as const)
       ).toBe(125);
       await row.getByRole("textbox", { name: /weight/ }).press("Tab");
       await expect(row.locator(".set-save-state")).toHaveText("Saved");
-      await expect(row.locator(".set-options")).toHaveAttribute("open", "");
+      await expect(row.locator(".set-gear")).toHaveAttribute(
+        "aria-expanded",
+        "false",
+      );
     }
   });
 test("Next Exercise returns to collapsed same-session Home with full, partial and unstarted progress", async ({
@@ -290,12 +309,12 @@ test("compact optional controls and accessible help fit all requested mobile the
   );
   const { row } = await pendingRow(page);
   await page.setViewportSize({ width: 390, height: 844 });
-  await row.locator(".set-options > summary").click();
+  await closeSetSettings(row);
   await page.screenshot({
     path: info.outputPath("normal-saved-options-collapsed.png"),
     fullPage: true,
   });
-  await row.locator(".set-options > summary").click();
+  await openSetSettings(row);
   for (const width of [375, 390, 430])
     for (const theme of ["light", "dark"] as const) {
       await page.setViewportSize({ width, height: 844 });
@@ -346,6 +365,7 @@ test("compact optional controls and accessible help fit all requested mobile the
     await page.mouse.click(1, 1);
     await expect(dialog).toHaveCount(0);
   }
+  await openAdvancedEffort(row);
   await row.getByRole("checkbox", { name: /To Failure/ }).check();
   await expect(row.locator(".set-save-state")).toHaveText("Saved");
   await page.screenshot({

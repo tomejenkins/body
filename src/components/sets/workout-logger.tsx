@@ -14,7 +14,14 @@ import { MovementSelection } from "@/components/programs/movement-selection";
 import { effortSummary } from "@/features/sets/effort";
 import { SetEffortOptions } from "./set-effort-options";
 import { SetOptionHelp } from "./set-option-help";
-import { collapseSetOptions } from "./set-options-focus";
+import { SetSettings } from "@/components/workouts/settings-sheet";
+import { CardioEntry } from "@/components/cardio/cardio-entry";
+import {
+  activities,
+  cardioMinutes,
+  cardioTotals,
+} from "@/features/cardio/model";
+import { MovementActions } from "@/components/workouts/movement-actions";
 import {
   SupersetBuilder,
   type GroupOption,
@@ -75,7 +82,6 @@ import {
   type WeightUnit,
 } from "@/features/sets/model";
 import { ExerciseThumbnail } from "@/components/exercises/exercise-thumbnail";
-import { ItemControls } from "@/components/workouts/workout-controls";
 import { Button } from "@/components/ui/button";
 type LoggerRow = {
   item: WorkoutItem | null;
@@ -200,6 +206,7 @@ export function WorkoutLogger({
     setGroups(result.groups);
     groupRequest.current = null;
     setExpanded(null);
+    setSetSettings(null);
     router.refresh();
     if (operation === "ungroup")
       requestAnimationFrame(() => {
@@ -265,6 +272,10 @@ export function WorkoutLogger({
   const [recovery, setRecovery] = useState("");
   const [leaving, setLeaving] = useState<string | null>(null);
   const [ack, setAck] = useState(false);
+  const [cardioBusy, setCardioBusy] = useState(false),
+    [cardioDirty, setCardioDirty] = useState(false);
+  const [setSettings, setSetSettings] = useState<string | null>(null);
+  const cardioTotal = cardioTotals(workout.cardio);
   const [continuity, setContinuity] = useState<Continuity | null>(
     workout.continuity ?? null,
   );
@@ -291,7 +302,7 @@ export function WorkoutLogger({
       (e) => e.dirty || e.pending > 0 || e.error || e.localOnly,
     );
   const dirtyRef = useRef(dirty);
-  dirtyRef.current = dirty;
+  dirtyRef.current = dirty || cardioDirty || cardioBusy;
   const allowLeave = useRef(false);
   const itemsRef = useRef(workout.items);
   itemsRef.current = workout.items;
@@ -414,6 +425,16 @@ export function WorkoutLogger({
       }
     };
     const click = (event: MouseEvent) => {
+      const navigation = (event.target as Element).closest?.(
+        "a[href]",
+      ) as HTMLAnchorElement | null;
+      if (
+        navigation &&
+        navigation.origin === location.origin &&
+        (navigation.pathname !== location.pathname ||
+          navigation.search !== location.search)
+      )
+        setSetSettings(null);
       if (!dirtyRef.current || allowLeave.current || event.defaultPrevented)
         return;
       const link = (event.target as Element).closest?.(
@@ -712,8 +733,7 @@ export function WorkoutLogger({
           accepted.row.last_mutation_id === command.mutation &&
           (optionsInteractions.current.get(id) ?? 0) === optionsInteraction
         ) {
-          const panel = document.getElementById(`set-options-${id}`);
-          if (panel instanceof HTMLDetailsElement) collapseSetOptions(panel);
+          setSetSettings((current) => (current === id ? null : current));
         }
       })
       .catch(() =>
@@ -841,7 +861,8 @@ export function WorkoutLogger({
   const focusedRows = displayedRows.filter(
     ({ item }) => item?.id === focusedItem?.id,
   );
-  const incomplete = summary.pending > 0 || missing > 0;
+  const incomplete =
+    summary.pending > 0 || missing > 0 || cardioTotal.pending > 0;
   const focusedEntries = Object.values(entries).filter(
     (entry) => entry.row.workout_exercise_id === focusedItem?.id,
   );
@@ -981,6 +1002,183 @@ export function WorkoutLogger({
               }}
             />
           </label>
+          <SetSettings
+            label={`${item.name} set ${i + 1} settings`}
+            title={`Set ${i + 1} settings`}
+            open={setSettings === entry.row.id}
+            onOpenChange={(open) => {
+              noteOptionsInteraction(entry.row.id);
+              setSetSettings((current) =>
+                open ? entry.row.id : current === entry.row.id ? null : current,
+              );
+            }}
+            disabled={!canEdit || unsupported || entry.deleting}
+            id={`set-options-${entry.row.id}`}
+            className="set-settings"
+            onInteract={() => noteOptionsInteraction(entry.row.id)}
+          >
+            <div className="set-option-body">
+              {active &&
+                (entry.error ||
+                  entry.dirty ||
+                  entry.conflict ||
+                  entry.localOnly) && (
+                  <Button
+                    variant="outline"
+                    disabled={!!entry.pending}
+                    onClick={async () => {
+                      const result = await readSetRows(item.id);
+                      if (result.error) {
+                        update((old) => ({
+                          ...old,
+                          [entry.row.id]: {
+                            ...old[entry.row.id],
+                            error: result.error,
+                          },
+                        }));
+                        return;
+                      }
+                      const saved = result.rows?.find(
+                        (r) => r.id === entry.row.id,
+                      );
+                      update((old) => {
+                        const next = { ...old };
+                        if (saved)
+                          next[entry.row.id] = {
+                            row: saved,
+                            draft: draftFor(saved, unit),
+                            seq: 0,
+                            dirty: false,
+                            pending: 0,
+                          };
+                        else delete next[entry.row.id];
+                        return next;
+                      });
+                    }}
+                  >
+                    Discard this draft and use saved values
+                  </Button>
+                )}
+              <div className="set-option-field">
+                <div className="set-option-label">
+                  <label htmlFor={`set-type-${entry.row.id}`}>Set type</label>
+                  <SetOptionHelp title="set type">
+                    Warm-up sets prepare you for training. Working and advanced
+                    sets use the existing eligible-performance rules.
+                  </SetOptionHelp>
+                </div>
+                <select
+                  id={`set-type-${entry.row.id}`}
+                  aria-label={`${item.name} set ${i + 1} type`}
+                  disabled={!canEdit || unsupported || !!entry.pending}
+                  value={entry.draft.type}
+                  onChange={(e) => {
+                    change(entry.row.id, {
+                      type: e.target.value as SetDraft["type"],
+                    });
+                    enqueue(entry.row.id);
+                  }}
+                >
+                  {Object.entries(setTypes).map(([value, label]) => (
+                    <option
+                      key={value}
+                      value={value}
+                      disabled={value === "warm_up" && entry.draft.toFailure}
+                    >
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <SetEffortOptions
+                draft={entry.draft}
+                preferredScale={workout.preferredEffortScale ?? "rpe"}
+                name={`${item.name} set ${i + 1}`}
+                disabled={!canEdit || unsupported || !!entry.pending}
+                onChange={(patch) => {
+                  change(entry.row.id, patch);
+                  enqueue(entry.row.id);
+                }}
+              />
+              {active && item.bodyweightEligible && !unsupported && (
+                <button
+                  type="button"
+                  className="add-resistance"
+                  onPointerDown={(event) => event.preventDefault()}
+                  disabled={!canEdit || !!entry.pending}
+                  onClick={() => {
+                    change(entry.row.id, {
+                      mode:
+                        entry.draft.mode === "bodyweight"
+                          ? "external"
+                          : "bodyweight",
+                      weight: "",
+                      weightDirty: true,
+                      completed: false,
+                    });
+                    enqueue(entry.row.id);
+                  }}
+                >
+                  {entry.draft.mode === "bodyweight"
+                    ? "+ Add weight"
+                    : "Bodyweight only"}
+                </button>
+              )}
+              {item.bodyweightEligible && (
+                <label>
+                  Load recording
+                  <select
+                    aria-label={`${item.name} set ${i + 1} load mode`}
+                    disabled={!canEdit || unsupported || !!entry.pending}
+                    value={entry.draft.mode}
+                    onChange={(e) => {
+                      change(entry.row.id, {
+                        mode: e.target.value as SetDraft["mode"],
+                        weight: "",
+                        weightDirty: true,
+                      });
+                      enqueue(entry.row.id);
+                    }}
+                  >
+                    <option value="bodyweight">
+                      Bodyweight · no added load
+                    </option>
+                    <option value="external">Added external load</option>
+                  </select>
+                </label>
+              )}
+              {active && (
+                <div className="set-option-actions">
+                  <Button
+                    variant="outline"
+                    disabled={!canEdit || i === 0 || pending || dirty}
+                    onClick={() => enqueue(entry.row.id, "move", -1)}
+                    aria-label={`Move ${item.name} set ${i + 1} up`}
+                  >
+                    ↑
+                  </Button>
+                  <Button
+                    variant="outline"
+                    disabled={
+                      !canEdit || i === visibleCount - 1 || pending || dirty
+                    }
+                    onClick={() => enqueue(entry.row.id, "move", 1)}
+                    aria-label={`Move ${item.name} set ${i + 1} down`}
+                  >
+                    ↓
+                  </Button>
+                  <Button
+                    variant="outline"
+                    disabled={!canEdit || !!entry.pending}
+                    onClick={() => enqueue(entry.row.id, "remove")}
+                    aria-label={`Delete ${item.name} set ${i + 1}`}
+                  >
+                    Delete set
+                  </Button>
+                </div>
+              )}
+            </div>
+          </SetSettings>
         </div>
         {Object.keys(entry.fields ?? {}).length > 0 && (
           <div
@@ -1079,183 +1277,6 @@ export function WorkoutLogger({
             )}
           </div>
         )}
-        {active && item.bodyweightEligible && !unsupported && (
-          <button
-            type="button"
-            className="add-resistance"
-            onPointerDown={(event) => event.preventDefault()}
-            disabled={!canEdit || !!entry.pending}
-            onClick={() => {
-              change(entry.row.id, {
-                mode:
-                  entry.draft.mode === "bodyweight" ? "external" : "bodyweight",
-                weight: "",
-                weightDirty: true,
-                completed: false,
-              });
-              enqueue(entry.row.id);
-            }}
-          >
-            {entry.draft.mode === "bodyweight"
-              ? "+ Add weight"
-              : "Bodyweight only"}
-          </button>
-        )}
-        <details
-          className="set-options"
-          id={`set-options-${entry.row.id}`}
-          onPointerDownCapture={() => noteOptionsInteraction(entry.row.id)}
-          onKeyDownCapture={() => noteOptionsInteraction(entry.row.id)}
-          onClickCapture={() => noteOptionsInteraction(entry.row.id)}
-        >
-          <summary>
-            {setTypes[entry.draft.type]}
-            {effortSummary({
-              effort_scale: entry.draft.effortScale,
-              effort_value: entry.draft.effortValue?.trim()
-                ? Number(entry.draft.effortValue)
-                : null,
-              performed_to_failure: entry.draft.toFailure,
-            }) &&
-              ` · ${effortSummary({ effort_scale: entry.draft.effortScale, effort_value: entry.draft.effortValue?.trim() ? Number(entry.draft.effortValue) : null, performed_to_failure: entry.draft.toFailure })}`}{" "}
-            · Options
-          </summary>
-          <div className="set-option-body">
-            {active &&
-              (entry.error ||
-                entry.dirty ||
-                entry.conflict ||
-                entry.localOnly) && (
-                <Button
-                  variant="outline"
-                  disabled={!!entry.pending}
-                  onClick={async () => {
-                    const result = await readSetRows(item.id);
-                    if (result.error) {
-                      update((old) => ({
-                        ...old,
-                        [entry.row.id]: {
-                          ...old[entry.row.id],
-                          error: result.error,
-                        },
-                      }));
-                      return;
-                    }
-                    const saved = result.rows?.find(
-                      (r) => r.id === entry.row.id,
-                    );
-                    update((old) => {
-                      const next = { ...old };
-                      if (saved)
-                        next[entry.row.id] = {
-                          row: saved,
-                          draft: draftFor(saved, unit),
-                          seq: 0,
-                          dirty: false,
-                          pending: 0,
-                        };
-                      else delete next[entry.row.id];
-                      return next;
-                    });
-                  }}
-                >
-                  Discard this draft and use saved values
-                </Button>
-              )}
-            <div className="set-option-field">
-              <div className="set-option-label">
-                <label htmlFor={`set-type-${entry.row.id}`}>Set type</label>
-                <SetOptionHelp title="set type">
-                  Warm-up sets prepare you for training. Working and advanced
-                  sets use the existing eligible-performance rules.
-                </SetOptionHelp>
-              </div>
-              <select
-                id={`set-type-${entry.row.id}`}
-                aria-label={`${item.name} set ${i + 1} type`}
-                disabled={!canEdit || unsupported || !!entry.pending}
-                value={entry.draft.type}
-                onChange={(e) => {
-                  change(entry.row.id, {
-                    type: e.target.value as SetDraft["type"],
-                  });
-                  enqueue(entry.row.id);
-                }}
-              >
-                {Object.entries(setTypes).map(([value, label]) => (
-                  <option
-                    key={value}
-                    value={value}
-                    disabled={value === "warm_up" && entry.draft.toFailure}
-                  >
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <SetEffortOptions
-              draft={entry.draft}
-              preferredScale={workout.preferredEffortScale ?? "rpe"}
-              name={`${item.name} set ${i + 1}`}
-              disabled={!canEdit || unsupported || !!entry.pending}
-              onChange={(patch) => {
-                change(entry.row.id, patch);
-                enqueue(entry.row.id);
-              }}
-            />
-            {item.bodyweightEligible && (
-              <label>
-                Load recording
-                <select
-                  aria-label={`${item.name} set ${i + 1} load mode`}
-                  disabled={!canEdit || unsupported || !!entry.pending}
-                  value={entry.draft.mode}
-                  onChange={(e) => {
-                    change(entry.row.id, {
-                      mode: e.target.value as SetDraft["mode"],
-                      weight: "",
-                      weightDirty: true,
-                    });
-                    enqueue(entry.row.id);
-                  }}
-                >
-                  <option value="bodyweight">Bodyweight · no added load</option>
-                  <option value="external">Added external load</option>
-                </select>
-              </label>
-            )}
-            {active && (
-              <div className="set-option-actions">
-                <Button
-                  variant="outline"
-                  disabled={!canEdit || i === 0 || pending || dirty}
-                  onClick={() => enqueue(entry.row.id, "move", -1)}
-                  aria-label={`Move ${item.name} set ${i + 1} up`}
-                >
-                  ↑
-                </Button>
-                <Button
-                  variant="outline"
-                  disabled={
-                    !canEdit || i === visibleCount - 1 || pending || dirty
-                  }
-                  onClick={() => enqueue(entry.row.id, "move", 1)}
-                  aria-label={`Move ${item.name} set ${i + 1} down`}
-                >
-                  ↓
-                </Button>
-                <Button
-                  variant="outline"
-                  disabled={!canEdit || !!entry.pending}
-                  onClick={() => enqueue(entry.row.id, "remove")}
-                  aria-label={`Delete ${item.name} set ${i + 1}`}
-                >
-                  Delete set
-                </Button>
-              </div>
-            )}
-          </div>
-        </details>
       </div>
     );
   }
@@ -1319,7 +1340,9 @@ export function WorkoutLogger({
     <WorkoutClosureProvider
       key={workout.id}
       session={workout.id}
-      disabled={!canEdit || dirty || pending || groupBusy}
+      disabled={
+        !canEdit || dirty || pending || groupBusy || cardioBusy || cardioDirty
+      }
     >
       <div
         className={`workout-execution active-workout-mode ${home ? "workout-home-screen" : "workout-exercise-screen"}`}
@@ -1468,23 +1491,42 @@ export function WorkoutLogger({
             </Button>
           </div>
         )}
-        {!workout.items.length && !workout.movements?.length && (
-          <section className="empty-state">
-            <h2>
-              {active ? "No exercises selected yet." : "No exercises selected."}
-            </h2>
-            <p>Choose a movement from your library to get started.</p>
-          </section>
-        )}
+        {!workout.items.length &&
+          !workout.movements?.length &&
+          !workout.cardio?.length && (
+            <section className="empty-state">
+              <h2>
+                {active
+                  ? "No exercises selected yet."
+                  : "No exercises selected."}
+              </h2>
+              <p>Choose a movement from your library to get started.</p>
+            </section>
+          )}
         {home ? (
           <section
             aria-label="Workout Home"
             className="workout-home workout-screen"
           >
             <p className="workout-progress-summary">
-              {progress.filter((p) => p.progress.status === "Complete").length}{" "}
-              of {progress.length}{" "}
-              {workout.movements?.length ? "movements" : "exercises"} complete
+              {(progress.length > 0 || !workout.cardio?.length) && (
+                <>
+                  {
+                    progress.filter((p) => p.progress.status === "Complete")
+                      .length
+                  }{" "}
+                  of {progress.length}{" "}
+                  {workout.movements?.length ? "movements" : "exercises"}{" "}
+                  complete
+                </>
+              )}
+              {!!workout.cardio?.length && (
+                <>
+                  {progress.length > 0 ? " · " : ""}
+                  {cardioTotal.completed} of {workout.cardio.length} cardio
+                  activities recorded
+                </>
+              )}
             </p>
             <ol className="workout-items" aria-label="Workout movements">
               {progress.map((group, index) => {
@@ -1561,6 +1603,7 @@ export function WorkoutLogger({
                           onUngroup={() =>
                             void applyGroup(superset.id, superset, [])
                           }
+                          onChoose={() => setExpanded(`group:${superset.id}`)}
                         />
                       </div>
                       <ol className="superset-member-summary">
@@ -1698,6 +1741,14 @@ export function WorkoutLogger({
                           label
                         )}
                       </h2>
+                      <MovementActions
+                        workout={workout}
+                        movement={movement ?? undefined}
+                        item={current}
+                        disabled={!canEdit || dirty || pending || cardioBusy}
+                        grouped={false}
+                        onChooseExercise={() => setExpanded(group.id)}
+                      />
                       <span
                         id={`movement-status-${group.id}`}
                         className="movement-status"
@@ -1766,6 +1817,30 @@ export function WorkoutLogger({
                   </li>
                 );
               })}
+              {(workout.cardio ?? []).map((item) => (
+                <li
+                  key={item.id}
+                  className="workout-item workout-movement-card cardio-card"
+                  data-cardio-id={item.id}
+                >
+                  <div>
+                    <h2>Cardio · {activities[item.activity]}</h2>
+                    <p className="set-source">
+                      {item.durationSeconds === null
+                        ? "Duration not recorded"
+                        : `${cardioMinutes(item.durationSeconds)} recorded`}
+                    </p>
+                  </div>
+                  <CardioEntry
+                    key={`${item.id}:${item.revision}`}
+                    session={workout.id}
+                    item={item}
+                    disabled={!canEdit || dirty || pending}
+                    onBusy={setCardioBusy}
+                    onDirty={setCardioDirty}
+                  />
+                </li>
+              ))}
             </ol>
           </section>
         ) : focusedGroup ? (
@@ -2144,58 +2219,30 @@ export function WorkoutLogger({
           </section>
         ) : null}
         {home && active && (
-          <details className="workout-management">
-            <summary>Manage Workout</summary>
+          <section
+            className="workout-management workout-quick-actions"
+            aria-label="Workout actions"
+          >
             <CreateSupersetButton
-              disabled={!canEdit || dirty || pending}
+              disabled={!canEdit || dirty || pending || cardioBusy}
               onOpen={(target) => openGroup(undefined, target)}
             />
-            <div className="workout-toolbar">
-              <Button asChild>
-                <Link href={`/workout/${workout.id}/select`}>
-                  Add exercises
-                </Link>
-              </Button>
-              {!workout.isProgram && workout.movementOptions && (
-                <SuggestedMovementControls
-                  session={workout.id}
-                  options={workout.movementOptions}
-                  disabled={!canEdit || dirty || pending}
-                />
-              )}
-            </div>
-            {progress.map((group) => (
-              <div className="manage-movement" key={group.id}>
-                {group.movement?.suggested && (
-                  <>
-                    <h3>{group.movement.label}</h3>
-                    <SuggestedMovementControls
-                      session={workout.id}
-                      movement={group.movement.id}
-                      options={workout.movementOptions ?? []}
-                      disabled={!canEdit || dirty || pending}
-                    />
-                  </>
-                )}
-                {group.items
-                  .filter((item) => !item.programMovementId)
-                  .map((item) => (
-                    <div key={item.id}>
-                      <h3>{item.name}</h3>
-                      <ItemControls
-                        sessionId={workout.id}
-                        item={{
-                          ...item,
-                          canRemove: item.canRemove && !dirty && !pending,
-                        }}
-                        first={workout.items[0]?.id === item.id}
-                        last={workout.items.at(-1)?.id === item.id}
-                      />
-                    </div>
-                  ))}
-              </div>
-            ))}
-          </details>
+            <Button variant="outline" asChild>
+              <Link href={`/workout/${workout.id}/select`}>Add exercises</Link>
+            </Button>
+            {!workout.isProgram && workout.movementOptions && (
+              <SuggestedMovementControls
+                session={workout.id}
+                options={workout.movementOptions}
+                disabled={!canEdit || dirty || pending || cardioBusy}
+              />
+            )}
+            <CardioEntry
+              session={workout.id}
+              disabled={!canEdit || dirty || pending}
+              onBusy={setCardioBusy}
+            />
+          </section>
         )}
         {active ? (
           <>
@@ -2211,7 +2258,7 @@ export function WorkoutLogger({
                     : "/workout"
                   : loggerHref(workout.id)
               }
-              disabled={!canEdit || pending}
+              disabled={!canEdit || pending || cardioBusy || cardioDirty}
               exerciseActions={
                 focusedGroup && groupConfirmed ? (
                   <Button
@@ -2219,6 +2266,7 @@ export function WorkoutLogger({
                     disabled={groupBusy}
                     onClick={() => {
                       setExpanded(null);
+                      setSetSettings(null);
                       router.push(loggerHref(workout.id));
                     }}
                   >
@@ -2235,6 +2283,7 @@ export function WorkoutLogger({
                     }
                     onHome={() => {
                       setExpanded(null);
+                      setSetSettings(null);
                       router.push(loggerHref(workout.id));
                     }}
                   />
@@ -2258,7 +2307,7 @@ export function WorkoutLogger({
                       onChange={(e) => setAck(e.target.checked)}
                     />
                     Finish without completing all sets ({summary.pending}{" "}
-                    pending; {missing}{" "}
+                    pending; {cardioTotal.pending} cardio pending; {missing}{" "}
                     {workout.movements?.length ? "movements" : "exercises"}{" "}
                     missing sets)
                   </label>

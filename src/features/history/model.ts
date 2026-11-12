@@ -10,6 +10,9 @@ export type LoggingKind =
 export type HistoryFilter =
   "all" | "completed" | "incomplete" | "abandoned" | "archived";
 export type HistorySummary = {
+  is_program?: boolean;
+  cardio_seconds?: number;
+  cardio_items?: number;
   id: string;
   name: string;
   status: WorkoutStatus;
@@ -50,16 +53,19 @@ export function friendlyWorkoutName(name: string) {
 export function historyStatus(
   status: WorkoutStatus,
   completion: "none" | "partial" | "full",
+  cardioOnly = false,
 ) {
   return status === "abandoned"
     ? "Abandoned"
     : status === "in_progress"
       ? "In progress"
-      : completion === "full"
-        ? "Finished"
-        : completion === "none"
-          ? "Finished · No completed sets"
-          : "Finished · Partly completed";
+      : cardioOnly
+        ? "Finished · Cardio"
+        : completion === "full"
+          ? "Finished"
+          : completion === "none"
+            ? "Finished · No completed sets"
+            : "Finished · Partly completed";
 }
 export function durationLabel(start: string, end: string | null) {
   if (!end) return null;

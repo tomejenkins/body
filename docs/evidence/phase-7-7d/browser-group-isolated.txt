@@ -1,0 +1,18 @@
+
+> body@1.0.0 test:e2e
+> playwright test tests/e2e/superset-groups.spec.ts --project=mobile --grep=two groups before exercise choice --repeat-each=3 --workers=1 --output=/tmp/cardio-77d-results/group-isolated
+
+
+Running 3 tests using 1 worker
+
+(node:231890) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [mobile] › tests/e2e/superset-groups.spec.ts:60:1 › two groups before exercise choice, shared round logging, unequal sets, edits and final History (10.7s)
+(node:232117) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [mobile] › tests/e2e/superset-groups.spec.ts:60:1 › two groups before exercise choice, shared round logging, unequal sets, edits and final History (9.1s)
+(node:232339) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile] › tests/e2e/superset-groups.spec.ts:60:1 › two groups before exercise choice, shared round logging, unequal sets, edits and final History (8.8s)
+
+  3 passed (30.8s)

@@ -1,3 +1,5 @@
+import { CardioSummary } from "@/components/cardio/cardio-summary";
+import { cardioTotals } from "@/features/cardio/model";
 import { favoriteSource } from "@/features/completion/model";
 import {
   groupItems,
@@ -56,6 +58,7 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
     .flatMap((item) => item.sets)
     .filter((s) => !s.deleted_at && s.status === "completed").length;
   const pending = sets.filter((s) => s.status !== "completed").length;
+  const cardio = cardioTotals(workout.cardio);
   const source = favoriteSource(workout);
   const order = workout.groupOrder ?? [
     ...new Map(
@@ -136,7 +139,11 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
           </>
         )}
         <p className="workout-history-status">
-          {historyStatus(workout.status, workout.completionStatus)}
+          {historyStatus(
+            workout.status,
+            workout.completionStatus,
+            cardio.completed > 0 && !workout.isProgram && !workout.items.length,
+          )}
         </p>
         <h1>{friendlyWorkoutName(workout.name)}</h1>
         <p>
@@ -178,13 +185,22 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
             : ""}
         </p>
       )}
-      {workout.status === "completed" && !workout.archivedAt && (
-        <SaveFavorite
-          type={source.type}
-          source={source.source}
-          day={"day" in source ? source.day : undefined}
-        />
-      )}
+      {workout.status === "completed" &&
+        !workout.archivedAt &&
+        (completed > 0 || source.type === "program_day") && (
+          <SaveFavorite
+            type={source.type}
+            source={source.source}
+            day={"day" in source ? source.day : undefined}
+          />
+        )}
+      {!!workout.cardio?.length &&
+        (completed > 0 || source.type === "program_day") && (
+          <p className="set-source">
+            Favorites save strength movements only; cardio stays in this
+            workout.
+          </p>
+        )}
       {!workout.archivedAt && <ClosedDrafts workout={workout} />}
       <Achievements achievements={achievements} unit={workout.weightUnit} />
       {workout.isProgram &&
@@ -238,7 +254,10 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
         {workout.items.length} exercises selected · {completed} total completed
         sets · {pending} pending sets
       </p>
-      {completed === 0 && <p>No completed sets were recorded.</p>}
+      <CardioSummary items={workout.cardio} />
+      {completed === 0 && !cardio.completed && (
+        <p>No completed sets were recorded.</p>
+      )}
       <ol
         className="workout-items history-detail"
         aria-label="Recorded exercises"
@@ -284,7 +303,7 @@ export async function WorkoutReview({ workout }: { workout: Workout }) {
               );
             })}
       </ol>
-      {!workout.items.length && (
+      {!workout.items.length && !workout.cardio?.length && (
         <section className="empty-state">
           <h2>No exercises recorded.</h2>
           <p>This workout is preserved without invented performance.</p>

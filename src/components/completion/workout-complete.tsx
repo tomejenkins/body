@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { CardioSummary } from "@/components/cardio/cardio-summary";
+import { cardioTotals } from "@/features/cardio/model";
 import { ArrowUpRight, BookmarkCheck, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Achievements } from "@/components/records/achievements";
@@ -18,6 +20,7 @@ export function WorkoutComplete({
   summary: Awaited<ReturnType<typeof loadCompletion>>;
   showAllAchievements?: boolean;
 }) {
+  const cardio = cardioTotals(w.cardio);
   const duration = completionDuration(w),
     feedback = progressionFeedback(w.items, s.suggestions),
     partial = w.completionStatus === "partial",
@@ -84,12 +87,18 @@ export function WorkoutComplete({
           {qualifier && <small>{qualifier}</small>}
         </div>
         <div aria-label="Completed qualifying working sets">
-          <dt>{unsupported ? "Strength sets" : "Working sets"}</dt>
+          <dt>
+            {unsupported || w.cardio?.length ? "Strength sets" : "Working sets"}
+          </dt>
           <dd>{s.statistics.working_sets}</dd>
           <small>Completed</small>
         </div>
         <div aria-label="Distinct exercise selections with qualifying performance">
-          <dt>{unsupported ? "Strength exercises" : "Exercises"}</dt>
+          <dt>
+            {unsupported || w.cardio?.length
+              ? "Strength exercises"
+              : "Exercises"}
+          </dt>
           <dd>{s.statistics.exercises_performed}</dd>
           <small>Performed</small>
         </div>
@@ -99,7 +108,8 @@ export function WorkoutComplete({
           Other legacy timed or assisted entries remain in View Full Workout.
         </p>
       )}
-      {!s.statistics.working_sets && (
+      <CardioSummary items={w.cardio} />
+      {!s.statistics.working_sets && !cardio.completed && (
         <p className="set-source">No qualifying working sets were recorded.</p>
       )}
       {s.achievements.featured.length ? (
@@ -241,6 +251,11 @@ export function WorkoutComplete({
       >
         Share to Feed · Coming Later
       </Button>
+      {!!w.cardio?.length && s.favorite.eligible && (
+        <p className="set-source">
+          Favorites save strength movements only; cardio stays in this workout.
+        </p>
+      )}
       <footer className="completion-actions">
         <Button asChild>
           <Link prefetch={false} href="/dashboard">

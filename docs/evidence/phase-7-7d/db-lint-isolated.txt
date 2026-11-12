@@ -1,0 +1,11 @@
+
+> body@1.0.0 supabase
+> supabase db lint --db-url postgresql://postgres:***@127.0.0.1:54322/body_cardio_final_77d --schema public,body_private --fail-on warning
+
+Warning: --db-url is deprecated and will be removed in v4. Use --remote=<db-url> instead
+Target: custom Postgres (127.0.0.1:54322)
+Linting schema: public
+Linting schema: body_private
+
+No schema errors found
+{"results":[],"message":"db lint","target":{"kind":"db-url","host":"127.0.0.1","port":54322}}

@@ -1,0 +1,23 @@
+
+> body@1.0.0 test:e2e
+> playwright test tests/e2e/workout-screens.spec.ts --output=/tmp/cardio-77d-results/screens-final
+
+
+Running 6 tests using 2 workers
+
+(node:222761) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:222760) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › tests/e2e/workout-screens.spec.ts:159:1 › ad-hoc Home, incomplete Back and pending/failed draft persistence without forced completion (16.9s)
+  ✓  2 [desktop] › tests/e2e/workout-screens.spec.ts:29:1 › program Home accordion, focused navigation, status, context, refresh and reduced motion (25.4s)
+(node:223450) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [desktop] › tests/e2e/workout-screens.spec.ts:278:1 › stale Home selection cannot overwrite another tab and foreign focus reveals no performance (16.4s)
+(node:223664) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [mobile] › tests/e2e/workout-screens.spec.ts:159:1 › ad-hoc Home, incomplete Back and pending/failed draft persistence without forced completion (16.6s)
+  ✓  4 [mobile] › tests/e2e/workout-screens.spec.ts:29:1 › program Home accordion, focused navigation, status, context, refresh and reduced motion (25.9s)
+  ✓  6 [mobile] › tests/e2e/workout-screens.spec.ts:278:1 › stale Home selection cannot overwrite another tab and foreign focus reveals no performance (11.8s)
+
+  6 passed (1.1m)

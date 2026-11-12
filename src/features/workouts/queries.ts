@@ -114,7 +114,7 @@ export async function loadWorkout(
     (classification.error || classification.data?.length !== 1)
   )
     throw new Error("Program completion could not be verified.");
-  const [preference, grouping] = await Promise.all([
+  const [preference, grouping, cardio] = await Promise.all([
     client
       .from("account_preferences")
       .select("display_weight_unit,preferred_effort_scale")
@@ -126,12 +126,16 @@ export async function loadWorkout(
     client.rpc("workout_group_layout", {
       p_session: session.id,
     }),
+    client.rpc("workout_cardio_items", { p_session: session.id }),
   ]);
   if (preference.error)
     throw new Error("Weight preference could not be loaded.");
   if (grouping.error || !Array.isArray(grouping.data?.groups))
     throw Error("Workout groups could not be loaded.");
+  if (cardio.error || !Array.isArray(cardio.data))
+    throw Error("Cardio could not be loaded.");
   return {
+    cardio: cardio.data as import("@/features/cardio/model").CardioItem[],
     groups: grouping.data
       .groups as import("@/features/grouping/model").ExerciseGroup[],
     favoriteGroupingEdited: grouping.data.favoriteEdited === true,
