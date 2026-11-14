@@ -1,3 +1,5 @@
+import { readAccess } from "@/features/entitlements/server";
+import { AccessStatus } from "@/components/entitlements/access-status";
 import Link from "next/link";
 import { sameEnrollmentVersion } from "@/features/programs/enrollment-model";
 import { notFound } from "next/navigation";
@@ -13,6 +15,9 @@ export default async function Page({
 }: {
   searchParams: Promise<{ version?: string | string[] }>;
 }) {
+  const access = await readAccess();
+  if (access.status !== "ready" || !access.decision.allowed)
+    return <AccessStatus result={access} />;
   const params = await searchParams,
     [v, c] = await Promise.all([
       loadEnrollmentVersion(params.version),

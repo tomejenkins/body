@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('progress_a')::uuid),(md5('progress_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('progress_a')::uuid,clock_timestamp()),(md5('progress_b')::uuid,clock_timestamp());
 insert into profiles(id,display_name) values(md5('progress_a')::uuid,'A'),(md5('progress_b')::uuid,'B');
 create function pg_temp.workout(key text,days integer,kind text default 'elapsed',outcome text default 'completed') returns uuid language plpgsql as $$
 declare start_time timestamptz:=(current_date-days)::timestamp+interval '12 hours'; uid uuid:=md5('progress_a')::uuid; result uuid:=md5(key)::uuid;

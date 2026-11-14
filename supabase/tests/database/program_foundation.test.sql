@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('program_a')::uuid),(md5('program_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('program_a')::uuid,clock_timestamp()),(md5('program_b')::uuid,clock_timestamp());
 insert into profiles(id,display_name) values(md5('program_a')::uuid,'A'),(md5('program_b')::uuid,'B');
 create function pg_temp.rotation(n integer) returns uuid language plpgsql security invoker as $$
 declare root uuid; day uuid;

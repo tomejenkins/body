@@ -223,3 +223,28 @@ Both new grouping tables enable owner RLS before application grants. Template gr
 ## Phase 7.7D manual cardio
 
 Migration `20261111230809_manual_cardio.sql` adds `workout_cardio_commands`, bringing the public table count to 42. Owner-scoped append-only add/save/remove facts double as exact-payload request receipts; the parent session lock, CAS trigger, 20-item/1,000-command bounds and narrow INSERT grants protect live-session writes. Authenticated owner SELECT and three invoker RPCs are explicitly granted; anonymous/service-role access and direct revision/timestamp/update/delete writes are denied. Latest facts derive duration/membership without strength sets or program progress. Parent archive retains display evidence and permanent deletion cascades it. The History incomplete filter recognizes finished independent cardio-only sessions without altering program classifications. See [architecture and retention boundaries](phase-7-7d-cardio-and-workout-ui.md) and [executed validation](phase-7-7d-validation.md).
+
+## Phase 7.7E entitlement boundary
+
+See [entitlement architecture and the action matrix](entitlement-architecture.md).
+Trial/grant records live in `body_private`, enable RLS and have no API table grants.
+Authenticated-only, identity-bound initialization/summary functions use empty search
+paths and expose only safe owner facts. Three explicitly allowlisted private definer
+helpers read/lock grants and stamp session authorization; they grant no elevated
+training DML and cannot be executed directly by API roles. Existing training RPCs,
+owner predicates and business triggers retain invoker execution.
+
+Database guards require current grant authority or fixed same-session continuation
+for training writes, including direct DML. Owner history, retention, account preferences,
+Favorite rename/removal and safe enrollment-end cleanup remain independent of payment.
+Grant evaluation uses database clock time after locks and only locked grant IDs;
+concurrent revocation and grant insertion are covered by multi-connection tests.
+
+`workout_set_receipts` brings public model tables to 43. Owner RLS, narrow validated
+INSERT, protected server fields and no UPDATE/DELETE bind new set mutation UUIDs to
+canonical payloads and committed state. The invoker set RPC recovers identical committed
+receipts before new-write authorization, rejects changed payloads and never overwrites
+newer saved evidence during recovery. Missing legacy receipts require explicit saved-state
+review; no facts are backfilled. Superset/cardio/lifecycle receipts keep existing semantics.
+No public subscription/promotion/lifetime minting, admin endpoint or service-role adapter
+was introduced. All changes are forward migrations; hosted application remains unverified.

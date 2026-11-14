@@ -8,7 +8,7 @@ language plpgsql security invoker as $$
 declare n bigint;
 begin execute statement; get diagnostics n = row_count; return n; end;
 $$;
-insert into auth.users(id) values (md5('alice')::uuid), (md5('bob')::uuid), (md5('carol')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('alice')::uuid,clock_timestamp()), (md5('bob')::uuid,clock_timestamp()), (md5('carol')::uuid,clock_timestamp());
 
 
 insert into public.profiles(id,display_name) values (md5('alice')::uuid,'alice');
@@ -1351,7 +1351,8 @@ select ok((select bool_and(polroles = array['authenticated'::regrole::oid]) from
 
 select ok((select bool_and(polqual is not null and polwithcheck is not null) from pg_policy where polcmd='w' and polrelid in (select oid from pg_class where relnamespace='public'::regnamespace)), 'every UPDATE policy has USING and WITH CHECK');
 
-select ok((select bool_and(not prosecdef) from pg_proc where pronamespace='body_private'::regnamespace), 'internal triggers remain security invoker');
+select ok((select bool_and(not prosecdef or proname in('require_training_access','entitlement_session_guard','entitlement_training_guard')) from pg_proc where pronamespace='body_private'::regnamespace), 'only reviewed entitlement authority helpers use definer; training RPCs retain invoker');
+select ok((select bool_and(not has_function_privilege('authenticated',oid,'EXECUTE') and not has_function_privilege('anon',oid,'EXECUTE') and proconfig @> array['search_path=""']) from pg_proc where pronamespace='body_private'::regnamespace and prosecdef), 'private entitlement helpers deny direct execution and use empty search paths');
 
 select ok((select not has_schema_privilege('authenticated','body_private','USAGE') and not has_schema_privilege('anon','body_private','USAGE')), 'private helper schema remains inaccessible');
 

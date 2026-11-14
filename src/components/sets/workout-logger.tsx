@@ -123,10 +123,12 @@ export function WorkoutLogger({
   workout,
   focusedItemId,
   focusedGroupId,
+  trainingAccess = true,
 }: {
   workout: Workout;
   focusedItemId?: string;
   focusedGroupId?: string;
+  trainingAccess?: boolean;
 }) {
   const focusedItem = workout.items.find((i) => i.id === focusedItemId);
   const focusedMovement = workout.movements?.find(
@@ -289,6 +291,7 @@ export function WorkoutLogger({
   const active = workout.status === "in_progress";
   const [checkInBusy, setCheckInBusy] = useState(false);
   const canEdit =
+    trainingAccess &&
     active &&
     !checkInBusy &&
     !groupBusy &&
@@ -1341,11 +1344,16 @@ export function WorkoutLogger({
       key={workout.id}
       session={workout.id}
       disabled={
-        !canEdit || dirty || pending || groupBusy || cardioBusy || cardioDirty
+        (trainingAccess && !canEdit) ||
+        dirty ||
+        pending ||
+        groupBusy ||
+        cardioBusy ||
+        cardioDirty
       }
     >
       <div
-        className={`workout-execution active-workout-mode ${home ? "workout-home-screen" : "workout-exercise-screen"}`}
+        className={`workout-execution active-workout-mode ${trainingAccess ? "" : "training-access-restricted"} ${home ? "workout-home-screen" : "workout-exercise-screen"}`}
         onSubmitCapture={(event) => {
           if (dirty) {
             event.preventDefault();
@@ -2227,9 +2235,17 @@ export function WorkoutLogger({
               disabled={!canEdit || dirty || pending || cardioBusy}
               onOpen={(target) => openGroup(undefined, target)}
             />
-            <Button variant="outline" asChild>
-              <Link href={`/workout/${workout.id}/select`}>Add exercises</Link>
-            </Button>
+            {trainingAccess ? (
+              <Button variant="outline" asChild>
+                <Link href={`/workout/${workout.id}/select`}>
+                  Add exercises
+                </Link>
+              </Button>
+            ) : (
+              <Button variant="outline" disabled>
+                Add exercises
+              </Button>
+            )}
             {!workout.isProgram && workout.movementOptions && (
               <SuggestedMovementControls
                 session={workout.id}
@@ -2313,7 +2329,9 @@ export function WorkoutLogger({
                   </label>
                 )}
                 <div className="workout-ending-actions">
-                  <FinishWorkout disabled={incomplete && !ack} />
+                  <FinishWorkout
+                    disabled={!trainingAccess || (incomplete && !ack)}
+                  />
                 </div>
               </section>
             </WorkoutModeControls>

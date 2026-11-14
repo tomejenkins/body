@@ -1,3 +1,5 @@
+import { readAccess } from "@/features/entitlements/server";
+import { trainingAllowed } from "@/features/entitlements/model";
 import { loadWorkoutContext } from "@/features/workouts/context";
 import {
   builderHref,
@@ -33,6 +35,9 @@ export default async function Page({
     id,
     query.workoutItemId,
   );
+  const canTrain =
+    context?.status === "in_progress" &&
+    trainingAllowed(await readAccess(context.id));
   const filters = contextFilters(query.builder);
   const library = await loadLibrary(id);
   const exercise = library.exercises.find((e) => e.id === id);
@@ -90,7 +95,8 @@ export default async function Page({
           />
         )}
       </div>
-      {context?.status === "in_progress" &&
+      {canTrain &&
+        context &&
         (!exercise.archivedAt || context.alreadyAdded) && (
           <AddFromDetails
             workoutId={context.id}

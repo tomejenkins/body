@@ -5,7 +5,7 @@ select no_plan();
 select ok(not has_column_privilege('authenticated','public.workout_movements','suggested_intent','UPDATE'),'intent input is immutable');
 select ok(not has_column_privilege('authenticated','public.workout_movements','slot_snapshot','INSERT'),'snapshot stays derived');
 select ok(not has_function_privilege(r,'public.movement_intent(text)','EXECUTE'),'no registry RPC privilege for '||r) from unnest(array['anon','service_role'])r;
-insert into auth.users(id) values(md5('intent_a')::uuid),(md5('intent_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('intent_a')::uuid,clock_timestamp()),(md5('intent_b')::uuid,clock_timestamp());
 insert into profiles(id,display_name) values(md5('intent_a')::uuid,'Intent A'),(md5('intent_b')::uuid,'Intent B');
 insert into account_preferences(owner_id) values(md5('intent_a')::uuid),(md5('intent_b')::uuid);
 set local role authenticated;

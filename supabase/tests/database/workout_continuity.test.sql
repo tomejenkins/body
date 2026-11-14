@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('continuity_a')::uuid),(md5('continuity_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('continuity_a')::uuid,clock_timestamp()),(md5('continuity_b')::uuid,clock_timestamp());
 insert into public.profiles(id,display_name) values(md5('continuity_a')::uuid,'A'),(md5('continuity_b')::uuid,'B');
 select ok(not has_function_privilege('anon','public.workout_continuity(uuid,uuid)','execute'),'anonymous continuity denied');
 select ok(not has_function_privilege('service_role','public.workout_continuity(uuid,uuid)','execute'),'no service shortcut');

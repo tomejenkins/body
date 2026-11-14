@@ -3,7 +3,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('groups_a')::uuid),(md5('groups_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('groups_a')::uuid,clock_timestamp()),(md5('groups_b')::uuid,clock_timestamp());
 insert into profiles(id,display_name) values(md5('groups_a')::uuid,'Group A'),(md5('groups_b')::uuid,'Group B');
 insert into account_preferences(owner_id,scheduling_timezone) values(md5('groups_a')::uuid,'UTC'),(md5('groups_b')::uuid,'UTC');
 select set_config('request.jwt.claims',json_build_object('sub',md5('groups_a')::uuid,'role','authenticated')::text,true);

@@ -5,7 +5,7 @@ select no_plan();
 select ok(not has_table_privilege(r,'public.workout_movements',op),'movement '||r||' denied '||op) from unnest(array['anon','service_role']) r cross join unnest(array['SELECT','INSERT','UPDATE','DELETE']) op;
 select ok(not has_column_privilege('authenticated','public.workout_movements','slot_snapshot','INSERT'),'movement snapshots have no client insert grant');
 select ok(not has_table_privilege('authenticated','public.workout_movements','UPDATE') and not has_table_privilege('authenticated','public.workout_movements','DELETE'),'movement snapshots immutable to clients');
-insert into auth.users(id) values(md5('execution_a')::uuid),(md5('execution_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('execution_a')::uuid,clock_timestamp()),(md5('execution_b')::uuid,clock_timestamp());
 insert into profiles(id,display_name) values(md5('execution_a')::uuid,'A'),(md5('execution_b')::uuid,'B');
 insert into account_preferences(owner_id,scheduling_timezone) values(md5('execution_a')::uuid,'UTC'),(md5('execution_b')::uuid,'UTC');
 

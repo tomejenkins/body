@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('records_a')::uuid),(md5('records_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('records_a')::uuid,clock_timestamp()),(md5('records_b')::uuid,clock_timestamp());
 insert into public.profiles(id,display_name) values(md5('records_a')::uuid,'A'),(md5('records_b')::uuid,'B');
 insert into workout_sessions(id,owner_id,name,status,started_at,finished_at,recognition_enabled) values(md5('r_baseline')::uuid,md5('records_a')::uuid,'baseline','completed','2025-01-01'::timestamptz+interval '0 days','2025-01-01'::timestamptz+interval '0 days'+interval '1 hour',false);
 insert into workout_exercises(id,owner_id,workout_session_id,position,exercise_id,exercise_name_snapshot,logging_kind,removed_at) select md5('re_baseline')::uuid,md5('records_a')::uuid,md5('r_baseline')::uuid,1,id,name,'loaded',null from exercises where slug='barbell_bench_press';

@@ -1,3 +1,4 @@
+import { readAccess } from "@/features/entitlements/server";
 import { headers } from "next/headers";
 import { safeNext } from "@/features/auth/validation";
 import { redirect } from "next/navigation";
@@ -22,6 +23,7 @@ export default async function ProtectedLayout({
   }
   if (!ready) redirect("/onboarding?next=" + encodeURIComponent(next));
   const client = await createClient({ readOnly: true });
+  await readAccess(); // Activation failures never hide owner history or settings.
   const continuity = await client.rpc("workout_continuity");
   if (continuity.error)
     throw new Error("Workout status could not be confirmed.");

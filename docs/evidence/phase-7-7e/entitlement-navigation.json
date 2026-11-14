@@ -1,0 +1,33 @@
+{
+  "environment": "local production Next.js, local Supabase; no baseline comparison",
+  "samples": [
+    {
+      "operation": "/dashboard",
+      "ms": 913.4244560000006
+    },
+    {
+      "operation": "/workout",
+      "ms": 1130.9901119999995
+    },
+    {
+      "operation": "/profile",
+      "ms": 979.633491999999
+    },
+    {
+      "operation": "new-workout-rpc",
+      "ms": 89.38821199999984
+    },
+    {
+      "operation": "workout-home",
+      "ms": 919.240511
+    },
+    {
+      "operation": "cardio-save-rpc",
+      "ms": 72.56508000000031
+    },
+    {
+      "operation": "expired-history",
+      "ms": 749.9626320000025
+    }
+  ]
+}

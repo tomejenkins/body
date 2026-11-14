@@ -1,3 +1,6 @@
+import { SavedFavorites } from "@/components/entitlements/saved-favorites";
+import { readAccess } from "@/features/entitlements/server";
+import { AccessStatus } from "@/components/entitlements/access-status";
 import { WorkoutSelection } from "@/components/workouts/workout-selection";
 import { redirect } from "next/navigation";
 import { isUuid } from "@/features/exercises/validation";
@@ -18,6 +21,7 @@ export default async function Page({
   )
     redirect(`/workout/${params.finished}/complete`);
   const active = await loadWorkout();
+  const access = await readAccess();
   return (
     <>
       <div className="page-heading">
@@ -38,11 +42,18 @@ export default async function Page({
           </Button>
         </section>
       )}
-      <WorkoutSelection
-        activeSession={active?.id}
-        showAlternatives={params.choices === "program"}
-        showDecisions={params.decisions === "program"}
-      />
+      {access.status === "ready" && access.decision.allowed ? (
+        <WorkoutSelection
+          activeSession={active?.id}
+          showAlternatives={params.choices === "program"}
+          showDecisions={params.decisions === "program"}
+        />
+      ) : (
+        <>
+          <AccessStatus result={access} />
+          {access.status === "ready" ? <SavedFavorites /> : null}
+        </>
+      )}
       <div className="library-section">
         <Button variant="outline" asChild>
           <Link href="/exercises">Explore exercise library</Link>

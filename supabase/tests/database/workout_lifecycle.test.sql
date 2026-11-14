@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('p5_alice')::uuid),(md5('p5_bob')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('p5_alice')::uuid,clock_timestamp()),(md5('p5_bob')::uuid,clock_timestamp());
 insert into public.profiles(id,display_name) values(md5('p5_alice')::uuid,'P5 Alice'),(md5('p5_bob')::uuid,'P5 Bob');
 select ok(not has_function_privilege('anon','public.start_ad_hoc_workout()','execute'),'anonymous start denied');
 select ok(not has_function_privilege('anon','public.edit_workout(uuid,text,uuid,uuid,integer)','execute'),'anonymous selection edit denied');

@@ -1,3 +1,5 @@
+import { readAccess } from "@/features/entitlements/server";
+import { AccessStatus } from "@/components/entitlements/access-status";
 import { createClient } from "@/lib/supabase/server";
 import { specialMeasurement } from "@/features/history/measurement";
 import Link from "next/link";
@@ -8,6 +10,9 @@ import { workoutSetupOptions } from "@/features/workouts/suggested-shell";
 import { WorkoutSetup } from "@/components/workouts/workout-setup";
 export const metadata = { title: "Start a workout" };
 export default async function Page() {
+  const access = await readAccess();
+  if (access.status !== "ready" || !access.decision.allowed)
+    return <AccessStatus result={access} />;
   const active = await loadWorkout();
   if (active) redirect(`/workout/${active.id}`);
   const l = await loadLibrary();

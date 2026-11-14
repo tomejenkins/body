@@ -6,7 +6,7 @@ select ok(not has_column_privilege('authenticated','public.workout_sessions',c,'
 select ok(not has_column_privilege('authenticated','public.workout_sessions','manual_paused_at','INSERT'),'cannot start with a fabricated pause');
 select ok(not has_function_privilege(r,'public.set_workout_pause(uuid,boolean,integer,uuid)','EXECUTE'),'timer mutation denied to '||r) from unnest(array['anon','service_role'])r;
 select ok(not has_function_privilege(r,'public.workout_active_seconds(uuid)','EXECUTE'),'timer read denied to '||r) from unnest(array['anon','service_role'])r;
-insert into auth.users(id) values(md5('timer_a')::uuid),(md5('timer_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('timer_a')::uuid,clock_timestamp()),(md5('timer_b')::uuid,clock_timestamp());
 insert into profiles(id,display_name) values(md5('timer_a')::uuid,'Timer A'),(md5('timer_b')::uuid,'Timer B');
 insert into account_preferences(owner_id) values(md5('timer_a')::uuid),(md5('timer_b')::uuid);
 set local role authenticated;

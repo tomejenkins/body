@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('sets_a')::uuid),(md5('sets_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('sets_a')::uuid,clock_timestamp()),(md5('sets_b')::uuid,clock_timestamp());
 insert into public.profiles(id,display_name) values(md5('sets_a')::uuid,'Sets A'),(md5('sets_b')::uuid,'Sets B');
 select ok(not has_function_privilege('anon','public.log_workout_set(uuid,uuid,text,integer,uuid,integer,numeric,text,text,boolean,integer,numeric,text,jsonb)','execute'),'anonymous set RPC denied');
 select ok(not has_column_privilege('authenticated','public.workout_sets','revision','UPDATE'),'revision is server maintained');

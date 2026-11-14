@@ -1,3 +1,4 @@
+import { readAccess } from "@/features/entitlements/server";
 import { loadEnrollmentContext } from "@/features/programs/enrollment-queries";
 import { sameEnrollmentVersion } from "@/features/programs/enrollment-model";
 import { ProgramEnrollmentEntry } from "@/components/programs/current-program";
@@ -21,6 +22,8 @@ export default async function Page({
   const { definition: d, version, exercises, equipment, patterns } = loaded,
     p = d.program;
   const context = await loadEnrollmentContext();
+  const access = await readAccess();
+  const canTrain = access.status === "ready" && access.decision.allowed;
   const same = sameEnrollmentVersion(context.enrollment, loaded.versionId);
   return (
     <article className="program-detail refined-screen">
@@ -30,7 +33,11 @@ export default async function Page({
         <p className="eyebrow">Original Body program · Version {version}</p>
         <ProgramBadges program={loaded} now={new Date()} />
         <h1>{p.name}</h1>
-        <ProgramEnrollmentEntry version={loaded.versionId} />
+        {canTrain ? (
+          <ProgramEnrollmentEntry version={loaded.versionId} />
+        ) : (
+          <Link href="/access">View Access Options</Link>
+        )}
         <p className="program-summary">{p.summary}</p>
         <Link className="program-quick-start" href="#program-workouts">
           View workouts ↓
@@ -130,7 +137,7 @@ export default async function Page({
               ) : (
                 <>
                   <p>{day.focus}</p>
-                  {same && (
+                  {same && canTrain && (
                     <StartProgramWorkout
                       version={
                         context.enrollment?.versionId ?? loaded.versionId
