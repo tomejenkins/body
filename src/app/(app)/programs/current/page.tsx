@@ -1,3 +1,4 @@
+import { readAccess } from "@/features/entitlements/server";
 import { ManagementPanel } from "@/components/ui/management-panel";
 import Link from "next/link";
 import { loadEnrollmentContext } from "@/features/programs/enrollment-queries";
@@ -11,6 +12,8 @@ export default async function Page({
   searchParams: Promise<{ manage?: string }>;
 }) {
   const params = await searchParams;
+  const access = await readAccess();
+  const canTrain = access.status === "ready" && access.decision.allowed;
   const c = await loadEnrollmentContext(),
     a = c.enrollment;
   if (!a)
@@ -46,7 +49,13 @@ export default async function Page({
           label="Manage Program"
           initialOpen={params.manage === "1"}
         >
-          <Link href="/programs?switch=1#program-library-results">
+          <Link
+            href={
+              canTrain
+                ? "/programs?switch=1#program-library-results"
+                : "/access"
+            }
+          >
             Switch Program
           </Link>
           {c.activeSession && (
@@ -61,6 +70,7 @@ export default async function Page({
             <>
               <LifecycleForm
                 kind="cancel_end"
+                blocked={!canTrain}
                 assignment={a.id}
                 revision={a.lifecycleRevision}
                 request={crypto.randomUUID()}

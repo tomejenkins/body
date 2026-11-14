@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('entry_a')::uuid),(md5('entry_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('entry_a')::uuid,clock_timestamp()),(md5('entry_b')::uuid,clock_timestamp());
 insert into profiles(id,display_name) values(md5('entry_a')::uuid,'A'),(md5('entry_b')::uuid,'B');
 insert into account_preferences(owner_id) values(md5('entry_a')::uuid),(md5('entry_b')::uuid);
 insert into exercises(owner_id,slug,name,exercise_type) values(md5('entry_b')::uuid,'entry_private','Private press','compound');

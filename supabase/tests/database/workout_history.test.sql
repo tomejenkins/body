@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('history_a')::uuid),(md5('history_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('history_a')::uuid,clock_timestamp()),(md5('history_b')::uuid,clock_timestamp());
 insert into public.profiles(id,display_name) values(md5('history_a')::uuid,'History A'),(md5('history_b')::uuid,'History B');
 insert into public.workout_sessions(id,owner_id,name,status,completion_status,started_at,finished_at)
 select md5('history_w'||i)::uuid,md5('history_a')::uuid,case when i=1 then 'Ad-hoc workout' else 'Workout '||i end,case when i=2 then 'abandoned' else 'completed' end,case when i=1 then 'partial' when i=4 then 'full' else 'none' end,'2020-01-01'::timestamptz+i*interval '1 day','2020-01-01'::timestamptz+i*interval '1 day'+interval '1 hour' from generate_series(1,25) i;

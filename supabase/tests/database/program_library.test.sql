@@ -33,7 +33,7 @@ select ok(not exists(select 1 from program_slots s where s.owner_id=auth.uid() a
 select ok(not exists(select 1 from program_slot_alternatives a where a.owner_id=auth.uid() and not program_slot_eligible(a.slot_id,a.exercise_id)),'every alternative meets the same hard constraints');
 select ok(not exists(select 1 from program_equipment q join programs p on p.id=q.program_id join equipment_types e on e.id=q.equipment_type_id where p.slug='dumbbell-only-full-body' and e.slug not in('dumbbell','none')),'dumbbell plan has no hidden station/bench requirements');
 select ok(not exists(select 1 from program_versions where owner_id=auth.uid() and (length(definition->'program'->>'description_markdown')<500 or jsonb_array_length(definition->'days')<3 or jsonb_array_length(definition->'rules')<3)),'all definitions include original guidance, complete workouts and progression');
-insert into auth.users(id) values(md5('library_a')::uuid),(md5('library_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('library_a')::uuid,clock_timestamp()),(md5('library_b')::uuid,clock_timestamp());
 insert into profiles(id,display_name) values(md5('library_a')::uuid,'A'),(md5('library_b')::uuid,'B');
 set local role authenticated;
 select set_config('request.jwt.claims',json_build_object('sub',md5('library_a')::uuid,'role','authenticated')::text,true);

@@ -1,3 +1,4 @@
+import { readAccess } from "@/features/entitlements/server";
 import Link from "next/link";
 import { randomUUID } from "node:crypto";
 import { loadProgramSchedule } from "@/features/scheduling/queries";
@@ -15,6 +16,8 @@ export async function ProgramCalendar({
   baseHref?: string;
 }) {
   const { schedule: s, timezone } = await loadProgramSchedule(week);
+  const access = await readAccess();
+  const canTrain = access.status === "ready" && access.decision.allowed;
   if (!s?.configured || !s.from || !s.today)
     return (
       <section
@@ -28,12 +31,16 @@ export async function ProgramCalendar({
             ? "Choose a local start date to schedule your current program."
             : "Follow a program to see its adaptive calendar."}
         </p>
-        <ScheduleSetup
-          assignment={s?.assignmentId}
-          timezone={timezone}
-          request={randomUUID()}
-          fallbackDate={localDate(timezone ?? "UTC")}
-        />
+        {canTrain ? (
+          <ScheduleSetup
+            assignment={s?.assignmentId}
+            timezone={timezone}
+            request={randomUUID()}
+            fallbackDate={localDate(timezone ?? "UTC")}
+          />
+        ) : (
+          <Link href="/access">View Access Options</Link>
+        )}
       </section>
     );
   const from = s.from,
@@ -128,11 +135,15 @@ export async function ProgramCalendar({
           This assignment stays in {s.timezone}. Changing the default below
           applies to future assignments and preserves this calendar.
         </p>
-        <ScheduleSetup
-          timezone={timezone}
-          request={randomUUID()}
-          fallbackDate={today}
-        />
+        {canTrain ? (
+          <ScheduleSetup
+            timezone={timezone}
+            request={randomUUID()}
+            fallbackDate={today}
+          />
+        ) : (
+          <Link href="/access">View Access Options</Link>
+        )}
       </details>
     </section>
   );

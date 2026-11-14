@@ -21,7 +21,7 @@ select ok(not exists(select 1 from public.exercise_equipment x left join public.
 select ok((select not prosecdef and proconfig=array['search_path=""'] from pg_proc where oid='public.save_custom_exercise(uuid,text,text,uuid,uuid[],uuid[],uuid[],uuid[],text)'::regprocedure),'custom editor is invoker with empty search path');
 select ok(not has_function_privilege('anon','public.save_custom_exercise(uuid,text,text,uuid,uuid[],uuid[],uuid[],uuid[],text)','execute'),'anonymous RPC execution denied');
 select ok(not has_function_privilege('service_role','public.save_custom_exercise(uuid,text,text,uuid,uuid[],uuid[],uuid[],uuid[],text)','execute'),'service role RPC execution not granted');
-insert into auth.users(id) values(md5('phase4_alice')::uuid),(md5('phase4_bob')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('phase4_alice')::uuid,clock_timestamp()),(md5('phase4_bob')::uuid,clock_timestamp());
 insert into public.profiles(id,display_name) values(md5('phase4_alice')::uuid,'Phase 4 Alice'),(md5('phase4_bob')::uuid,'Phase 4 Bob');
 set local role authenticated;
 select set_config('request.jwt.claims',json_build_object('sub',md5('phase4_alice')::uuid,'role','authenticated')::text,true);

@@ -45,12 +45,14 @@ export function TrainingWeek({
   activeSession,
   request,
   truncated = false,
+  trainingAccess = true,
 }: {
   schedule: Schedule | null;
   events: TrainingEvent[];
   activeSession: string | null;
   request: string;
   truncated?: boolean;
+  trainingAccess?: boolean;
 }) {
   const initial =
     s?.today && s.from && s.until && s.today >= s.from && s.today < s.until
@@ -297,6 +299,8 @@ export function TrainingWeek({
                   Resume Workout
                 </Link>
               </Button>
+            ) : !trainingAccess ? (
+              <Link href="/access">View Access Options</Link>
             ) : canStart && fields ? (
               <SelectionForm
                 kind="start"
@@ -312,7 +316,7 @@ export function TrainingWeek({
                 </Button>
               )
             )}
-            {!activeSession && fields && (
+            {trainingAccess && !activeSession && fields && (
               <Link
                 prefetch={false}
                 href="/workout?choices=program#program-workout-options"

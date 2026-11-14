@@ -1,3 +1,5 @@
+import { readAccess } from "@/features/entitlements/server";
+import { AccessStatus } from "@/components/entitlements/access-status";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { randomUUID } from "node:crypto";
@@ -12,6 +14,7 @@ export default async function Dashboard({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
+  const access = await readAccess();
   const [history, week] = await Promise.all([
     loadHistory("completed", undefined),
     loadTrainingWeek(params.week),
@@ -22,7 +25,11 @@ export default async function Dashboard({
         <h1>Your training.</h1>
         <p className="intro">Your next session. Your progress.</p>
       </header>
+      {access.status !== "ready" || !access.decision.allowed ? (
+        <AccessStatus result={access} />
+      ) : null}
       <TrainingWeek
+        trainingAccess={access.status === "ready" && access.decision.allowed}
         key={`${week.schedule?.assignmentId}:${week.schedule?.from}`}
         {...week}
         activeSession={history.activeSession}

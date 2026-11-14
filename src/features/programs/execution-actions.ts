@@ -81,6 +81,11 @@ export async function selectProgramExercise(input: {
       p_request: input.requestId,
       p_continue: input.continueRecorded,
     });
+    if (r.error?.code === "P7701")
+      return {
+        error:
+          "Training access is required. Your saved work and drafts are preserved. View Access Options in Profile.",
+      };
     if (r.error) {
       if (r.error.code === "P0001") return { needsContinuation: true };
       if (r.error.code === "40001")

@@ -3853,3 +3853,8 @@ body:has(.active-workout-mode) .app-content {
     );
   }
 }
+
+/* Entitlement denial preserves the logger while making unavailable writes clear. */
+.training-access-restricted button:disabled {
+  opacity: 0.5;
+}

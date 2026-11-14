@@ -1,3 +1,5 @@
+import { readAccess } from "@/features/entitlements/server";
+import { AccessStatus } from "@/components/entitlements/access-status";
 import { EffortPreferenceSettings } from "@/components/settings/effort-preference-settings";
 import { WeightUnitSettings } from "@/components/settings/weight-unit-settings";
 import type { WeightUnit } from "@/features/sets/model";
@@ -28,6 +30,7 @@ export default async function Page() {
         <h1>Profile</h1>
         <p className="intro">Account and workout preferences.</p>
       </div>
+      <AccessStatus result={await readAccess()} />
       <WeightUnitSettings initialUnit={preference.data.display_weight_unit} />
       <EffortPreferenceSettings
         initialScale={preference.data.preferred_effort_scale}

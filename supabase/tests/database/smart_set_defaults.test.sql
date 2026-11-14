@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('smart_a')::uuid),(md5('smart_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('smart_a')::uuid,clock_timestamp()),(md5('smart_b')::uuid,clock_timestamp());
 insert into public.profiles(id,display_name) values(md5('smart_a')::uuid,'Smart A'),(md5('smart_b')::uuid,'Smart B');
 insert into public.account_preferences(owner_id) values(md5('smart_a')::uuid);
 select is((select display_weight_unit from public.account_preferences where owner_id=md5('smart_a')::uuid),'lb','new account default is pounds');

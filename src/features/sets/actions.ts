@@ -64,6 +64,11 @@ export async function mutateSet(input: SetCommand): Promise<SetResult> {
       p_entered_unit: input.enteredUnit ?? null,
       p_effort: input.effort ?? null,
     });
+    if (result.error?.code === "P7701")
+      return {
+        error:
+          "Training access is required. Your saved work and drafts are preserved. View Access Options in Profile.",
+      };
     if (result.error) {
       if (result.error.code === "40001") {
         const current = await client

@@ -2,7 +2,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set local search_path=public,extensions,pg_temp;
 select no_plan();
-insert into auth.users(id) values(md5('cardio_a')::uuid),(md5('cardio_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('cardio_a')::uuid,clock_timestamp()),(md5('cardio_b')::uuid,clock_timestamp());
 insert into profiles(id,display_name) values(md5('cardio_a')::uuid,'Cardio A'),(md5('cardio_b')::uuid,'Cardio B');
 insert into account_preferences(owner_id) values(md5('cardio_a')::uuid),(md5('cardio_b')::uuid);
 select set_config('request.jwt.claims',json_build_object('sub',md5('cardio_a')::uuid,'role','authenticated')::text,true);

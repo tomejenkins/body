@@ -1,0 +1,752 @@
+{
+  "samples": [
+    {
+      "name": "dashboard",
+      "latency": 0,
+      "n": 0,
+      "readyMs": 407,
+      "resources": 19,
+      "bytes": 2660
+    },
+    {
+      "name": "workout-home",
+      "latency": 0,
+      "n": 0,
+      "readyMs": 668,
+      "resources": 21,
+      "bytes": 2675
+    },
+    {
+      "name": "exercise",
+      "latency": 0,
+      "n": 0,
+      "readyMs": 926,
+      "resources": 25,
+      "bytes": 5153
+    },
+    {
+      "name": "programs",
+      "latency": 0,
+      "n": 0,
+      "readyMs": 528,
+      "resources": 29,
+      "bytes": 14448
+    },
+    {
+      "name": "history",
+      "latency": 0,
+      "n": 0,
+      "readyMs": 401,
+      "resources": 11,
+      "bytes": 3650
+    },
+    {
+      "name": "dashboard",
+      "latency": 0,
+      "n": 1,
+      "readyMs": 379,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "workout-home",
+      "latency": 0,
+      "n": 1,
+      "readyMs": 908,
+      "resources": 27,
+      "bytes": 7043
+    },
+    {
+      "name": "exercise",
+      "latency": 0,
+      "n": 1,
+      "readyMs": 580,
+      "resources": 22,
+      "bytes": 2716
+    },
+    {
+      "name": "programs",
+      "latency": 0,
+      "n": 1,
+      "readyMs": 515,
+      "resources": 24,
+      "bytes": 3779
+    },
+    {
+      "name": "history",
+      "latency": 0,
+      "n": 1,
+      "readyMs": 590,
+      "resources": 13,
+      "bytes": 998
+    },
+    {
+      "name": "dashboard",
+      "latency": 0,
+      "n": 2,
+      "readyMs": 337,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "workout-home",
+      "latency": 0,
+      "n": 2,
+      "readyMs": 690,
+      "resources": 27,
+      "bytes": 7929
+    },
+    {
+      "name": "exercise",
+      "latency": 0,
+      "n": 2,
+      "readyMs": 554,
+      "resources": 18,
+      "bytes": 733
+    },
+    {
+      "name": "programs",
+      "latency": 0,
+      "n": 2,
+      "readyMs": 658,
+      "resources": 25,
+      "bytes": 4467
+    },
+    {
+      "name": "history",
+      "latency": 0,
+      "n": 2,
+      "readyMs": 369,
+      "resources": 11,
+      "bytes": 0
+    },
+    {
+      "name": "dashboard",
+      "latency": 0,
+      "n": 3,
+      "readyMs": 589,
+      "resources": 28,
+      "bytes": 9511
+    },
+    {
+      "name": "workout-home",
+      "latency": 0,
+      "n": 3,
+      "readyMs": 555,
+      "resources": 29,
+      "bytes": 8917
+    },
+    {
+      "name": "exercise",
+      "latency": 0,
+      "n": 3,
+      "readyMs": 657,
+      "resources": 24,
+      "bytes": 4513
+    },
+    {
+      "name": "programs",
+      "latency": 0,
+      "n": 3,
+      "readyMs": 390,
+      "resources": 24,
+      "bytes": 3779
+    },
+    {
+      "name": "history",
+      "latency": 0,
+      "n": 3,
+      "readyMs": 416,
+      "resources": 16,
+      "bytes": 2670
+    },
+    {
+      "name": "dashboard",
+      "latency": 0,
+      "n": 4,
+      "readyMs": 502,
+      "resources": 19,
+      "bytes": 2663
+    },
+    {
+      "name": "workout-home",
+      "latency": 0,
+      "n": 4,
+      "readyMs": 618,
+      "resources": 21,
+      "bytes": 2679
+    },
+    {
+      "name": "exercise",
+      "latency": 0,
+      "n": 4,
+      "readyMs": 645,
+      "resources": 18,
+      "bytes": 733
+    },
+    {
+      "name": "programs",
+      "latency": 0,
+      "n": 4,
+      "readyMs": 487,
+      "resources": 25,
+      "bytes": 4467
+    },
+    {
+      "name": "history",
+      "latency": 0,
+      "n": 4,
+      "readyMs": 455,
+      "resources": 17,
+      "bytes": 3162
+    },
+    {
+      "name": "dashboard",
+      "latency": 80,
+      "n": 0,
+      "readyMs": 718,
+      "resources": 22,
+      "bytes": 4811
+    },
+    {
+      "name": "workout-home",
+      "latency": 80,
+      "n": 0,
+      "readyMs": 563,
+      "resources": 24,
+      "bytes": 4163
+    },
+    {
+      "name": "exercise",
+      "latency": 80,
+      "n": 0,
+      "readyMs": 652,
+      "resources": 23,
+      "bytes": 3447
+    },
+    {
+      "name": "programs",
+      "latency": 80,
+      "n": 0,
+      "readyMs": 440,
+      "resources": 20,
+      "bytes": 1800
+    },
+    {
+      "name": "history",
+      "latency": 80,
+      "n": 0,
+      "readyMs": 536,
+      "resources": 16,
+      "bytes": 2671
+    },
+    {
+      "name": "dashboard",
+      "latency": 80,
+      "n": 1,
+      "readyMs": 296,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "workout-home",
+      "latency": 80,
+      "n": 1,
+      "readyMs": 601,
+      "resources": 26,
+      "bytes": 5144
+    },
+    {
+      "name": "exercise",
+      "latency": 80,
+      "n": 1,
+      "readyMs": 710,
+      "resources": 26,
+      "bytes": 5886
+    },
+    {
+      "name": "programs",
+      "latency": 80,
+      "n": 1,
+      "readyMs": 480,
+      "resources": 21,
+      "bytes": 2300
+    },
+    {
+      "name": "history",
+      "latency": 80,
+      "n": 1,
+      "readyMs": 340,
+      "resources": 12,
+      "bytes": 690
+    },
+    {
+      "name": "dashboard",
+      "latency": 80,
+      "n": 2,
+      "readyMs": 289,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "workout-home",
+      "latency": 80,
+      "n": 2,
+      "readyMs": 601,
+      "resources": 24,
+      "bytes": 4163
+    },
+    {
+      "name": "exercise",
+      "latency": 80,
+      "n": 2,
+      "readyMs": 610,
+      "resources": 22,
+      "bytes": 2718
+    },
+    {
+      "name": "programs",
+      "latency": 80,
+      "n": 2,
+      "readyMs": 463,
+      "resources": 25,
+      "bytes": 4469
+    },
+    {
+      "name": "history",
+      "latency": 80,
+      "n": 2,
+      "readyMs": 313,
+      "resources": 11,
+      "bytes": 0
+    },
+    {
+      "name": "dashboard",
+      "latency": 80,
+      "n": 3,
+      "readyMs": 455,
+      "resources": 19,
+      "bytes": 2662
+    },
+    {
+      "name": "workout-home",
+      "latency": 80,
+      "n": 3,
+      "readyMs": 627,
+      "resources": 24,
+      "bytes": 4163
+    },
+    {
+      "name": "exercise",
+      "latency": 80,
+      "n": 3,
+      "readyMs": 642,
+      "resources": 22,
+      "bytes": 2718
+    },
+    {
+      "name": "programs",
+      "latency": 80,
+      "n": 3,
+      "readyMs": 455,
+      "resources": 20,
+      "bytes": 1800
+    },
+    {
+      "name": "history",
+      "latency": 80,
+      "n": 3,
+      "readyMs": 448,
+      "resources": 16,
+      "bytes": 2671
+    },
+    {
+      "name": "dashboard",
+      "latency": 80,
+      "n": 4,
+      "readyMs": 497,
+      "resources": 19,
+      "bytes": 2663
+    },
+    {
+      "name": "workout-home",
+      "latency": 80,
+      "n": 4,
+      "readyMs": 716,
+      "resources": 24,
+      "bytes": 4162
+    },
+    {
+      "name": "exercise",
+      "latency": 80,
+      "n": 4,
+      "readyMs": 599,
+      "resources": 22,
+      "bytes": 2717
+    },
+    {
+      "name": "programs",
+      "latency": 80,
+      "n": 4,
+      "readyMs": 488,
+      "resources": 25,
+      "bytes": 4468
+    },
+    {
+      "name": "history",
+      "latency": 80,
+      "n": 4,
+      "readyMs": 329,
+      "resources": 11,
+      "bytes": 0
+    },
+    {
+      "name": "dashboard",
+      "latency": 300,
+      "n": 0,
+      "readyMs": 546,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "workout-home",
+      "latency": 300,
+      "n": 0,
+      "readyMs": 752,
+      "resources": 19,
+      "bytes": 1189
+    },
+    {
+      "name": "exercise",
+      "latency": 300,
+      "n": 0,
+      "readyMs": 816,
+      "resources": 22,
+      "bytes": 2718
+    },
+    {
+      "name": "programs",
+      "latency": 300,
+      "n": 0,
+      "readyMs": 529,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "history",
+      "latency": 300,
+      "n": 0,
+      "readyMs": 707,
+      "resources": 11,
+      "bytes": 0
+    },
+    {
+      "name": "dashboard",
+      "latency": 300,
+      "n": 1,
+      "readyMs": 555,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "workout-home",
+      "latency": 300,
+      "n": 1,
+      "readyMs": 754,
+      "resources": 22,
+      "bytes": 2673
+    },
+    {
+      "name": "exercise",
+      "latency": 300,
+      "n": 1,
+      "readyMs": 825,
+      "resources": 17,
+      "bytes": 0
+    },
+    {
+      "name": "programs",
+      "latency": 300,
+      "n": 1,
+      "readyMs": 801,
+      "resources": 20,
+      "bytes": 1800
+    },
+    {
+      "name": "history",
+      "latency": 300,
+      "n": 1,
+      "readyMs": 521,
+      "resources": 11,
+      "bytes": 0
+    },
+    {
+      "name": "dashboard",
+      "latency": 300,
+      "n": 2,
+      "readyMs": 537,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "workout-home",
+      "latency": 300,
+      "n": 2,
+      "readyMs": 699,
+      "resources": 17,
+      "bytes": 0
+    },
+    {
+      "name": "exercise",
+      "latency": 300,
+      "n": 2,
+      "readyMs": 904,
+      "resources": 18,
+      "bytes": 734
+    },
+    {
+      "name": "programs",
+      "latency": 300,
+      "n": 2,
+      "readyMs": 732,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "history",
+      "latency": 300,
+      "n": 2,
+      "readyMs": 689,
+      "resources": 11,
+      "bytes": 0
+    },
+    {
+      "name": "dashboard",
+      "latency": 300,
+      "n": 3,
+      "readyMs": 692,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "workout-home",
+      "latency": 300,
+      "n": 3,
+      "readyMs": 557,
+      "resources": 17,
+      "bytes": 0
+    },
+    {
+      "name": "exercise",
+      "latency": 300,
+      "n": 3,
+      "readyMs": 742,
+      "resources": 21,
+      "bytes": 1984
+    },
+    {
+      "name": "programs",
+      "latency": 300,
+      "n": 3,
+      "readyMs": 799,
+      "resources": 20,
+      "bytes": 1800
+    },
+    {
+      "name": "history",
+      "latency": 300,
+      "n": 3,
+      "readyMs": 513,
+      "resources": 11,
+      "bytes": 0
+    },
+    {
+      "name": "dashboard",
+      "latency": 300,
+      "n": 4,
+      "readyMs": 529,
+      "resources": 14,
+      "bytes": 0
+    },
+    {
+      "name": "workout-home",
+      "latency": 300,
+      "n": 4,
+      "readyMs": 714,
+      "resources": 17,
+      "bytes": 0
+    },
+    {
+      "name": "exercise",
+      "latency": 300,
+      "n": 4,
+      "readyMs": 733,
+      "resources": 20,
+      "bytes": 1492
+    },
+    {
+      "name": "programs",
+      "latency": 300,
+      "n": 4,
+      "readyMs": 779,
+      "resources": 20,
+      "bytes": 1800
+    },
+    {
+      "name": "history",
+      "latency": 300,
+      "n": 4,
+      "readyMs": 516,
+      "resources": 11,
+      "bytes": 0
+    }
+  ],
+  "performance": {
+    "metrics": [
+      {
+        "name": "Timestamp",
+        "value": 5326.028855
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 43
+      },
+      {
+        "name": "Frames",
+        "value": 49
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 4933
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 3530
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 12074
+      },
+      {
+        "name": "Resources",
+        "value": 175
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 241
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 26
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 0
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 43
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 44
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 298
+      },
+      {
+        "name": "LayoutCount",
+        "value": 2
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 4
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0.00243
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 0.003536
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 0.050462
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 0.02317
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0.000316
+      },
+      {
+        "name": "TaskDuration",
+        "value": 0.12774
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 0.047826
+      },
+      {
+        "name": "ThreadTime",
+        "value": 0.096574
+      },
+      {
+        "name": "ProcessTime",
+        "value": 19.84
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 82851964
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 119394304
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 0
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 5325.879838
+      },
+      {
+        "name": "NavigationStart",
+        "value": 5325.517723
+      }
+    ]
+  }
+}

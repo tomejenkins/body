@@ -33,6 +33,11 @@ export async function changeGroup(command: GroupCommand): Promise<GroupResult> {
       p_members: command.members,
       p_request: command.request,
     });
+    if (result.error?.code === "P7701")
+      return {
+        error:
+          "Training access is required. Your saved work and drafts are preserved. View Access Options in Profile.",
+      };
     if (result.error)
       return {
         error:

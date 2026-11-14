@@ -1,3 +1,6 @@
+import { readAccess } from "@/features/entitlements/server";
+import { trainingAllowed } from "@/features/entitlements/model";
+import { AccessStatus } from "@/components/entitlements/access-status";
 import { loadProgressionSuggestions } from "@/features/programs/progression-queries";
 import { loadWorkoutMovements } from "@/features/programs/execution-queries";
 import { WorkoutReview } from "@/components/history/workout-review";
@@ -26,6 +29,7 @@ export default async function Page({
     loadWorkoutMovements(workout),
     loadProgressionSuggestions(workout),
   ]);
+  const access = await readAccess(id);
   const query = await searchParams;
   const focusedItemId =
     typeof query.exercise === "string" &&
@@ -33,22 +37,29 @@ export default async function Page({
       ? query.exercise
       : undefined;
   return (
-    <WorkoutLogger
-      key={workout.id}
-      focusedItemId={focusedItemId}
-      focusedGroupId={
-        typeof query.group === "string" &&
-        workout.groups?.some((g) => g.id === query.group)
-          ? query.group
-          : undefined
-      }
-      workout={{
-        ...workout,
-        loadSuggestions,
-        movements: selection.movements,
-        movementFacets: selection.facets,
-        movementOptions: selection.movementOptions,
-      }}
-    />
+    <>
+      {!trainingAllowed(access) ||
+      (access.status === "ready" && !access.decision.allowed) ? (
+        <AccessStatus result={access} />
+      ) : null}
+      <WorkoutLogger
+        trainingAccess={trainingAllowed(access)}
+        key={workout.id}
+        focusedItemId={focusedItemId}
+        focusedGroupId={
+          typeof query.group === "string" &&
+          workout.groups?.some((g) => g.id === query.group)
+            ? query.group
+            : undefined
+        }
+        workout={{
+          ...workout,
+          loadSuggestions,
+          movements: selection.movements,
+          movementFacets: selection.facets,
+          movementOptions: selection.movementOptions,
+        }}
+      />
+    </>
   );
 }

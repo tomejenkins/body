@@ -6,7 +6,7 @@ select ok(not has_table_privilege('authenticated','public.workout_movements','UP
 select ok(not has_column_privilege('authenticated','public.workout_movements','slot_snapshot','INSERT'),'derived snapshot is protected');
 select ok(not has_column_privilege('authenticated','public.workout_sessions','ad_hoc_focus','UPDATE'),'focus cannot be rewritten');
 select ok(not has_function_privilege(r,'public.start_suggested_workout(jsonb,uuid)','EXECUTE'),'no start privilege for '||r) from unnest(array['anon','service_role'])r;
-insert into auth.users(id) values(md5('shell_a')::uuid),(md5('shell_b')::uuid);
+insert into auth.users(id,email_confirmed_at) values (md5('shell_a')::uuid,clock_timestamp()),(md5('shell_b')::uuid,clock_timestamp());
 insert into profiles(id,display_name) values(md5('shell_a')::uuid,'Shell A'),(md5('shell_b')::uuid,'Shell B');
 insert into account_preferences(owner_id,scheduling_timezone) values(md5('shell_a')::uuid,'UTC'),(md5('shell_b')::uuid,'UTC');
 set local role authenticated;

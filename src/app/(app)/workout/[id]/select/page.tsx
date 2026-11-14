@@ -1,3 +1,6 @@
+import { readAccess } from "@/features/entitlements/server";
+import { trainingAllowed } from "@/features/entitlements/model";
+import { AccessStatus } from "@/components/entitlements/access-status";
 import {
   parseBuilderFilters,
   queryParams,
@@ -21,6 +24,8 @@ export default async function Page({
   const workout = await loadWorkout(id);
   if (!workout) notFound();
   if (workout.status !== "in_progress") redirect(`/workout/${id}`);
+  const access = await readAccess(id);
+  if (!trainingAllowed(access)) return <AccessStatus result={access} />;
   const library = await loadLibrary();
   const query = await searchParams;
   const selectedAdded =
