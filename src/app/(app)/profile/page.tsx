@@ -1,3 +1,5 @@
+import { BillingControl } from "@/components/billing/billing-controls";
+import { readBilling } from "@/features/billing/summary";
 import { readAccess } from "@/features/entitlements/server";
 import { AccessStatus } from "@/components/entitlements/access-status";
 import { EffortPreferenceSettings } from "@/components/settings/effort-preference-settings";
@@ -23,6 +25,7 @@ export default async function Page() {
     }>();
   if (preference.error)
     throw new Error("Weight preference could not be loaded.");
+  const billing = await readBilling();
   return (
     <>
       <div className="page-heading">
@@ -31,6 +34,13 @@ export default async function Page() {
         <p className="intro">Account and workout preferences.</p>
       </div>
       <AccessStatus result={await readAccess()} />
+      <section className="account-group">
+        <h2>Body Premium</h2>
+        <Link href="/access">
+          {billing?.lifetime ? "Lifetime Access" : "View Access Options"}
+        </Link>
+        {billing?.hasCustomer && <BillingControl kind="portal" />}
+      </section>
       <WeightUnitSettings initialUnit={preference.data.display_weight_unit} />
       <EffortPreferenceSettings
         initialScale={preference.data.preferred_effort_scale}
