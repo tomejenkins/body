@@ -91,11 +91,13 @@ test("verified trial is stable, expiration keeps history/settings, protected lif
   ).toHaveLength(1);
   await page.goto("/access");
   await expect(
-    page.getByText("Checkout is not available yet.", { exact: false }),
+    page.getByText("Billing is not available in this environment yet.", {
+      exact: false,
+    }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: /subscribe|pay|checkout/i }),
-  ).toHaveCount(0);
+    page.getByRole("button", { name: "Continue to Secure Checkout" }),
+  ).toBeDisabled();
   await page.goto("/profile");
   await expect(page.getByRole("button", { name: /sign out/i })).toBeVisible();
   fixtureSql(
@@ -103,7 +105,7 @@ test("verified trial is stable, expiration keeps history/settings, protected lif
   );
   await page.goto("/profile");
   await expect(
-    page.getByRole("heading", { name: "Training access is active" }),
+    page.getByRole("heading", { name: "Lifetime Access" }),
   ).toBeVisible();
   expect((await a.client.rpc("start_ad_hoc_workout")).error).toBeNull();
 });

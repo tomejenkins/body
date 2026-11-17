@@ -24,6 +24,7 @@ export function validateRegistration(
   if (password !== confirmation) return "The passwords do not match.";
 }
 const roots = [
+  "/access",
   "/dashboard",
   "/workout",
   "/programs",

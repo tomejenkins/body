@@ -41,7 +41,11 @@ export function AccessStatus({ result }: { result: AccessResult }) {
       <h2>
         {d.source === "trial"
           ? "Your 14-day trial"
-          : "Training access is active"}
+          : d.source === "lifetime"
+            ? "Lifetime Access"
+            : d.source === "subscription"
+              ? "Body Premium is active"
+              : "Training access is active"}
       </h2>
       {d.expiresAt ? (
         <p>
