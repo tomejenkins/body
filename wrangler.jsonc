@@ -11,4 +11,21 @@
   "previews": {},
   "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
   "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "body" }],
+  "env": {
+    "staging": {
+      "name": "body-staging",
+      // Do not inherit production routes or service bindings.
+      "routes": [],
+      "workers_dev": true,
+      "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+      "services": [
+        { "binding": "WORKER_SELF_REFERENCE", "service": "body-staging" },
+      ],
+      // Public project/origin values and private secrets are staging-dashboard-only.
+      "vars": {
+        "BODY_BILLING_MODE": "test",
+        "BODY_BILLING_LIVE_APPROVED": "false",
+      },
+    },
+  },
 }
