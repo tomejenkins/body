@@ -1,5 +1,7 @@
 # Phase 1.2: Workers and Supabase foundation
 
+For the persistent, isolated `body-staging` Worker, use the [staging deployment runbook](cloudflare-staging.md). Its explicit `--env staging` commands and dashboard settings are separate from the existing `body` production/branch-preview workflow described below. A plain `npm run build` does not generate the OpenNext artifacts required by either Worker.
+
 ## Deployment investigation and choice
 
 The fetched GitHub default branch contained the merged foundation audit, Next.js 16.4.4, webpack builds, and no Wrangler file, Cloudflare adapter, deployment workflow, or `.github/workflows/` directory. No Cloudflare or Supabase credentials were injected. This repository therefore did not describe a reproducible Workers deployment. The current live Worker identity, dashboard build commands, bindings, routes, and deployed revision cannot be established from repository evidence. No live service was inspected or changed.
