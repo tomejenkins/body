@@ -55,3 +55,9 @@ The user-provided OpenAI project ID is pinned in `scripts/agent/budget-config.mj
 Before any live use, reconcile the Costs API's daily reporting semantics (including incomplete current-day data), test real response shape and pagination, and design an independently durable pending-run reservation ledger. The present `parseMonthlyCosts` assumes complete bucket coverage and should not be used to authorize paid runs until validated against actual billing response shape. The admin credential must only be accessible in a trusted isolated job, not in a checkout running project scripts or third-party dependencies. A $40 policy allowance is not a guaranteed hard cost cap.
 
 The draft publisher and runner remain intentionally inert; human review and separate activation approval are required.
+
+## Reservation ledger policy (unpaid, not yet operational)
+
+`reservation-ledger.mjs` defines pure, fail-closed rules for one active pilot reservation, unique run IDs, $5 maximum reservation, explicit settlement and month mismatch rejection. `budget-evaluation.mjs` combines a reported spending snapshot with reservations for a **diagnostic calculation only**. It always reports `authorization: BLOCKED_UNTIL_LIVE_BILLING_AND_ATOMIC_LEDGER` regardless of the apparent remaining allowance. Tests cover duplicate runs, month rollover, stale evidence and exhausted budgets.
+
+**Important:** These pure functions do not provide atomic writes, persistent storage, billing reconciliation, a hard per-task dollar limit or real-time cost accuracy. To make them operational, a trusted service must atomically reserve and settle funds in durable storage (for example a dedicated database with transaction locks) and reconcile delayed Costs API reporting without double counting. A GitHub Actions concurrency group or a JSON artifact is insufficient as the sole financial ledger. No admin credential is accessed, and all workflows remain disabled.
