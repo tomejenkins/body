@@ -1,0 +1,12 @@
+# INERT FOUNDATION: No job may run until a separate reviewed activation PR.
+name: Body Codex agent (disabled)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  disabled:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Agent disabled pending approval, credentials, and guardrail verification."
