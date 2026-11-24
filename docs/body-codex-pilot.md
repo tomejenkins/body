@@ -47,3 +47,11 @@ There is no live spending-data adapter or active Codex invocation yet; activatio
 The user-provided OpenAI project ID is pinned in `scripts/agent/budget-config.mjs` as `proj_O5giIELFflZ131F0wem4Xc10`. The Admin API key remains solely in the `agent_budget` environment and must not be committed or shared with the Codex execution job. The config and tests do not call OpenAI.
 
 **Integration still required:** implement the trusted costs-fetcher using the organization Costs API, explicitly request project-scoped grouping/filtering and verify the actual response schema; handle pagination and reporting lag; verify pending reservations from an independently controlled ledger. The current parser assumes each result has a `project_id` and complete buckets; confirm these assumptions against real API responses before relying on it. The project's monthly $40 target is not a hard platform spending limit.
+
+## Costs API client (not activated)
+
+`scripts/agent/costs-client.mjs` constructs project-scoped, daily-bucket Costs API requests and supports pagination. Its tests use an injected mock fetch, never live credentials. **This is only a library**, not an operational billing gate: no workflow invokes it, and the admin secret is not referenced in code or workflows.
+
+Before any live use, reconcile the Costs API's daily reporting semantics (including incomplete current-day data), test real response shape and pagination, and design an independently durable pending-run reservation ledger. The present `parseMonthlyCosts` assumes complete bucket coverage and should not be used to authorize paid runs until validated against actual billing response shape. The admin credential must only be accessible in a trusted isolated job, not in a checkout running project scripts or third-party dependencies. A $40 policy allowance is not a guaranteed hard cost cap.
+
+The draft publisher and runner remain intentionally inert; human review and separate activation approval are required.
