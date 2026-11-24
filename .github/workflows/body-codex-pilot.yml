@@ -41,4 +41,8 @@ jobs:
       # A subsequent PR must implement an independently verifiable budget
       # gate, pinned Codex CLI invocation, sandbox restrictions and PR handoff.
       # Do not reference OPENAI_API_KEY until those controls are reviewed.
-      - run: echo 'No paid invocation is configured.'
+      - name: Preview fail-closed execution plan (no paid calls)
+        env:
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: node scripts/agent/codex-execution-plan.mjs
+      - run: echo 'No paid invocation or publishing is configured.'
