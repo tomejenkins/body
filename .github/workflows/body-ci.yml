@@ -1,0 +1,12 @@
+# INERT FOUNDATION: no pull_request or push triggers until approved.
+name: Body CI (disabled)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  disabled:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "CI activation requires a separate reviewed PR."
