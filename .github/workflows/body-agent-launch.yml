@@ -1,0 +1,72 @@
+# End-to-end launch candidate. All jobs intentionally disabled until separately approved.
+name: Body Codex issue to draft PR (launch candidate, disabled)
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Owner-authored issue number with agent-approved and agent-ready labels
+        required: true
+        type: string
+permissions:
+  contents: read
+  issues: read
+concurrency:
+  group: body-agent-launch
+  cancel-in-progress: false
+jobs:
+  code:
+    if: ${{ false }} # Separate explicit launch authorization required
+    runs-on: ubuntu-latest
+    environment: agent_pilot
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Validate issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          APPROVAL_PHRASE: approved-pilot
+        run: node scripts/agent/validate-pilot.mjs
+      - name: Prepare bounded task prompt
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: node scripts/agent/prepare-issue.mjs
+      # Intentionally not connected to OPENAI_API_KEY. The CLI invocation and
+      # strict spending controls must be verified before enabling this job.
+      - name: Block paid execution
+        run: |
+          echo 'Codex execution is not activated'
+          exit 1
+      - name: Run application checks
+        if: ${{ false }}
+        run: |
+          npm run lint
+          npm run typecheck
+          npm test
+          npm run build
+      - name: Inspect generated changes
+        if: ${{ false }}
+        run: node scripts/agent/inspect-generated-change.mjs
+      - name: Upload patch
+        if: ${{ false }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: body-codex-patch
+          path: body-agent.patch
+          retention-days: 1
+  publisher:
+    if: ${{ false }}
+    needs: code
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - run: echo 'Draft PR publisher not activated; no write token configured'
