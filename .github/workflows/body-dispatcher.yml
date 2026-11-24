@@ -1,0 +1,12 @@
+# INERT FOUNDATION: no schedule, no issue events, no dispatch of coding work.
+name: Body agent dispatcher (disabled)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  disabled:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Dispatcher disabled pending explicit activation approval."
