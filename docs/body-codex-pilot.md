@@ -41,3 +41,9 @@ A separate disabled `body-publisher-pilot.yml` workflow and `publisher-preflight
 Before enabling a publisher: fetch the artifact by exact run ID from a trusted source, validate its digest against the actual bytes, parse/apply the patch in a disposable checkout, compare the resulting `git diff --name-status` and changed files to the policy, reject symlinks/submodules and unexpected changes, verify the initiating human's GitHub identity server-side, then use a separate least-privilege short-lived credential to push an issue branch and create a **draft-only** PR. Never execute untrusted artifact content in a write-privileged job.
 
 There is no live spending-data adapter or active Codex invocation yet; activation remains blocked.
+
+## Body billing project scope
+
+The user-provided OpenAI project ID is pinned in `scripts/agent/budget-config.mjs` as `proj_O5giIELFflZ131F0wem4Xc10`. The Admin API key remains solely in the `agent_budget` environment and must not be committed or shared with the Codex execution job. The config and tests do not call OpenAI.
+
+**Integration still required:** implement the trusted costs-fetcher using the organization Costs API, explicitly request project-scoped grouping/filtering and verify the actual response schema; handle pagination and reporting lag; verify pending reservations from an independently controlled ledger. The current parser assumes each result has a `project_id` and complete buckets; confirm these assumptions against real API responses before relying on it. The project's monthly $40 target is not a hard platform spending limit.
