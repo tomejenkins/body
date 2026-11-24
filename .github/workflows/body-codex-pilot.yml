@@ -1,0 +1,44 @@
+# Manual-only draft. Intentionally cannot execute until separately reviewed activation.
+name: Body Codex pilot (manual only, disabled)
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Approved GitHub issue number
+        required: true
+        type: string
+      approval_phrase:
+        description: Enter approved-pilot only after explicit human authorization
+        required: true
+        type: string
+permissions:
+  contents: read
+  issues: read
+concurrency:
+  group: body-codex-single-worker
+  cancel-in-progress: false
+jobs:
+  codex:
+    if: ${{ false }} # Never remove without explicit separate approval
+    environment: agent-pilot
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Validate issue and authorization
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          APPROVAL_PHRASE: ${{ inputs.approval_phrase }}
+        run: node scripts/agent/validate-pilot.mjs
+      # A subsequent PR must implement an independently verifiable budget
+      # gate, pinned Codex CLI invocation, sandbox restrictions and PR handoff.
+      # Do not reference OPENAI_API_KEY until those controls are reviewed.
+      - run: echo 'No paid invocation is configured.'
