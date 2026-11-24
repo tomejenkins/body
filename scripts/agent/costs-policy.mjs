@@ -1,6 +1,5 @@
-// Pure parser for OpenAI organization Costs API response. No network or secrets.
-// Only accepts complete daily buckets within the requested month, for the
-// explicitly configured project. Incomplete current-day usage is not a hard cap.
+// Conservative validation of completed daily Costs API buckets.
+// This diagnostic parser never grants permission to make paid API calls.
 export function parseMonthlyCosts(payload, { projectId, startUnix, endUnix }) {
   if (!/^proj_[A-Za-z0-9_-]+$/.test(projectId ?? '')) throw Error('Invalid project ID');
   if (!Number.isSafeInteger(startUnix) || !Number.isSafeInteger(endUnix) || endUnix <= startUnix) {
@@ -28,4 +27,18 @@ export function parseMonthlyCosts(payload, { projectId, startUnix, endUnix }) {
   }
   if (expectedStart !== endUnix) throw Error('Incomplete billing window');
   return total;
+}
+
+// OpenAI may paginate daily buckets. Validate the complete ordered chain only
+// after all pages are fetched. Duplicate, skipped and out-of-order buckets fail.
+export function parsePaginatedMonthlyCosts(pages, options) {
+  if (!Array.isArray(pages) || pages.length === 0) throw Error('Missing costs pages');
+  const buckets = [];
+  for (let i = 0; i < pages.length; i++) {
+    const page = pages[i];
+    if (!page || !Array.isArray(page.data) || typeof page.has_more !== 'boolean' ||
+        page.has_more !== (i < pages.length - 1)) throw Error('Invalid page chain');
+    buckets.push(...page.data);
+  }
+  return parseMonthlyCosts({ has_more: false, data: buckets }, options);
 }
