@@ -20,7 +20,7 @@ concurrency:
 jobs:
   codex:
     if: ${{ false }} # Never remove without explicit separate approval
-    environment: agent-pilot
+    environment: agent_pilot
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
