@@ -21,5 +21,6 @@ for (const path of paths) {
 }
 const patch = execFileSync('git', ['diff', '--binary', '--', ...paths], { maxBuffer: 300000 });
 if (!patch.length || patch.length > 256000) throw Error('Invalid patch size');
-writeFileSync('body-agent.patch', patch, { flag: 'wx', mode: 0o600 });
+if (!process.env.RUNNER_TEMP) throw Error('RUNNER_TEMP required');
+writeFileSync(process.env.RUNNER_TEMP + '/body-agent.patch', patch, { flag: 'wx', mode: 0o600 });
 console.log('Verified generated patch paths and size');
