@@ -33,3 +33,11 @@ This PR is an **implementation scaffold and review artifact**, not a complete wo
 Official OpenAI documentation demonstrates noninteractive `codex exec --json --sandbox workspace-write` with a prompt supplied on standard input. The new `scripts/agent/codex-runner.mjs` validates this command shape and rejects all invocations, even if a caller supplies plausible spending numbers: there is no trusted billing adapter yet. The `codex-runner.test.mjs` tests assert that the CLI is never spawned. No model version or CLI package version has been pinned yet; the example model in tests is a placeholder, not a production model.
 
 **Do not remove the unconditional block** or insert a CLI installation command until a reliable billing provenance check, executable sandbox isolation, model/version pinning and human activation review are complete. `OPENAI_API_KEY` must never enter untrusted pull-request jobs. A workflow timeout is not an API spending cap.
+
+## Publisher review-only scaffold
+
+A separate disabled `body-publisher-pilot.yml` workflow and `publisher-preflight.mjs` validate the *shape* of a proposed draft-PR manifest. This does **not** publish changes. Manifest fields such as `approvedBy`, `patchSha256`, and `paths` are **untrusted claims** until independently verified by a trusted publisher against GitHub identity, actual patch bytes, current base SHA, issue labels, and immutable workflow artifact provenance. A matching SHA-256 string in a JSON file is not verification of patch contents. The current patch-header validator is preliminary only, and cannot authorize patch application.
+
+Before enabling a publisher: fetch the artifact by exact run ID from a trusted source, validate its digest against the actual bytes, parse/apply the patch in a disposable checkout, compare the resulting `git diff --name-status` and changed files to the policy, reject symlinks/submodules and unexpected changes, verify the initiating human's GitHub identity server-side, then use a separate least-privilege short-lived credential to push an issue branch and create a **draft-only** PR. Never execute untrusted artifact content in a write-privileged job.
+
+There is no live spending-data adapter or active Codex invocation yet; activation remains blocked.
