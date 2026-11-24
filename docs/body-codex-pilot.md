@@ -27,3 +27,9 @@
 - GitHub environment protection, Actions permissions and ruleset verification.
 
 This PR is an **implementation scaffold and review artifact**, not a complete working agent. Do not remove the unconditional false guards as a shortcut.
+
+## Codex CLI interface preparation (still disabled)
+
+Official OpenAI documentation demonstrates noninteractive `codex exec --json --sandbox workspace-write` with a prompt supplied on standard input. The new `scripts/agent/codex-runner.mjs` validates this command shape and rejects all invocations, even if a caller supplies plausible spending numbers: there is no trusted billing adapter yet. The `codex-runner.test.mjs` tests assert that the CLI is never spawned. No model version or CLI package version has been pinned yet; the example model in tests is a placeholder, not a production model.
+
+**Do not remove the unconditional block** or insert a CLI installation command until a reliable billing provenance check, executable sandbox isolation, model/version pinning and human activation review are complete. `OPENAI_API_KEY` must never enter untrusted pull-request jobs. A workflow timeout is not an API spending cap.
