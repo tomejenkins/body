@@ -1,0 +1,30 @@
+# Manual-only draft: no automatic trigger; never deploy or access hosted DB.
+name: Body CI pilot (manual only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: body-ci-pilot
+  cancel-in-progress: false
+jobs:
+  validate:
+    if: ${{ false }} # Remove only in a separately approved activation PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run format:check
+      - run: npm run catalog:check
+      - run: npm run programs:check
+      - run: npm test
+      - run: npm run build
