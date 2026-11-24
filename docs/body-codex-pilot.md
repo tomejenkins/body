@@ -4,12 +4,12 @@
 
 ## What is implemented
 - A Node 24, `npm ci` CI recipe with lint, typecheck, format, generated-catalog checks, Vitest and Next build.
-- A single-worker manual workflow skeleton with 20-minute timeout, read-only permissions, an `agent-pilot` environment and no secret references.
+- A single-worker manual workflow skeleton with 20-minute timeout, read-only permissions, an `agent_pilot` environment and no secret references.
 - A fail-closed issue preflight requiring `main`, manual dispatch, a valid open issue, both `agent-approved` and `agent-ready` labels, an assigned human owner and the `approved-pilot` acknowledgement.
 - Neither workflow is executable in its current form. There is **no Codex CLI execution or draft-PR creation yet**.
 
 ## Required before first paid pilot (separate approval and PR)
-1. Verify environment `agent-pilot` exists, contains `OPENAI_API_KEY`, and requires reviewer approval; check the secret's *presence only*, never reveal its value.
+1. Verify environment `agent_pilot` exists, contains `OPENAI_API_KEY`, and requires reviewer approval; check the secret's *presence only*, never reveal its value.
 2. Verify actual OpenAI API project budget and any hard-enforcement capability. The $50 all-in pilot target reserves $40 API, $7 runners and $3 contingency. Warn at $30 and stop launching new paid jobs at $40, or sooner if reporting is stale. Do not promise a guaranteed hard cap.
 3. Implement a reliable **pre-run** budget check from a trusted billing source and a bounded worst-case per-run estimate. If the source is inaccessible, stop; do not trust issue text, an unverified environment variable or a manually typed spend number as proof.
 4. Pin the Codex CLI version and supported model after checking official docs. Run noninteractive with workspace-write sandbox and no approval bypass; validate effective filesystem/network isolation and prevent agent writes to `.github/workflows`, `AGENTS.md`, and budget/security scripts.
