@@ -22,6 +22,5 @@ const prompt = [
   'Change at most 10 files. Run focused local tests. Do not create commits.',
   'ISSUE BODY START', issue.body, 'ISSUE BODY END',
 ].join('\n');
-if (!process.env.RUNNER_TEMP) throw Error('RUNNER_TEMP required');
-writeFileSync(process.env.RUNNER_TEMP + '/body-agent-prompt.txt', prompt, { mode: 0o600, flag: 'wx' });
+writeFileSync('body-agent-prompt.txt', prompt, { mode: 0o600, flag: 'wx' });
 console.log('Prepared bounded issue prompt');
