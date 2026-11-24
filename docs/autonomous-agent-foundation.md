@@ -9,7 +9,7 @@ Status: **NOT ACTIVATED**. This PR deliberately contains only inert GitHub Actio
 - Cloudflare Workers `body` and `body-staging` must remain isolated. Do not create a second deployment path that conflicts with existing Cloudflare Workers Builds.
 - Production Stripe, Supabase, Cloudflare and application credentials must never be available to coding agents or untrusted PR workflows.
 - No workflow may edit its own authorization, security controls, billing limits, or workflow files without human review.
-- Do not treat the $150/month target as a guaranteed hard cap: model usage reporting may lag, in-flight jobs may continue, and GitHub runner costs are separate.
+- Do not treat the $50/month testing target as a guaranteed hard cap: model usage reporting may lag, in-flight jobs may continue, and GitHub runner costs are separate.
 
 ## Proposed activated architecture (requires a separate PR and approval)
 
@@ -23,8 +23,8 @@ Status: **NOT ACTIVATED**. This PR deliberately contains only inert GitHub Actio
 
 ## Budget and operations
 
-- Target all-in incremental spend: **$150/month**, proposed allocation $120 model usage, $20 runner reserve, $10 contingency.
-- Warn at $100 recorded spend. Stop **starting new jobs** at $150 or if usage is stale/unavailable; do not claim this is a provider-enforced hard stop.
+- Target all-in incremental **testing** spend: **$50/month**, proposed allocation $40 model usage, $7 runner reserve, $3 contingency. Increase only after the user reviews at least two days of measured pilot activity and explicitly approves a new limit.
+- Warn at $30 recorded spend; pause new paid work at $40 to preserve a $10 reserve for already-running jobs and delayed charges. Never start a job when usage is stale/unavailable or when its estimated upper-bound cost exceeds the remaining allowance. Stop **starting new jobs** at $50 in all cases. These application-level gates are not a provider-enforced hard cap.
 - Configure provider-level project budgets/alerts and GitHub Actions spending controls before activation. Establish per-run token/time limits and cost logs. Avoid printing secrets or sensitive prompts in artifacts.
 - One worker for initial supervised pilots, then at most two independent workers. One failed task gets limited retries; after repeated failures mark blocked and move on.
 - Emergency stop: disable dispatch workflow, cancel queued/in-progress jobs, revoke the dedicated API key/token, and disable relevant GitHub environments. Validate stop behavior before enabling a schedule.
