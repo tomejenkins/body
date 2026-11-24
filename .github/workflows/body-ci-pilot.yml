@@ -26,5 +26,6 @@ jobs:
       - run: npm run format:check
       - run: npm run catalog:check
       - run: npm run programs:check
+      - run: node --test scripts/agent/*.test.mjs
       - run: npm test
       - run: npm run build
