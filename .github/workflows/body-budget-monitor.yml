@@ -1,0 +1,23 @@
+# Design-only placeholder. Deliberately disabled, no key references or API calls.
+name: Body budget monitor (disabled)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: body-budget-monitor
+  cancel-in-progress: false
+jobs:
+  inspect:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --test scripts/agent/costs-policy.test.mjs
+      - run: echo 'Budget monitor disabled. No admin credential accessed.'
