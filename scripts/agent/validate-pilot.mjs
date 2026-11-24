@@ -28,7 +28,13 @@ const labels = new Set((issue.labels ?? []).map(label => label.name));
 if (!labels.has('agent-approved') || !labels.has('agent-ready')) {
   fail('Issue requires both agent-approved and agent-ready labels.');
 }
-if (!issue.assignee && !(issue.assignees ?? []).length) {
-  fail('Issue must have an assigned human owner.');
+if (!(issue.assignees ?? []).some(assignee => assignee.login === 'tomejenkins')) {
+  fail('Issue must be assigned to the repository owner.');
+}
+if (issue.user?.login !== 'tomejenkins') {
+  fail('Pilot issue must be created by the repository owner.');
+}
+if (typeof issue.body !== 'string' || !issue.body.trim()) {
+  fail('Pilot issue must contain written task instructions.');
 }
 console.log(`Validated approved issue #${raw}. No paid execution performed.`);
