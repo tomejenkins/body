@@ -44,6 +44,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ISSUE_NUMBER: ${{ inputs.issue_number }}
         run: node scripts/agent/prepare-issue.mjs
+      - name: Preserve trusted verification scripts outside Codex workspace
+        run: |
+          mkdir -p "$RUNNER_TEMP/trusted-agent"
+          cp scripts/agent/verified-change.mjs scripts/agent/validate-patch.mjs scripts/agent/pilot-policy.mjs "$RUNNER_TEMP/trusted-agent/"
+          printf '{"type":"module"}\n' > "$RUNNER_TEMP/trusted-agent/package.json"
       - name: Run Codex (the only step receiving the project API key)
         uses: openai/codex-action@v1
         with:
@@ -106,7 +111,7 @@ jobs:
           git switch -c "$branch"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Codex: address issue #${ISSUE_NUMBER}"
+          git -c core.hooksPath=/dev/null commit -m "Codex: address issue #${ISSUE_NUMBER}"
           git push origin "$branch"
       - name: Create draft pull request
         env:
