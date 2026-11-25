@@ -1,0 +1,186 @@
+# Owner-approved, plan-bound queue. Disabled unless repo/environment vars are explicitly enabled.
+# No merge, deployment, remote migrations, or automatic task discovery.
+name: Body agent - approved daily execution queue
+on:
+  issue_comment:
+    types: [created]
+permissions: {}
+concurrency:
+  group: body-agent-single-run
+  cancel-in-progress: false
+jobs:
+  reserve:
+    if: ${{ github.repository == 'tomejenkins/body' && github.ref == 'refs/heads/main' && github.actor == 'tomejenkins' && github.event.issue.pull_request == null && startsWith(github.event.comment.body, 'BODY-APPROVE v1 ') && vars.BODY_AGENT_UNATTENDED_ENABLED == 'true' && vars.BODY_OPENAI_HARD_LIMIT_CONFIRMED == 'true' }}
+    runs-on: ubuntu-latest
+    environment: agent_daily
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    outputs:
+      matrix: ${{ steps.claim.outputs.matrix }}
+      plan_number: ${{ steps.claim.outputs.plan_number }}
+      plan_digest: ${{ steps.claim.outputs.plan_digest }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test queue authorization and billing policy without paid calls
+        run: |
+          node --test scripts/agent/daily-plan-policy.test.mjs
+          node --test scripts/agent/pilot-policy.test.mjs
+          node --test scripts/agent/billing-guard.test.mjs
+      - name: Verify owner plan, live project spend, and reserve once
+        id: claim
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PLAN_ISSUE_NUMBER: ${{ github.event.issue.number }}
+          BODY_AGENT_LEDGER_ISSUE: ${{ vars.BODY_AGENT_LEDGER_ISSUE }}
+          BODY_OPENAI_ADMIN_KEY: ${{ secrets.BODY_OPENAI_ADMIN_KEY }}
+          BODY_OPENAI_PROJECT_ID: ${{ vars.BODY_OPENAI_PROJECT_ID }}
+        run: node scripts/agent/daily-queue-control.mjs reserve
+  generate:
+    needs: reserve
+    if: ${{ needs.reserve.result == 'success' }}
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.reserve.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    environment: agent_daily
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Revalidate live spend, plan, issue and reservation immediately before Codex
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PLAN_ISSUE_NUMBER: ${{ needs.reserve.outputs.plan_number }}
+          PLAN_SHA256: ${{ needs.reserve.outputs.plan_digest }}
+          TASK_ISSUE_NUMBER: ${{ matrix.issue }}
+          TASK_SHA256: ${{ matrix.hash }}
+          BODY_AGENT_LEDGER_ISSUE: ${{ vars.BODY_AGENT_LEDGER_ISSUE }}
+          BODY_OPENAI_ADMIN_KEY: ${{ secrets.BODY_OPENAI_ADMIN_KEY }}
+          BODY_OPENAI_PROJECT_ID: ${{ vars.BODY_OPENAI_PROJECT_ID }}
+        run: node scripts/agent/daily-queue-control.mjs verify
+      - name: Install dependencies (no API credentials)
+        run: npm ci
+      - name: Build bounded, hash-bound task prompt (no billing credential)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TASK_ISSUE_NUMBER: ${{ matrix.issue }}
+          TASK_SHA256: ${{ matrix.hash }}
+        run: node scripts/agent/queue-approved-prompt.mjs
+      - name: Preserve trusted verification scripts outside Codex workspace
+        run: |
+          mkdir -p "$RUNNER_TEMP/trusted-agent"
+          cp scripts/agent/verified-change.mjs scripts/agent/validate-patch.mjs scripts/agent/pilot-policy.mjs "$RUNNER_TEMP/trusted-agent/"
+          printf '{"type":"module"}\n' > "$RUNNER_TEMP/trusted-agent/package.json"
+      - name: Run Codex with only project execution key
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          model: gpt-5.3-codex
+          effort: high
+          prompt-file: body-agent-prompt.txt
+          permission-profile: ':workspace'
+          safety-strategy: drop-sudo
+          codex-args: '["--ephemeral"]'
+      - name: Validate actual patch and its safe paths
+        run: |
+          rm -f body-agent-prompt.txt
+          node "$RUNNER_TEMP/trusted-agent/verified-change.mjs" generate
+          node "$RUNNER_TEMP/trusted-agent/validate-patch.mjs" "$RUNNER_TEMP/body-agent.patch"
+      - name: Full application checks
+        run: |
+          npm run lint
+          npm run typecheck
+          npm test
+          npm run build
+      - name: Upload trusted checked patch
+        uses: actions/upload-artifact@v4
+        with:
+          name: body-queue-patch-${{ matrix.issue }}
+          path: ${{ runner.temp }}/body-agent.patch
+          if-no-files-found: error
+          retention-days: 1
+  publish:
+    needs: [reserve, generate]
+    if: ${{ always() && needs.reserve.result == 'success' && (needs.generate.result == 'success' || needs.generate.result == 'failure') }}
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.reserve.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Revalidate owner and task approval before publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PLAN_ISSUE_NUMBER: ${{ needs.reserve.outputs.plan_number }}
+          PLAN_SHA256: ${{ needs.reserve.outputs.plan_digest }}
+          TASK_ISSUE_NUMBER: ${{ matrix.issue }}
+          TASK_SHA256: ${{ matrix.hash }}
+          BODY_AGENT_LEDGER_ISSUE: ${{ vars.BODY_AGENT_LEDGER_ISSUE }}
+        run: node scripts/agent/daily-queue-control.mjs publish
+      - uses: actions/download-artifact@v4
+        with:
+          name: body-queue-patch-${{ matrix.issue }}
+          path: ${{ runner.temp }}/body-queue-artifact
+      - name: Validate patch again and reject files overlapping open PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          patch="$RUNNER_TEMP/body-queue-artifact/body-agent.patch"
+          node scripts/agent/validate-patch.mjs "$patch"
+          git apply --check "$patch"
+          git apply --index "$patch"
+          git diff --cached --check
+          node scripts/agent/verified-change.mjs publish
+          node scripts/agent/queue-overlap-check.mjs
+      - name: Publish draft PR only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TASK_ISSUE_NUMBER: ${{ matrix.issue }}
+          PLAN_ISSUE_NUMBER: ${{ needs.reserve.outputs.plan_number }}
+        run: |
+          set -euo pipefail
+          branch="codex/issue-${TASK_ISSUE_NUMBER}-run-${GITHUB_RUN_ID}"
+          git switch -c "$branch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -c core.hooksPath=/dev/null commit -m "Codex: address approved issue #${TASK_ISSUE_NUMBER}"
+          git push origin "$branch"
+          gh pr create --draft --base main --head "$branch" \
+            --title "Codex: approved issue #${TASK_ISSUE_NUMBER} (review required)" \
+            --body "$(printf 'Generated for approved daily plan #%s. Tests passed in a separate restricted job. Human review and merge required. No deployment.\n\nCloses #%s\n' "$PLAN_ISSUE_NUMBER" "$TASK_ISSUE_NUMBER")"
+          url="$(gh pr view "$branch" --json url --jq .url)"
+          gh api -X POST "repos/tomejenkins/body/issues/${TASK_ISSUE_NUMBER}/comments" \
+            -f body="Proposed implementation: ${url}. Review and merge manually."
