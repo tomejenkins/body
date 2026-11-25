@@ -44,6 +44,28 @@ it("formats elapsed durations across midnight without guessing active duration",
   expect(durationLabel("2020-01-01T00:00:00Z", null)).toBeNull();
   expect(durationLabel("2020-01-02", "2020-01-01")).toBeNull();
 });
+it("handles duration boundaries and invalid timestamps deterministically", () => {
+  expect(durationLabel("2020-01-01T00:00:00Z", "2020-01-01T00:00:00Z")).toBe(
+    "Less than a minute",
+  );
+  expect(durationLabel("2020-01-01T00:00:00Z", "2020-01-01T00:00:59Z")).toBe(
+    "Less than a minute",
+  );
+  expect(durationLabel("2020-01-01T00:00:00Z", "2020-01-01T00:01:00Z")).toBe(
+    "1 min",
+  );
+  expect(durationLabel("2020-01-01T00:00:00Z", "2020-01-01T00:59:00Z")).toBe(
+    "59 min",
+  );
+  expect(durationLabel("2020-01-01T00:00:00Z", "2020-01-01T01:00:00Z")).toBe(
+    "1 hr 0 min",
+  );
+  expect(durationLabel("2020-01-01T00:00:00Z", "2020-01-01T02:00:00Z")).toBe(
+    "2 hr 0 min",
+  );
+  expect(durationLabel("bad-start", "2020-01-01T00:01:00Z")).toBeNull();
+  expect(durationLabel("2020-01-01T00:00:00Z", "bad-end")).toBeNull();
+});
 it("uses explicit local zones with daylight saving and midnight boundaries", () => {
   expect(
     localTimestamp("2026-03-08T09:30:00Z", "America/Los_Angeles"),
