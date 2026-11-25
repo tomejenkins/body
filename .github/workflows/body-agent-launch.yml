@@ -140,7 +140,7 @@ jobs:
           fi
           gh api -X POST "repos/${repo}/issues/${ISSUE_NUMBER}/labels" -f labels[]=agent-review >/dev/null
           marker="<!-- body-agent-run:${RUN_ID} -->"
-          existing="$(gh api --paginate "repos/${repo}/issues/${ISSUE_NUMBER}/comments?per_page=100" --jq ".[] | select(.body | contains(\\\"$marker\\\")) | .id" | head -n 1)"
+          existing="$(gh api --paginate "repos/${repo}/issues/${ISSUE_NUMBER}/comments?per_page=100" --jq '.[].body' | grep -F "$marker" || true)"
           if [ -z "$existing" ]; then
             gh api -X POST "repos/${repo}/issues/${ISSUE_NUMBER}/comments" -f body="Implementation proposed in ${pr_url}. Automated checks passed. Awaiting human review and merge. ${marker}" >/dev/null
           fi
