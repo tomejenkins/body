@@ -7,6 +7,7 @@ import {
   historyFilter,
   performanceLabel,
   historyStatus,
+  isCardioOnlyWorkout,
 } from "./model";
 import type { LoggedSet } from "@/features/sets/model";
 const set: LoggedSet = {
@@ -36,6 +37,36 @@ it("keeps session completion separate from set completion", () => {
   );
   expect(historyStatus("completed", "none")).toContain("No completed sets");
   expect(historyStatus("abandoned", "partial")).toBe("Abandoned");
+});
+it("classifies cardio-only workouts consistently for status behavior", () => {
+  expect(
+    isCardioOnlyWorkout({ cardio_items: 2, exercise_count: 0, is_program: false }),
+  ).toBe(true);
+  expect(historyStatus("completed", "none", true)).toBe("Finished · Cardio");
+});
+it("does not classify strength-only, mixed, or program workouts as cardio-only", () => {
+  expect(
+    isCardioOnlyWorkout({ cardio_items: 0, exercise_count: 3, is_program: false }),
+  ).toBe(false);
+  expect(
+    isCardioOnlyWorkout({ cardio_items: 1, exercise_count: 2, is_program: false }),
+  ).toBe(false);
+  expect(
+    isCardioOnlyWorkout({ cardio_items: 1, exercise_count: 0, is_program: true }),
+  ).toBe(false);
+});
+it("does not classify empty or missing optional cardio fields as cardio-only", () => {
+  expect(
+    isCardioOnlyWorkout({ cardio_items: 0, exercise_count: 0, is_program: false }),
+  ).toBe(false);
+  expect(isCardioOnlyWorkout({ exercise_count: 0, is_program: false })).toBe(false);
+  expect(
+    isCardioOnlyWorkout({
+      cardio_items: undefined,
+      exercise_count: 0,
+      is_program: undefined,
+    }),
+  ).toBe(false);
 });
 it("formats elapsed durations across midnight without guessing active duration", () => {
   expect(durationLabel("2020-01-01T23:30:00Z", "2020-01-02T00:30:00Z")).toBe(

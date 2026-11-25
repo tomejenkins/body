@@ -5,6 +5,7 @@ import { qualifiedDuration } from "@/features/continuity/model";
 import {
   friendlyWorkoutName,
   historyStatus,
+  isCardioOnlyWorkout,
   type HistorySummary,
 } from "@/features/history/model";
 import { LocalTime } from "./local-time";
@@ -17,6 +18,8 @@ export function HistoryCard({
   archived?: boolean;
   compact?: boolean;
 }) {
+  const cardioOnly = isCardioOnlyWorkout(w);
+
   return (
     <Link className="training-history-card" href={`/history/${w.id}`}>
       <div className="history-card-heading">
@@ -33,17 +36,19 @@ export function HistoryCard({
         {historyStatus(
           w.status,
           w.completion_status,
-          !!w.cardio_items && !w.exercise_count && !w.is_program,
+          cardioOnly,
         )}
       </p>
-      <p className="history-card-counts">
-        <span>
-          <strong>{w.working_sets}</strong> completed working sets
-        </span>
-        <span>
-          <strong>{w.exercise_count}</strong> exercises selected
-        </span>
-      </p>
+      {!cardioOnly && (
+        <p className="history-card-counts">
+          <span>
+            <strong>{w.working_sets}</strong> completed working sets
+          </span>
+          <span>
+            <strong>{w.exercise_count}</strong> exercises selected
+          </span>
+        </p>
+      )}
       {!!w.cardio_items && (
         <p className="history-card-counts">
           Cardio · {cardioMinutes(w.cardio_seconds ?? 0)} recorded
@@ -51,9 +56,11 @@ export function HistoryCard({
       )}
       {!compact && (
         <>
-          <p className="history-card-metadata">
-            {w.warm_up_sets} warm-up sets · {w.incomplete_sets} incomplete sets
-          </p>
+          {!cardioOnly && (
+            <p className="history-card-metadata">
+              {w.warm_up_sets} warm-up sets · {w.incomplete_sets} incomplete sets
+            </p>
+          )}
           <p className="history-card-metadata">
             {qualifiedDuration({
               started_at: w.started_at,
