@@ -124,7 +124,7 @@ jobs:
           set -euo pipefail
           gh pr create --draft --base main --head "codex/issue-${ISSUE_NUMBER}-run-${RUN_ID}" \
             --title "Codex: issue #${ISSUE_NUMBER} (review required)" \
-            --body "$(printf 'Automated proposal for issue #%s. Tests passed in the agent job. Review all changes before merging. No deployment was performed.\\n\\nCloses #%s\\n' "$ISSUE_NUMBER" "$ISSUE_NUMBER")"
+            --body "$(printf 'Automated proposal for issue #%s. Tests passed in the agent job. Review all changes before merging. No deployment was performed.\n\nCloses #%s\n' "$ISSUE_NUMBER" "$ISSUE_NUMBER")"
       - name: Link draft PR to approved issue
         env:
           GH_TOKEN: ${{ github.token }}
