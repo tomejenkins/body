@@ -61,8 +61,8 @@ jobs:
       - name: Remove prompt and verify source changes
         run: |
           rm -f body-agent-prompt.txt
-          node scripts/agent/inspect-generated-change.mjs
-          node scripts/agent/validate-patch.mjs "$RUNNER_TEMP/body-agent.patch"
+          node "$RUNNER_TEMP/trusted-agent/verified-change.mjs" generate
+          node "$RUNNER_TEMP/trusted-agent/validate-patch.mjs" "$RUNNER_TEMP/body-agent.patch"
       - name: Test proposed changes
         run: |
           npm run lint
@@ -108,6 +108,7 @@ jobs:
           git apply --check "$patch"
           git apply --index "$patch"
           git diff --cached --check
+          node scripts/agent/verified-change.mjs publish
           branch="codex/issue-${ISSUE_NUMBER}-run-${RUN_ID}"
           git switch -c "$branch"
           git config user.name "github-actions[bot]"
