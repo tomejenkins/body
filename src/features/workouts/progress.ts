@@ -22,24 +22,37 @@ export function movementProgress(
   const supported = items.filter(
     (i) => i.loggingKind !== "duration" && i.loggingKind !== "assisted",
   );
-  const completed = supported
-    .flatMap((i) => i.sets)
-    .filter(qualifyingProgressSet).length;
+  const rows = supported.flatMap((i) => i.sets);
+  const visible = rows.filter((set) => !set.deleted_at);
+  const completed = rows.filter(qualifyingProgressSet).length;
   const intended = required != null && required > 0 ? required : null;
-  const status: MovementStatus =
-    completed === 0
-      ? "Not Started"
-      : intended !== null
-        ? completed >= intended
-          ? "Complete"
-          : "In Progress"
-        : // Unprescribed ad-hoc entries use the persisted exercise status. Merely
-          // opening it (or having no rows) never establishes completion.
-          supported.length > 0 &&
-            supported.every((i) => i.status === "completed")
-          ? "Complete"
-          : "In Progress";
-  return { completed, required: intended, status };
+  const unresolved = visible.some(
+    (set) => set.status !== "completed" || set.inputs_confirmed === false,
+  );
+  // Deletion intentionally reduces the remaining working-set requirement.
+  // Preserve the original prescribed target on the movement/item for adherence.
+  // A deleted warm-up never reduces the working-set requirement, and a missing
+  // (never-created) prescribed set is still outstanding.
+  const deletedWorkingSets = rows.filter(
+    (set) => !!set.deleted_at && set.set_type !== "warm_up",
+  ).length;
+  const adjustedRequired =
+    intended !== null && deletedWorkingSets > 0
+      ? Math.max(1, intended - deletedWorkingSets)
+      : intended;
+  let status: MovementStatus;
+  if (completed === 0) status = "Not Started";
+  else if (unresolved) status = "In Progress";
+  else if (adjustedRequired !== null)
+    status = completed >= adjustedRequired ? "Complete" : "In Progress";
+  else
+    status =
+      // Unprescribed ad-hoc entries use the persisted exercise status. Merely
+      // opening it (or having no rows) never establishes completion.
+      supported.length > 0 && supported.every((i) => i.status === "completed")
+        ? "Complete"
+        : "In Progress";
+  return { completed, required: adjustedRequired, status };
 }
 export function workoutProgress(workout: Workout, items = workout.items) {
   const movements = (workout.movements ?? []).map((m) => ({
@@ -60,4 +73,12 @@ export function workoutProgress(workout: Workout, items = workout.items) {
       progress: movementProgress([item], item.prescribedSets),
     }));
   return [...movements, ...extras];
+}
+
+// The finish-workout acknowledgement must use the same saved-set progress
+// rules as Workout Home. This counts incomplete movements, not absent rows.
+export function unfinishedMovementCount(
+  progress: ReturnType<typeof workoutProgress>,
+) {
+  return progress.filter((entry) => entry.progress.status !== "Complete").length;
 }
