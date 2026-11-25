@@ -89,9 +89,9 @@ if(reservation.reservedPlans.has(planNumber)&&mode==='reserve'){
   throw Error('Plan already reserved; no replay');
 }
 
-const plannedTasks=(comments.filter(c=>c.user?.login===OWNER &&
-  String(c.body??'').startsWith('BODY-APPROVE v1 ')))[0]?.body
-  ?.match(/ issues=([1-9][0-9,]*)$/)?.[1]?.split(',').map(Number)??[];
+const plannedTasks=String((comments.filter(c=>c.user?.login===OWNER &&
+  String(c.body??'').startsWith('BODY-APPROVE v1 ')))[0]?.body??'').trim()
+  .match(/ issues=([1-9][0-9,]*)$/)?.[1]?.split(',').map(Number)??[];
 const plannedUsd=plannedTasks.reduce((sum,n)=>sum+(selectedEntry(n)?.estimatedApiUsd??0),0);
 const live=mode!=='publish'
   ? await readProjectCost({
@@ -109,7 +109,9 @@ if(mode!=='reserve'){
 const pending=reservation.reservedApiUsd-currentReservation;
 if(pending < -0.00001)throw Error('Reservation accounting underflow');
 const approval=validateDailyApproval({
-  planIssue, comments, taskIssues, openPrIssueNumbers:openPrIssues(pulls),
+  planIssue, comments, taskIssues,
+  openPrIssueNumbers: mode==='reserve' ? openPrIssues(pulls)
+    : openPrIssues(pulls).filter(n=>n===taskNumber),
   today:localDate(),
   // In publishing (no paid work), only check the original owner's plan approval.
   // Spend verification always happens at reservation and immediately before Codex.
