@@ -13,6 +13,11 @@ if (!['generate', 'publish'].includes(mode)) throw Error('Expected generate or p
 const changed = entries(mode === 'generate'
   ? ['diff', '--name-status', '-z', 'HEAD']
   : ['diff', '--cached', '--name-status', '-z', 'HEAD']);
+// Print only Git status metadata, never file contents or secrets.
+console.log('Agent tracked change entries: ' + Math.floor(changed.length / 2));
+for (let i = 0; i < changed.length; i += 2) {
+  console.log('  ' + JSON.stringify({ status: changed[i], path: changed[i + 1] ?? null }));
+}
 const paths = [];
 for (let i = 0; i < changed.length; i += 2) {
   const status = changed[i], path = changed[i + 1];
@@ -20,7 +25,7 @@ for (let i = 0; i < changed.length; i += 2) {
   paths.push(path);
 }
 if (paths.length < 1 || paths.length > 10 || new Set(paths).size !== paths.length) {
-  throw Error('Expected 1–10 unique modified files');
+  throw Error(paths.length === 0 ? 'Codex completed without modifying tracked files; no patch to publish' : 'Expected 1–10 unique modified files');
 }
 const result = validatePatchPaths(paths);
 if (!result.allowed) throw Error(result.reason);
