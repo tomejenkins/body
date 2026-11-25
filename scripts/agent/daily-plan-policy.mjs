@@ -30,8 +30,9 @@ export function parseDailyPlan(body) {
   }
   const tasks = [...plan.primary, ...plan.alternatives];
   if (!tasks.every(t => t && !Array.isArray(t) &&
-      Object.keys(t).sort().join(',') === 'estimatedApiUsd,issue' &&
-      issueNumber(t.issue) && usd(t.estimatedApiUsd)) ||
+      Object.keys(t).sort().join(',') === 'estimatedApiUsd,issue,taskSha256' &&
+      issueNumber(t.issue) && usd(t.estimatedApiUsd) &&
+      typeof t.taskSha256 === 'string' && /^[a-f0-9]{64}$/.test(t.taskSha256)) ||
       new Set(tasks.map(t => t.issue)).size !== tasks.length) {
     throw Error('Invalid or duplicate task entry');
   }
@@ -79,10 +80,12 @@ export function validateDailyApproval({
   const issues = new Map((taskIssues ?? []).map(i => [i.number, i]));
   for (const n of selected) {
     const issue = issues.get(n);
+    const expectedDigest = candidates.find(t => t.issue === n)?.taskSha256;
     const labels = (issue?.labels ?? []).map(l => (typeof l === 'string' ? l : l.name));
     if (!issue || issue.pull_request || issue.state !== 'open' ||
         !labels.includes('agent-proposed') || labels.includes('agent-blocked') ||
         !issue.body?.trim() || issue.body.length > 12000 ||
+        planDigest(issue.body) !== expectedDigest ||
         !issue.assignees?.some(a => a.login === PLAN_OWNER)) {
       return fail('Approved task is missing, blocked, or not owner-assigned');
     }
