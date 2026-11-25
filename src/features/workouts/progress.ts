@@ -29,9 +29,16 @@ export function movementProgress(
   const unresolved = visible.some(
     (set) => set.status !== "completed" || set.inputs_confirmed === false,
   );
+  // Deletion intentionally reduces the remaining working-set requirement.
+  // Preserve the original prescribed target on the movement/item for adherence.
+  // A deleted warm-up never reduces the working-set requirement, and a missing
+  // (never-created) prescribed set is still outstanding.
+  const deletedWorkingSets = rows.filter(
+    (set) => !!set.deleted_at && set.set_type !== "warm_up",
+  ).length;
   const adjustedRequired =
-    intended !== null && rows.length !== visible.length && visible.length > 0
-      ? Math.min(intended, visible.length)
+    intended !== null && deletedWorkingSets > 0
+      ? Math.max(1, intended - deletedWorkingSets)
       : intended;
   let status: MovementStatus;
   if (completed === 0) status = "Not Started";
@@ -66,4 +73,12 @@ export function workoutProgress(workout: Workout, items = workout.items) {
       progress: movementProgress([item], item.prescribedSets),
     }));
   return [...movements, ...extras];
+}
+
+// The finish-workout acknowledgement must use the same saved-set progress
+// rules as Workout Home. This counts incomplete movements, not absent rows.
+export function unfinishedMovementCount(
+  progress: ReturnType<typeof workoutProgress>,
+) {
+  return progress.filter((entry) => entry.progress.status !== "Complete").length;
 }
