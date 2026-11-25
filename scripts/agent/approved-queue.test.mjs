@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 
 test('unattended workflow has two explicit feature flags and owner identity gate',()=>{
  const yaml=readFileSync(new URL('../../.github/workflows/body-agent-approved-queue.yml',import.meta.url),'utf8');
@@ -25,3 +26,15 @@ test('workflow cannot merge, deploy or automatically retry failed tasks',()=>{
  assert.match(yaml,/max-parallel: 1/);
  assert.match(yaml,/cancel-in-progress: false/);
 });
+
+for (const file of [
+  'daily-queue-control.mjs',
+  'queue-approved-prompt.mjs',
+  'queue-overlap-check.mjs',
+]) {
+  test('approved queue script parses: ' + file, () => {
+    execFileSync(process.execPath, ['--check', new URL(file, import.meta.url).pathname], {
+      stdio: 'pipe',
+    });
+  });
+}
