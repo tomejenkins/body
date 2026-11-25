@@ -67,6 +67,15 @@ export function historyStatus(
             ? "Finished · No completed sets"
             : "Finished · Partly completed";
 }
+export function isCardioOnlyWorkout(
+  workout: Pick<HistorySummary, "cardio_items" | "exercise_count" | "is_program">,
+) {
+  return (
+    (workout.cardio_items ?? 0) > 0 &&
+    workout.exercise_count === 0 &&
+    workout.is_program !== true
+  );
+}
 export function durationLabel(start: string, end: string | null) {
   if (!end) return null;
   const milliseconds = Date.parse(end) - Date.parse(start);
