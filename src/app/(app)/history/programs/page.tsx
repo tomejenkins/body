@@ -35,6 +35,10 @@ export default async function Page({
       ) : (
         <section className="empty-state">
           <h2>No program enrollments yet.</h2>
+          <p>
+            Programs you start will appear here so you can revisit your
+            training history.
+          </p>
           <Link href="/programs">Browse Programs</Link>
         </section>
       )}
