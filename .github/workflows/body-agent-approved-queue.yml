@@ -12,7 +12,7 @@ jobs:
   reserve:
     if: ${{ github.repository == 'tomejenkins/body' && github.ref == 'refs/heads/main' && github.actor == 'tomejenkins' && github.event.issue.pull_request == null && startsWith(github.event.comment.body, 'BODY-APPROVE v1 ') && vars.BODY_AGENT_UNATTENDED_ENABLED == 'true' && vars.BODY_OPENAI_HARD_LIMIT_CONFIRMED == 'true' }}
     runs-on: ubuntu-latest
-    environment: agent_pilot
+    environment: agent_daily
     timeout-minutes: 10
     permissions:
       contents: read
@@ -52,7 +52,7 @@ jobs:
       max-parallel: 1
       matrix: ${{ fromJSON(needs.reserve.outputs.matrix) }}
     runs-on: ubuntu-latest
-    environment: agent_pilot
+    environment: agent_daily
     timeout-minutes: 25
     permissions:
       contents: read
