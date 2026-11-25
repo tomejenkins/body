@@ -8,17 +8,17 @@ This is a **policy-only** foundation. It does not create an unattended coding tr
 2. Each day at 6 AM Pacific, prepare up to three primary issues and up to five alternatives in a **JSON-only** GitHub issue with label `agent-plan`. Reuse existing proposals; do not duplicate issues. Include concrete acceptance criteria, dependencies, risk and a conservative API estimate in each task issue.
 3. Owner selects 1–3 tasks and records one GitHub comment matching the approved plan's SHA-256 digest, with syntax:
    `BODY-APPROVE v1 sha256=<64 lowercase hex> issues=71,73`
-   The digest is SHA-256 of the exact trimmed **plan issue body** (UTF-8). The approval must originate from the GitHub user `tomejenkins`, not an assistant message, email, label or bot comment. Any plan edit requires a new approval, with the prior approval removed to avoid ambiguity. Only selected issues—not the whole week's backlog—are approved.
+   The digest is SHA-256 of the exact trimmed **plan issue body** (UTF-8). Each plan entry also includes `taskSha256`, the SHA-256 of the exact trimmed **task issue body**; an edit to the task issue invalidates the approval at preflight. The approval must originate from the GitHub user `tomejenkins`, not an assistant message, email, label or bot comment. Any plan edit requires a new approval, with the prior approval removed to avoid ambiguity. Only selected issues—not the whole week's backlog—are approved.
 4. Future execution automation must validate this policy **immediately before any paid call**, verify live GitHub issue/PR state, reserve the estimated budget atomically, and enforce one queue owner per issue. Failed or stale checks stop closed.
 5. Proposed work produces **draft PRs only**. Owner approves merges separately. No automatic deployment, remote migrations, billing/auth changes, or unreviewed scope expansion.
 
 ## Plan body example
 
 ```json
-{"version":1,"date":"2026-11-25","primary":[{"issue":71,"estimatedApiUsd":0.5},{"issue":72,"estimatedApiUsd":1}],"alternatives":[{"issue":73,"estimatedApiUsd":0.75}]}
+{"version":1,"date":"2026-11-25","primary":[{"issue":71,"estimatedApiUsd":0.5,"taskSha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},{"issue":72,"estimatedApiUsd":1,"taskSha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],"alternatives":[{"issue":73,"estimatedApiUsd":0.75,"taskSha256":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}]}
 ```
 
-The plan issue must be open and labeled `agent-plan`. Each referenced issue must be open, have nonempty implementation instructions, carry `agent-proposed`, lack `agent-blocked`, be assigned to the owner, and not already have an open PR. Owner is allowed to choose alternatives in place of the primary tasks.
+The sample SHA-256 strings above are placeholders; real plan creation must hash the current issue bodies. The plan issue must be open and labeled `agent-plan`. Each referenced issue must be open, have nonempty implementation instructions, carry `agent-proposed`, lack `agent-blocked`, be assigned to the owner, and not already have an open PR. Owner is allowed to choose alternatives in place of the primary tasks.
 
 ## Limits and costs
 
