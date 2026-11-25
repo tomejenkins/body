@@ -84,7 +84,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      issues: read
+      issues: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -124,4 +124,23 @@ jobs:
           set -euo pipefail
           gh pr create --draft --base main --head "codex/issue-${ISSUE_NUMBER}-run-${RUN_ID}" \
             --title "Codex: issue #${ISSUE_NUMBER} (review required)" \
-            --body "Automated proposal for issue #${ISSUE_NUMBER}. Tests passed in the agent job. Review all changes before merging. No deployment was performed."
+            --body "Automated proposal for issue #${ISSUE_NUMBER}. Tests passed in the agent job. Review all changes before merging. No deployment was performed.\n\nCloses #${ISSUE_NUMBER}"
+      - name: Link draft PR to approved issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          repo="tomejenkins/body"
+          pr_url="$(gh pr view "codex/issue-${ISSUE_NUMBER}-run-${RUN_ID}" --json url --jq .url)"
+          # Create the review label only if it does not already exist.
+          if ! gh api "repos/${repo}/labels/agent-review" >/dev/null 2>&1; then
+            gh api -X POST "repos/${repo}/labels" -f name=agent-review -f color=FBCA04 -f description="Agent proposal awaiting human PR review" >/dev/null
+          fi
+          gh api -X POST "repos/${repo}/issues/${ISSUE_NUMBER}/labels" -f labels[]=agent-review >/dev/null
+          marker="<!-- body-agent-run:${RUN_ID} -->"
+          existing="$(gh api --paginate "repos/${repo}/issues/${ISSUE_NUMBER}/comments?per_page=100" --jq '.[].body' | grep -F "$marker" || true)"
+          if [ -z "$existing" ]; then
+            gh api -X POST "repos/${repo}/issues/${ISSUE_NUMBER}/comments" -f body="Implementation proposed in ${pr_url}. Automated checks passed. Awaiting human review and merge. ${marker}" >/dev/null
+          fi
