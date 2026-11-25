@@ -9,7 +9,10 @@ import { SuggestedMovementControls } from "@/components/workouts/suggested-movem
 import { ExerciseNavigation } from "@/components/workouts/exercise-navigation";
 import { newerTimerState } from "@/features/continuity/timer";
 import { WorkoutModeControls } from "@/components/workouts/workout-mode-controls";
-import { workoutProgress } from "@/features/workouts/progress";
+import {
+  workoutProgress,
+  unfinishedMovementCount,
+} from "@/features/workouts/progress";
 import { MovementSelection } from "@/components/programs/movement-selection";
 import { effortSummary } from "@/features/sets/effort";
 import { SetEffortOptions } from "./set-effort-options";
@@ -826,19 +829,6 @@ export function WorkoutLogger({
       .map((e) => e.row),
   }));
   const summary = summarizeSets(itemSets);
-  const missing =
-    itemSets.filter(
-      (i) => !i.programMovementId && i.sets.length < (i.prescribedSets ?? 1),
-    ).length +
-    (workout.movements?.filter(
-      (m) =>
-        itemSets
-          .filter((i) => i.programMovementId === m.id)
-          .reduce(
-            (n, i) => n + i.sets.filter((s) => s.set_type !== "warm_up").length,
-            0,
-          ) < m.workingSets,
-    ).length ?? 0);
   const programRows = workout.movements?.length
     ? workout.movements.flatMap<LoggerRow>((m) => {
         const items = workout.items.filter((i) => i.programMovementId === m.id);
@@ -864,6 +854,7 @@ export function WorkoutLogger({
         showSelection: false,
       }));
   const progress = workoutProgress(workout, progressSets);
+  const missing = unfinishedMovementCount(progress);
   const focusedProgress = progress.find(
     (p) => p.id === (focusedMovement?.id ?? focusedItem?.id),
   );
@@ -2331,7 +2322,7 @@ export function WorkoutLogger({
                     Finish without completing all sets ({summary.pending}{" "}
                     pending; {cardioTotal.pending} cardio pending; {missing}{" "}
                     {workout.movements?.length ? "movements" : "exercises"}{" "}
-                    missing sets)
+                    unfinished)
                   </label>
                 )}
                 <div className="workout-ending-actions">
