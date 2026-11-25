@@ -8,7 +8,7 @@ jobs:
   check:
     if: ${{ github.repository == 'tomejenkins/body' && github.ref == 'refs/heads/main' && github.actor == 'tomejenkins' }}
     runs-on: ubuntu-latest
-    environment: agent_pilot
+    environment: agent_daily
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
