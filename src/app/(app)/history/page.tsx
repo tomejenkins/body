@@ -58,11 +58,11 @@ export default async function Page({
         <section className="empty-state">
           <h2>
             {filter === "all"
-              ? "Your story starts here."
+              ? "No workouts yet"
               : "No workouts in this view."}
           </h2>
-          <p>Record a workout to build a history of your training.</p>
-          <Link href="/workout">Record Workout</Link>
+          <p>Complete your first workout to start building your history.</p>
+          <Link href="/workout">Start a Workout</Link>
         </section>
       )}
       <div className="history-pagination">
