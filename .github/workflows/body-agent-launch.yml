@@ -53,6 +53,7 @@ jobs:
         uses: openai/codex-action@v1
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          model: gpt-5.3-codex
           prompt-file: body-agent-prompt.txt
           permission-profile: ':workspace'
           safety-strategy: drop-sudo
