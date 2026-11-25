@@ -4,6 +4,40 @@ import Link from "next/link";
 import { loadHistory } from "@/features/history/queries";
 import { cursorFor } from "@/features/history/model";
 export const metadata = { title: "History" };
+
+const EMPTY_STATE_BY_FILTER = {
+  all: {
+    heading: "No workouts yet",
+    description: "Complete your first workout to start building your history.",
+    actionLabel: "Start a Workout",
+    actionHref: "/workout",
+  },
+  completed: {
+    heading: "No completed workouts",
+    description: "Workouts you complete will appear here.",
+    actionLabel: "View All Workouts",
+    actionHref: "/history?filter=all",
+  },
+  incomplete: {
+    heading: "No incomplete workouts",
+    description: "You don't have any incomplete workouts to review.",
+    actionLabel: "View All Workouts",
+    actionHref: "/history?filter=all",
+  },
+  abandoned: {
+    heading: "No abandoned workouts",
+    description: "Workouts marked as abandoned will appear here.",
+    actionLabel: "View All Workouts",
+    actionHref: "/history?filter=all",
+  },
+  archived: {
+    heading: "No archived workouts",
+    description: "Workouts you archive will appear here.",
+    actionLabel: "View All Workouts",
+    actionHref: "/history?filter=all",
+  },
+} as const;
+
 export default async function Page({
   searchParams,
 }: {
@@ -14,6 +48,7 @@ export default async function Page({
     params.filter,
     params.cursor,
   );
+  const emptyState = EMPTY_STATE_BY_FILTER[filter];
   const last = rows.at(-1);
   return (
     <div className="history-screen refined-screen">
@@ -56,13 +91,9 @@ export default async function Page({
         </ol>
       ) : (
         <section className="empty-state">
-          <h2>
-            {filter === "all"
-              ? "No workouts yet"
-              : "No workouts in this view."}
-          </h2>
-          <p>Complete your first workout to start building your history.</p>
-          <Link href="/workout">Start a Workout</Link>
+          <h2>{emptyState.heading}</h2>
+          <p>{emptyState.description}</p>
+          <Link href={emptyState.actionHref}>{emptyState.actionLabel}</Link>
         </section>
       )}
       <div className="history-pagination">
