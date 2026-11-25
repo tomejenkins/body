@@ -5,8 +5,13 @@ import { planDigest, parseDailyPlan, validateDailyApproval } from './daily-plan-
 const today = '2026-11-25';
 const body = JSON.stringify({
   version: 1, date: today,
-  primary: [{ issue: 71, estimatedApiUsd: 0.5 }, { issue: 72, estimatedApiUsd: 1 }],
-  alternatives: [{ issue: 73, estimatedApiUsd: 0.75 }],
+  primary: [
+    { issue: 71, estimatedApiUsd: 0.5, taskSha256: planDigest('Fix workout bug') },
+    { issue: 72, estimatedApiUsd: 1, taskSha256: planDigest('Fix workout bug') },
+  ],
+  alternatives: [
+    { issue: 73, estimatedApiUsd: 0.75, taskSha256: planDigest('Fix workout bug') },
+  ],
 });
 const issue = n => ({ number: n, state: 'open', body: 'Fix workout bug',
   labels: [{ name: 'agent-proposed' }], assignees: [{ login: 'tomejenkins' }] });
@@ -42,6 +47,10 @@ test('rejects out-of-plan and duplicate issue selections', () => {
     assert.equal(validateDailyApproval(v).allowed, false);
   }
 });
+test('rejects edits to the approved task body', () => {
+  const v = params(); v.taskIssues[0].body = 'Change Stripe billing instead';
+  assert.equal(validateDailyApproval(v).allowed, false);
+});
 test('rejects already open PRs and blocked issues', () => {
   const v = params(); v.openPrIssueNumbers = [71];
   assert.equal(validateDailyApproval(v).allowed, false);
@@ -54,7 +63,10 @@ test('rejects stale spending evidence', () => {
 });
 test('rejects spending above daily $3 and monthly policy allowance', () => {
   const v = params(); v.planIssue.body = JSON.stringify({ version:1, date:today,
-    primary: [{issue:71,estimatedApiUsd:2.5},{issue:72,estimatedApiUsd:2.5}],
+    primary: [
+      {issue:71,estimatedApiUsd:2.5,taskSha256:planDigest('Fix workout bug')},
+      {issue:72,estimatedApiUsd:2.5,taskSha256:planDigest('Fix workout bug')},
+    ],
     alternatives: [] });
   v.comments = [{ user:{login:'tomejenkins'}, body:
     'BODY-APPROVE v1 sha256=' + planDigest(v.planIssue.body) + ' issues=71,72' }];
@@ -65,9 +77,10 @@ test('rejects spending above daily $3 and monthly policy allowance', () => {
 test('rejects malformed JSON, duplicate tasks and invalid dates', () => {
   assert.throws(() => parseDailyPlan('not json'));
   assert.throws(() => parseDailyPlan(JSON.stringify({ version:1,date:'2026-02-30',
-    primary:[{issue:71,estimatedApiUsd:1}],alternatives:[] })));
+    primary:[{issue:71,estimatedApiUsd:1,taskSha256:planDigest('Fix workout bug')}],alternatives:[] })));
   assert.throws(() => parseDailyPlan(JSON.stringify({ version:1,date:today,
-    primary:[{issue:71,estimatedApiUsd:1}],alternatives:[{issue:71,estimatedApiUsd:1}] })));
+    primary:[{issue:71,estimatedApiUsd:1,taskSha256:planDigest('Fix workout bug')}],
+    alternatives:[{issue:71,estimatedApiUsd:1,taskSha256:planDigest('Fix workout bug')}] })));
 });
 test('date mismatch blocks replay', () => {
   const v = params(); v.today = '2026-11-26';
