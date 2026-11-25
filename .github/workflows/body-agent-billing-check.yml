@@ -1,0 +1,35 @@
+# Read-only billing verification. No Codex key, no spending, no ledger writes.
+name: Body agent - verify live OpenAI costs
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    if: ${{ github.repository == 'tomejenkins/body' && github.ref == 'refs/heads/main' && github.actor == 'tomejenkins' }}
+    runs-on: ubuntu-latest
+    environment: agent_pilot
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Unit tests for billing attribution and reservations
+        run: node --test scripts/agent/billing-guard.test.mjs
+      - name: Verify Body project costs without publishing secret data
+        env:
+          OPENAI_ADMIN_KEY: ${{ secrets.BODY_OPENAI_ADMIN_KEY }}
+          OPENAI_PROJECT_ID: ${{ vars.BODY_OPENAI_PROJECT_ID }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { readProjectCost } from './scripts/agent/billing-guard.mjs';
+          const r=await readProjectCost({
+            adminKey:process.env.OPENAI_ADMIN_KEY,
+            projectId:process.env.OPENAI_PROJECT_ID,
+          });
+          console.log('Verified project billing for period:', r.period);
+          console.log('Month-to-date USD:', r.recordedApiUsd.toFixed(4));
+          NODE
