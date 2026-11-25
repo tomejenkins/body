@@ -1,0 +1,37 @@
+# Phase C1 preflight only: no API key, no dispatch, no billing, no deployment.
+name: Body agent - verify daily plan (dry run)
+on:
+  workflow_dispatch:
+    inputs:
+      plan_issue_number:
+        description: Open agent-plan issue with owner approval comment
+        required: true
+        type: string
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+concurrency:
+  group: body-agent-daily-plan-preflight
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: ${{ github.repository == 'tomejenkins/body' && github.ref == 'refs/heads/main' && github.actor == 'tomejenkins' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test approval policy
+        run: |
+          node --test scripts/agent/daily-plan-policy.test.mjs
+          node --test scripts/agent/pilot-policy.test.mjs
+      - name: Verify owner approval and issue queue (NO CODING)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PLAN_ISSUE_NUMBER: ${{ inputs.plan_issue_number }}
+        run: node scripts/agent/daily-plan-preflight.mjs
