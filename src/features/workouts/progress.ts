@@ -36,9 +36,12 @@ export function movementProgress(
   const deletedWorkingSets = rows.filter(
     (set) => !!set.deleted_at && set.set_type !== "warm_up",
   ).length;
+  const activeWorkingSets = visible.filter(
+    (set) => set.set_type !== "warm_up",
+  ).length;
   const adjustedRequired =
     intended !== null && deletedWorkingSets > 0
-      ? Math.max(1, intended - deletedWorkingSets)
+      ? Math.max(1, intended - deletedWorkingSets, activeWorkingSets)
       : intended;
   let status: MovementStatus;
   if (completed === 0) status = "Not Started";
