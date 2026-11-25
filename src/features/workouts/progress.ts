@@ -22,24 +22,30 @@ export function movementProgress(
   const supported = items.filter(
     (i) => i.loggingKind !== "duration" && i.loggingKind !== "assisted",
   );
-  const completed = supported
-    .flatMap((i) => i.sets)
-    .filter(qualifyingProgressSet).length;
+  const rows = supported.flatMap((i) => i.sets);
+  const visible = rows.filter((set) => !set.deleted_at);
+  const completed = rows.filter(qualifyingProgressSet).length;
   const intended = required != null && required > 0 ? required : null;
-  const status: MovementStatus =
-    completed === 0
-      ? "Not Started"
-      : intended !== null
-        ? completed >= intended
-          ? "Complete"
-          : "In Progress"
-        : // Unprescribed ad-hoc entries use the persisted exercise status. Merely
-          // opening it (or having no rows) never establishes completion.
-          supported.length > 0 &&
-            supported.every((i) => i.status === "completed")
-          ? "Complete"
-          : "In Progress";
-  return { completed, required: intended, status };
+  const unresolved = visible.some(
+    (set) => set.status !== "completed" || set.inputs_confirmed === false,
+  );
+  const adjustedRequired =
+    intended !== null && rows.length !== visible.length && visible.length > 0
+      ? Math.min(intended, visible.length)
+      : intended;
+  let status: MovementStatus;
+  if (completed === 0) status = "Not Started";
+  else if (unresolved) status = "In Progress";
+  else if (adjustedRequired !== null)
+    status = completed >= adjustedRequired ? "Complete" : "In Progress";
+  else
+    status =
+      // Unprescribed ad-hoc entries use the persisted exercise status. Merely
+      // opening it (or having no rows) never establishes completion.
+      supported.length > 0 && supported.every((i) => i.status === "completed")
+        ? "Complete"
+        : "In Progress";
+  return { completed, required: adjustedRequired, status };
 }
 export function workoutProgress(workout: Workout, items = workout.items) {
   const movements = (workout.movements ?? []).map((m) => ({

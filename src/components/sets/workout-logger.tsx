@@ -819,6 +819,12 @@ export function WorkoutLogger({
       .filter((e) => e.row.workout_exercise_id === item.id && !e.row.deleted_at)
       .map((e) => e.row),
   }));
+  const progressSets = workout.items.map((item) => ({
+    ...item,
+    sets: Object.values(entries)
+      .filter((e) => e.row.workout_exercise_id === item.id)
+      .map((e) => e.row),
+  }));
   const summary = summarizeSets(itemSets);
   const missing =
     itemSets.filter(
@@ -857,7 +863,7 @@ export function WorkoutLogger({
         movement: null,
         showSelection: false,
       }));
-  const progress = workoutProgress(workout, itemSets);
+  const progress = workoutProgress(workout, progressSets);
   const focusedProgress = progress.find(
     (p) => p.id === (focusedMovement?.id ?? focusedItem?.id),
   );

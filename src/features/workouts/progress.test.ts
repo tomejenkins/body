@@ -55,6 +55,120 @@ it("saved qualifying working sets determine partial and required completion", ()
     ).status,
   ).toBe("Complete");
 });
+it("treats deleted outstanding sets as no longer required once remaining sets are complete", () => {
+  expect(
+    movementProgress(
+      [
+        item([
+          set(),
+          set({ id: "two" }),
+          set({
+            id: "three",
+            status: "pending",
+            inputs_confirmed: false,
+            actual_reps: null,
+            actual_weight_kg: null,
+            completed_at: null,
+            deleted_at: "2026-11-05T12:00:00Z",
+          }),
+        ]),
+      ],
+      3,
+    ),
+  ).toEqual({
+    status: "Complete",
+    completed: 2,
+    required: 2,
+  });
+});
+it("keeps movement incomplete while any visible set remains pending", () => {
+  expect(
+    movementProgress(
+      [
+        item([
+          set(),
+          set({ id: "two" }),
+          set({
+            id: "three",
+            status: "pending",
+            inputs_confirmed: false,
+            actual_reps: null,
+            actual_weight_kg: null,
+            completed_at: null,
+          }),
+        ]),
+      ],
+      2,
+    ).status,
+  ).toBe("In Progress");
+});
+it("does not complete when every set is deleted", () => {
+  expect(
+    movementProgress(
+      [
+        item([
+          set({ deleted_at: "2026-11-05T12:00:00Z" }),
+          set({
+            id: "two",
+            status: "pending",
+            inputs_confirmed: false,
+            actual_reps: null,
+            actual_weight_kg: null,
+            completed_at: null,
+            deleted_at: "2026-11-05T12:00:01Z",
+          }),
+        ]),
+      ],
+      2,
+    ).status,
+  ).toBe("Not Started");
+});
+it("recomputes completion after deleting a completed set and adding replacements", () => {
+  const afterDelete = movementProgress(
+    [item([set(), set({ id: "two", deleted_at: "2026-11-05T12:00:00Z" })])],
+    2,
+  );
+  expect(afterDelete).toEqual({
+    status: "Complete",
+    completed: 1,
+    required: 1,
+  });
+
+  const replacementPending = movementProgress(
+    [
+      item([
+        set(),
+        set({ id: "two", deleted_at: "2026-11-05T12:00:00Z" }),
+        set({
+          id: "three",
+          status: "pending",
+          inputs_confirmed: false,
+          actual_reps: null,
+          actual_weight_kg: null,
+          completed_at: null,
+        }),
+      ]),
+    ],
+    2,
+  );
+  expect(replacementPending.status).toBe("In Progress");
+
+  const replacementCompleted = movementProgress(
+    [
+      item([
+        set(),
+        set({ id: "two", deleted_at: "2026-11-05T12:00:00Z" }),
+        set({ id: "three" }),
+      ]),
+    ],
+    2,
+  );
+  expect(replacementCompleted).toEqual({
+    status: "Complete",
+    completed: 2,
+    required: 2,
+  });
+});
 it("counts saved drop/rest-pause and bodyweight without inventing load", () => {
   expect(
     movementProgress(
