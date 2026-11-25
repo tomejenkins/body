@@ -1,0 +1,120 @@
+# Manually dispatched only. No schedule, no deploy, no automatic merge.
+name: Body Codex agent — approved issue to draft PR
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Owner-created open issue, assigned to owner, with agent-approved and agent-ready labels
+        required: true
+        type: string
+permissions:
+  contents: read
+  issues: read
+concurrency:
+  group: body-agent-single-run
+  cancel-in-progress: false
+jobs:
+  generate:
+    if: ${{ github.repository == 'tomejenkins/body' && github.ref == 'refs/heads/main' && github.actor == 'tomejenkins' }}
+    runs-on: ubuntu-latest
+    environment: agent_pilot
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install dependencies without exposing the API key
+        run: npm ci
+      - name: Verify owner-approved issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          APPROVAL_PHRASE: approved-pilot
+        run: node scripts/agent/validate-pilot.mjs
+      - name: Create bounded prompt
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: node scripts/agent/prepare-issue.mjs
+      - name: Run Codex (the only step receiving the project API key)
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: body-agent-prompt.txt
+          permission-profile: ':workspace'
+          safety-strategy: drop-sudo
+          codex-args: '["--ephemeral"]'
+      - name: Remove prompt and verify source changes
+        run: |
+          rm -f body-agent-prompt.txt
+          node scripts/agent/inspect-generated-change.mjs
+          node scripts/agent/validate-patch.mjs "$RUNNER_TEMP/body-agent.patch"
+      - name: Test proposed changes
+        run: |
+          npm run lint
+          npm run typecheck
+          npm test
+          npm run build
+      - name: Upload vetted patch
+        uses: actions/upload-artifact@v4
+        with:
+          name: body-agent-patch
+          path: ${{ runner.temp }}/body-agent.patch
+          if-no-files-found: error
+          retention-days: 1
+  publish:
+    needs: generate
+    if: ${{ needs.generate.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/download-artifact@v4
+        with:
+          name: body-agent-patch
+          path: ${{ runner.temp }}/body-agent-artifact
+      - name: Revalidate and apply patch
+        env:
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          patch="$RUNNER_TEMP/body-agent-artifact/body-agent.patch"
+          node scripts/agent/validate-patch.mjs "$patch"
+          git apply --check "$patch"
+          git apply --index "$patch"
+          git diff --cached --check
+          branch="codex/issue-${ISSUE_NUMBER}-run-${RUN_ID}"
+          git switch -c "$branch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Codex: address issue #${ISSUE_NUMBER}"
+          git push origin "$branch"
+      - name: Create draft pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          gh pr create --draft --base main --head "codex/issue-${ISSUE_NUMBER}-run-${RUN_ID}" \
+            --title "Codex: issue #${ISSUE_NUMBER} (review required)" \
+            --body "Automated proposal for issue #${ISSUE_NUMBER}. Tests passed in the agent job. Review all changes before merging. No deployment was performed."

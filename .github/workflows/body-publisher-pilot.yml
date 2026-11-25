@@ -1,0 +1,23 @@
+# Review-only placeholder. No privileged publishing until separate approval.
+name: Body draft PR publisher (disabled)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: body-publisher-pilot
+  cancel-in-progress: false
+jobs:
+  review-only:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --test scripts/agent/publisher-preflight.test.mjs
+      - run: echo 'Publisher disabled. No GitHub write token or PR creation.'

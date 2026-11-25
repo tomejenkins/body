@@ -1,0 +1,29 @@
+# Read-only validation only. No deployment, secrets, or hosted database access.
+name: Body agent CI
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/body-*.yml'
+      - 'scripts/agent/**'
+      - 'docs/body-agent-launch.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: node --test scripts/agent/*.test.mjs
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
