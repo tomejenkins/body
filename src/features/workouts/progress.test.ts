@@ -1,5 +1,9 @@
 import { expect, it } from "vitest";
-import { movementProgress, workoutProgress } from "./progress";
+import {
+  movementProgress,
+  workoutProgress,
+  unfinishedMovementCount,
+} from "./progress";
 import type { WorkoutItem, Workout } from "./types";
 import type { LoggedSet } from "@/features/sets/model";
 const set = (overrides: Partial<LoggedSet> = {}): LoggedSet => ({
@@ -168,6 +172,80 @@ it("recomputes completion after deleting a completed set and adding replacements
     completed: 2,
     required: 2,
   });
+});
+it("does not excuse missing prescribed sets merely because another was deleted", () => {
+  expect(
+    movementProgress(
+      [item([set(), set({ id: "deleted", deleted_at: "2026-11-05T12:00:00Z" })])],
+      3,
+    ),
+  ).toEqual({ status: "In Progress", completed: 1, required: 2 });
+});
+it("does not reduce required working sets when a warm-up is deleted", () => {
+  expect(
+    movementProgress(
+      [
+        item([
+          set(),
+          set({ id: "warm", set_type: "warm_up", deleted_at: "2026-11-05T12:00:00Z" }),
+        ]),
+      ],
+      2,
+    ),
+  ).toEqual({ status: "In Progress", completed: 1, required: 2 });
+});
+it("adjusts required working sets for multiple deletions while respecting pending replacements", () => {
+  const initial = [
+    set(),
+    set({ id: "two" }),
+    set({ id: "three", deleted_at: "2026-11-05T12:00:00Z" }),
+    set({ id: "four", deleted_at: "2026-11-05T12:00:00Z" }),
+  ];
+  expect(movementProgress([item(initial)], 4)).toEqual({
+    status: "Complete", completed: 2, required: 2,
+  });
+  expect(
+    movementProgress(
+      [item([...initial, set({
+        id: "replacement",
+        status: "pending",
+        inputs_confirmed: false,
+        actual_reps: null,
+        actual_weight_kg: null,
+        completed_at: null,
+      })])],
+      4,
+    ).status,
+  ).toBe("In Progress");
+});
+it("uses exactly the same statuses for home and finish acknowledgement after reload", () => {
+  const modified = item([
+    set(),
+    set({ id: "removed", deleted_at: "2026-11-05T12:00:00Z" }),
+  ], { prescribedSets: 2 });
+  const pending = item([
+    set({ id: "pending", status: "pending", inputs_confirmed: false,
+      actual_reps: null, actual_weight_kg: null, completed_at: null }),
+  ], { id: "other", prescribedSets: 1 });
+  const workout = { items: [modified], movements: [] } as unknown as Workout;
+  expect(workoutProgress(workout)[0].progress.status).toBe("Complete");
+  expect(unfinishedMovementCount(workoutProgress(workout))).toBe(0);
+  // Recreated, server-like objects after navigation produce the same result.
+  const reloaded = { ...workout, items: workout.items.map((i) => ({
+    ...i, sets: i.sets.map((s) => ({ ...s })),
+  })) };
+  expect(unfinishedMovementCount(workoutProgress(reloaded))).toBe(0);
+  expect(unfinishedMovementCount(workoutProgress({
+    ...reloaded, items: [...reloaded.items, pending],
+  }))).toBe(1);
+});
+it("keeps all-deleted movements unfinished at workout close", () => {
+  const workout = {
+    items: [item([set({ deleted_at: "2026-11-05T12:00:00Z" })], { prescribedSets: 1 })],
+    movements: [],
+  } as unknown as Workout;
+  expect(workoutProgress(workout)[0].progress.status).toBe("Not Started");
+  expect(unfinishedMovementCount(workoutProgress(workout))).toBe(1);
 });
 it("counts saved drop/rest-pause and bodyweight without inventing load", () => {
   expect(
